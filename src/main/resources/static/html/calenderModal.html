@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div id="scheduleInputModal" class="modal-template">
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="calendar_content" class="form-label">일정 내용</label>
+	            <input type="text" id="calendar_content" class="form-input" placeholder="일정을 입력하세요">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_start_date" class="form-label">시작일</label>
+	            <input type="date" id="calendar_start_date" class="form-input">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_end_date" class="form-label">종료일</label>
+	            <input type="date" id="calendar_end_date" class="form-input">
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button id="addSchedule" class="btn btn-primary">등록</button>
+	        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    </div>
+	</div>
+	
+	<div id="cabinetInputModal" class="modal-template">
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="cabinet_content" class="form-label">회의실 예약 내용</label>
+	            <input type="text" id="cabinet_content" class="form-input" placeholder="회의실 예약 내용을 입력하세요">
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button id="addCabinet" class="btn btn-primary">등록</button>
+	        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    </div>
+	</div>
+	
+	<div id="articleInputModal" class="modal-template">
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="article_content" class="form-label">물품 요청 내용</label>
+	            <input type="text" id="article_content" class="form-input" placeholder="물품 요청 내용을 입력하세요">
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button id="addArticle" class="btn btn-primary">등록</button>
+	        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    </div>
+	</div>
+	
+	<div id="scheduleInfoModal" class="modal-template">
+		<input type="hidden" id="calendar_event_id">
+		<div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="calendar_content" class="form-label">일정 내용</label>
+	            <input type="text" id="calendar_content" class="form-input">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_start_date" class="form-label">시작일</label>
+	            <input type="date" id="calendar_start_date" class="form-input">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_end_date" class="form-label">종료일</label>
+	            <input type="date" id="calendar_end_date" class="form-input">
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button id="amendSchedule" class="btn btn-primary">수정</button>
+	        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    </div>
+	</div>
+</body>
+</html>

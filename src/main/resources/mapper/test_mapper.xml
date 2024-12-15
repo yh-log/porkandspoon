@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+>
+
+<mapper namespace="kr.co.porkandspoon.dao.TestDAO">
+	<insert id="joinWrite" parameterType="kr.co.porkandspoon.dto.MemberDTO">
+		INSERT INTO empl(username, password) VALUES(#{username}, #{password})
+	</insert>
+	
+	<select id="login" resultType="String" parameterType="kr.co.porkandspoon.dto.MemberDTO">
+		SELECT password FROM empl WHERE username = #{username}
+	</select>
+	
+	
+	
+	<insert id="fileWrite" parameterType="list">
+	    INSERT INTO filetest (ori_filename, new_filename, type)
+	    VALUES
+	    <foreach collection="list" item="file" separator=",">
+	        (#{file.ori_filename}, #{file.new_filename}, #{file.type})
+	    </foreach>
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	<insert id="scheduleWrite" parameterType="map">
+		INSERT INTO schedulecalender(subject, start, end) VALUES(#{subject}, #{start}, #{end})
+	</insert>
+	
+	<select id="scheduleList">
+		SELECT * FROM schedulecalender
+	</select>
+	
+	<select id="fileList" resultType="map">
+		SELECT * FROM filetest
+	</select>
+</mapper>
