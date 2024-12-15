@@ -1,6 +1,6 @@
 package kr.co.porkandspoon.dto;
 
-public class FileDTO{
+public class FileDTO extends ResponseDTO{
 
 	private String ori_filename;
 	private String new_filename;

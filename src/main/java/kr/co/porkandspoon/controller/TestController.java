@@ -231,19 +231,20 @@ public class TestController {
 	 * 파일 작성
 	 */
 	@PostMapping(value="/fileWrite")
-	public ResponseEntity<ResponseDTO<List<FileDTO>>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-        try {
-            // 1. 서비스 호출
-            ResponseDTO<List<FileDTO>> response = service.saveFiles(files);
-
-            // 2. 성공 응답 반환
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            // 3. 에러 발생 시 실패 응답 반환
-            ResponseDTO<List<FileDTO>> errorResponse = new ResponseDTO<>(500, "파일 업로드 중 오류 발생: " + e.getMessage(), null);
-            return ResponseEntity.status(500).body(errorResponse);
-        }
-    }
+//	public ResponseEntity<ResponseDTO<List<FileDTO>>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+//	public List<FileDTO> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+//        try {
+//            // 1. 서비스 호출
+//            ResponseDTO<List<FileDTO>> response = service.saveFiles(files);
+//
+//            // 2. 성공 응답 반환
+//            return ResponseEntity.ok(response);
+//        } catch (Exception e) {
+//            // 3. 에러 발생 시 실패 응답 반환
+//            ResponseDTO<List<FileDTO>> errorResponse = new ResponseDTO<>(500, "파일 업로드 중 오류 발생: " + e.getMessage(), null);
+//            return ResponseEntity.status(500).body(errorResponse);
+//        }
+//    }
 	
 	
 	
@@ -268,5 +269,13 @@ public class TestController {
 	}
 	
 	
+	/**
+	 * author yh.kim (24.12.14) 
+	 * 조직도 리스트 조회
+	 */
+	@GetMapping(value="/menu_tree")
+	public List<Map<String, Object>> menu_tree(){
+		return service.menu_tree();
+	}
 	
 }

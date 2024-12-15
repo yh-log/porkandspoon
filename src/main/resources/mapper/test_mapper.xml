@@ -39,4 +39,18 @@
 	<select id="fileList" resultType="map">
 		SELECT * FROM filetest
 	</select>
+	
+	
+	<select id="menu_tree" resultType="map">
+        SELECT
+            id,
+            parent,
+            menu_order AS menuOrder,
+            menu_depth AS menuDepth,
+            text, type
+        FROM
+            menu_tree
+        ORDER BY
+            parent, menu_order
+    </select>
 </mapper>

@@ -9,6 +9,7 @@
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	
+	<!-- fullcalender -->
 	<script src='/resources/js/calender/main.js'></script>
 	<script src='/resources/js/calender/daygridmain.js'></script>
 	<script src='/resources/js/calender/interactionmain.js'></script>
@@ -18,6 +19,7 @@
 	<link href='/resources/css/calender/daygridmain.css' rel='stylesheet' />
 	<link href='/resources/css/calender/timemain.css' rel='stylesheet' />
 	
+	<!-- summernote -->
 	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 	

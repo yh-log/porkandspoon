@@ -66,21 +66,21 @@ public class TestService {
 	/*
 	 * 파일 등록
 	 */
-    public ResponseDTO<List<FileDTO>> saveFiles(MultipartFile[] files) {
-        // 1. 유틸리티 클래스에서 파일 리스트 생성
-        List<FileDTO> fileDtos = CommonUtil.uploadFiles(files);
-
-        // 2. DB 저장
-        int insertedRows = testDao.fileWrite(fileDtos);
-        if (insertedRows != fileDtos.size()) {
-            throw new RuntimeException("일부 파일 저장 실패");
-        }
-
-        // 3. 성공 응답 생성
-        return new ResponseDTO<>(200, "파일 업로드 성공", fileDtos);
-    
-    
-		
+//    public ResponseDTO<List<FileDTO>> saveFiles(MultipartFile[] files) {
+//        // 1. 유틸리티 클래스에서 파일 리스트 생성
+//        List<FileDTO> fileDtos = CommonUtil.uploadFiles(files);
+//
+//        // 2. DB 저장
+//        int insertedRows = testDao.fileWrite(fileDtos);
+//        if (insertedRows != fileDtos.size()) {
+//            throw new RuntimeException("일부 파일 저장 실패");
+//        }
+//
+//        // 3. 성공 응답 생성
+//        return new ResponseDTO<>(200, "파일 업로드 성공", fileDtos);
+//    
+//    
+//		
 //	    if (files == null || files.length == 0) {
 //	        throw new IllegalArgumentException("업로드된 파일이 없습니다.");
 //	    }
@@ -112,11 +112,15 @@ public class TestService {
 //	        }
 //	    }
 //	    return true; // 모든 파일 저장 성공
-	}
+//	}
 
 	
 	public List<Map<String, Object>> fileList() {
 		return testDao.fileList();
+	}
+
+	public List<Map<String, Object>> menu_tree() {
+		return testDao.menu_tree();
 	}
 
 

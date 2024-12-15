@@ -68,7 +68,7 @@ public class CommonUtil {
 	 * author yh.kim (24.12.13) 
 	 * 현재 날짜를 지정된 형식으로 변환
 	 * 
-	 * @param outputFormat	출력 날싸 형식 (예: "yyyy-MM-dd HH:mm:ss")
+	 * @param outputFormat	출력 날짜 형식 (예: "yyyy-MM-dd HH:mm:ss")
 	 */
 	public static String gerCurrentDateTime(String outputFormat) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(outputFormat);
@@ -77,6 +77,7 @@ public class CommonUtil {
 	
 	/**
 	 * author yh.kim (24.12.13) 
+	 * 객체 값 확인을 위한 toString 메소드
 	 * @param obj : Class, Map, List, Set, Arr, DTO 등
 	 */
 	public static String toString(Object obj) {
@@ -247,7 +248,7 @@ public class CommonUtil {
      */
     public static boolean moveFiles(List<String> fileNames) {
     	
-    	boolean allSuccess = true;
+    	boolean allSuccess = false;
     	
     	for (String fileName : fileNames) {
 			File srcFile = new File(pathTem + fileName);
@@ -258,11 +259,10 @@ public class CommonUtil {
 					FileUtils.moveFile(srcFile, destFile); // 복사 후 파일 지우기
 				} catch (IOException e) {
 					System.out.println("복사 실패: " + srcFile.getName());
-		            allSuccess = false; // 복사 실패
 				}
+				allSuccess = true;
 			} else {
 				System.out.println("파일 없음: " + srcFile.getName());
-	            allSuccess = false; // 파일 없음
 			}
 		}
     	return allSuccess;

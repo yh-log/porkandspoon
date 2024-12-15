@@ -1,19 +1,17 @@
 package kr.co.porkandspoon.dto;
 
-public class ResponseDTO<T> {
+public class ResponseDTO {
 	
 	private int status;			// HTTP 상태 코드
 	private String message; 	// 응답 메시지
-	private T data;
 	
     // 기본 생성자
     public ResponseDTO() {}
 
     // 생성자
-    public ResponseDTO(int status, String message, T data) {
+    public ResponseDTO(int status, String message) {
         this.status = status;
         this.message = message;
-        this.data = data;
     }
 
     // Getter & Setter
@@ -31,13 +29,5 @@ public class ResponseDTO<T> {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }

@@ -57,6 +57,9 @@ function imageUploader(files, el){
     var formData = new FormData(); // 함수 호출 시마다 FormData 생성
     formData.append('files', files);
     
+    var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+    
     $.ajax({
         type: 'POST',
         url: '/textImage',
@@ -64,6 +67,9 @@ function imageUploader(files, el){
         contentType: false,
         processData: false,
         enctype: 'multipart/form-data',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
         success: function(data){
             
         $(el).summernote('insertImage', data.new_filename, function($image) {

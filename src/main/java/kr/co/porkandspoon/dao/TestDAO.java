@@ -36,5 +36,7 @@ public interface TestDAO {
 	
 	List<Map<String, Object>> fileList();
 
+	List<Map<String, Object>> menu_tree();
+
 
 }
