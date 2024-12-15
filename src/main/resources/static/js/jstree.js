@@ -1,3 +1,5 @@
+// author yh.kim (24.12.15) 
+
 // CSS 및 JS 라이브러리 동적 로드 함수
 function loadResources(callback) {
     // CSS 동적 로드

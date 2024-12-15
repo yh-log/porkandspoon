@@ -1,4 +1,4 @@
-
+// author yh.kim (24.12.5) 
 /* 공통 ajax */
 
 /* GET 방식 */

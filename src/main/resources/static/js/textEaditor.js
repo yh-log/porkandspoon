@@ -1,3 +1,6 @@
+// author yh.kim (24.12.5) 
+// 썸머노트 사용 및 업로드 기능
+
 $(document).ready(function(){
     function summernote(){
         $('#summernote').summernote({

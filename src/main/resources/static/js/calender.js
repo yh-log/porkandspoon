@@ -1,3 +1,5 @@
+// author yh.kim (24.12.7) 
+
 // schedule : 일정, 회의실 : cabinet, 물품 : article
 var section= 'schedule';
 var formattedDate = '';
