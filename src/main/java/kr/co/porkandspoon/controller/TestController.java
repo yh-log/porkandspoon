@@ -40,7 +40,6 @@ public class TestController {
 	
 	@Value("${upload.path}") private String paths;
 	
-	
 	/*
 	 * 메인 페이지 (로그인 페이지)
 	 */
@@ -181,18 +180,7 @@ public class TestController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	

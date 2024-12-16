@@ -122,8 +122,6 @@ function setupModalEvents(modal) {
     });
 }
 
-
-// 이 부분도 중복 코드 줄일 수 있게 수정해보기 - todo
 document.addEventListener('click', function(event){
     if(event.target && event.target.id === 'addSchedule' || event.target && event.target.id === 'amendSchedule'){
         var content = document.getElementById('calendar_content').value; // 일정 내용

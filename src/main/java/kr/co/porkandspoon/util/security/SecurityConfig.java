@@ -45,6 +45,7 @@ public class SecurityConfig {
 		.antMatchers("/a/**").hasAnyRole("superadmin", "admin")
 		.antMatchers("/m/**").hasAnyRole("superadmin", "admin", "manager")
 		.antMatchers("/u/**").hasAnyRole("superadmin", "admin", "manager", "user")
+		
 		.anyRequest().authenticated(); // 그 외 요청은 검토
 		
 		http.formLogin()

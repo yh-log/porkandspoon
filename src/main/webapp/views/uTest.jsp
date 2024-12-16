@@ -15,6 +15,80 @@
 	.priview{
 		width: 200px;
 	}
+	    /* 기본 모달 스타일 */
+	.modal {
+	    display: none;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5);
+	    z-index: 1100;
+	}
+	
+	/* 모달 내부 콘텐츠 */
+	.modal-content {
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    background: #fff;
+	    padding: 20px;
+	    border-radius: 8px;
+	    width: 400px;
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	/* 모달 헤더 */
+	.modal-header {
+	    display: flex;
+	    justify-content: end;
+	    align-items: center;
+	    border-bottom: 1px none #ddd;
+	    margin-bottom: 15px;
+	}
+
+	/* 닫기(x) 버튼 */
+	.modal-close {
+	    font-size: 20px;
+	    cursor: pointer;
+	}
+	
+	/* 모달 바디 */
+	.modal-body .form-group {
+	    margin-bottom: 15px;
+	}
+	
+	.form-label {
+	    display: block;
+	    font-size: 14px;
+	    margin-bottom: 5px;
+	}
+	
+	.form-input {
+	    width: 100%;
+	    padding: 8px;
+	    font-size: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 4px;
+	}
+	
+	/* 모달 푸터 */
+	.modal-footer {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	}
+	
+	/* 버튼 스타일 */
+	.btn {
+	    padding: 8px 12px;
+	    font-size: 14px;
+	    border: none;
+	    cursor: pointer;
+	    border-radius: 4px;
+	}
 </style>
 </head>
 <body>
@@ -61,6 +135,19 @@
 	    <p>환영합니다, <strong>${pageContext.request.userPrincipal.name}</strong> 님!</p>
 	</sec:authorize>
 	
+	<!-- 모달 예시 -->
+	<button onclick='loadModal("cabinet", "Input", {content: "회의실 예약 내용입니다."});'>모달 열기!!</button>
+	<div id="modalBox" class="modal" style="display: none;">
+	    <div class="modal-content"></div>
+	</div>
+	
+	<!-- 모달 데이터 없을 경우 -->
+	<!-- 모달 예시 -->
+	<button onclick='loadModal("cabinet", "Input");'>데이터 없이 모달 열기</button>
+	<div id="modalBox" class="modal" style="display: none;">
+	    <div class="modal-content"></div>
+	</div>
+	
 	<br/>
 	
 	<form>	
@@ -99,7 +186,16 @@ function getSuccess(response){
 	$('#fileList').append(content);
 }
 
-	
+// 필요에 따라 사용! 
+function setModalData(data) {
+	if (!data) data = {};
+
+    // 예약 내용 설정
+    if (data.content) {
+        var contentField = document.getElementById("cabinet_content");
+        if (contentField) contentField.value = data.content;
+    }
+}
 	
 </script>
 </html>

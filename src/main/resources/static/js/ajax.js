@@ -136,34 +136,86 @@ function download(ori_filename, new_filename) {
     });
 }
 
+/**
+ * author yh.kim (24.12.16) 
+ * 모달 오픈 함수 (오픈 후 데이터 처리 함수 : setModalData())
+ * 
+ * @param {*} section   모달 구분명 (ex. calender, cabinet 등..)
+ * @param {*} type      모달 동작 명 (ex. Input, Write 등..)
+ * @param {*} data      모달 실행 시 필요 데이터(없을 경우 없이 사용 가능)
+ * 
+ * 아래 형태로 div 요소 삽입 필요
+ * <div id="modalBox" class="modal" style="display: none;">
+ *	    <div class="modal-content"></div>
+ *	</div>
+ * 
+ */
 // 모달 오픈
-function loadModal(section, type) {
-    var modal = document.getElementById("calendarModal");
+function loadModal(section, type, data) {
+    var modal = document.getElementById("modalBox");
     var modalContent = modal.querySelector(".modal-content");
 
     $.ajax({
         url: "/resources/html/calenderModal.html", // 모달 HTML 파일 경로
         type: "GET",
-        success: function (data) {
+        success: function (html) {
             var tempDiv = document.createElement("div");
-            tempDiv.innerHTML = data;
+            tempDiv.innerHTML = html;
 
-            var selectedModal = tempDiv.querySelector(`#${section}${type}Modal`);
+            var modalId = `${section}${type}Modal`; // 동적으로 ID 생성
+            var selectedModal = tempDiv.querySelector(`#${modalId}`);
+
             if (selectedModal) {
+                // 모달 HTML 삽입
                 modalContent.innerHTML = selectedModal.innerHTML;
 
-                modalOpen();
-                
+                // 모달 표시
                 modal.style.display = "block";
+
+                // 데이터 주입 (data가 없을 경우 빈 객체로 처리)
+                setModalData(data || {});
 
                 // 모달 닫기 및 기타 이벤트 설정
                 setupModalEvents(modal);
             } else {
-                console.error("해당하는 모달을 찾을 수 없습니다: " + section);
+                console.error(`해당하는 모달을 찾을 수 없습니다: ${modalId}`);
             }
         },
         error: function () {
             console.error("모달 HTML 파일을 로드하는 데 실패했습니다.");
         },
+    });
+}
+
+/**
+ * author yh.kim (24.12.16) 
+ * 모달 닫기 함수 (x 버튼, 취소 버튼, 모달 외부 클릭 시)
+ * 
+ * 닫기 : id="closeModal"
+ * 취소 : id="cancelModal"
+ */
+function setupModalEvents(modal) {
+    var closeModal = modal.querySelector("#closeModal");
+    var cancelButton = modal.querySelector("#cancelModal");
+
+    // 닫기 버튼 클릭 이벤트
+    if (closeModal) {
+        closeModal.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    }
+
+    // 취소 버튼 클릭 이벤트
+    if (cancelButton) {
+        cancelButton.addEventListener("click", function () {
+            modal.style.display = "none";
+        });
+    }
+
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener("click", function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
     });
 }
