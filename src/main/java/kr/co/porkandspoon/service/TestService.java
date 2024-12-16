@@ -63,6 +63,29 @@ public class TestService {
 	
 
 
+
+	
+	public List<Map<String, Object>> fileList() {
+		return testDao.fileList();
+	}
+
+	public List<Map<String, Object>> menu_tree() {
+		return testDao.menu_tree();
+	}
+
+	
+	
+	// 아래 내용 참고해서 추가!! 
+	public List<FileDTO> saveFiles(MultipartFile[] files) {
+		
+		 List<FileDTO> fileDtos = CommonUtil.uploadFiles(files);
+		 
+		 int insertedRows = testDao.fileWrite(fileDtos);
+		 if (insertedRows != fileDtos.size()) {
+            throw new RuntimeException("일부 파일 저장 실패");
+        }
+		return null;
+	}
 	/*
 	 * 파일 등록
 	 */
@@ -113,15 +136,6 @@ public class TestService {
 //	    }
 //	    return true; // 모든 파일 저장 성공
 //	}
-
-	
-	public List<Map<String, Object>> fileList() {
-		return testDao.fileList();
-	}
-
-	public List<Map<String, Object>> menu_tree() {
-		return testDao.menu_tree();
-	}
 
 
 

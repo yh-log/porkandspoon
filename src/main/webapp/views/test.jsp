@@ -124,7 +124,6 @@
 	<div id="calendarModal" class="modal" style="display: none;">
 	   <div class="modal-content"></div>
 	</div>
-	<p>브랜치 테스트</p>
 </body>
 <script src='/resources/js/ajax.js'></script>
 <script src='/resources/js/calender.js'></script>

@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -266,6 +267,22 @@ public class CommonUtil {
 			}
 		}
     	return allSuccess;
+    }
+    
+    /**
+     * author yh.kim (24.12.16) 
+     * 숫자를 원하는 형태로 변환하는 메서드
+     * 
+     * @param number		변환하고자 하는 숫자
+     * @param outputFormat	변환하고자 하는 유형 (ex.#,### 000.000 등..)
+     */
+    public static String addCommaToNumber(double number, String outputFormat) {
+        try {
+            DecimalFormat formatter = new DecimalFormat(outputFormat);
+            return formatter.format(number);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("유효한 숫자가 아닙니다: " + number);
+        }
     }
     
 }

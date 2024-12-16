@@ -82,6 +82,23 @@ public class TestController {
 
         // null
         System.out.println(CommonUtil.toString(null)); // "null"
+        
+        
+        // 숫자 변환 -> 100,000,000
+        String num = CommonUtil.addCommaToNumber(100000000, "#,###");
+		System.out.println("변환한 숫자 ============== " + num);
+		
+		// 소수점 표시 (마지막 반올림) -> 123.467
+		String num2 = CommonUtil.addCommaToNumber(123.466789, "###.###");
+		System.out.println("변환한 숫자 ============== " + num2);
+		
+		// 소수점 표시 (없으면 0으로 표시) -> 123.46678900
+		String num3 = CommonUtil.addCommaToNumber(123.466789, "000.00000000");
+		System.out.println("변환한 숫자 ============== " + num3);
+		
+		// % : 100을 곱한 후 마지막에 "%" 붙임 -> 12346.679%
+		String num4 = CommonUtil.addCommaToNumber(123.466789, "###.###%");
+		System.out.println("변환한 숫자 ============== " + num4);
 		
 		return new ModelAndView("main");
 	}
@@ -227,15 +244,15 @@ public class TestController {
 	
 
 	/*
-	 * author yh.kim (24.12.12) 
+	 * author yh.kim (24.12.12) 수정 필요
 	 * 파일 작성
 	 */
 	@PostMapping(value="/fileWrite")
 //	public ResponseEntity<ResponseDTO<List<FileDTO>>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-//	public List<FileDTO> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+	public List<FileDTO> uploadFiles(@RequestParam("files") MultipartFile[] files) {
 //        try {
 //            // 1. 서비스 호출
-//            ResponseDTO<List<FileDTO>> response = service.saveFiles(files);
+//            List<FileDTO> response = service.saveFiles(files);
 //
 //            // 2. 성공 응답 반환
 //            return ResponseEntity.ok(response);
@@ -244,7 +261,11 @@ public class TestController {
 //            ResponseDTO<List<FileDTO>> errorResponse = new ResponseDTO<>(500, "파일 업로드 중 오류 발생: " + e.getMessage(), null);
 //            return ResponseEntity.status(500).body(errorResponse);
 //        }
-//    }
+		List<FileDTO> response = service.saveFiles(files);
+		
+		
+		return response;
+    }
 	
 	
 	

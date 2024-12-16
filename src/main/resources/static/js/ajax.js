@@ -91,6 +91,7 @@ function fileAjax(type, url, formData){
 /**
  * 이미지 미리보기 div 요소 id : id="imgPreview"
  * 이미지 미리보기 div 요소 css : class="priview" *클래스 스타일은 별도 지정 필요
+ *  onchange="preview(this)" : input type="file"
  */
 function preview(img){
     var reader;
@@ -135,4 +136,34 @@ function download(ori_filename, new_filename) {
     });
 }
 
+// 모달 오픈
+function loadModal(section, type) {
+    var modal = document.getElementById("calendarModal");
+    var modalContent = modal.querySelector(".modal-content");
 
+    $.ajax({
+        url: "/resources/html/calenderModal.html", // 모달 HTML 파일 경로
+        type: "GET",
+        success: function (data) {
+            var tempDiv = document.createElement("div");
+            tempDiv.innerHTML = data;
+
+            var selectedModal = tempDiv.querySelector(`#${section}${type}Modal`);
+            if (selectedModal) {
+                modalContent.innerHTML = selectedModal.innerHTML;
+
+                modalOpen();
+                
+                modal.style.display = "block";
+
+                // 모달 닫기 및 기타 이벤트 설정
+                setupModalEvents(modal);
+            } else {
+                console.error("해당하는 모달을 찾을 수 없습니다: " + section);
+            }
+        },
+        error: function () {
+            console.error("모달 HTML 파일을 로드하는 데 실패했습니다.");
+        },
+    });
+}
