@@ -5,11 +5,11 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.TestDAO">
 	<insert id="joinWrite" parameterType="kr.co.porkandspoon.dto.MemberDTO">
-		INSERT INTO empl(username, password) VALUES(#{username}, #{password})
+		INSERT INTO user(username, password) VALUES(#{username}, #{password})
 	</insert>
 	
 	<select id="login" resultType="String" parameterType="kr.co.porkandspoon.dto.MemberDTO">
-		SELECT password FROM empl WHERE username = #{username}
+		SELECT password FROM user WHERE username = #{username}
 	</select>
 	
 	
