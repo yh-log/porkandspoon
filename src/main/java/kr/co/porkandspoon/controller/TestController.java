@@ -153,6 +153,16 @@ public class TestController {
 	}
 	
 	
+	@GetMapping(value="/intestfile")
+	public ModelAndView intestfile() {
+		return new ModelAndView("intestfile");
+	}
+	
+	@GetMapping(value="/layout")
+	public ModelAndView layout() {
+		return new ModelAndView("layout");
+	}
+	
 	/*
 	 * author yh.kim (24.12.11)
 	 * 회원 등록 기능 (비밀번호 암호화 해서 저장)
@@ -216,17 +226,7 @@ public class TestController {
 	 */
 	@PostMapping(value="/fileWrite")
 	public FileDTO uploadFiles(@RequestParam("files") MultipartFile[] files) {
-//        try {
-//            // 1. 서비스 호출
-//            List<FileDTO> response = service.saveFiles(files);
-//
-//            // 2. 성공 응답 반환
-//            return ResponseEntity.ok(response);
-//        } catch (Exception e) {
-//            // 3. 에러 발생 시 실패 응답 반환
-//            ResponseDTO<List<FileDTO>> errorResponse = new ResponseDTO<>(500, "파일 업로드 중 오류 발생: " + e.getMessage(), null);
-//            return ResponseEntity.status(500).body(errorResponse);
-//        }
+
 		FileDTO response = service.saveFiles(files);
 		
 		
