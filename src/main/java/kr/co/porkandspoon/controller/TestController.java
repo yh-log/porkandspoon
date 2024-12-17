@@ -40,9 +40,7 @@ public class TestController {
 	
 	@Value("${upload.path}") private String paths;
 	
-	/*
-	 * 메인 페이지 (로그인 페이지)
-	 */
+	// 메인(로그인) 페이지 및 util 기능 사용 예시
 	@RequestMapping(value="/")
 	public ModelAndView main() {
 		String dateString = CommonUtil.formatDate("2022-11-06", "yyyy-MM-dd", "MM/dd/yy");
@@ -111,40 +109,52 @@ public class TestController {
 		return new ModelAndView("loginTest");
 	}
 	
-	
-	/*
-	 * 페이지 이동 4개
-	 */
+	// sa 권한 페이지
 	@GetMapping(value="/sa/saTest")
 	public ModelAndView saTest() {
 		return new ModelAndView("saTest");
 	}
 	
+	// ad 권한 페이지
 	@GetMapping(value="/a/aTest")
 	public ModelAndView aTest() {
 		return new ModelAndView("aTest");
 	}
 	
+	// ma 권한 페이지
 	@GetMapping(value="/m/mTest")
 	public ModelAndView mTest() {
 		return new ModelAndView("mTest");
 	}
 	
+	// us 권한 페이지
 	@GetMapping(value="/u/uTest")
 	public ModelAndView uTest() {
 		return new ModelAndView("uTest");
 	}
 
 	
-	/*
-	 * 회원 등록 페이지
-	 */
+	// 회원 등록 페이지
 	@GetMapping(value="/joinView")
 	public ModelAndView joinView() {
 		return new ModelAndView("/join");
 	}
 	
+	// 캘린더, 텍스트 에디터 페이지
+	@GetMapping(value="/u/testView")
+	public ModelAndView testView() {
+		return new ModelAndView("test");
+	}
+	
+	// 조직도 페이지 
+	@GetMapping(value="/chart")
+	public ModelAndView chart() {
+		return new ModelAndView("chart");
+	}
+	
+	
 	/*
+	 * author yh.kim (24.12.11)
 	 * 회원 등록 기능 (비밀번호 암호화 해서 저장)
 	 */
 	@PostMapping(value="/joinWrite")
@@ -169,20 +179,6 @@ public class TestController {
 		
 		return result;
 	}
-	
-	
-	
-	
-	
-	@GetMapping(value="/u/testView")
-	public ModelAndView testView() {
-		return new ModelAndView("test");
-	}
-	
-	
-
-	
-	
 	
 	/*
 	 * author yh.kim (24.12.6)
@@ -215,29 +211,11 @@ public class TestController {
 	
 	
 	/*
-	 * 
-	 * 일정 수정
-	 */
-	@PutMapping(value="/scheduleUpdate")
-	public Map<String, Object> scheduleUpdate(@RequestParam Map<String, Object> params){
-		
-		logger.info("받아온 값 => " + params);
-		
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		//resultMap.put("success", service.scheduleUpdate(params));
-		
-		return resultMap;
-		
-	}
-	
-
-	/*
 	 * author yh.kim (24.12.12) 수정 필요
 	 * 파일 작성
 	 */
 	@PostMapping(value="/fileWrite")
-//	public ResponseEntity<ResponseDTO<List<FileDTO>>> uploadFiles(@RequestParam("files") MultipartFile[] files) {
-	public List<FileDTO> uploadFiles(@RequestParam("files") MultipartFile[] files) {
+	public FileDTO uploadFiles(@RequestParam("files") MultipartFile[] files) {
 //        try {
 //            // 1. 서비스 호출
 //            List<FileDTO> response = service.saveFiles(files);
@@ -249,14 +227,11 @@ public class TestController {
 //            ResponseDTO<List<FileDTO>> errorResponse = new ResponseDTO<>(500, "파일 업로드 중 오류 발생: " + e.getMessage(), null);
 //            return ResponseEntity.status(500).body(errorResponse);
 //        }
-		List<FileDTO> response = service.saveFiles(files);
+		FileDTO response = service.saveFiles(files);
 		
 		
 		return response;
     }
-	
-	
-	
 	
 	/*
 	 * author yh.kim (24.12.13) 
@@ -269,15 +244,6 @@ public class TestController {
 		return result;
 	}
 
-	
-	
-	
-	@GetMapping(value="/chart")
-	public ModelAndView chart() {
-		return new ModelAndView("chart");
-	}
-	
-	
 	/**
 	 * author yh.kim (24.12.14) 
 	 * 조직도 리스트 조회

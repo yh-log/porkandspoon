@@ -15,22 +15,9 @@ public interface TestDAO {
 
 	String login(MemberDTO dto);
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	int scheduleWrite(Map<String, Object> params);
 
 	List<Map<String, Object>> scheduleList();
-
-//	int fileWrite(Map<String, Object> param);
-
-//	List<FileDTO> fileWrite(List<FileDTO> uploadFiles);
 
 	int fileWrite(List<FileDTO> files); 
 	

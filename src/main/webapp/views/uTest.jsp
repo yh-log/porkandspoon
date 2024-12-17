@@ -173,6 +173,15 @@ function fileWrite(){
 	fileAjax('POST', '/fileWrite', formData);
 }
 
+// 파일 등록 예시 ResponseDTO 사용
+function fileSuccess(response){
+	console.log(response);
+	if(response.status == 200){
+		alert(response.message);
+	}
+
+}
+
 function getSuccess(response){
 	console.log(response);
 	

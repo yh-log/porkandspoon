@@ -60,9 +60,6 @@ public class TestService {
 		return testDao.scheduleList();
 	}
 	
-	
-
-
 
 	
 	public List<Map<String, Object>> fileList() {
@@ -75,68 +72,23 @@ public class TestService {
 
 	
 	
-	// 아래 내용 참고해서 추가!! 
-	public List<FileDTO> saveFiles(MultipartFile[] files) {
+	/*
+	 * 파일 등록
+	 */
+	public FileDTO saveFiles(MultipartFile[] files) {
 		
 		 List<FileDTO> fileDtos = CommonUtil.uploadFiles(files);
+		 FileDTO dto = new FileDTO();
 		 
 		 int insertedRows = testDao.fileWrite(fileDtos);
 		 if (insertedRows != fileDtos.size()) {
             throw new RuntimeException("일부 파일 저장 실패");
+        }else {
+        	// 응답 내용 사용 예시
+        	dto.setStatus(200);
+        	dto.setMessage("파일 등록이 완료되었습니다");
         }
-		return null;
+		return dto;
 	}
-	/*
-	 * 파일 등록
-	 */
-//    public ResponseDTO<List<FileDTO>> saveFiles(MultipartFile[] files) {
-//        // 1. 유틸리티 클래스에서 파일 리스트 생성
-//        List<FileDTO> fileDtos = CommonUtil.uploadFiles(files);
-//
-//        // 2. DB 저장
-//        int insertedRows = testDao.fileWrite(fileDtos);
-//        if (insertedRows != fileDtos.size()) {
-//            throw new RuntimeException("일부 파일 저장 실패");
-//        }
-//
-//        // 3. 성공 응답 생성
-//        return new ResponseDTO<>(200, "파일 업로드 성공", fileDtos);
-//    
-//    
-//		
-//	    if (files == null || files.length == 0) {
-//	        throw new IllegalArgumentException("업로드된 파일이 없습니다.");
-//	    }
-//
-//	    for (MultipartFile file : files) {
-//	        String oriFilename = file.getOriginalFilename();
-//	        String ext = oriFilename.substring(oriFilename.lastIndexOf("."));
-//	        String newFilename = UUID.randomUUID().toString() + ext;
-//
-//	        Map<String, Object> param = new HashMap<>();
-//	        param.put("ori_filename", oriFilename);
-//	        param.put("new_filename", newFilename);
-//	        param.put("type", ext);
-//
-//	        try {
-//	            byte[] arr = file.getBytes();
-//	            Path path = Paths.get(paths + newFilename);
-//
-//	            // 파일 저장
-//	            Files.write(path, arr);
-//
-//	            // DB 기록
-//	            if (testDao.fileWrite(param) <= 0) {
-//	                throw new RuntimeException("DB 기록 실패: " + newFilename);
-//	            }
-//	        } catch (IOException e) {
-//	            logger.error("파일 저장 중 오류 발생: " + newFilename, e);
-//	            return false; // 특정 파일 실패 시 false 반환
-//	        }
-//	    }
-//	    return true; // 모든 파일 저장 성공
-//	}
-
-
 
 }

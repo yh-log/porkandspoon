@@ -13,6 +13,8 @@ public class FileDTO extends ResponseDTO{
 		this.type = type;
 	}
 	
+	public FileDTO() {};
+	
 	
 	public String getOri_filename() {
 		return ori_filename;
