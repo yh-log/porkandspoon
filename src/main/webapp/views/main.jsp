@@ -173,7 +173,7 @@
                 </div>
                 <a href="#">아이디/비밀번호 찾기</a>
             </div>
-            <button type="submit" class="login-button" id="loginBtn">로그인하세요.</button>
+            <button type="submit" class="login-button" id="loginBtn">로그인하세요!</button>
         </form>
         <c:if test="${param.error == 'true'}">
             <p class="error-message">아이디/비밀번호를 확인하세요.</p>
