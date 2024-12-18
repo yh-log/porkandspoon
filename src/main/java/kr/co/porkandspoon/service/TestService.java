@@ -1,13 +1,7 @@
 package kr.co.porkandspoon.service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.porkandspoon.dao.TestDAO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MemberDTO;
-import kr.co.porkandspoon.dto.ResponseDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 
@@ -34,15 +27,16 @@ public class TestService {
 	
 	@Value("${uploadTem.path}") String paths_tem;
 	
-	public String login(MemberDTO dto) {
-		return testDao.login(dto);
-	}
 
+
+	/**
+	 * author yh.kim (24.12.6)
+	 * 직원 id, pw 등록
+	 */
 	public boolean joinWrite(MemberDTO dto) {
 		return testDao.joinWrite(dto) > 0 ? true : false;
 	}
 	
-
 	
 	/*
 	 * author yh.kim (24.12.6)
@@ -61,11 +55,16 @@ public class TestService {
 	}
 	
 
-	
+	/**
+	 * 파일 리스트 호출
+	 */
 	public List<Map<String, Object>> fileList() {
 		return testDao.fileList();
 	}
 
+	/**
+	 * 조직도 데이터 호출
+	 */
 	public List<Map<String, Object>> menu_tree() {
 		return testDao.menu_tree();
 	}

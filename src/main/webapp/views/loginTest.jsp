@@ -23,7 +23,7 @@
 	<!-- <a href="/chart">chart</a> -->
 </body>
 
-<script src='/resources/js/ajax.js'></script>
+<script src='/resources/js/common.js'></script>
 <script>
 
 </script>

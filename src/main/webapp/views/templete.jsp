@@ -2165,61 +2165,23 @@
 	} */
 	});
 
+	// 공통으로 옮기고, 
 	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
-
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
-
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("두번째", "체크", false, secondBtn1Act, secondBtn2Act);
+	if($('#pagination')){		
+		$('.page-item.prev').find('.page-link').html(
+				'<i class="bi bi-chevron-left"></i>');
+		$('.page-item.next').find('.page-link').html(
+				'<i class="bi bi-chevron-right"></i>');
+		$('.page-item.first').find('.page-link').html(
+				'<i class="bi bi-chevron-double-left"></i>');
+		$('.page-item.last').find('.page-link').html(
+				'<i class="bi bi-chevron-double-right"></i>');
 	}
+	
+	
 
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-
-	$('.btn-popup').on(
-			'click',
-			function() {
-				layerPopup('~~~하시겠습니까?222', '확인2', '취소2', secondBtn1Act,
-						secondBtn2Act);
-			});
-
-	/* 모달(임시) */
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
 </script>
 
 </html>

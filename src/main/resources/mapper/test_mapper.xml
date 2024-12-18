@@ -4,16 +4,13 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.TestDAO">
+
+	<!-- 직원 id, pw 등록 -->
 	<insert id="joinWrite" parameterType="kr.co.porkandspoon.dto.MemberDTO">
 		INSERT INTO user(username, password) VALUES(#{username}, #{password})
 	</insert>
 	
-	<select id="login" resultType="String" parameterType="kr.co.porkandspoon.dto.MemberDTO">
-		SELECT password FROM user WHERE username = #{username}
-	</select>
-	
-	
-	
+	<!-- 파일 작성 -->
 	<insert id="fileWrite" parameterType="list">
 	    INSERT INTO filetest (ori_filename, new_filename, type)
 	    VALUES
@@ -22,25 +19,22 @@
 	    </foreach>
 	</insert>
 	
-	
-	
-	
-	
-	
-	
+	<!-- 캘린더 일정 작성 -->
 	<insert id="scheduleWrite" parameterType="map">
 		INSERT INTO schedulecalender(subject, start, end) VALUES(#{subject}, #{start}, #{end})
 	</insert>
 	
+	<!-- 캘린더 데이터 조회 -->
 	<select id="scheduleList">
 		SELECT * FROM schedulecalender
 	</select>
 	
+	<!-- 파일 데이터 조회 -->
 	<select id="fileList" resultType="map">
 		SELECT * FROM filetest
 	</select>
 	
-	
+	<!-- 조직도 데이터 조회 -->
 	<select id="menu_tree" resultType="map">
         SELECT
             id,

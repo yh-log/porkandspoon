@@ -8,12 +8,6 @@ import javax.persistence.Table;
 @Table(name = "user")
 public class Empl {
 	
-	/*
-	 * @Id
-	 * @GeneratedValue : int 만 가능 
-	 * @GeneratedValue(strategy = GenerationType.IDENTITY) private Long id; // 기본 키
-	 * (미정)
-	 */	
 	
 	@Id
 	private String username; // 사용자 id (기본키)

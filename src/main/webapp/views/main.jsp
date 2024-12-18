@@ -8,7 +8,7 @@
 <title>main</title>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="/resources/js/ajax.js"></script>
+<script src="/resources/js/common.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
@@ -202,6 +202,5 @@
 	        document.form.submit(); // 폼 제출
 	    });
 	});
-
 </script>
 </html>

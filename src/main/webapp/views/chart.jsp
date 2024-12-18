@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script src='/resources/js/ajax.js'></script>
+<script src='/resources/js/common.js'></script>
 <script src='/resources/js/jstree.js'></script>
 
 </head>

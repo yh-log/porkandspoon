@@ -157,7 +157,7 @@ public class CommonUtil {
             try {
                 Object value = field.get(obj); // 필드 값 가져오기
                 sb.append(field.getName())
-                  .append("=")
+                  .append(" : ")
                   .append(value)
                   .append(", ");
             } catch (IllegalAccessException e) {

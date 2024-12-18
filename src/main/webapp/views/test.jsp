@@ -125,7 +125,7 @@
 	   <div class="modal-content"></div>
 	</div>
 </body>
-<script src='/resources/js/ajax.js'></script>
+<script src='/resources/js/common.js'></script>
 <script src='/resources/js/calender.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
