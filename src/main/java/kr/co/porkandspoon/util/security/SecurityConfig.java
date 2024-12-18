@@ -40,11 +40,11 @@ public class SecurityConfig {
 		
 		http.authorizeHttpRequests()
 		.antMatchers("/resources/**").permitAll() // resources 하위 폴더 허용
-		.antMatchers("/", "/joinView", "/joinWrite").permitAll() // joinView, joinWrite 추후 제거
+		.antMatchers("/", "/joinView", "/joinWrite", "/pageListCall").permitAll() // joinView, joinWrite 추후 제거
 		.antMatchers("/sa/**").hasRole("superadmin")
-		.antMatchers("/a/**").hasAnyRole("superadmin", "admin")
-		.antMatchers("/m/**").hasAnyRole("superadmin", "admin", "manager")
-		.antMatchers("/u/**").hasAnyRole("superadmin", "admin", "manager", "user")
+		.antMatchers("/ad/**").hasAnyRole("superadmin", "admin")
+		.antMatchers("/ma/**").hasAnyRole("superadmin", "admin", "manager")
+		.antMatchers("/us/**").hasAnyRole("superadmin", "admin", "manager", "user")
 		
 		.anyRequest().authenticated(); // 그 외 요청은 검토
 		

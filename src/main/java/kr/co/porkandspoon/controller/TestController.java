@@ -113,19 +113,19 @@ public class TestController {
 	}
 	
 	// ad 권한 페이지
-	@GetMapping(value="/a/aTest")
+	@GetMapping(value="/ad/aTest")
 	public ModelAndView aTest() {
 		return new ModelAndView("aTest");
 	}
 	
 	// ma 권한 페이지
-	@GetMapping(value="/m/mTest")
+	@GetMapping(value="/ma/mTest")
 	public ModelAndView mTest() {
 		return new ModelAndView("mTest");
 	}
 	
 	// us 권한 페이지
-	@GetMapping(value="/u/uTest")
+	@GetMapping(value="/us/uTest")
 	public ModelAndView uTest() {
 		return new ModelAndView("uTest");
 	}
@@ -138,7 +138,7 @@ public class TestController {
 	}
 	
 	// 캘린더, 텍스트 에디터 페이지
-	@GetMapping(value="/u/testView")
+	@GetMapping(value="/us/testView")
 	public ModelAndView testView() {
 		return new ModelAndView("test");
 	}
@@ -149,12 +149,13 @@ public class TestController {
 		return new ModelAndView("chart");
 	}
 	
-	
+	// index 페이지 
 	@GetMapping(value="/intestfile")
 	public ModelAndView intestfile() {
 		return new ModelAndView("intestfile");
 	}
 	
+	// 레이아웃 페이지
 	@GetMapping(value="/layout")
 	public ModelAndView layout() {
 		return new ModelAndView("layout");
@@ -234,7 +235,7 @@ public class TestController {
 	 * author yh.kim (24.12.13) 
 	 * 파일 불러오기
 	 */
-	@GetMapping(value="/u/fileList")
+	@GetMapping(value="/us/fileList")
 	public Map<String, Object> fileList(){
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("result", service.fileList());
@@ -250,4 +251,19 @@ public class TestController {
 		return service.menu_tree();
 	}
 	
+	/**
+	 * 페이지네이션 기능
+	 * 
+	 */
+	@GetMapping(value="/pageListCall")
+	public Map<String, Object> pageListCall(@RequestParam Map<String, Object> requestData){
+		
+		logger.info("페이지 네이션!!!!!!!!!!!!!!!!!!!!!!" + CommonUtil.toString(requestData));
+		
+		Map<String, Object> response = new HashMap<>();
+	    response.put("status", "success");
+	    response.put("data", requestData);
+
+	    return response; 
+	}
 }

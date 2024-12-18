@@ -284,3 +284,58 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
     
 }
 
+
+/**
+ * author yh.kim (24.12.18) 
+ * 페이지 네이션 기능
+ */
+
+// 받아야 하는 변수
+/**
+ * page : 보여줄 페이지 (ex. 1, 2 .. )
+ * cnt : 페이지에 보여줄 게시물 수 (ex. 5, 10, 15 ..)
+ * option : 검색/필터 옵션
+ * search : 검색어 (DB에서 like 사용)
+ * filtering : 필터링 값
+ */
+if($('#pagination')){
+	
+    function pageCall(page, cnt, url, { option = '', search = '', filtering = '' } = {}){
+        
+        var requestData = {
+	        page: page,
+	        cnt: cnt,
+	        option: option,
+	        search: search,
+	        filtering: filtering
+	    };
+	    console.log(requestData);
+        
+        $.ajax({
+        	type: 'GET',
+        	url: url,
+        	data: requestData,
+        	dataType: 'JSON',
+        	success: function(response){
+        		console.log('성공함');
+        		// 성공 시 실행 함수
+        		pringList(response);
+        		
+				$('#pagination').twbsPagination({ 
+					startPage: 1, 
+            		totalPages: response.totalPages, 
+            		visiblePages: 10,
+            		onPageClick:function(evt, page){
+            			pageCall(page);
+            		}
+				});
+
+        		
+        	}, error: function(e){
+        		console.log('페이지 네이션 에러 => ', e);
+        	}
+        
+        });
+    }
+
+}
