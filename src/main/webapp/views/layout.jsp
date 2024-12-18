@@ -61,6 +61,7 @@
 						<li><a href="#">중요메일함</a></li>
 						<li><a href="#">휴지통</a></li>
 					</ul>
+					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->

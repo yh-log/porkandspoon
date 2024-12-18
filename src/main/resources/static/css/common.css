@@ -86,6 +86,15 @@ a {
 	height: auto;
 }
 
+.sidebar-wrapper .menu .submenu {
+	padding-left: 1rem;
+}
+
+.sidebar-wrapper .menu .submenu .submenu-item a {
+    padding: .6rem 2rem;
+	font-size: .9rem;    
+}
+
 /* 사이드바 메뉴 클릭시 */
 .sidebar-wrapper .menu .sidebar-item.active>.sidebar-link {
 	background: #f2f7ff;
@@ -425,6 +434,10 @@ table td {
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	word-break: break-all;
+}
+
+.full-size {
+	width: 100% !important;	
 }
 
 /* 버튼 */
