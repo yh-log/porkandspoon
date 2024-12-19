@@ -64,6 +64,7 @@
 					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
+
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<h5>받은메일함</h5>
@@ -71,11 +72,11 @@
 						<div class="cont-body">  
 						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
 						
+
 						</div>
 					</div> 
 				</section>
 			</div>
-
 		</div>
 	</div>
 </body>
@@ -86,9 +87,7 @@
 
 
 <!-- 부트스트랩 -->
-<script src="/resources/assets/static/js/components/dark.js"></script>
-<script
-	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->

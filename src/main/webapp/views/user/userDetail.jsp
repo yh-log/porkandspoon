@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>직원 리스트</title>
+<title>직원 등록</title>
 
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
@@ -30,20 +30,33 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
 	.selectStyle{
-		width: 120px;
+		width: 160px;
 	}
-	.form-control{
-		width: 350px;
+
+	input.form-control:disabled {
+		background: var(--bs-light-secondary);
 	}
 	
+	td div.inline-layout{
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+	}
+	#btn-gap{
+		display: flex;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
+	}
+	.custom-height-row th, 
+	.custom-height-row td {
+	    line-height: 60px;    
+	    padding-top: 0;
+	    padding-bottom: 0;
+	}
 </style>
 
 
@@ -63,80 +76,150 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">직원관리</h4>
+					<h4 class="menu-title">직원 정보</h4>
 					<ul>
-						
-						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
+						<li id="firstMenu"><a href="#">직원 리스트</a></li>
 						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
 					</ul>
 				</section>
-				<!-- 등록하기 버튼 추가 필요 -->
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject"></h5>
+							<h5 id="subMenuSubject">직원정보</h5>
 						</div>
 						<div class="cont-body"> 
-							<div class="row">
-								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>부서</option>
-										<option>이름</option>
-										<option>직위</option>
-									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-							</div>
-							<div class="col-12 col-lg-12">
-								<table>
-									<thead>
-										<tr>
-											<th>사번</th>
-											<th>부서</th>
-											<th>이름</th>
-											<th>직위</th>
-											<th>사내번호</th>
-											<th>입사일</th>
-											<th>상태</th>
-										</tr>
-									</thead>
-									<tbody id="userList">
-										<tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									</tbody>
-								</table>
-							</div>
+							<table>
+								<tr>
+									<td rowspan="4">프로필</td>
+									<th>이름</th>
+									<td colspan="2">
+										<span id="nema-value"></span>
+									</td>
+									<th>부서</th>
+									<td>
+										<span id="dept-value"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>사번</th>
+									<td colspan="2">
+										<span id="person_num-value"></span>
+									</td>
+									<th>직위/직책</th>
+									<td>
+										<span id="position_idx-value"></span>
+									</td>
+								</tr>
+								<tr class="custom-height-row">
+									<th>아이디</th>
+									<td colspan="2">
+										<span id="username-value"></span>
+									</td>
+									<th>핸드폰</th>
+									<td>
+										<span id="phone-value"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>이메일</th>
+									<td colspan="2">
+										<span id="email-value"></span>
+									</td>
+									<th>사내번호</th>
+									<td>
+										<span id="company_num-value"></span>
+									</td>
+								</tr>
+								<tr><th colspan="6">기타정보</th></tr>
+								<tr>
+									<th>생년월일</th>
+									<td>
+										<span id="birth-value"></span>
+									</td>
+									<th>성별</th>
+									<td>
+										<span id="gender-value"></span>
+									</td>
+									<th>입사일</th>
+									<td>
+										<span id="join_date-value"></span>
+									</td>
+								</tr>
+								<tr class="custom-height-row">
+									<th>주소</th>
+									<td colspan="3">
+										<span id="address-value"></span>
+									</td>
+									<th>퇴사일</th>
+									<td>
+										<span id="end_date-value"></span>
+									</td>
+								</tr>
+								<tr><th colspan="6">이력사항</th></tr>
+								<tr>
+									<th>학력</th>
+									    <td colspan="2">
+									        <div class="inline-layout">
+									            기간 <span id="education-start_date-value"></span> ~ <span id="education-end_date-value"></span>
+									        </div>
+									    </td>
+									    <td colspan="2">
+									        <div class="inline-layout">
+									            학교명 <span id="education-subject-value"></span>
+									        </div>
+									    </td>
+									    <td>
+									        <div class="inline-layout">
+									            상태 <span id="education-content-value"></span>
+									        </div>
+									    </td>
+								</tr>
+								<tr>
+									<th>경력</th>
+									<td colspan="2">
+										<div class="inline-layout">
+											기간 <span id="career-start_date-value"></span> ~ <span id="career-end_date-value"></span>
+										</div>
+									</td>
+									<td colspan="2">
+										<div class="inline-layout">
+											회사명 <span id="career-subject-value"></span>
+										</div>
+									</td>
+									<td>
+										<div class="inline-layout">
+											직급 <span id="career-content-value"></span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>자격</th>
+									<td  colspan="2">
+										<div class="inline-layout">
+											취득일 <span id="qualification-start_date-value"></span>
+										</div>
+									</td>
+									<td colspan="2">
+										<div class="inline-layout">
+											자격증 <span id="qualification-subject-value"></span>
+										</div>
+									</td>
+									<td>
+										<div class="inline-layout">
+											기관 <span id="qualification-content-value"></span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="6">
+										<div id="btn-gap">
+											<button type="button" class="btn btn-primary">수정</button>
+											<button type="button" class="btn btn-outline-secondary">취소</button>
+										</div>
+									</td>
+								</tr>
+							</table>
 						</div> <!-- cont-body -->
 					</div>
 				</section>	
