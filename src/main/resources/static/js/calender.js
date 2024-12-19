@@ -6,7 +6,7 @@ var formattedDate = '';
 var calender = null;
 
 $(document).ready(function () {
-	loadCalender(section);
+	initializeCalendar();
 });
 
 function loadCalender(section) {
