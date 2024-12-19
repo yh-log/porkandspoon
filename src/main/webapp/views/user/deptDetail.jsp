@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>인사이동 리스트</title>
+<title>브랜드 상세</title>
 
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
@@ -30,29 +30,23 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 120px;
-	}
-	.form-control{
-		width: 350px;
-	}
-	
-	#filterBox{
+	#selectBox{
 		display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
+		gap: 10px;
+		align-items: center;
+		margin-top: 15px;
 	}
 	
-</style>
+	.form-select{
+	 	width: 20%;
+	}
+	.cont-body .row .col-6.col-lg-6:last-of-type{
+	    display: flex;
+	    justify-content: flex-end;
+	    gap: 10px;
+	}
 
+</style>
 
 </head>
 
@@ -70,91 +64,84 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">인사이동</h4>
+					<h4 class="menu-title">부서 리스트</h4>
 					<ul>
-						
-						<li class="active" id="firstMenu"><a href="#">인사이동</a></li>
-						<li id="secondMenu"><a href="#">직영점 이동</a></li>
-						<li id="thirdMenu"><a href="#">미발령 직원</a></li>
+						<li class="active" id="firstMenu"><a href="#">브랜드 리스트</a></li>
+						<li id="secondMenu"><a href="#">직영점 리스트</a></li>
 					</ul>
-					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 인사이동</div>
 				</section>
-				<!-- 등록하기 버튼 추가 필요 -->
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject"></h5>
+							<h5 id="subMenuSubject">브랜드 상세</h5>
 						</div>
 						<div class="cont-body"> 
-							<div class="row">
-								<div class="col-5 col-lg-5">날짜 데이터</div>
-								<div class="col-3 col-lg-3" id="filterBox">
-									<span>유형</span>
-									<select class="form-select selectStyle">
-										<option>전체</option>
-										<option>인사이동</option>
-										<option>퇴사</option>
-									</select>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+							<form>
+								<div class="row">
+									<div class="col-6 col-lg-6">
+										<div id="selectBox">
+											활성
+											<select class="form-select selectStyle"> 
+												<option>활성</option>
+												<option>비활성</option>
+											</select>
+											상태
+											<select class="form-select selectStyle">
+												<option>승인</option>
+												<option>반려</option>
+												<option>대기</option>
+											</select>
+										</div>
+									</div>
+									<div class="col-6 col-lg-6">
+										<button class="btn btn-primary">수정</button>
+										<button class="btn btn-outline-secondary">리스트</button>
+									</div>
 								</div>
-								<div id="searchLayout" class="col-4 col-lg-4">
-									<select class="form-select selectStyle" >
-										<option>부서</option>
-										<option>이름</option>
-										<option>직위</option>
-									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-							</div>
-							<div class="col-12 col-lg-12">
 								<table>
-									<thead>
-										<tr>
-											<th>사번</th>
-											<th>부서</th>
-											<th>이름</th>
-											<th>직위</th>
-											<th>사내번호</th>
-											<th>입사일</th>
-											<th>상태</th>
-										</tr>
-									</thead>
-									<tbody id="userList">
-										<tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									</tbody>
+									<tr>
+										<td rowspan="2">로고</td>
+										<th>문서 제목</th>
+										<td><span id="subject-value"></span>브랜드 확장을 위한 개설 요청의 건</td>
+										<th>기안자</th>
+										<td><span id="username-value"></span>홍길동</td>
+									</tr>
+									<tr>
+										<th>결재 일자</th>
+										<td><span id="approval_date-value"></span>2024. 12. 19.(목)</td>
+										<th>작성 부서</th>
+										<td><span id="department_id-value"></span>홍보2팀</td>
+									</tr>
+									<tr>
+										<th>브랜드 명</th>
+										<td colspan="2"><span id="name-value"></span>애슐리하우스</td>
+										<th>브랜드 코드</th>
+										<td><span id="id-value"></span>AD101</td>
+									</tr>
+									<tr>
+										<th>소속 직원</th>
+										<td colspan="2"><span id="-value"></span>김김김 부장, 이이이 차장, 박박박 과장, 홍길동 대리</td>
+										<th>시행일자</th>
+										<td><span id="form_date-value"></span>2025. 1. 1.(수)</td>
+									</tr>
+									<tr><th colspan="5">설명</th></tr>
+									<tr>
+										<td colspan="5">
+											<!-- 썸머노트 코드 불러와서 넣기 -->
+											<span value=""></span>
+											<img src="/resources/img/logo.jpg" width="130px" /> <br/>
+											애슐리(Ashley)는 대한민국 이랜드이츠가 운영하는 뷔페 패밀리 레스토랑 체인이다. 애슐리는 매 분기마다 새로운 콘셉트의 새 메뉴를 제공하며, 또한 고급화 매장인 애슐리 W, 애슐리 W+, 테이크아웃 전문 매장인 애슐리 투고 등 다양한 서브 브랜드를 운영하고 있다.
+											애슐리는 2003년 3월 25일 2001아울렛 분당점을 시작으로 본격적으로 영업을 시작하였다.[1] 2019년 현재 대한민국 내에서 운영되는 매장은 110여 개로 CJ푸드빌에서 운영하는 빕스의 61개 매장에 대비 50여개 더많다.
+											애슐리(Ashley)는 대한민국 이랜드이츠가 운영하는 뷔페 패밀리 레스토랑 체인이다. 애슐리는 매 분기마다 새로운 콘셉트의 새 메뉴를 제공하며, 또한 고급화 매장인 애슐리 W, 애슐리 W+, 테이크아웃 전문 매장인 애슐리 투고 등 다양한 서브 브랜드를 운영하고 있다.
+											애슐리는 2003년 3월 25일 2001아울렛 분당점을 시작으로 본격적으로 영업을 시작하였다.[1] 2019년 현재 대한민국 내에서 운영되는 매장은 110여 개로 CJ푸드빌에서 운영하는 빕스의 61개 매장에 대비 50여개 더많다.
+											애슐리(Ashley)는 대한민국 이랜드이츠가 운영하는 뷔페 패밀리 레스토랑 체인이다. 애슐리는 매 분기마다 새로운 콘셉트의 새 메뉴를 제공하며, 또한 고급화 매장인 애슐리 W, 애슐리 W+, 테이크아웃 전문 매장인 애슐리 투고 등 다양한 서브 브랜드를 운영하고 있다.
+											애슐리는 2003년 3월 25일 2001아울렛 분당점을 시작으로 본격적으로 영업을 시작하였다.[1] 2019년 현재 대한민국 내에서 운영되는 매장은 110여 개로 CJ푸드빌에서 운영하는 빕스의 61개 매장에 대비 50여개 더많다.										
+										
+										</td>
+									</tr>
 								</table>
-							</div>
+							</form>
 						</div> <!-- cont-body -->
 					</div>
 				</section>	
@@ -162,11 +149,6 @@
 		</div>
 	</div>
 </body>
-
-
-
-
-
 
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>

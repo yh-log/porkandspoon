@@ -76,7 +76,7 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">직원 등록</h4>
+					<h4 class="menu-title">직원 수정</h4>
 					<ul>
 						<li id="firstMenu"><a href="#">직원 리스트</a></li>
 						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
@@ -87,7 +87,7 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject">직원등록</h5>
+							<h5 id="subMenuSubject">직원수정</h5>
 						</div>
 						<div class="cont-body"> 
 							<!-- 등록 폼 작성 -->
