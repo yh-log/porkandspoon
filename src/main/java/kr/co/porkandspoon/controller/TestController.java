@@ -161,6 +161,7 @@ public class TestController {
 		return new ModelAndView("layout");
 	}
 	
+	
 	/*
 	 * author yh.kim (24.12.11)
 	 * 회원 등록 기능 (비밀번호 암호화 해서 저장)
