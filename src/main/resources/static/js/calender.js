@@ -6,6 +6,8 @@ var formattedDate = '';
 var calender = null;
 
 $(document).ready(function () {
+	//loadCalender(section);
+	// 캘린더 초기화
 	initializeCalendar();
 });
 

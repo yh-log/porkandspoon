@@ -63,12 +63,12 @@
 					</ul>
 				</section>
 				<section class="cont">
-					<div class="col-12 col-lg-12"> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
+					<div class="col-12 col-lg-12"> 
 						<div class="tit-area">
 							<h5>받은메일함</h5>
 						</div>
-						<div class="cont-body">
-
+						<div class="cont-body"> 
+							<!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 							<div class="page-heading">
 								<div class="page-title">
 									<div class="row">
@@ -2096,9 +2096,9 @@
 							</section>
 						</div>
 						<hr />
-
 					</div>
-			</div> <!-- 여기까지 삭제하고 별도 콘텐츠 작성 -->
+						<!-- 여기까지 삭제하고 별도 콘텐츠 작성 -->
+			</div> 
 
 			</section>
 		</div>
@@ -2113,9 +2113,7 @@
 
 
 <!-- 부트스트랩 -->
-<script src="/resources/assets/static/js/components/dark.js"></script>
-<script
-	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->
