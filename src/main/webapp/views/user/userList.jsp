@@ -69,6 +69,7 @@
 						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
 						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
 					</ul>
+					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 직원 등록</div>
 				</section>
 				<!-- 등록하기 버튼 추가 필요 -->
 				<!-- 콘텐츠 영역 -->

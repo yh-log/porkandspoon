@@ -5,8 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>인사이동 리스트</title>
-
+<title>공통 레이아웃 CSS</title>
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -18,7 +17,17 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
+<!-- 파일 업로더 -->
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond/filepond.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
+<!-- rating.js(별점) -->
+<link rel="stylesheet"
+	href="/resources/assets/extensions/rater-js/lib/style.css">
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
@@ -28,32 +37,6 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<style>
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 120px;
-	}
-	.form-control{
-		width: 350px;
-	}
-	
-	#filterBox{
-		display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-</style>
-
-
 </head>
 
 <body>
@@ -70,94 +53,29 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">인사이동</h4>
+					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						
-						<li class="active" id="firstMenu"><a href="#">인사이동</a></li>
-						<li id="secondMenu"><a href="#">직영점 이동</a></li>
-						<li id="thirdMenu"><a href="#">미발령 직원</a></li>
+						<li class="active"><a href="#">받은메일함</a></li>
+						<li><a href="#">보낸메일함</a></li>
+						<li><a href="#">임시보관함</a></li>
+						<li><a href="#">중요메일함</a></li>
+						<li><a href="#">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 인사이동</div>
+					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
-				<!-- 등록하기 버튼 추가 필요 -->
-				<!-- 콘텐츠 영역 -->
 				<section class="cont">
+
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject"></h5>
+							<h5>받은메일함</h5>
 						</div>
-						<div class="cont-body"> 
-							<div class="row">
-								<div class="col-5 col-lg-5">날짜 데이터</div>
-								<div class="col-3 col-lg-3" id="filterBox">
-									<span>유형</span>
-									<select class="form-select selectStyle">
-										<option>전체</option>
-										<option>인사이동</option>
-										<option>퇴사</option>
-									</select>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-								<div id="searchLayout" class="col-4 col-lg-4">
-									<select class="form-select selectStyle" >
-										<option>부서</option>
-										<option>이름</option>
-										<option>직위</option>
-									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-							</div>
-							<div class="col-12 col-lg-12">
-								<table>
-									<thead>
-										<tr>
-											<th>사번</th>
-											<th>부서</th>
-											<th>이름</th>
-											<th>직위</th>
-											<th>사내번호</th>
-											<th>입사일</th>
-											<th>상태</th>
-										</tr>
-									</thead>
-									<tbody id="userList">
-										<tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									</tbody>
-								</table>
-							</div>
-						</div> <!-- cont-body -->
-					</div>
-				</section>	
+						<div class="cont-body">  
+						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
+						
+
+						</div>
+					</div> 
+				</section>
 			</div>
 		</div>
 	</div>
@@ -169,22 +87,70 @@
 
 
 <!-- 부트스트랩 -->
+
 <script src="/resources/assets/compiled/js/app.js"></script>
+
+<!-- Need: Apexcharts(차트) -->
+<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
+<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
+<!-- 파일업로더 -->
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
+<script src="/resources/assets/extensions/filepond/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script>
+
+<!-- rating.js(별점)  -->
+<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
+<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
-	
-<script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script>
+	/* 페이지네이션 */
+	$('#pagination').twbsPagination({
+		startPage : 1,
+		totalPages : 10,
+		visiblePages : 10,
+	/* onPageClick:function(evt,page){
+		console.log('evt',evt); 
+		console.log('page',page); 
+		pageCall(page);
+	} */
+	});
 
+	// 공통으로 옮기고, 
+	/* 페이지네이션 prev,next 텍스트 제거 */
+	if($('#pagination')){		
+		$('.page-item.prev').find('.page-link').html(
+				'<i class="bi bi-chevron-left"></i>');
+		$('.page-item.next').find('.page-link').html(
+				'<i class="bi bi-chevron-right"></i>');
+		$('.page-item.first').find('.page-link').html(
+				'<i class="bi bi-chevron-double-left"></i>');
+		$('.page-item.last').find('.page-link').html(
+				'<i class="bi bi-chevron-double-right"></i>');
+	}
+	
+	
 
 
 
