@@ -151,6 +151,10 @@
 	th{
 		width: 20%;
 	}
+	.coutn-dis{
+		display: flex;
+		align-items: center;
+	}
 
 </style>
 </head>
@@ -174,23 +178,43 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>회의실 등록</h5>
+                  <h5>물품 수정</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
 	                  <table class="align-l">
 	                  	<tr>
-	                  		<th>등록자</th>
+	                  		<th>수정자</th>
 	                  		<td class="align-l">김진형</td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>회의실 명</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
+	                  		<th>물품 명</th>
+	                  		<td><input class="form-control sor-1" type="text" name="subject" value="빔프로젝트"/></td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>수용 인원</th>
-	                  		<td><input class="form-control sor-1" type="text" name="count" maxlength="2"/></td>
+	                  		<th>물품 유형</th>
+	                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
+	                  			<div class="form-check">
+									<input class="form-check-input" type="radio" name="article" id="flexRadioDefault1" value="" checked="checked">
+									<label class="form-check-label" for="flexRadioDefault1">지급 물품</label>
+								</div>
+								<div class="form-check" style="margin-left: 15px;">
+									<input class="form-check-input" type="radio" name="article" id="flexRadioDefault2" value="">
+									<label class="form-check-label" for="flexRadioDefault2">장기 대여</label>
+								</div>
+								<div class="form-check" style="margin-left: 15px;">
+									<input class="form-check-input" type="radio" name="article" id="flexRadioDefault2" value="">
+									<label class="form-check-label" for="flexRadioDefault2">단기 대여</label>
+								</div>
+	                  		</td>
+	                  	</tr>
+	                  	<tr>
+	                  		<th>수량</th>
+	                  		<td class="coutn-dis">
+	                  			<input class="form-control sor-1" type="number" name="count" style="width: 50px;" maxlength="2" value="20"/>
+	                  			<p style="margin-left: 10px; margin-bottom: 0px;">개</p>
+	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
@@ -200,11 +224,11 @@
 	                  		<th>활성 상태</th>
 	                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
 	                  			<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y" checked="checked">
 									<label class="form-check-label" for="flexRadioDefault1">활성화</label>
 								</div>
 								<div class="form-check" style="margin-left: 15px;">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N">
 									<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
 								</div>
 	                  		</td>

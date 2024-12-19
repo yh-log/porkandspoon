@@ -174,47 +174,46 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>회의실 등록</h5>
+                  <h5>203A 회의실 상세정보</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
 	                  <table class="align-l">
 	                  	<tr>
+	                  		<th>회의실 명</th>
+	                  		<td class="align-l">203A 회의실</td>
+	                  	</tr>
+	                  	<tr>
 	                  		<th>등록자</th>
 	                  		<td class="align-l">김진형</td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>회의실 명</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
+	                  		<th>등록일</th>
+	                  		<td class="align-l">2024. 12. 19</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>수용 인원</th>
-	                  		<td><input class="form-control sor-1" type="text" name="count" maxlength="2"/></td>
+	                  		<td class="align-l">20명</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content"></textarea></td>
+	                  		<td class="align-l">
+	                  			빔프로젝트가 있어 프로젝트 용도로 쓰기 적합한 회의실 입니다.
+	                  			빔프로젝트가 있어 프로젝트 용도로 쓰기 적합한 회의실 입니다.
+	                  			빔프로젝트가 있어 프로젝트 용도로 쓰기 적합한 회의실 입니다.
+	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>활성 상태</th>
-	                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
-	                  			<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked">
-									<label class="form-check-label" for="flexRadioDefault1">활성화</label>
-								</div>
-								<div class="form-check" style="margin-left: 15px;">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-									<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
-								</div>
-	                  		</td>
+	                  		<td class="align-l">활성</td>
 	                  	</tr>
 	                  </table>
                   </div>
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-	           			<div class="btn btn-primary">등록하기</div>
+	           			<div class="btn btn-primary">수정하기</div>
 	                	<div class="btn btn-primary">돌아가기</div>
 	           		</div>
            		</div>
