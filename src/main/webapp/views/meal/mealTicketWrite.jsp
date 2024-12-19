@@ -45,11 +45,39 @@
 		text-align: right;
 		margin-right: 10px;
 	}
+	.card-body{
+		display: flex;	
+	}
+	#flexRadioDefault2{
+		margin-left: 20px;
+	}
+	
+	
 	.content{
 		display: flex; 
 		align-content: cetner;
 		border: 1px solid black;
 	}
+	buttons{
+		align-content: cetner;
+	}
+	.art{
+		height: 280px;
+	}
+	.align-l{
+		width: 300px;
+		text-align: center
+	}
+	#btn-gap{
+		display: flex;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
+	}
+	.short{
+		width: 300px;
+	}
+	
 </style>
 </head>
 
@@ -69,36 +97,84 @@
 				<section id="menu">
 					<h4 class="menu-title">구내식당</h4>
 					<ul>
-						<li class="active"><a href="/ad/mealTicket">식권구매</a></li>
+						<li><a href="/ad/mealTicket">식권구매</a></li>
 						<li><a href="/ad/mealMenu">식단표</a></li>
-						<li><a href="/ad/mealMenuWrite">식단등록</a></li>
-						<li><a href="/ad/mealTicketWrite">식권등록</a></li>
-						<li><a href="/ad/mealList">상품리스트</a></li>
+						<li ><a href="/ad/mealMenu/Write">식단등록</a></li>
+						<li class="active"><a href="/ad/mealTicket/Write">식권등록</a></li>
+						<li><a href="/ad/meal/List">상품리스트</a></li>
 					</ul>
 				</section>
 				<section class="cont">
-					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
+					 <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>식권구매</h5>
+							<h5>식단등록</h5>
 						</div>
 						<div class="cont-body">
-							<div class="row">
-							<div class="col-12 col-lg-12">
-								<p class="title2" id="text">일정</p>
-								<input type="date" name="meal_date" id="short" required="required"/>			
-								<p class="title2" id="text">상태</p>
-								<select class="form-select" id="basicSelect">
-										<option>아침</option>
-										<option>점심</option>
-										<option>저녁</option>
-									</select>			
-								<p class="title2" id="text">내용</p>
-								<input type="text" class="form-control" id="basicInput" placeholder="Enter email">			
+						<div class="row">
+
+			         <div class="col-12 col-lg-12">
+                     <table>
+                        <tr>
+                           <th class="align-l">상품명</th>
+                           <td ><input class="form-control sor-1 "  type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">상품가격</th>
+                           <td ><input class="form-control sor-1 "  type="text" placeholder="상품가격을 입력해주세요." required="required"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">상품수량</th>
+                          <td ><input class="form-control sor-1 "  type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
+                        </tr>
+                        
+                        <tr>
+                           <th class="align-l">파일첨부</th>
+                          <td ><div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
+							<input class="filepond--browser" type="file" id="filepond--browser-rd9ou40mc" name="filepond" aria-controls="filepond--assistant-rd9ou40mc" aria-labelledby="filepond--drop-label-rd9ou40mc" accept="">
+								<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
+									<label for="filepond--browser-rd9ou40mc" id="filepond--drop-label-rd9ou40mc" aria-hidden="true">Drag &amp; Drop your files or 
+										<span class="filepond--label-action" tabindex="0">Browse</span>
+									</label>
+								</div>
+								<div class="filepond--list-scroller" style="transform: translate3d(0px, 0px, 0px);">
+									<ul class="filepond--list" role="list"></ul>
+								</div>
+								<div class="filepond--panel filepond--panel-root" data-scalable="true">
+									<div class="filepond--panel-top filepond--panel-root"></div>
+									<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
+									<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
+								</div>
+									<span class="filepond--assistant" id="filepond--assistant-rd9ou40mc" role="status" aria-live="polite" aria-relevant="additions"></span>
+										<fieldset class="filepond--data"></fieldset>
+										<div class="filepond--drip"></div>
 							</div>
-							<button class="btn btn-primary">등록</button>
-							<button class="btn btn-outline-primary">취소</button>
-							<a href="#" class="btn btn-primary">등록</a>
-							<a href="#" class="btn btn-outline-primary">취소</a>
+						</td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">활성여부</th>
+                          <td ><div class="card-body">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
+											활성 </label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+										<label class="form-check-label" for="flexRadioDefault2">
+											비활성 </label>
+									</div>
+								</div>	
+							</td>
+                        </tr>
+                     </table>
+                     
+                  </div>
+			
+			
+							
+							<div id="btn-gap">							
+								<button class="btn btn-primary">등록</button>
+								<button class="btn btn-outline-primary">취소</button>
+							</div>
 
 							</div>
 						</div> 

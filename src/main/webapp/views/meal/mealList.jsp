@@ -68,11 +68,11 @@
 				<section id="menu">
 					<h4 class="menu-title">구내식당</h4>
 					<ul>
-						<li class="active"><a href="/ad/mealTicket">식권구매</a></li>
+						<li ><a href="/ad/mealTicket">식권구매</a></li>
 						<li><a href="/ad/mealMenu">식단표</a></li>
-						<li><a href="/ad/mealMenuWrite">식단등록</a></li>
-						<li><a href="/ad/mealTicketWrite">식권등록</a></li>
-						<li><a href="/ad/mealList">상품리스트</a></li>
+						<li><a href="/ad/mealMenu/Write">식단등록</a></li>
+						<li><a href="/ad/mealTicket/Write">식권등록</a></li>
+						<li class="active"><a href="/ad/meal/List">상품리스트</a></li>
 					</ul>
 				</section>
 				<section class="cont">
