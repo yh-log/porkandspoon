@@ -306,7 +306,7 @@ header #chat i {
 }
 
 .page-content .tit-area {
-	padding: 26px 1.5rem;
+	padding: 26px 40px;
 	border-bottom: 1px solid #E4E6E8;
 }
 
@@ -320,7 +320,7 @@ header #chat i {
 }
 
 .page-content .cont-body {
-	padding: 24px;
+	padding: 24px 40px;
 }
 
 /* common */
