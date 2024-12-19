@@ -50,6 +50,26 @@
 		align-content: cetner;
 		border: 1px solid black;
 	}
+	buttons{
+		align-content: cetner;
+	}
+	.art{
+		height: 280px;
+	}
+	.align-l{
+		width: 300px;
+		text-align: center
+	}
+	#btn-gap{
+		display: flex;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
+	}
+	.short{
+		width: 200px;
+	}
+	
 </style>
 </head>
 
@@ -69,36 +89,51 @@
 				<section id="menu">
 					<h4 class="menu-title">구내식당</h4>
 					<ul>
-						<li class="active"><a href="/ad/mealTicket">식권구매</a></li>
+						<li><a href="/ad/mealTicket">식권구매</a></li>
 						<li><a href="/ad/mealMenu">식단표</a></li>
-						<li><a href="/ad/mealMenuWrite">식단등록</a></li>
-						<li><a href="/ad/mealTicketWrite">식권등록</a></li>
-						<li><a href="/ad/mealList">상품리스트</a></li>
+						<li class="active"><a href="/ad/mealMenu/Write">식단등록</a></li>
+						<li><a href="/ad/mealTicket/Write">식권등록</a></li>
+						<li><a href="/ad/meal/List">상품리스트</a></li>
 					</ul>
 				</section>
 				<section class="cont">
-					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
+					 <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>식권구매</h5>
+							<h5>식단등록</h5>
 						</div>
 						<div class="cont-body">
-							<div class="row">
-							<div class="col-12 col-lg-12">
-								<p class="title2" id="text">일정</p>
-								<input type="date" name="meal_date" id="short" required="required"/>			
-								<p class="title2" id="text">상태</p>
-								<select class="form-select" id="basicSelect">
-										<option>아침</option>
-										<option>점심</option>
-										<option>저녁</option>
-									</select>			
-								<p class="title2" id="text">내용</p>
-								<textarea name="content" id="content" required="required"></textarea>			
+						<div class="row">
+
+			         <div class="col-12 col-lg-12">
+                     <table>
+                        <tr>
+                           <th class="align-l">일정</th>
+                           <td ><input class="form-control sor-1 short"  type="date"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">상태</th>
+                           <td>
+                           <select class="form-select short" id="basicSelect">
+								<option>아침</option>
+								<option>점심</option>
+								<option>저녁</option>
+							</select></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">내용</th>
+                           <td><textarea class="form-control art"></textarea></td>
+                        </tr>
+                        
+                     </table>
+                     
+                  </div>
+			
+			
+							
+							<div id="btn-gap">							
+								<button class="btn btn-primary">등록</button>
+								<button class="btn btn-outline-primary">취소</button>
 							</div>
-							<button class="btn btn-primary">등록</button>
-							<button class="btn btn-outline-primary">취소</button>
-							<a href="#" class="btn btn-primary">등록</a>
-							<a href="#" class="btn btn-outline-primary">취소</a>
 
 							</div>
 						</div> 

@@ -22,19 +22,24 @@ public class MealController {
 		return new ModelAndView("/meal/mealMenu");
 	}
 	
-	@GetMapping(value="/ad/mealMenuWrite")
+	@GetMapping(value="/ad/mealMenu/Write")
 	public ModelAndView mealMenuWriteView() {
 		return new ModelAndView("/meal/mealMenuWrite");
 	}
 	
-	@GetMapping(value="/ad/mealTicketWrite")
+	@GetMapping(value="/ad/mealTicket/Write")
 	public ModelAndView mealTicketWriteView() {
 		return new ModelAndView("/meal/mealTicketWrite");
 	}
 	
-	@GetMapping(value="/ad/mealList")
+	@GetMapping(value="/ad/meal/List")
 	public ModelAndView mealListView() {
 		return new ModelAndView("/meal/mealList");
+	}
+	
+	@GetMapping(value="/ad/mealTicket/Update")
+	public ModelAndView mealTicketUpdateView() {
+		return new ModelAndView("/meal/mealTicketUpdate");
 	}
 	
 	

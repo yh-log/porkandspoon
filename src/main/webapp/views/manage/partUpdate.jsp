@@ -38,6 +38,21 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
+	#home,#schedule{
+		width: 200px;
+	}
+
+	#searchLayout{
+	    display: flex;
+	    align-items: center; /* 세로 중앙 정렬 */
+   		justify-content: end; /* 가로 중앙 정렬 */
+    	gap: 10px; /* 요소 간 간격 */
+	}
+	
+	.selectStyle{
+		width: 230px;
+	}
+
 	.tit-area{
 		display: flex; 
 	}
@@ -45,10 +60,45 @@
 		text-align: right;
 		margin-right: 10px;
 	}
+	.card-body{
+		display: flex;	
+	}
+	#flexRadioDefault2{
+		margin-left: 20px;
+	}
+	td div.inline-layout{
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+	}
+	
 	.content{
+		display: flex; 
 		align-content: cetner;
 		border: 1px solid black;
 	}
+	buttons{
+		align-content: cetner;
+	}
+	.art{
+		height: 280px;
+	}
+	.align-l{
+		width: 300px;
+		text-align: center
+	}
+	#btn-gap{
+		display: flex;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
+	}
+	.short{
+		width: 200px;
+	}
+	
 </style>
 </head>
 
@@ -66,42 +116,124 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">구내식당</h4>
+					<h4 class="menu-title">매장관리</h4>
+					<div class="buttons">							
+						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
+						<button class="btn btn-primary" id="schedule">스케줄 관리</button>
+					</div>
+					
 					<ul>
-						<li class="active"><a href="/ad/mealTicket">식권구매</a></li>
-						<li><a href="/ad/mealMenu">식단표</a></li>
-						<li><a href="/ad/mealMenu/Write">식단등록</a></li>
-						<li><a href="/ad/mealTicket/Write">식권등록</a></li>
-						<li><a href="/ad/meal/List">상품리스트</a></li>
+						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li><a href="/ad/rest/List">휴점신청</a></li>
+						
 					</ul>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-						
-							<h5>식권구매</h5>
-							<h5 class="count">식권 보유량 :</h5> 
-							<a href="#" class="btn btn-primary">사용/구매 내역 보러가기</a>
+							<h5>아르바이트 등록</h5>
 						</div>
 						<div class="cont-body">
-							<div class="row">
-							<div class="col-12 col-lg-2">
-								<div class="content">
-									<img src="resources/img/logo.jpg" alt="Logo" >
-									<h4>식권</h4>
-									<h5>7,000</h5>
-									<a href="#" class="btn btn-primary" onclick="layerPopup('해당상품을 구매하시겠습니까?','구매','취소')">구매</a>
-									
+						<div class="row">
+
+			         <div class="col-12 col-lg-12">
+                     <table>
+                        <tr>
+                           <th class="align-l">이름</th>
+                           <td ><input class="form-control sor-1 "  type="text" placeholder="이름을 입력해주세요." required="required"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">생년월일</th>
+                           <td ><input class="form-control sor-1 short"  type="date"  required="required"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">성별</th>
+                          <td ><div class="card-body">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
+											남자 </label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+										<label class="form-check-label" for="flexRadioDefault2">
+											여자 </label>
+									</div>
+								</div>	
+							</td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">상태</th>
+                          <td ><div class="card-body">
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
+											재직 </label>
+									</div>
+									<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+										<label class="form-check-label" for="flexRadioDefault2">
+											퇴사 </label>
+									</div>
+								</div>	
+							</td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">지점명</th>
+                          <td ><input class="form-control sor-1 "  type="text" placeholder="지점명을 입력해주세요." required="required"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">전화번호</th>
+                          <td ><input class="form-control sor-1 "  type="text" placeholder="전화번호를 입력해주세요." required="required"/></td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">주소</th>
+                          <td >
+                          	<div class="inline-layout">
+								<input type="text" name="address" class="form-control" disabled="disabled"/>
+								<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-geo-alt-fill"></i></button>
 							</div>
+						</td>
+                        </tr>
+                        
+                        <tr>
+                           <th class="align-l">근무 요일</th>
+                          <td ><div id="searchLayout" class="col-7 col-lg-7">
+									<select class="form-select selectStyle">
+										<option>월</option>
+										<option>화</option>
+										<option>수</option>
+										<option>목</option>
+										<option>금</option>
+										<option>토</option>
+										<option>일</option>
+									</select>
+									<input type="text" class="form-control start_date" id="basicInput" placeholder="시작 시간">		
+									<p class="title" id="text">~</p>
+									<input type="text" class="form-control end_date" id="basicInput" placeholder="종료 시간">		
+								
+							</div>
+								</td>
+                        </tr>
+                        
+                       
+                     </table>
+                     
+                  </div>
+			
+			
+							
+							<div id="btn-gap">							
+								<button class="btn btn-primary">등록</button>
+								<button class="btn btn-outline-primary">취소</button>
 							</div>
 
-						</div>
-					</div> 
+							</div>
+						</div> 
 				</section>
 			</div>
 		</div>
 	</div>
 </body>
+
 
 
 
