@@ -55,7 +55,7 @@ function getSuccess(response) {
             },
             'data': response  // 트리 데이터
         },
-        "plugins": ["types"], // types 플러그인 활성화
+        "plugins": ["types", "search"], // types 플러그인 활성화
         "types": {
             "default": {
                 "icon": "bi bi-house-fill" // 기본 폴더 아이콘 (Bootstrap Icons)
@@ -63,13 +63,17 @@ function getSuccess(response) {
             "file": {
                 "icon": "bi bi-person-fill" // 파일 타입 아이콘 (Bootstrap Icons)
             }
-        }
+        },
+        "search": {
+	        "show_only_matches": true, // 검색된 노드만 표시
+	        "show_only_matches_children": true
+    	}
     });
 }
 
 // 리소스 로드 및 초기화
 loadResources(function () {
     $(document).ready(function () {
-        getAjax('/menu_tree'); // getAjax 호출
+        getAjax('/setChart'); // getAjax 호출
     });
 });
