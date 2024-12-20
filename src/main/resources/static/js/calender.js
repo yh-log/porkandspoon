@@ -46,6 +46,12 @@ function initializeCalendar(event) {
             center: 'title',                          // 중앙에 현재 달력 제목
             right: 'dayGridMonth,timeGridWeek,timeGridDay', // 오른쪽에 보기 모드 전환 버튼
         },
+        buttonText: {
+        	today : '오늘',
+        	month : '월간',
+        	week : '주간',
+        	day : '일간',
+        },
 		timeFormat: {
             agenda: 'H(:mm)' //h:mm{ - h:mm}'
         },
@@ -95,6 +101,7 @@ function httpSuccess(response){
     loadCalender(section);    
 }
 
+
 // 일정 불러오기 완료 후 함수
 function getSuccess(response){
 	var event = [];
@@ -102,8 +109,8 @@ function getSuccess(response){
     response.result.forEach(function(item){
         event.push({
             title : item.subject,
-            start : item.start,
-            end : item.end
+            start : item.start_date,
+            end : item.end_date
         });
     });
     initializeCalendar(event);
