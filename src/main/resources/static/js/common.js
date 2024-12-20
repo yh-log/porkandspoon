@@ -156,7 +156,7 @@ function loadModal(section, type, data) {
     var modalContent = modal.querySelector(".modal-content");
 
     $.ajax({
-        url: "/resources/html/calenderModal.html", // 모달 HTML 파일 경로
+        url: "/resources/html/modal.html", // 모달 HTML 파일 경로
         type: "GET",
         success: function (html) {
             var tempDiv = document.createElement("div");
