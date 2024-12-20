@@ -17,17 +17,6 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/toastify-js/src/toastify.css">
-
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
@@ -38,7 +27,7 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-	#home,#schedule{
+#home,#schedule{
 		width: 200px;
 	}
 
@@ -98,8 +87,68 @@
 	.short{
 		width: 200px;
 	}
-	
+	#start_date{
+		margin-left: 800px;
+	}
+	.list-form{
+		border: 1px solid #E4E6E8;
+		border-radius: 6px;
+		padding: 10px;
+		width: 49%;
+    	margin-top: 20px;
+    	display: flex;
+    	justify-content: space-between;
+    	height: 250px;
+	}
+	.list-row{
+		display: flex;
+		justify-content: space-between;
+    	flex-wrap: wrap;
+	}
+	.update{
+		display: flex;
+    	flex-direction: column;
+    	justify-content: space-between;
+    	align-items: flex-end;
+	}
+	p{
+		margin-bottom: 0px;
+	}
+	#first{
+		margin-top: 88px;
+	}
+	#bar{
+		margin-top: 10px;
+	}
+		.container {
+  display: flex;
+  justify-content: space-between; /* 각 칸을 동일한 간격으로 나눔 */
+  gap: 20px; /* 각 칸 사이의 간격 */
+}
+
+.column {
+  flex: 1; /* 각 칸을 동일한 너비로 설정 */
+  padding: 20px;
+  background-color: #f7f7f7; /* 임시 배경색 */
+  border-radius: 10px; /* 모서리를 둥글게 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3등분 */
+  gap: 20px; /* 각 칸 사이의 간격 */
+}
+
+.grid-item {
+  padding: 20px;
+  background-color: #f7f7f7; /* 임시 배경색 */
+  border-radius: 10px; /* 모서리를 둥글게 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
 </style>
+	
+
 </head>
 
 <body>
@@ -116,123 +165,148 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule">스케줄 관리</button>
-					</div>
-					
+					<h4 class="menu-title">프로젝트</h4>
 					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
-						<li><a href="/ad/rest/List">휴점신청</a></li>
-						
+						<li class="active"><a href="/ad/project/List">프로젝트 리스트</a></li>
+						<li><a href="/ad/project/Write">프로젝트 등록</a></li>
 					</ul>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>아르바이트 등록</h5>
+							<h5>프로젝트 리스트</h5>
 						</div>
-						<div class="cont-body">
-						<div class="row">
-
-			         <div class="col-12 col-lg-12">
-                     <table>
-                        <tr>
-                           <th class="align-l">이름</th>
-                           <td ><input class="form-control sor-1 "  type="text" placeholder="이름을 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">생년월일</th>
-                           <td ><input class="form-control sor-1 short"  type="date"  required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">성별</th>
-                          <td ><div class="card-body">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											남자 </label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											여자 </label>
-									</div>
-								</div>	
-							</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">상태</th>
-                          <td ><div class="card-body">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											재직 </label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											퇴사 </label>
-									</div>
-								</div>	
-							</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">지점명</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="지점명을 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">전화번호</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="전화번호를 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">주소</th>
-                          	<td >
-	                          	<div class="inline-layout">
-									<input type="text" name="address" class="form-control" disabled="disabled"/>
-									<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-geo-alt-fill"></i></button>
-								</div>
-							</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">근무 요일</th>
-                          <td >
-                          	<div id="searchLayout" class="col-7 col-lg-7">
-								<select class="form-select selectStyle">
-									<option>월</option>
-									<option>화</option>
-									<option>수</option>
-									<option>목</option>
-									<option>금</option>
-									<option>토</option>
-									<option>일</option>
-								</select>
-								<input type="text" class="form-control start_date" id="basicInput" placeholder="시작 시간">		
-								<p class="title" id="text">~</p>
-								<input type="text" class="form-control end_date" id="basicInput" placeholder="종료 시간">		
+						<div class="cont-body"> 
+                  <!-- 여기에 내용 작성 -->
+                  <div class="container">
+					  <div class="column">처리 전</div>
+					  <div class="column">진행 중</div>
+					  <div class="column">완료</div>
+				</div>
+                  <div class="grid-container">
+				  <div class="grid-item">처리 전</div>
+				  <div class="grid-item">진행 중</div>
+				  <div class="grid-item">완료</div>
+				</div>
+                  <div class="row list-row">
+                  		<div class="list-form">
+	                  		<div>
+	                  			<h4 onclick="location.href='/ad/education/Update'">황금돼지를 잡아라!</h4>
+	                  			<p id="first">참여인원 : </p>
+	                  			<p>일정 : </p>
+	                  			<p>진행률 </p>
+								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
+							        75%
+							    </div>
 							</div>
-						</td>
-                        </tr>
-                     </table>
+                  			</div>
+                  			<div class="update">
+	                  			<div><i class="bi bi-trash" ></i></div>
+	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+                  			</div>
+                  		</div>
+                  		<div class="list-form">
+	                  		<div>
+	                  			<h4>황금돼지를 잡아라!</h4>
+	                  			<p id="first">참여인원 : </p>
+	                  			<p>일정 : </p>
+	                  			<p>진행률 </p>
+								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
+							        75%
+							    </div>
+							</div>
+                  			</div>
+                  			<div class="update">
+	                  			<div><i class="bi bi-trash" ></i></div>
+	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+                  			</div>
+                  		</div>
+                  		
+                  		
+                  		
+                  		<div class="list-form">
+	                  		<div>
+	                  			<h4 >황금돼지를 잡아라!</h4>
+	                  			<p id="first">참여인원 : </p>
+	                  			<p>일정 : </p>
+	                  			<p>진행률 </p>
+								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
+							        75%
+							    </div>
+							</div>
+                  			</div>
+                  			<div class="update">
+	                  			<div><i class="bi bi-trash" ></i></div>
+	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+                  			</div>
+                  		</div>
+                  		<div class="list-form">
+	                  		<div>
+	                  			<h4>황금돼지를 잡아라!</h4>
+	                  			<p id="first">참여인원 : </p>
+	                  			<p>일정 : </p>
+	                  			<p>진행률 </p>
+								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
+							        75%
+							    </div>
+							</div>
+                  			</div>
+                  			<div class="update">
+	                  			<div><i class="bi bi-trash" ></i></div>
+	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+                  			</div>
+                  		</div>
+                  		<div class="list-form">
+	                  		<div>
+	                  			<h4 >황금돼지를 잡아라!</h4>
+	                  			<p id="first">참여인원 : </p>
+	                  			<p>일정 : </p>
+	                  			<p>진행률 </p>
+								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
+							        75%
+							    </div>
+							</div>
+                  			</div>
+                  			<div class="update">
+	                  			<div><i class="bi bi-trash" ></i></div>
+	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+                  			</div>
+                  		</div>
+                  		<div class="list-form">
+	                  		<div>
+	                  			<h4>황금돼지를 잡아라!</h4>
+	                  			<p id="first">참여인원 : </p>
+	                  			<p>일정 : </p>
+	                  			<p>진행률 </p>
+								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
+							        75%
+							    </div>
+							</div>
+                  			</div>
+                  			<div class="update">
+	                  			<div><i class="bi bi-trash" ></i></div>
+	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+                  			</div>
+                  		</div>
+                  	
                   </div>
-			
-			
-							
-							<div id="btn-gap">							
-								<button class="btn btn-primary">수정</button>
-								<button class="btn btn-outline-primary">취소</button>
-							</div>
-
-							</div>
-						</div> 
-				</section>
-			</div>
-		</div>
+               </div>
+          
+         </section>   
+         
+      </div>
+    </div>
 	</div>
+	
+	
+	
 </body>
-
-
-
-
 
 
 
@@ -277,30 +351,7 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
-
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
+	
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
