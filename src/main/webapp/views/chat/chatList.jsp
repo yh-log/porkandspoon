@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>메신저</title>
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -17,17 +17,6 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/toastify-js/src/toastify.css">
-
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
@@ -37,6 +26,32 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+	#profile-seachBox {
+		display: flex; /* 가로 정렬 */
+		align-items: center; /* 세로 중앙 정렬 */
+		gap: 10px; /* 요소 간 간격 */
+	}
+	
+	#profileBox {
+		width: 60px;
+		height: 40px;
+		background-color: #3498db;
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+	
+	.form-control.seachBox {
+		border-radius: 20px;
+	}
+
+
+</style>
+
 </head>
 
 <body>
@@ -53,21 +68,25 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
-					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
-					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
+					<h4 class="menu-title">메신저</h4>
+					<div id="profile-seachBox">
+						<div id="profileBox"></div>
+						<div class="form-group position-relative has-icon-left">
+							<input type="text" name="username" class="form-control seachBox" placeholder="Username"/>
+							<div class="form-control-icon">
+								<i class="bi bi-search"></i>
+							</div>
+						</div>
+					</div>
+					<div class="btn btn-primary full-size">새로운 채팅</div>
+					<div>채팅방 인원</div>
+					<div>채팅 리스트</div>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>받은메일함</h5>
+							<h5>채팅방 이름!</h5>
 						</div>
 						<div class="cont-body">  
 						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
@@ -90,67 +109,14 @@
 
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
-
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	
 
 
 
