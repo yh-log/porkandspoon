@@ -85,5 +85,56 @@
 	        <button id="cancelModal" class="btn btn-secondary">취소</button>
 	    </div>
 	</div>
+	
+	<!-- 캘린더 일정 등록 모달 -->
+	<div id="calenderInputModal" class="modal-template">
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="calendar_content" class="form-label">일정 내용</label>
+	            <input type="text" id="calendar_content" class="form-input" placeholder="일정을 입력하세요">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_start_date" class="form-label">시작일</label>
+	            <input type="date" id="calendar_start_date" class="form-input">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_end_date" class="form-label">종료일</label>
+	            <input type="date" id="calendar_end_date" class="form-input">
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button id="addSchedule" class="btn btn-primary">등록</button>
+	        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    </div>
+	</div>
+	
+	<!-- 캘린더 일정 정보 모달 -->
+	<div id="calenderInfoModal" class="modal-template">
+		<input type="hidden" id="calendar_event_id">
+		<div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	        <div class="form-group">
+	            <label for="calendar_content" class="form-label">일정 내용</label>
+	            <input type="text" id="calendar_content" class="form-input">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_start_date" class="form-label">시작일</label>
+	            <input type="date" id="calendar_start_date" class="form-input">
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_end_date" class="form-label">종료일</label>
+	            <input type="date" id="calendar_end_date" class="form-input">
+	        </div>
+	    </div>
+	    <div class="modal-footer">
+	        <button id="amendSchedule" class="btn btn-primary">수정</button>
+	        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    </div>
+	</div>
 </body>
 </html>

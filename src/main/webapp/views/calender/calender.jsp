@@ -144,7 +144,6 @@
 					<div id="calendarBox">
 						<div id='calendar'></div>
 					</div>
-					
 					<div id="calendarModal" class="modal" style="display: none;">
 					   <div class="modal-content"></div>
 					</div>   
@@ -154,9 +153,6 @@
       </div>
     </div>
 	</div>
-	
-	
-	
 </body>
 
 <!-- 부트스트랩 -->
@@ -167,6 +163,11 @@
 <script src='/resources/js/calender.js'></script>
 
 <script>
+var section= 'calender';
+
+$(document).ready(function () {
+	loadCalender(section);
+});
 	
 </script>
 </html>
