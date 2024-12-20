@@ -135,6 +135,10 @@
 	    <p>환영합니다, <strong>${pageContext.request.userPrincipal.name}</strong> 님!</p>
 	</sec:authorize>
 	
+	<p>사용자 이름
+		<sec:authentication property="principal.username"/>
+	</p>
+		
 	<!-- 모달 예시 -->
 	<button onclick='loadModal("cabinet", "Input", {content: "회의실 예약 내용입니다."});'>모달 열기!!</button>
 	<div id="modalBox" class="modal" style="display: none;">
