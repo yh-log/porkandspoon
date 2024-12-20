@@ -105,8 +105,7 @@
 								<div id="searchLayout" class="col-7 col-lg-7">
 									<select class="form-select selectStyle">
 										<option>구매일</option>
-										<option>이름</option>
-										<option>직위</option>
+										<option>상품명</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
 									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
@@ -120,27 +119,24 @@
 									<col >
 									<col>
 									<col>
-									<col width="5%">
-									<col width="5%">
+									<col>
 								</colgroup>
 								<thead>
 									<tr>
-										<th>이름</th>
-										<th >나이</th>
-										<th>지점명</th>
-										<th>입사일</th>
-										<th></th>
-										<th></th>
+										<th>상품명</th>
+										<th >가격</th>
+										<th>사용갯수</th>
+										<th>남은 갯수</th>
+										<th>구매일</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<td>김열무</td>
-										<td>1999.08.20</td>
-										<td>남</td>
-										<td>2024.11.20</td>
-										<td onclick="location.href='/ad/part/Update'">수정</td>
-										<td>아이콘</td>
+										<td>식권10장</td>
+										<td>6,5000</td>
+										<td>7</td>
+										<td>3</td>
+										<td>2024.12.15</td>
 									</tr>
 								</tbody>
 							</table>

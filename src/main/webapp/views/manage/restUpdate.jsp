@@ -38,9 +38,10 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-	.tit-area,.text,.card-body{
-		display: flex;
+#home,#schedule{
+		width: 200px;
 	}
+
 	#searchLayout{
 	    display: flex;
 	    align-items: center; /* 세로 중앙 정렬 */
@@ -49,66 +50,57 @@
 	}
 	
 	.selectStyle{
-		width: 20%;
+		width: 230px;
 	}
-	
-	.form-control{
-		margin: 15px 10px;
-		width: 80%;
+
+	.tit-area{
+		display: flex; 
 	}
-	.start_date,.end_date{
-		margin: 15px 10px;
-		width: 35%;
-	}
-	
-	.card-body{
-		margin: 10px 110px;
-	}
-	p{
-		margin: 20px 10px;
-		width: 90px;
-	}
-	#flexRadioDefault2{
-		margin-left: 10px;
-	}
-	#button1{
-		margin-left: 230px;
-	}
-	#home,#schedule{
-		width: 200px;
-	}
-	#date{
-		width: 350px;
-	}
-	#content{
-		width: 800px;
-		height: 240px;
-	}
-	.selectStyle{
-		width: 120px;
-	}
-	
 	h5 .count{
 		text-align: right;
 		margin-right: 10px;
 	}
+	.card-body{
+		display: flex;	
+	}
+	#flexRadioDefault2{
+		margin-left: 20px;
+	}
+	td div.inline-layout{
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+	}
+	
 	.content{
 		display: flex; 
 		align-content: cetner;
 		border: 1px solid black;
 	}
-	
-	row{
+	buttons{
+		align-content: cetner;
+	}
+	.art{
+		height: 280px;
+	}
+	.align-l{
+		width: 300px;
+		text-align: center
+	}
+	#btn-gap{
 		display: flex;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
 	}
-	/*  .start_date{
-		width: 30%;
-		margin-left: -37px;
+	.short{
+		width: 200px;
 	}
-	.end_date{
-	width: 30%;
-		margin-left: -49px;
-	} */
+	#start_date{
+		margin-left: 800px;
+	}
 	
 </style>
 </head>
@@ -141,43 +133,48 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>휴점 수정</h5>
+							<h5>휴점 등록</h5>
 						</div>
 						<div class="cont-body">
-							<div class="row">
-							<div class="col-9 col-lg-9">
+						<div class="row">
+
+			         <div class="col-12 col-lg-12">
+                     <table>
+                        <tr>
+                           <th class="align-l">지점명</th>
+                           	<td>돼미남 강남점</td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">직영점주 이름</th>
+                           	<td>이경언</td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">휴점일정</th>
+                           <td >
+	                           <div id="searchLayout" class="col-7 col-lg-7">
+		                           	<input class="form-control sor-1 short"  id="start_date" type="date"  required="required"/>
+		                           	~
+		                           	<input class="form-control sor-1 short"  type="date"  required="required"/>
+	                           </div>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th class="align-l">휴점 사유</th>
+                           <td><textarea class="form-control art"></textarea></td>
+                        </tr>
+                        
+                       
+                     </table>
+                     
+                  </div>
+			
+			
 							
-							<div class="text">
-								<p class="title" id="text">지점명</p>
-								<p class="title" id="text">돼미남 강남점</p>											
+							<div id="btn-gap">							
+								<button class="btn btn-primary">등록</button>
+								<button class="btn btn-outline-primary">취소</button>
 							</div>
-							
-							<div class="text">
-								<p class="title" id="text">직영점주 이름</p>
-								<p class="title" id="text">이경언</p>			
-							</div>	
-								
-								
-								<div class="text">
-									<p class="title" id="text">휴점 일정</p>
-									<input type="date" class="form-control start_date" id="basicInput" placeholder="지점명을 입력해 주세요."  value=""  required="required">									
-									<input type="date" class="form-control end_date" id="basicInput" placeholder="지점명을 입력해 주세요."  value=""  required="required">									
-								</div>
-								
-								<div class="text">
-									<p class="title" id="text">휴점사유</p>
-									<textarea name="content" class="form-control"  id="content" required="required"></textarea>		
-									
-								</div>		
-							
-							
-								
-								
-							</div>
-								<div class="buttons">							
-									<button class="btn btn-primary" id="button1">등록</button>
-									<button class="btn btn-outline-primary">취소</button>
-								</div>
+
 							</div>
 						</div> 
 				</section>

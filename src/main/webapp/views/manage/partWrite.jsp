@@ -25,15 +25,6 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
-
-<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
-<link rel="stylesheet" href="/resources/css/common.css">
-
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -196,36 +187,31 @@
                         
                         <tr>
                            <th class="align-l">근무 요일</th>
-                          <td ><div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>월</option>
-										<option>화</option>
-										<option>수</option>
-										<option>목</option>
-										<option>금</option>
-										<option>토</option>
-										<option>일</option>
-									</select>
-									<input type="text" class="form-control start_date" id="basicInput" placeholder="시작 시간">		
-									<p class="title" id="text">~</p>
-									<input type="text" class="form-control end_date" id="basicInput" placeholder="종료 시간">		
+                          <td >
+                          	<div id="searchLayout" class="col-7 col-lg-7">
+								<select class="form-select selectStyle">
+									<option>월</option>
+									<option>화</option>
+									<option>수</option>
+									<option>목</option>
+									<option>금</option>
+									<option>토</option>
+									<option>일</option>
+								</select>
+								<input type="text" class="form-control start_date" id="basicInput" placeholder="시작 시간">		
+								<p class="title" id="text">~</p>
+								<input type="text" class="form-control end_date" id="basicInput" placeholder="종료 시간">		
 								
 							</div>
-								</td>
+						 </td>
                         </tr>
-                        
-                       
-                     </table>
+                     	</table>
                      
-                  </div>
-			
-			
-							
+                  		</div>
 							<div id="btn-gap">							
 								<button class="btn btn-primary">등록</button>
 								<button class="btn btn-outline-primary">취소</button>
 							</div>
-
 							</div>
 						</div> 
 				</section>
@@ -273,46 +259,12 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
 	
 	/* 알림 팝업 */
 	function btn1Act() {
