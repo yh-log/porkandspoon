@@ -39,12 +39,9 @@
         SELECT
             id,
             parent,
-            menu_order AS menuOrder,
-            menu_depth AS menuDepth,
-            text, type
+            text,
+            type
         FROM
-            menu_tree
-        ORDER BY
-            parent, menu_order
+            department
     </select>
 </mapper>
