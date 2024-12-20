@@ -29,6 +29,8 @@
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 	
+
+	
 <style>
     #calendarBox{
         width: 80%;
@@ -121,14 +123,34 @@
 		<div id='calendar'></div>
 	</div>
 	
-	<div id="calendarModal" class="modal" style="display: none;">
-	   <div class="modal-content"></div>
+	<div id="modalBox" class="modal" style="display: none;">
+	    <div class="modal-content"></div>
 	</div>
 </body>
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/calender.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
+	
+
+	$(document).ready(function () {
+		dataSetting('schedule', 'Input');
+	});
+
+	function setModalData(data){
+		console.log(data);
+	}
+	
+	var params = {'test' : '데이터'};
+	
+	httpAjax('POST', '/scheduleWrite', params);
+	
+	// 일정 등록 완료 후 함수 
+	function httpSuccess(response){
+	    loadCalender(section);    
+	    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
+	    initializeModal(arr);
+	}
 	
 </script>
 </html>
