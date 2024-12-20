@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>직원 리스트</title>
+<title>부서 리스트</title>
 
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
@@ -44,6 +44,12 @@
 		width: 350px;
 	}
 	
+	#filterLayout{
+		display: flex;
+	    align-items: end;
+	    gap: 20px;
+	    margin-bottom: 10px;
+	}
 </style>
 
 
@@ -63,15 +69,12 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">직원관리</h4>
+					<h4 class="menu-title">부서 리스트</h4>
 					<ul>
-						
-						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
-						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="#">브랜드 리스트</a></li>
+						<li id="secondMenu"><a href="#">직영점 리스트</a></li>
 					</ul>
-					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 직원 등록</div>
 				</section>
-				<!-- 등록하기 버튼 추가 필요 -->
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
 					<div class="col-12 col-lg-12">
@@ -80,12 +83,15 @@
 						</div>
 						<div class="cont-body"> 
 							<div class="row">
-								<div class="col-5 col-lg-5"></div>
+								<div class="col-5 col-lg-5" id="filterLayout">
+									<span>리스트</span>
+									<span>생성요청</span>
+									<span>삭제요청</span>
+								</div>
 								<div id="searchLayout" class="col-7 col-lg-7">
 									<select class="form-select selectStyle">
 										<option>부서</option>
 										<option>이름</option>
-										<option>직위</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
 									<button class="btn btn-primary"><i class="bi bi-search"></i></button>

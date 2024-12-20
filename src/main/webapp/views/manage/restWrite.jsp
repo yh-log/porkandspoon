@@ -37,6 +37,80 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<style >
+	.tit-area,.text,.card-body{
+		display: flex;
+	}
+	#searchLayout{
+	    display: flex;
+	    align-items: center; /* 세로 중앙 정렬 */
+   		justify-content: end; /* 가로 중앙 정렬 */
+    	gap: 10px; /* 요소 간 간격 */
+	}
+	
+	.selectStyle{
+		width: 20%;
+	}
+	
+	.form-control{
+		margin: 15px 10px;
+		width: 80%;
+	}
+	.start_date,.end_date{
+		margin: 15px 10px;
+		width: 35%;
+	}
+	
+	.card-body{
+		margin: 10px 110px;
+	}
+	p{
+		margin: 20px 10px;
+		width: 90px;
+	}
+	#flexRadioDefault2{
+		margin-left: 10px;
+	}
+	#button1{
+		margin-left: 230px;
+	}
+	#home,#schedule{
+		width: 200px;
+	}
+	#date{
+		width: 350px;
+	}
+	#content{
+		width: 800px;
+		height: 240px;
+	}
+	.selectStyle{
+		width: 120px;
+	}
+	
+	h5 .count{
+		text-align: right;
+		margin-right: 10px;
+	}
+	.content{
+		display: flex; 
+		align-content: cetner;
+		border: 1px solid black;
+	}
+	
+	row{
+		display: flex;
+	}
+	/*  .start_date{
+		width: 30%;
+		margin-left: -37px;
+	}
+	.end_date{
+	width: 30%;
+		margin-left: -49px;
+	} */
+	
+</style>
 </head>
 
 <body>
@@ -45,36 +119,67 @@
 	<div id="app">
 
 		<!-- 사이드바 -->
-		<jsp:include page="sidebar.jsp" />
+		<jsp:include page="../sidebar.jsp" />
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="header.jsp" />
+			<jsp:include page="../header.jsp" />
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
+					<h4 class="menu-title">매장관리</h4>
+					<div class="buttons">							
+						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
+					</div>
+					
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li><a href="/ad/rest/List">휴점신청</a></li>
+						
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
-
-					<div class="col-12 col-lg-12">
+					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>받은메일함</h5>
+							<h5>휴점 등록</h5>
 						</div>
-						<div class="cont-body">  
-						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
-						
-
-						</div>
-					</div> 
+						<div class="cont-body">
+							<div class="row">
+							<div class="col-9 col-lg-9">
+							
+							<div class="text">
+								<p class="title" id="text">지점명</p>
+								<p class="title" id="text">돼미남 강남점</p>											
+							</div>
+							
+							<div class="text">
+								<p class="title" id="text">직영점주 이름</p>
+								<p class="title" id="text">이경언</p>			
+							</div>	
+								
+								
+								<div class="text">
+									<p class="title" id="text">휴점 일정</p>
+									<input type="date" class="form-control start_date" id="basicInput" placeholder="지점명을 입력해 주세요."  value=""  required="required">									
+									<input type="date" class="form-control end_date" id="basicInput" placeholder="지점명을 입력해 주세요."  value=""  required="required">									
+								</div>
+								
+								<div class="text">
+									<p class="title" id="text">휴점사유</p>
+									<textarea name="content" class="form-control"  id="content" required="required"></textarea>		
+									
+								</div>		
+							
+							
+								
+								
+							</div>
+								<div class="buttons">							
+									<button class="btn btn-primary" id="button1">등록</button>
+									<button class="btn btn-outline-primary">취소</button>
+								</div>
+							</div>
+						</div> 
 				</section>
 			</div>
 		</div>
@@ -87,7 +192,9 @@
 
 
 <!-- 부트스트랩 -->
-
+<script src="/resources/assets/static/js/components/dark.js"></script>
+<script
+	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->
@@ -150,8 +257,54 @@
 				'<i class="bi bi-chevron-double-right"></i>');
 	}
 	
-	
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
 
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
+	
+	/* 알림 팝업 */
+	function btn1Act() {
+		// 1번버튼 클릭시 수행할 내용
+		console.log('1번 버튼 동작');
+
+		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+		removeAlert(); // 기존팝업닫기
+		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
+	}
+	
+	function btn2Act() {
+		// 2번버튼 클릭시 수행할 내용
+		console.log('2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
+	}
+
+	function secondBtn2Act() {
+		// 두번째팝업 2번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		
+	}
+	
+	function thirdBtn1Act(){
+		console.log('세번째 팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function thirdBtn2Act(){
+		console.log('세번째 팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
 
 
 </script>

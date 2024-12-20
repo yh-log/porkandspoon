@@ -6,7 +6,7 @@ $(document).ready(function(){
         $('#summernote').summernote({
             // 에디터 크기 설정
             height: 400,
-            width: 800,
+            width: 1200,
             // 에디터 한글 설정
             lang: 'ko-KR',
             // 에디터에 커서 이동 (input창의 autofocus라고 생각하시면 됩니다.)
@@ -57,6 +57,7 @@ var tempImg = [];
 
 // 이미지 추가 (임시 폴더에 추가)
 function imageUploader(files, el){
+	console.log('들어감');
     var formData = new FormData(); // 함수 호출 시마다 FormData 생성
     formData.append('files', files);
     

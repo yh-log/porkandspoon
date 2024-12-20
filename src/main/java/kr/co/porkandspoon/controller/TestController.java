@@ -94,7 +94,7 @@ public class TestController {
 		String num4 = CommonUtil.addCommaToNumber(123.466789, "###.###%");
 		System.out.println("변환한 숫자 ============== " + num4);
 		
-		return new ModelAndView("main");
+		return new ModelAndView("login");
 	}
 	
 	
@@ -160,6 +160,7 @@ public class TestController {
 	public ModelAndView layout() {
 		return new ModelAndView("layout");
 	}
+	
 	
 	/*
 	 * author yh.kim (24.12.11)

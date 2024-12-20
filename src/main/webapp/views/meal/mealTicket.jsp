@@ -37,6 +37,19 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<style >
+	.tit-area{
+		display: flex; 
+	}
+	h5 .count{
+		text-align: right;
+		margin-right: 10px;
+	}
+	.content{
+		align-content: cetner;
+		border: 1px solid black;
+	}
+</style>
 </head>
 
 <body>
@@ -45,33 +58,42 @@
 	<div id="app">
 
 		<!-- 사이드바 -->
-		<jsp:include page="sidebar.jsp" />
+		<jsp:include page="../sidebar.jsp" />
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="header.jsp" />
+			<jsp:include page="../header.jsp" />
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
+					<h4 class="menu-title">구내식당</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li class="active"><a href="/ad/mealTicket">식권구매</a></li>
+						<li><a href="/ad/mealMenu">식단표</a></li>
+						<li><a href="/ad/mealMenu/Write">식단등록</a></li>
+						<li><a href="/ad/mealTicket/Write">식권등록</a></li>
+						<li><a href="/ad/meal/List">상품리스트</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
-
-					<div class="col-12 col-lg-12">
+					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>받은메일함</h5>
-						</div>
-						<div class="cont-body">  
-						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
 						
+							<h5>식권구매</h5>
+							<h5 class="count">식권 보유량 :</h5> 
+							<a href="#" class="btn btn-primary">사용/구매 내역 보러가기</a>
+						</div>
+						<div class="cont-body">
+							<div class="row">
+							<div class="col-12 col-lg-2">
+								<div class="content">
+									<img src="resources/img/logo.jpg" alt="Logo" >
+									<h4>식권</h4>
+									<h5>7,000</h5>
+									<a href="#" class="btn btn-primary" onclick="layerPopup('해당상품을 구매하시겠습니까?','구매','취소')">구매</a>
+									
+							</div>
+							</div>
 
 						</div>
 					</div> 
@@ -87,7 +109,9 @@
 
 
 <!-- 부트스트랩 -->
-
+<script src="/resources/assets/static/js/components/dark.js"></script>
+<script
+	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->
@@ -150,8 +174,54 @@
 				'<i class="bi bi-chevron-double-right"></i>');
 	}
 	
-	
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
 
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
+	
+	/* 알림 팝업 */
+	function btn1Act() {
+		// 1번버튼 클릭시 수행할 내용
+		console.log('1번 버튼 동작');
+
+		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+		removeAlert(); // 기존팝업닫기
+		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
+	}
+	
+	function btn2Act() {
+		// 2번버튼 클릭시 수행할 내용
+		console.log('2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
+	}
+
+	function secondBtn2Act() {
+		// 두번째팝업 2번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		
+	}
+	
+	function thirdBtn1Act(){
+		console.log('세번째 팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function thirdBtn2Act(){
+		console.log('세번째 팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
 
 
 </script>

@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>직원 리스트</title>
+<title>인사이동 리스트</title>
 
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
@@ -44,6 +44,13 @@
 		width: 350px;
 	}
 	
+	#filterBox{
+		display: flex;
+	    align-items: center; /* 세로 중앙 정렬 */
+   		justify-content: end; /* 가로 중앙 정렬 */
+    	gap: 10px; /* 요소 간 간격 */
+	}
+	
 </style>
 
 
@@ -63,13 +70,14 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">직원관리</h4>
+					<h4 class="menu-title">인사이동</h4>
 					<ul>
 						
-						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
-						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="#">인사이동</a></li>
+						<li id="secondMenu"><a href="#">직영점 이동</a></li>
+						<li id="thirdMenu"><a href="#">미발령 직원</a></li>
 					</ul>
-					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 직원 등록</div>
+					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 인사이동</div>
 				</section>
 				<!-- 등록하기 버튼 추가 필요 -->
 				<!-- 콘텐츠 영역 -->
@@ -80,9 +88,18 @@
 						</div>
 						<div class="cont-body"> 
 							<div class="row">
-								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
+								<div class="col-5 col-lg-5">날짜 데이터</div>
+								<div class="col-3 col-lg-3" id="filterBox">
+									<span>유형</span>
 									<select class="form-select selectStyle">
+										<option>전체</option>
+										<option>인사이동</option>
+										<option>퇴사</option>
+									</select>
+									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+								</div>
+								<div id="searchLayout" class="col-4 col-lg-4">
+									<select class="form-select selectStyle" >
 										<option>부서</option>
 										<option>이름</option>
 										<option>직위</option>

@@ -122,13 +122,10 @@
 					<ul class="submenu ">
 						<li class="submenu-item  "><a href="form-editor-quill.html"
 							class="submenu-link">결재 작성</a></li>
-						<li class="submenu-item  "><a
-							href="form-editor-ckeditor.html" class="submenu-link">전사문서함</a></li>
-						<li class="submenu-item  "><a
-							href="form-editor-summernote.html" class="submenu-link">결재할
-								문서</a></li>
 						<li class="submenu-item  "><a href="form-editor-tinymce.html"
 							class="submenu-link">나의 문서함</a></li>
+						<li class="submenu-item  "><a
+							href="form-editor-ckeditor.html" class="submenu-link">부서문서함</a></li>
 					</ul></li>
 
 				<li class="sidebar-item  has-sub"><a href="#"

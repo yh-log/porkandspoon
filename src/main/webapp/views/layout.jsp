@@ -15,24 +15,24 @@
 
 <!-- select -->
 <link rel="stylesheet"
-	href="resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 <!-- 파일 업로더 -->
 <link rel="stylesheet"
-	href="resources/assets/extensions/filepond/filepond.css">
+	href="/resources/assets/extensions/filepond/filepond.css">
 <link rel="stylesheet"
-	href="resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
+	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
 <link rel="stylesheet"
-	href="resources/assets/extensions/toastify-js/src/toastify.css">
+	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
 <!-- rating.js(별점) -->
 <link rel="stylesheet"
-	href="resources/assets/extensions/rater-js/lib/style.css">
+	href="/resources/assets/extensions/rater-js/lib/style.css">
 
-<link rel="stylesheet" href="resources/assets/compiled/css/app.css">
-<link rel="stylesheet" href="resources/assets/compiled/css/app-dark.css">
-<link rel="stylesheet" href="resources/assets/compiled/css/iconly.css">
-<link rel="stylesheet" href="resources/css/common.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<link rel="stylesheet" href="/resources/css/common.css">
 
 
 <!-- jQuery -->
@@ -41,7 +41,7 @@
 
 <body>
 	<!-- 부트스트랩 -->
-	<script src="assets/static/js/initTheme.js"></script>
+	<script src="/resources/assets/static/js/initTheme.js"></script>
 	<div id="app">
 
 		<!-- 사이드바 -->
@@ -61,6 +61,7 @@
 						<li><a href="#">중요메일함</a></li>
 						<li><a href="#">휴지통</a></li>
 					</ul>
+					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
@@ -2113,44 +2114,44 @@
 
 
 <!-- 부트스트랩 -->
-<script src="resources/assets/static/js/components/dark.js"></script>
+<script src="/resources/assets/static/js/components/dark.js"></script>
 <script
-	src="resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->
-<script src="resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="resources/assets/static/js/pages/dashboard.js"></script>
+<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
+<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
-	src="resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="resources/assets/static/js/pages/form-element-select.js"></script>
+	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <!-- 파일업로더 -->
 <script
-	src="resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
 <script
-	src="resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
 <script
-	src="resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
 <script
-	src="resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
 <script
-	src="resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
 <script
-	src="resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
 <script
-	src="resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="resources/assets/extensions/filepond/filepond.js"></script>
-<script src="resources/assets/static/js/pages/filepond.js"></script>
+	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
+<script src="/resources/assets/extensions/filepond/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script>
 
 <!-- rating.js(별점)  -->
-<script src="resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="resources/assets/static/js/pages/rater-js.js"></script>
+<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
+<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
 <!-- 페이지네이션 -->
-<script src="resources/js/jquery.twbsPagination.js"
+<script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
 	/* 페이지네이션 */

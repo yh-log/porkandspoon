@@ -34,6 +34,51 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+<style>
+	.draftWrite table{
+		border: 1px solid #ddd;
+		table-layout: auto;
+	}
+	.draftWrite table th, .draftWrite table td{
+		padding: 0 10px;
+		border-right: 1px solid #ddd;
+		border-width: 1px;
+	}
+	.draftWrite .top-area {
+		display: flex;
+	    justify-content: space-between;
+	}
+	.draftWrite .top-area > table {
+		width: 340px;
+	}
+	.draftWrite table.user_info th{
+		width: 120px;
+	}
+	.draftWrite table.user_info input {
+		width: 100%;
+		border: none;
+	}
+	.draftWrite table.appr_line {
+		width: 410px;
+	}
+	.draftWrite table.appr_line th{
+		width: 44px;
+	}
+	.draftWrite table.appr_line .date{
+		font-size: 13px;
+	}
+	.draftWrite .buttons {
+	    border-bottom: 1px solid #ddd;
+	    padding: 4px 1.25rem;
+    }
+	.draftWrite .buttons .btn {
+	    margin: 14px 2px;
+	}
+	.draftWrite h4.doc-subject{
+		margin: 20px 0 50px;
+		text-align: center;
+	}
+</style>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -45,13 +90,13 @@
 	<div id="app">
 
 		<!-- 사이드바 -->
-		<jsp:include page="sidebar.jsp" />
+		<jsp:include page="../sidebar.jsp" />
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="header.jsp" />
+			<jsp:include page="../header.jsp" />
 
-			<div class="page-content">
+			<div class="page-content draftWrite">
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
@@ -67,11 +112,93 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>받은메일함</h5>
+							<h5>결재 작성</h5>
+						</div>
+						<div class="buttons">
+							<button href="#" class="btn btn-primary">결재 요청</button>
+							<button href="#" class="btn btn-outline-primary">결재 정보</button>
+							<button href="#" class="btn btn-outline-primary">임시저장</button>
+							<button href="#" class="btn btn-outline-primary">취소</button>
 						</div>
 						<div class="cont-body">  
-						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
-						
+							<h4 class="doc-subject">업무 기안 (브랜드 등록)</h4>
+							<form action="" method="POST">
+							
+								<div class="top-area">
+									<table class="user_info">
+										<tr>
+											<th>기안자</th>
+											<td><input type="text" name="user_id" value="홍길동" readonly/></td>
+										</tr>
+										<tr>
+											<th>기안일</th>
+											<td><input type="text" name="create_date" value="홍길동" readonly/></td>
+										</tr>
+										<tr>
+											<th>소속</th>
+											<td><input type="text" name="team_name" value="홍길동" readonly/></td>
+										</tr>
+									</table>
+									
+									<table class="appr_line">
+										<tr>
+											<th rowspan="3">결재</th>
+											<td>사원</td>
+											<td>차장</td>
+											<td>부장</td>
+											<td>대표</td>
+										</tr>
+										<tr>
+											<td>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
+											</td>
+											<td>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
+											</td>
+											<td>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
+											</td>
+											<td>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
+											</td>
+										</tr>
+										<tr class="date">
+											<td>2024-12-01</td>
+											<td>2024-12-01</td>
+											<td>2024-12-01</td>
+											<td>2024-12 -01</td>
+										</tr>
+									</table>
+								</div>
+								
+								<div class="btm-area">
+									<div class="line">
+										<div class="tit">제목</div>
+										<div class="txt"><input type="text" name="subject"/></div>
+									</div>
+									<div class="line">
+										<div class="tit">협조부서</div>
+										<div class="txt"><input type="text" name="cooper_dept_id"/></div>
+									</div>
+									<div class="line">
+										<div class="tit">브랜드명</div>
+										<div class="txt"><input type="text" name="target_name"/></div>
+									</div>
+									<div class="line">
+										<div class="tit">시행일자</div>
+										<div class="txt"><input type="text" name="from_date"/></div>
+									</div>
+								</div>
+								
+								<h5>파일 첨부</h5>
+								<input type="file" class="with-validation-filepond"
+														required multiple data-max-file-size="10MB">
+								
+							</form>
 
 						</div>
 					</div> 

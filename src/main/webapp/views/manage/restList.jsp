@@ -37,6 +37,39 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<style >
+	.tit-area{
+		display: flex; 
+	}
+	
+	#home,#schedule{
+		width: 200px;
+	}
+	
+	h5 .count{
+		text-align: right;
+		margin-right: 10px;
+	}
+	.content{
+		display: flex; 
+		align-content: cetner;
+		border: 1px solid black;
+	}
+	
+	#searchLayout{
+	    display: flex;
+	    align-items: center; /* 세로 중앙 정렬 */
+   		justify-content: end; /* 가로 중앙 정렬 */
+    	gap: 10px; /* 요소 간 간격 */
+	}
+	
+	.selectStyle{
+		width: 15%;
+	}
+	.form-control{
+		width: 350px;
+	}
+</style>
 </head>
 
 <body>
@@ -45,36 +78,78 @@
 	<div id="app">
 
 		<!-- 사이드바 -->
-		<jsp:include page="sidebar.jsp" />
+		<jsp:include page="../sidebar.jsp" />
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="header.jsp" />
+			<jsp:include page="../header.jsp" />
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
+					<h4 class="menu-title">매장관리</h4>
+					<div class="buttons">							
+						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/rest/Write'">휴점 등록</button>
+					</div>
+	
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li class="active"><a href="/ad/rest/List">휴점신청</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
-
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>받은메일함</h5>
+							<h5>휴점 리스트</h5>
 						</div>
-						<div class="cont-body">  
-						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
+						<div class="cont-body">
+							<div class="row">
+								<div class="col-5 col-lg-5"></div>
+								<div id="searchLayout" class="col-7 col-lg-7">
+									<select class="form-select selectStyle">
+										<option>지점명</option>
+									</select>
+									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
+									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+								</div>
+							</div>
+							<div class="row">
+							<div class="col-12 col-lg-12">
+							<table>
+								<colgroup>
+									<col>
+									<col width="50%">
+									<col >
+									<col width="5%">
+									<col width="5%">
+								</colgroup>
+								<thead>
+									<tr>
+										<th>지점명</th>
+										<th class="align-l">휴점사유</th>
+										<th >휴점기간</th>
+										<th></th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>돼미남 강남점</td>
+										<td class="align-l elipsis">휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 
+										여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지</td>
+										<td>2024.12.11 ~ 2024.12.21</td>
+										<td onclick="location.href='/ad/rest/Update'">수정</td>
+										<td>아이콘</td>
+									</tr>
+								</tbody>
+							</table>
+							
 						
-
-						</div>
-					</div> 
+							
+							</div>
+							</div>
+						</div> 
+					</div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 				</section>
 			</div>
 		</div>
@@ -87,7 +162,9 @@
 
 
 <!-- 부트스트랩 -->
-
+<script src="/resources/assets/static/js/components/dark.js"></script>
+<script
+	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->
@@ -150,8 +227,54 @@
 				'<i class="bi bi-chevron-double-right"></i>');
 	}
 	
-	
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
 
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
+	
+	/* 알림 팝업 */
+	function btn1Act() {
+		// 1번버튼 클릭시 수행할 내용
+		console.log('1번 버튼 동작');
+
+		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+		removeAlert(); // 기존팝업닫기
+		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
+	}
+	
+	function btn2Act() {
+		// 2번버튼 클릭시 수행할 내용
+		console.log('2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
+	}
+
+	function secondBtn2Act() {
+		// 두번째팝업 2번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		
+	}
+	
+	function thirdBtn1Act(){
+		console.log('세번째 팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function thirdBtn2Act(){
+		console.log('세번째 팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
 
 
 </script>
