@@ -70,6 +70,6 @@ function getSuccess(response) {
 // 리소스 로드 및 초기화
 loadResources(function () {
     $(document).ready(function () {
-        getAjax('/menu_tree'); // getAjax 호출
+        getAjax('/setChart'); // getAjax 호출
     });
 });
