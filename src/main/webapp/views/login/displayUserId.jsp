@@ -39,10 +39,6 @@
         text-align: center;
     }
 
-    input::placeholder {
-        font-size: 14px;
-    }
-
     a {
         font-size: 14px;
     }
@@ -52,6 +48,14 @@
         align-items: center;
         margin-bottom: 20px;
     }
+    
+    #usernameResult {
+		background-color : #fff;
+	 	justify-items: center;
+    	align-content: center;
+    	font-weight: 700;
+    	font-size: 18px;
+	}
 </style>
 </head>
 
@@ -73,8 +77,8 @@
 							<div style="margin-bottom: 10px;">
 								<p class="text-subtitle text-muted findText">입력된 정보와 일치하는 아이디입니다.</p>
 							</div>
-							<div class="form-group position-relative has-icon-left">
-								<input type="text" name="name" class="form-control" />
+							<div class="form-group position-relative">
+								<input type="text" name="name" class="form-control" value="${username}" disabled="disabled" id="usernameResult"/>
 							</div>
 							<div>
 								<a href="#">비밀번호 찾기</a> | <a href="#">로그인</a>

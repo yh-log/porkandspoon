@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.porkandspoon.dao.TestDAO">
 
 	<!-- 직원 id, pw 등록 -->
-	<insert id="joinWrite" parameterType="kr.co.porkandspoon.dto.MemberDTO">
+	<insert id="joinWrite" parameterType="kr.co.porkandspoon.dto.UserDTO">
 		INSERT INTO user(username, password) VALUES(#{username}, #{password})
 	</insert>
 	

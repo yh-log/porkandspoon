@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.MemberDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.TestService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -167,7 +167,7 @@ public class TestController {
 	 * 회원 등록 기능 (비밀번호 암호화 해서 저장)
 	 */
 	@PostMapping(value="/joinWrite")
-	public Map<String, Object> joinWrite(@ModelAttribute MemberDTO dto){
+	public Map<String, Object> joinWrite(@ModelAttribute UserDTO dto){
 		
 		System.out.println("=======================" + CommonUtil.dtoToString(dto));
 		

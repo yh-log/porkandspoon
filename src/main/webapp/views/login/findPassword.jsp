@@ -29,6 +29,9 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+	
 <style>
     .login-container {
         background: #ffffff;
@@ -105,6 +108,16 @@
 	    margin: 0px;
 	}
 	
+	#timeChack{
+		font-size: 12px;
+		color: red;
+		margin-left: 15px;
+		width: 35px;
+	}
+	#certificationChackBox{
+		left: 22px;
+	}
+	
 </style>
 
 
@@ -149,24 +162,24 @@
 								<p class="textLayout">이메일</p>
 								<div class="input-wrapper">
 									<input type="email" name="email" class="form-control" placeholder="이메일을 입력하세요"/>
-									<button class="btn btn-sm btn-outline-primary">인증</button>
+									<button class="btn btn-sm btn-outline-primary" onclick="certificationSubmit()" id="certificationBtn">인증</button>
 								</div>
 								<div class="form-control-icon">
 									<i class="bi bi-envelope"></i>
 								</div>
 							</div>
-							<div class="form-group position-relative has-icon-left" id="certificationChackBox">
+							<div class="form-group position-relative has-icon-left" id="certificationChackBox" style="display: none">
 								<p class="textLayout">인증번호</p>
 								<div class="input-wrapper">
 									<input type="text" name="certification" class="form-control" placeholder="인증번호를 입력하세요"/>
-									<button class="btn btn-sm btn-outline-primary">확인</button>
+									<span id="timeChack">0:00</span>
 								</div>
 								<div class="form-control-icon">
 									<i class="bi bi-person-fill-lock"></i>
 								</div>
 							</div>
 							<div>
-								<button class="btn btn-lg btn-primary disabled">비밀번호 찾기</button>
+								<button class="btn btn-lg btn-primary disabled" type="button" id="findIdBtn" onclick="findUserId()">비밀번호 변경</button>
 							</div>
 							<div>
 								<a href="#">아이디 찾기</a> | <a href="#">로그인</a>
@@ -202,6 +215,7 @@
 	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/user.js'></script>
 <script>
 
 

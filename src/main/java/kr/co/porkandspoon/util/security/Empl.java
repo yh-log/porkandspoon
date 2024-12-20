@@ -16,6 +16,8 @@ public class Empl {
 	
 	private String role;
 
+	private String name;
+	
 
 	public String getUsername() {
 		return username;
@@ -40,8 +42,16 @@ public class Empl {
 	public void setRole(String role) {
 		this.role = role;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
-	
+
 	
 
 }

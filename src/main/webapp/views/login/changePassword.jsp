@@ -29,6 +29,9 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+	
 <style>
     .login-container {
         background: #ffffff;
@@ -130,14 +133,14 @@
 							</div>
 							<div class="form-group position-relative has-icon-left">
 								<p class="textLayout">비밀번호</p>
-								<input type="text" name="name" class="form-control" placeholder="비밀번호 입력"/>
+								<input type="password" name="checkPassword" class="form-control" placeholder="비밀번호 입력"/>
 								<div class="form-control-icon">
 									<i class="bi bi-shield-lock"></i>
 								</div>
 							</div>
 							<div class="form-group position-relative has-icon-left">
 								<p class="textLayout">비밀번호 확인</p>
-								<input type="text" name="username" class="form-control" placeholder="비밀번호 재입력"/>
+								<input type="password" name="password" class="form-control" placeholder="비밀번호 재입력"/>
 								<div class="form-control-icon">
 									<i class="bi bi-shield-lock"></i>
 								</div>
@@ -145,7 +148,7 @@
 							<div>
 							</div>
 							<div>
-								<button class="btn btn-lg btn-primary disabled">비밀번호 변경</button>
+								<button class="btn btn-lg btn-primary" onclick="changePassword()">비밀번호 변경</button>
 							</div>
 							<div>
 								<a href="#">로그인</a>
@@ -162,11 +165,6 @@
 	</div>
 </body>
 
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
@@ -181,8 +179,17 @@
 	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/user.js'></script>
 <script>
 
+
+function changePassword(){
+	
+	var params = {'password' : $('input[name="password"]').val()};
+	
+	httpAjax('PUT', '/changePassword', params);
+	
+}
 
 
 
