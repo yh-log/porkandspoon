@@ -151,6 +151,10 @@
 	th{
 		width: 20%;
 	}
+	.coutn-dis{
+		display: flex;
+		align-items: center;
+	}
 
 </style>
 </head>
@@ -174,7 +178,7 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>회의실 등록</h5>
+                  <h5>203A 회의실 수정</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -186,15 +190,20 @@
 	                  	</tr>
 	                  	<tr>
 	                  		<th>회의실 명</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
+	                  		<td><input class="form-control sor-1" type="text" name="subject" value="203A 회의실"/></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>수용 인원</th>
-	                  		<td><input class="form-control sor-1" type="text" name="count" maxlength="2"/></td>
+	                  		<td class="coutn-dis">
+	                  			<input class="form-control sor-1" type="text" name="count" maxlength="2" style="width: 50px;" value="20"/>
+	                  			<p style="margin-left: 10px; margin-bottom: 0px;">명</p>
+	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content"></textarea></td>
+	                  		<td>
+	                  			<textarea class="form-control art" name="content">회의실이 안락합니다.</textarea>
+	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>활성 상태</th>

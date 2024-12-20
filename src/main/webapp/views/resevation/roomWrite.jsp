@@ -133,23 +133,33 @@
     	align-items: center;
     	margin: 20px;
 	}
+	
 	.write-form2{
 		margin-left: 43px;
 	}
+	
 	.art{
     	height: 270px;
     	resize: none;
 	}
+	
 	.write-form-3{
 		display: flex;
     	margin: 20px;
 	}
+	
 	.btn-room{
 		display: flex;
     	justify-content: center;
 	}
+	
 	th{
 		width: 20%;
+	}
+	
+	.coutn-dis{
+		display: flex;
+		align-items: center;
 	}
 
 </style>
@@ -190,7 +200,10 @@
 	                  	</tr>
 	                  	<tr>
 	                  		<th>수용 인원</th>
-	                  		<td><input class="form-control sor-1" type="text" name="count" maxlength="2"/></td>
+	                  		<td class="coutn-dis">
+	                  			<input class="form-control sor-1" type="text" name="count" maxlength="2" style="width: 50px;"/>
+	                  			<p style="margin-left: 10px; margin-bottom: 0px;">명</p>
+	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
