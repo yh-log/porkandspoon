@@ -212,7 +212,7 @@
 	                  	<tr>
 	                  		<th>수량</th>
 	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="number" name="count" style="width: 50px;" maxlength="2" value="20"/>
+	                  			<input class="form-control sor-1" type="text" name="count" style="width: 50px;" maxlength="2" value="20"/>
 	                  			<p style="margin-left: 10px; margin-bottom: 0px;">개</p>
 	                  		</td>
 	                  	</tr>
