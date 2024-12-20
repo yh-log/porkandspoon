@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -191,7 +192,7 @@
 										</tr>
 										<tr>
 											<th>기안일</th>
-											<td><input type="text" name="create_date" value="" readonly/></td>
+											<td><input type="text" name="today" value="" readonly/></td>
 										</tr>
 										<tr>
 											<th>소속</th>
@@ -252,7 +253,7 @@
 									</div>
 									<div class="line">
 										<div class="tit">시행일자</div>
-										<div class="txt"><input type="text" name="from_date"/></div>
+										<div class="txt"><input type="date" name="from_date"/></div>
 									</div>
 								</div>
 								<div class="editor-area">
@@ -262,6 +263,13 @@
 								
 								<h5>파일 첨부</h5>
 								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
+								
+								
+								<!--check!!! 나중에 빼기  -->
+								<c:if test="${not empty error}">
+								    <div class="error-message">${error}</div>
+								</c:if>
+								
 								
 							</form>
 
@@ -310,7 +318,13 @@ const year = today.getFullYear();
 const month = today.getMonth() + 1; 
 const date = today.getDate();  
 
-document.querySelector('input[name="create_date"]').value = year + '-' + month + '-' + date;
+document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
+
+function fileSuccess(response){
+	console.log("파일성공");
+	console.log(response);
+	console.log("성공??",response.success);
+}
 
 //var loginId = '${pageContext.request.userPrincipal.name}';
 //console.log('로그인아이디',loginId);
@@ -321,7 +335,6 @@ document.querySelector('input[name="create_date"]').value = year + '-' + month +
 
 function getSuccess(response){
 	var userDTO = response.userDTO;
-	userDTO.name
 	console.log(response.userDTO.name);
 	
 } */

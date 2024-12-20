@@ -1,22 +1,24 @@
 package kr.co.porkandspoon.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import kr.co.porkandspoon.dto.UserDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.co.porkandspoon.dto.ApprovalDTO;
+import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.service.ApprovalService;
 
 @RestController
@@ -47,12 +49,53 @@ public class ApprovalController {
 //		return result;
 //	}
 	
+	// 기안문 저장
+	// 일단 가져오기만함 (파라미터 runBoardDTO 수정하기!! => DTO하나 만들어서 그걸로 대체+ img배열 담는 변수도 있어야함.)
 	@PostMapping(value="/draftWrite")
-	public ModelAndView draftWrite(@RequestParam Map<String, String> params) {
-		ModelAndView mav = new ModelAndView("/approval/draftDetail");
-		approvalService.draftWrite();
-		return mav;
+	public ModelAndView draftWrite(@RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO) {
+		ModelAndView mav = null;   
+		
+		logger.info("fromdate체크: "+approvalDTO.getFrom_date());
+		
+		// JSON 문자열을 ImageDTO 리스트로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<FileDTO> imgs = null;
+        try {
+            // TypeFactory를 사용하여 제네릭 타입을 처리하여 변환
+            imgs = objectMapper.readValue(imgsJson, objectMapper.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+            approvalDTO.setFileList(imgs);  // 변환한 이미지 리스트를 RunBoardDTO에 설정
+        } catch (Exception e) {
+            logger.error("파싱 오류 : {}", e.getMessage());
+            //return Map.of("error", e.getMessage());
+            mav = new ModelAndView("/approval/draftWrite"); //check!!! 호출한곳으로 돌려보내야하는데 (새로 데이터 싹 날라가진 않는지)
+            mav.addObject("error", e.getMessage());
+            return mav; //check!!! 이게 의미가 있는지
+        }
+        
+        // 변환된 이미지 리스트 확인
+        if (imgs != null && !imgs.isEmpty()) {
+            for (FileDTO img : imgs) {
+                logger.info("Original Filename: " + img.getOri_filename());
+                logger.info("New Filename: " + img.getNew_filename());
+            }
+        }
+        
+        logger.info("imgDTO : " + approvalDTO.toString());
+        
+		
+		//mav = new ModelAndView("/approval/draftDetail");
+        ModelAndView mmav = new ModelAndView("redirect:/approval/detail");
+		mmav.addObject("success", "이미지 저장성공");
+		logger.info("여기까지옴: " );
+		//approvalService.draftWrite();
+		return mmav;
 	}
 	
+	@GetMapping(value="/approval/detail")
+	public ModelAndView draftDetailView() {
+		ModelAndView mav = new ModelAndView("/approval/draftDetail");  
+		//mav.addObject("userDTO", approvalService.getUserInfo(loginId));
+		return mav;
+	}
 	
 }
