@@ -101,6 +101,7 @@ function httpSuccess(response){
     loadCalender(section);    
 }
 
+
 // 일정 불러오기 완료 후 함수
 function getSuccess(response){
 	var event = [];

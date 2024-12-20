@@ -9,4 +9,6 @@ public interface CalenderDAO {
 
 	List<Map<String, Object>> calenderList();
 
+	int calenderWrite(Map<String, Object> params);
+
 }

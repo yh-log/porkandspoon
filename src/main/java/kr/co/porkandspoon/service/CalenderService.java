@@ -20,10 +20,11 @@ public class CalenderService {
 	public List<Map<String, Object>> calenderList() {
 		return calenderDao.calenderList();
 	}
-
-	public Object calenderWrite(Map<String, Object> params) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	// 일정 등록
+	public boolean calenderWrite(Map<String, Object> params) {
+		return calenderDao.calenderWrite(params) > 0 ? true : false;
 	}
+	
 
 }

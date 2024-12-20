@@ -60,7 +60,7 @@
 	    background: #fff;
 	    padding: 20px;
 	    border-radius: 8px;
-	    width: 400px;
+	    width: 800px;
 	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	}
 
@@ -87,10 +87,18 @@
 	.form-label {
 	    display: block;
 	    font-size: 14px;
-	    margin-bottom: 5px;
+	    
 	}
 	
 	.form-input {
+	    width: 30%;
+	    padding: 8px;
+	    font-size: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 4px;
+	}
+	
+	.form-input1 {
 	    width: 100%;
 	    padding: 8px;
 	    font-size: 14px;
@@ -144,9 +152,9 @@
 					<div id="calendarBox">
 						<div id='calendar'></div>
 					</div>
-					<div id="calendarModal" class="modal" style="display: none;">
-					   <div class="modal-content"></div>
-					</div>   
+					<div id="modalBox" class="modal" style="display: none;">
+					    <div class="modal-content"></div>
+					</div> 
                </div>
             </div>
          </section>   
@@ -163,11 +171,72 @@
 <script src='/resources/js/calender.js'></script>
 
 <script>
-var section= 'calender';
 
-$(document).ready(function () {
-	loadCalender(section);
-});
+	var section= 'calender';
+	
+	$(document).ready(function () {
+		loadCalender(section);
+		dataSetting('calender', 'Input');
+	});
+	
+	function setModalData(data){
+		console.log(data);
+	}
+	
+	document.addEventListener('click', function (event) {
+	    if (event.target && event.target.id === 'addSchedule') {
+	    	console.log('일정 등록 클릭');
+	        // 입력 데이터 가져오기
+	        var start_date = document.getElementById('calendar_start_date').value; // 시작일
+	        console.log(start_date,'시작일');
+	        var end_date = document.getElementById('calendar_end_date').value; // 종료일
+	        console.log(end_date,'종료일');
+	        var subject = document.getElementById('calendar_subject').value; // 일정 제목
+	        console.log(subject,'제목');
+	        var content = document.getElementById('calendar_content').value; // 일정 내용
+	        console.log(content,'내용');
+
+	        // 입력값 유효성 검사
+	        if (!content) {
+	            alert("일정 내용을 입력하세요.");
+	            return;
+	        }
+	        if (!start_date || !end_date) {
+	            alert("시작일과 종료일을 입력하세요.");
+	            return;
+	        }
+	        if (new Date(start_date) > new Date(end_date)) {
+	            alert("종료일은 시작일 이후여야 합니다.");
+	            return;
+	        }
+	        if (!subject) {
+	            alert("일정 제목을 입력하세요.");
+	            return;
+	        }
+
+	        // 서버로 전송할 데이터
+	        var params = {
+	            subject: subject,
+	            content: content,
+	            start_date: start_date,
+	            end_date: end_date,
+	        };
+
+	        // 서버 요청
+	        httpAjax('POST', '/calenderWrite', params);
+
+	        // 모달 닫기 및 초기화
+	        initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+	    }
+	});
+
+	
+	function httpSuccess(response){
+	    loadCalender(section);    
+	    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
+	    initializeModal(arr);
+	}
+	
 	
 </script>
 </html>

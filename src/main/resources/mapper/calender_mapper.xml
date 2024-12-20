@@ -10,4 +10,9 @@
 		SELECT * FROM schedule
 	</select>
 	
+	<insert id="calenderWrite" parameterType="map">
+		INSERT INTO schedule(username,start_date,end_date,subject,content,type)
+							VALUES('테스트네임1',#{start_date},#{end_date},#{subject},#{content},'P')
+	</insert>
+	
 </mapper>

@@ -39,6 +39,7 @@ public class CalenderController {
 		return resultMap;
 	}
 	
+	// 일정 등록 ajax
 	@PostMapping(value="/calenderWrite")
 	public Map<String, Object> calenderWrite(@RequestParam Map<String, Object> params){
 		
