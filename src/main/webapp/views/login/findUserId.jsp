@@ -111,6 +111,7 @@
 		font-size: 12px;
 		color: red;
 		margin-left: 15px;
+		width: 35px;
 	}
 	#certificationChackBox{
 		left: 22px;
@@ -153,7 +154,7 @@
 								<p class="textLayout">이메일</p>
 								<div class="input-wrapper">
 									<input type="email" name="email" class="form-control" placeholder="이메일을 입력하세요"/>
-									<button class="btn btn-sm btn-outline-primary" onclick="findUserId()">인증</button>
+									<button class="btn btn-sm btn-outline-primary" onclick="findUserId()" id="certificationBtn">인증</button>
 								</div>
 								<div class="form-control-icon">
 									<i class="bi bi-envelope"></i>
@@ -163,7 +164,7 @@
 								<p class="textLayout">인증번호</p>
 								<div class="input-wrapper">
 									<input type="text" name="certification" class="form-control" placeholder="인증번호를 입력하세요"/>
-									<span id="timeChack">02:00</span>
+									<span id="timeChack">0:00</span>
 								</div>
 								<div class="form-control-icon">
 									<i class="bi bi-person-fill-lock"></i>
@@ -208,25 +209,43 @@
 <script src='/resources/js/common.js'></script>
 <script>
 
+	var time; // 2분
+	
+	function formatTime(seconds){
+		var minutes = Math.floor(seconds/60); // 분 계산 
+		var secs = seconds % 60; // 초 계산 (초를 60으로 나눈 나머지)
+		
+		
+		return minutes + ' : ' + secs;
+		
+	};
+
 	function findUserId(){
-		
-		var params = {'name' : $('input[name="name"]').val(), 'email' : $('input[name="email"]').val()}
-		
-		//httpAjax('POST', '/sendMail', params);
+		time = 120;
+		var params = {'name' : $('input[name="name"]').val(), 'email' : $('input[name="email"]').val()};
 		
 		$('#certificationChackBox').show();
 		document.getElementById('findIdBtn').classList.remove('disabled');
+		document.getElementById('certificationBtn').classList.add('disabled');
 		
+		var showTime = document.getElementById('timeChack');
 		
-		
-		setInterval(() => {
-			// 실행 함수 입력
+		var count = setInterval(() => {
 			
+			time--;
 			
-		}, 1000);
-		
-		
+			showTime.innerHTML = formatTime(time);
+			
+			if(time == 0){
+				clearInterval(count);
+				document.getElementById('findIdBtn').classList.add('disabled');
+				document.getElementById('certificationBtn').classList.remove('disabled');
+				
+			}
+		}, 100)
 	}
+		
+
 
 
 </script>
