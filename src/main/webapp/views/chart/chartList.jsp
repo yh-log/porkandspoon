@@ -38,23 +38,61 @@
 	
 	/* 조직도 모달 */
 	#modal .modal-cont-chart {
-	    width: 800px;
-	    height: 500px;
+	    width: 900px;
+	    height: 451px;
 	    top: 20%;
 	}
 	
-	.chart-btn {
+	/* 조직도, 나의 결재선 버튼 스타일 변경 */
+	.chart-btn-style {
 		width: 100%;
 	    height: 100%;
 	    background-color: white;
 	    border: white;
 	}
 	
-	.chart-mybtn {
+	/* 조직도, 나의 결재선 td 높이 설정 */
+	.chart-td {
+		padding: 4px 16px;
+	}
+	
+	/* 조직도 리스트 스타일 변경 */
+	.chart-scroll {
+		text-align: left;
 		width: 100%;
-	    height: 100%;
-	    background-color: white;
-	    border: white;
+		height: auto;
+		overflow: auto;
+	}
+	
+	/* 조직도 리스트 스크롤을 위해 높이 지정 */
+	.chart-list-style {
+		width: 100%;
+	    height: 227px;
+	}
+	
+	/* 검색된 부서 및 사원 색상 변경 */
+	.jstree-default .jstree-search {
+	    font-style: normal;
+	    color: #393939;
+	    background-color: #cde7ff;
+	    font-weight: bold;
+	    border-radius: 6px;
+	}
+	
+	/* 조직도 검색창 스타일 변경 */
+	.chart-search {
+		padding: 3px 16px;
+	}
+	
+	/* 조직도 테이블 왼, 오 선 생성 */
+	.tbody-style {
+		border-left: 1px solid gainsboro;
+		border-right: 1px solid gainsboro;
+	}
+	
+	.chart-move-btn {
+		background-color: #b5b4b4;
+		cursor: pointer;
 	}
 </style>
 <body>
@@ -86,22 +124,83 @@
 												<div class="card">
 													<table>
 														<thead></thead>
-														<tbody>
+														<tbody class="tbody-style">
 															<tr>
-																<td class="chart-btn-td"><button class="chart-btn">조직도</button></td>
-																<td class="chart-mybtn-td"><button class="chart-mybtn">나의 결재선</button></td>
+																<td class="chart-btn-td chart-td"><button class="chart-btn chart-btn-style">조직도</button></td>
+																<td class="chart-mybtn-td chart-td"><button class="chart-mybtn chart-btn-style">나의 결재선</button></td>
 															</tr>
 															<tr>
-																<td>
-																	<div class="jstree" id="jstree"></div>
-																	<div class="myjstree" id="myjstree">테스트</div>
+																<td colspan="2" class="chart-search">
+																	<input class="form-control form-control-sm input-test" type="text" placeholder="이름/부서/직급으로 검색 가능합니다.">
+																</td>
+															</tr>
+															<tr>
+																<td colspan="2" class="chart-scroll">
+																	<div class="jstree chart-list-style" id="jstree"></div>
+																	<div class="myjstree chart-list-style" id="myjstree">테스트</div>
 																</td>
 															</tr>
 														</tbody>
 													</table>
 												</div>
 										</div>
-										<div class="col-sm-8"></div>
+										<div class="col-sm-1"></div>
+										<div class="col-sm-7">
+											<div class="card">
+												<table>
+													<colgroup>
+														<col />
+														<col width="23%" />
+														<col width="23%" />
+														<col width="23%" />
+														<col width="23%" />
+													</colgroup>
+													<thead></thead>
+													<tbody>
+														<tr>
+															<td>1</td>
+															<td>2</td>
+															<td>3</td>
+															<td>4</td>
+															<td>5</td>
+														</tr>
+														<tr>
+															<td rowspan="2" class="chart-move-btn chart-user-in">0</td>
+															<td class="chart-td">1</td>
+															<td class="chart-td">2</td>
+															<td class="chart-td">3</td>
+															<td class="chart-td">4</td>
+														</tr>
+														<tr>
+															<td>2</td>
+															<td>3</td>
+															<td>4</td>
+															<td>5</td>
+														</tr>
+														<tr>
+															<td rowspan="2" class="chart-move-btn chart-user-out">1</td>
+															<td>2</td>
+															<td>3</td>
+															<td>4</td>
+															<td>5</td>
+														</tr>
+														<tr>
+															<td>2</td>
+															<td>3</td>
+															<td>4</td>
+															<td>5</td>
+														</tr>
+														<tr>
+															<td>1</td>
+															<td>2</td>
+															<td>3</td>
+															<td>4</td>
+															<td>5</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -123,40 +222,34 @@
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <script>
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	$('.btn-popup').on(
-			'click',
-			function() {
-				layerPopup('~~~하시겠습니까?222', '확인2', '취소2', secondBtn1Act,
-						secondBtn2Act);
-			});
-	
-	/* 모달(임시) */
+
+	/* 조직도 모달 */
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
+		
+		/*
+			나의 결재선  숨기기
+			처음 킬 때 열린 곳 td 선 진하게 표시
+			조직도 전체 열기
+			선택된 노드 표시하기
+		*/
+		$("#jstree").jstree("open_all");
+		$('#myjstree').hide();
+		$('.chart-btn-td').css({'border-bottom': '1px solid gray'});
+		firstNode.find("a").attr('aria-selected',true);
+		firstNode.find("a").addClass('jstree-clicked');
 	});
 	
 	$('#modal .close').on('click', function() {
 		$('#modal').hide();
 	});
 	
-	/* 처음 조직도 모달창 켰을 때 조직도, 조직도 td 색변경만 보이게 / 나의 결재선 숨김처리 */
-	$('#myjstree').hide();
-	$('.chart-btn-td').css({'border-bottom': '1px solid gray'});
 	
 	/* 조직도 버튼 클릭 시 조직도 버튼 show 나의 결재선 hide */
 	$('.chart-btn').on('click', function(){
+		
+		/* 조직도 전체 열기 */
+		$("#jstree").jstree("open_all");
 		
 		/* 다른 td 스타일 초기화 */
 		$('td').css({
@@ -192,6 +285,31 @@
 	        'border-bottom': '1px solid gray', 
 	    });
 	})
+	
+	/* 실시간 검색 코드 */
+	let searchTimeout = null;
+    $('.input-test').on('input', function () {
+        let search = $(this).val();
+
+        // 이전 타임아웃 제거
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+
+        // 입력 후 300ms 후에 검색 실행
+        searchTimeout = setTimeout(function () {
+            $('#jstree').jstree('search', search);
+        }, 300);
+    });
+    
+    $('.chart-user-in').on('click', function() {
+
+    	console.log('추가 버튼');
+    })
+    
+    $('.chart-user-out').on('click', function () {
+    	console.log('빼기 버튼');
+    })
 </script>
 
 </html>
