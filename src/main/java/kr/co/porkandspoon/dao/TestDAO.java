@@ -6,13 +6,13 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.MemberDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
 public interface TestDAO {
 
 	// 직원 id, pw 등록
-	int joinWrite(MemberDTO dto);
+	int joinWrite(UserDTO dto);
 
 	// 캘린더 일정 작성
 	int scheduleWrite(Map<String, Object> params);
