@@ -9,7 +9,7 @@ import kr.co.porkandspoon.dto.MealDTO;
 @Mapper
 public interface MealDAO {
 
-	List<MealDTO> getMealMenu();
+	List<MealDTO> getMealMenu(String is_time);
 
 	
 	

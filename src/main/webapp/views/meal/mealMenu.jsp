@@ -32,25 +32,29 @@
 	
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
-	
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>	
 <style>
   #calendarBox {
-    width: 80%;
-    height: 750px;
-    padding-left: 15%;
-    position: relative; /* 상대 위치 지정 */
-}
+    width: 100%;
+    max-width: 900px; /* 최대 너비 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
+    padding: 0 15px; /* 좌우 여백 */
+    box-sizing: border-box; /* 테두리 및 패딩 포함 */
+    position: relative; /* 셀렉트바 위치 조정을 위해 relative 사용 */
+  }
+
+  #calender {
+    width: 100%; /* 부모 컨테이너에 맞게 너비 조정 */
+    height: auto; /* 높이를 자동으로 */
+  }
 
 .select {
-    width: 200px;
-    position: absolute; /* 절대 위치 지정 */
-    right: 0; /* 오른쪽 정렬 */
-    margin-bottom: 10px;
+    width: auto; /* 자동 너비 설정 */
+    position: absolute;
+    
+    right: 15px; /* 캘린더 박스 오른쪽 정렬 */
 }
-    #calendar{
-     height: 750px;
-    }
-
     /* 기본 모달 스타일 */
 	.modal {
 	    display: none;
@@ -132,6 +136,14 @@
 		justify-content: flex-end; 
 		margin-bottom: 10px;
 	}
+	 
+    .fc-prevYear-button, .fc-nextYear-button, .fc-today-button {
+        display: none !important; /* 양쪽 화살표와 today 버튼 숨김 */
+    }
+    .fc-dayGridMonth-button, .fc-timeGridWeek-button, .fc-timeGridDay-button {
+        display: none !important; /* 보기 전환 버튼 숨김 */
+    }
+	
 </style>
 </head>
 <body>
@@ -163,16 +175,15 @@
 					<div id="calendarBox">
 					
 					<div class="select" >
-				        <select class="form-select short" id="mealTypeSelector">
-
-				            <option value="breakfast">아침</option>
-				            <option value="lunch">점심</option>
-				            <option value="dinner">저녁</option>
+				        <select class="form-select short" id="mealTypeSelector" name="is_time">
+				            <option value="B" selected="selected">아침</option>
+				            <option value="L">점심</option>
+				            <option value="D">저녁</option>
 				        </select>
 				    </div>
 											
 							
-						<div id='calendar'></div>
+						<div id='calender'></div>
 					</div>
 					
 					<div id="calendarModal" class="modal" style="display: none;">
@@ -194,9 +205,76 @@
 <script src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/meal/calendar.js'></script>
+<script src='/resources/js/calender.js'></script>
 
 <script>
-	
+url = "/ad/mealMenu";
+var is_time = $('#mealTypeSelector').val();
+$(document).ready(function () {
+	//loadCalender(section);
+	// 캘린더 초기화
+	initializeCalendar();
+});
+
+var result = getAjax(url);
+
+console.log(response);
+
+
+ 
+
+/* document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calender');
+    var mealTypeSelector = document.getElementById('mealTypeSelector');
+    var calendar;
+
+    // 캘린더 데이터 로드 함수
+    function loadEvents(is_time) {
+        var url = '/ad/mealMenu/${is_time}`;
+        	getAjax(url)
+    }
+
+    // 캘린더 업데이트 함수
+    function updateCalendar(events) {
+        var formattedEvents = events.map(function (item) {
+            return {
+                title: item.content, // DB의 content 컬럼 사용
+                start: item.start_date, // 시작 날짜
+                end: item.end_date // 끝 날짜
+            };
+        });
+
+        calendar.removeAllEvents(); // 기존 이벤트 제거
+        calendar.addEventSource(formattedEvents); // 새로운 이벤트 추가
+    }
+
+    // FullCalendar 초기화
+    calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid'],
+        header: {
+            left: 'prev,next',
+            center: 'title',
+            right: ''
+        },
+        locale: 'ko',
+        buttonText: {
+            today: '오늘'
+        },
+        initialView: 'dayGridMonth',
+        events: [] // 초기 이벤트 빈 배열
+    });
+
+    calendar.render();
+
+    // 초기값 설정 및 데이터 로드
+    var initialMealType = mealTypeSelector.value; // 기본 아침 메뉴
+    loadEvents(initialMealType);
+
+    // 셀렉트 박스 값 변경 시 데이터 갱신
+    mealTypeSelector.addEventListener('change', function () {
+        var selectedMealType = mealTypeSelector.value;
+        loadEvents(selectedMealType);
+    });
+}); */
 </script>
 </html>

@@ -4,7 +4,9 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.MealDAO">
-	<select id="getMealMenu" resultType="kr.co.porkandspoon.dto.MealDTO">
-	  SELECT menu_idx,is_time,content,meal_date FROM meal_menu
-	</select>
+	 <select id="getMealMenu" parameterType="String" resultType="kr.co.porkandspoon.dto.MealDTO">
+        SELECT menu_idx, is_time, content, start_date, end_date
+        FROM meal_menu
+        WHERE is_time = #{is_time}
+    </select>
 </mapper>

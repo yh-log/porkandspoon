@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,14 +27,23 @@ public class MealController {
 		return new ModelAndView("/meal/mealTicket");
 	}
 	
-	@GetMapping(value="/ad/mealMenu/{is_time}")
-	public ModelAndView mealMenuView(@PathVariable String is_time) {
-		List<MealDTO> list = mealService.getMealMenu();
-		ModelAndView mav = new ModelAndView("/meal/mealMenu");
+	@GetMapping(value="/ad/mealMenu") // {is_time}
+	public ModelAndView mealMenuView() { 
+		
+		return new ModelAndView("/meal/mealMenu");
+	}
+	
+	@GetMapping(value="/ad/mealMenu/{is_time}") // {is_time}
+	public ModelAndView mealMenuView(@RequestParam(defaultValue = "B") String is_time) { 
+		logger.info(is_time);
+		List<MealDTO> list = mealService.getMealMenu(is_time);
 		logger.info("list: {}",list.get(0));
+		ModelAndView mav = new ModelAndView("/meal/mealMenu");
 		mav.addObject("mealList",list);
 		return mav;
 	}
+	 
+	
 	
 	@GetMapping(value="/ad/mealMenu/Write")
 	public ModelAndView mealMenuWriteView() {

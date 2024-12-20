@@ -17,9 +17,9 @@ public class MealService {
 	
 	@Autowired MealDAO mealDAO;
 
-	public List<MealDTO> getMealMenu() {
+	public List<MealDTO> getMealMenu(String is_time) {
 		
-		return mealDAO.getMealMenu();
+		return mealDAO.getMealMenu(is_time);
 	}
 	
 	
