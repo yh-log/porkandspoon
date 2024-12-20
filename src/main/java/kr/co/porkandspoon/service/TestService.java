@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.porkandspoon.dao.TestDAO;
 import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.MemberDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 
@@ -33,7 +33,7 @@ public class TestService {
 	 * author yh.kim (24.12.6)
 	 * 직원 id, pw 등록
 	 */
-	public boolean joinWrite(MemberDTO dto) {
+	public boolean joinWrite(UserDTO dto) {
 		return testDao.joinWrite(dto) > 0 ? true : false;
 	}
 	
