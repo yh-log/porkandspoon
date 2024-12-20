@@ -4,5 +4,14 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.ApprovalDAO">
-	
+	<select id="getUserInfo" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT 
+			name, d.text
+			FROM 
+				user u
+			JOIN department d
+			ON  u.parent = d.id
+			WHERE 
+				username = #{loginId}
+	</select>
 </mapper>
