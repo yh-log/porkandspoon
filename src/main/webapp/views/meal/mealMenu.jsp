@@ -34,9 +34,21 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 	
 <style>
-    #calendarBox{
-        width: 80%;
-        padding-left: 15%;
+  #calendarBox {
+    width: 80%;
+    height: 750px;
+    padding-left: 15%;
+    position: relative; /* 상대 위치 지정 */
+}
+
+.select {
+    width: 200px;
+    position: absolute; /* 절대 위치 지정 */
+    right: 0; /* 오른쪽 정렬 */
+    margin-bottom: 10px;
+}
+    #calendar{
+     height: 750px;
     }
 
     /* 기본 모달 스타일 */
@@ -113,6 +125,13 @@
 	    cursor: pointer;
 	    border-radius: 4px;
 	}
+	
+	.select{
+		width: 200px;
+		display: flex; 
+		justify-content: flex-end; 
+		margin-bottom: 10px;
+	}
 </style>
 </head>
 <body>
@@ -142,6 +161,17 @@
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
 					<div id="calendarBox">
+					
+					<div class="select" >
+				        <select class="form-select short" id="mealTypeSelector">
+
+				            <option value="breakfast">아침</option>
+				            <option value="lunch">점심</option>
+				            <option value="dinner">저녁</option>
+				        </select>
+				    </div>
+											
+							
 						<div id='calendar'></div>
 					</div>
 					
@@ -164,7 +194,7 @@
 <script src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/calender.js'></script>
+<script src='/resources/js/meal/calendar.js'></script>
 
 <script>
 	
