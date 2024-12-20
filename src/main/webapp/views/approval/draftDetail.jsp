@@ -5,7 +5,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>기안문 상세보기</title>
+
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -14,9 +18,7 @@
 	type="image/png">
 
 
-<!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+
 
 
 <!-- 부트스트랩 -->
@@ -29,64 +31,57 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- summernote -->
-	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-	
-	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
 <style>
-	.draftWrite table{
+	.draftDetail table{
 		border: 1px solid #ddd;
 		table-layout: auto;
 	}
-	.draftWrite table th, .draftWrite table td{
-		padding: 0 10px;
+	.draftDetail table th, .draftDetail table td{
+		padding: 4px 10px;
 		border-right: 1px solid #ddd;
 		border-width: 1px;
 	}
-	.draftWrite input{
+	.draftDetail input{
 		width: 100%;
 	    height: 100%;
 	    border: none;
     }
-	.draftWrite .top-area {
+	.draftDetail .top-area {
 		display: flex;
 	    justify-content: space-between;
 	}
-	.draftWrite .top-area > table {
+	.draftDetail .top-area > table {
 		width: 340px;
 	}
-	.draftWrite table.user_info th{
+	.draftDetail table.user_info th{
 		width: 120px;
 	}
-	.draftWrite table.user_info input {
+	.draftDetail table.user_info input {
 		width: 100%;
 		border: none;
 	}
-	.draftWrite table.appr_line {
+	.draftDetail table.appr_line {
 		width: 410px;
 	}
-	.draftWrite table.appr_line th{
+	.draftDetail table.appr_line th{
 		width: 44px;
 	}
-	.draftWrite table.appr_line .date{
+	.draftDetail table.appr_line .date{
 		font-size: 13px;
 	}
-	.draftWrite .buttons {
+	.draftDetail .buttons {
 	    border-bottom: 1px solid #ddd;
 	    padding: 4px 40px;
     }
-	.draftWrite .buttons .btn {
+	.draftDetail .buttons .btn {
 	    margin: 14px 2px;
 	}
-	.draftWrite h4.doc-subject{
+	.draftDetail h4.doc-subject{
 		margin: 20px 0 50px;
 		text-align: center;
 	}
 	
-	.draftWrite .btm-area {
+	.draftDetail .btm-area {
 		display: flex;
 		flex-wrap: wrap;
 		border-left: 1px solid #ddd;
@@ -94,17 +89,17 @@
 	 	margin-top : 40px;
 	}
 
-	.draftWrite .btm-area .line{
+	.draftDetail .btm-area .line{
 		display: flex;
 		width: 50%;
 	}
 	
-	.draftWrite .btm-area .line > div {
+	.draftDetail .btm-area .line > div {
 	    border-right: 1px solid #ddd;
 	    border-bottom: 1px solid #ddd;
 	}
 	
-	.draftWrite .btm-area .tit {
+	.draftDetail .btm-area .tit {
 		width: 160px;
 	    border-width: 1px;
 	    background: #f5f5f5;
@@ -113,13 +108,64 @@
 	    text-align: center;
 	}
 
-	.draftWrite .btm-area .txt {
+	.draftDetail .btm-area .txt {
 		width: calc(100% - 160px);
+	}
+	
+	.txt-area{
+		height: 400px;
+		border: 1px solid #ddd;
+    	border-top: none;
+	}
+	
+	
+	/* file */
+	div.attach_file {
+		border:1px solid #ddd;
+		border-top: none;
+	}
+	div.attach_file ul.file_wrap {
+		margin-top:0; 
+		background:#f5f5f5;
+	}
+	div.attach_file ul.file_wrap > li {
+		padding: 8px; 
+		border-top:1px solid #e6e6e6;
+	}
+	div.attach_file div.attach_file_header {
+		position:relative; 
+		background:#f7f7f7; 
+		padding:8px;
+	}
+	div.attach_file div.attach_file_header span.subject span.ic_file_s {
+		vertical-align:top; 
+		margin-top:0;
+	}
+	div.attach_file div.attach_file_header span.subject span.num {
+		margin-left:-1px;
+	}
+	div.attach_file div.attach_file_header span.subject span.etc {
+		font-size:11px; 
+		color:#777; 
+		letter-spacing:-1px;
+	}
+	div.attach_file div.attach_file_header span.subject span.etc strong {
+		color:red; 
+		font-weight:normal; 
+		letter-spacing:0;
+	}
+	div.attach_file span.btn_area {
+		position:absolute; 
+		top: 9px; 
+		right: 12px; 
+		margin-left:20px; 
+		text-align:right;
+	}
+	div.attach_file span.btn_area span.btn_wrap {
+		font-size: 13px;
 	}
 </style>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
@@ -134,7 +180,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftWrite">
+			<div class="page-content draftDetail">
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
@@ -153,10 +199,8 @@
 							<h5>결재 작성</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary">결재 요청</button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">임시저장</button>
-							<button href="#" class="btn btn-outline-primary">취소</button>
+							<button href="#" class="btn btn-outline-primary">돌아가기</button>
+							<button href="#" class="btn btn-outline-primary">수정(임시저장문서만)</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (브랜드 등록)</h4>
@@ -175,6 +219,10 @@
 										<tr>
 											<th>소속</th>
 											<td><input type="text" name="team_name" value="홍길동" readonly/></td>
+										</tr>
+										<tr>
+											<th>문서번호(임시저장문서는 X)</th>
+											<td><input type="text" name="document_number" value="B20241352" readonly/></td>
 										</tr>
 									</table>
 									
@@ -234,13 +282,23 @@
 										<div class="txt"><input type="text" name="from_date"/></div>
 									</div>
 								</div>
-								<div class="editor-area">
-									<textarea name="approvalCont" id="summernote" maxlength="10000"></textarea>
-									
-								</div>
+								<div class="txt-area"></div>
 								
-								<h5>파일 첨부</h5>
-								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
+								<div id="attachView">
+									<div class="attach_file" style="display:">
+										<div class="attach_file_header">
+											<span class="subject">
+												<span class="ic ic_file_s"></span>
+												<strong>첨부파일</strong>
+												<span class="num">0</span>개
+												<span class="size">(0.0Byte)</span>
+											</span>
+										</div>
+										<ul class="file_wrap" id="file_wrap"></ul>
+										<ul class="img_wrap" id="img_wrap" style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px; margin-top: 0px;"></ul>
+									</div>
+								</div>								
+
 								
 							</form>
 
@@ -252,11 +310,6 @@
 	</div>
 </body>
 
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
@@ -265,29 +318,30 @@
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
+<!-- 파일업로더 -->
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
+<script src="/resources/assets/extensions/filepond/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script>
+
 	
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/menu.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
-
-
 <script>
 
-
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	
 
 
 
