@@ -32,10 +32,19 @@ public class UserDTO extends ResponseDTO{
    private String code_name;      // 코드분류
    
    private String authentication; // 인증코드
+   private Integer idx;            // 인증코드 idx
    
+   private String type;
    
    // 부서테이블
    private String text; // 부서명
+   
+   public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
    
    public String getUsername() {
       return username;
@@ -176,16 +185,22 @@ public class UserDTO extends ResponseDTO{
    public void setAuthentication(String authentication) {
       this.authentication = authentication;
    }
-public String getText() {
-	return text;
-}
-public void setText(String text) {
-	this.text = text;
+   public Integer getIdx() {
+      return idx;
+   }
+   public void setIdx(Integer idx) {
+      this.idx = idx;
+   }
+   public String getType() {
+      return type;
+   }
+   public void setType(String type) {
+      this.type = type;
+   }
+   
+   
+
 }
 
-   
-   
-   
-   
 
-}
+
