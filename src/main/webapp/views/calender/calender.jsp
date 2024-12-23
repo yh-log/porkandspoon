@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -168,7 +169,7 @@
 <script src="resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/calender.js'></script>
+<script src='/resources/js/calenderJH.js'></script>
 
 <script>
 
@@ -176,13 +177,9 @@
 	
 	$(document).ready(function () {
 		loadCalender(section);
-		dataSetting('calender', 'Input');
 	});
 	
-	function setModalData(data){
-		console.log(data);
-	}
-	
+	// 일정 등록 이벤트
 	document.addEventListener('click', function (event) {
 	    if (event.target && event.target.id === 'addSchedule') {
 	    	console.log('일정 등록 클릭');
@@ -195,6 +192,8 @@
 	        console.log(subject,'제목');
 	        var content = document.getElementById('calendar_content').value; // 일정 내용
 	        console.log(content,'내용');
+	        var type = document.getElementById('calendar_type').value; // 일정 타입
+	        console.log(type,'타입');
 
 	        // 입력값 유효성 검사
 	        if (!content) {
@@ -216,12 +215,14 @@
 
 	        // 서버로 전송할 데이터
 	        var params = {
+	        	username:'${pageContext.request.userPrincipal.name}',
 	            subject: subject,
 	            content: content,
 	            start_date: start_date,
 	            end_date: end_date,
+	            type: type
 	        };
-
+	        
 	        // 서버 요청
 	        httpAjax('POST', '/calenderWrite', params);
 
@@ -230,11 +231,78 @@
 	    }
 	});
 
-	
 	function httpSuccess(response){
 	    loadCalender(section);    
 	    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
 	    initializeModal(arr);
+	}
+	
+	
+	// 일정 등록 ajax
+	function httpAjax(type, url, params) {
+	    var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	    $.ajax({
+	        type: type,
+	        url: url,
+	        data: JSON.stringify(params), // JSON 형식으로 변환
+	        contentType: 'application/json; charset=UTF-8', // Content-Type 설정
+	        dataType: 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
+	        },
+	        success: function(response) {
+	            httpSuccess(response); // 성공 콜백
+	        },
+	        error: function(e) {
+	            console.log(e); // 에러 로그 출력
+	        }
+	    });
+	}
+	
+	// 일정 상세보기
+	function scheduleDetail(idx) {
+	    $.ajax({
+	        type: 'GET',
+	        url: '/calenderDetail', // 컨트롤러의 상세 조회 엔드포인트
+	        data: { idx: idx }, // 전달할 idx
+	        dataType: 'JSON',
+	        success: function(response) {
+	            if (response.success) {
+	                var schedule = response.schedule;
+	
+	                // 모달 열기
+	                loadModal("calender", "Info", {
+	                    subject: schedule.subject,
+	                    content: schedule.content,
+	                    start_date: schedule.start_date,
+	                    end_date: schedule.end_date,
+	                    username: schedule.username
+	                });
+	            } else {
+	                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("일정 상세 조회 실패:", error);
+	            alert("서버와 통신 중 문제가 발생했습니다.");
+	        }
+	    });
+	}
+
+	// 데이터 주입
+	function setModalData(data) {
+	    // 데이터 확인
+	    console.log("주입할 데이터:", data);
+
+	    // 데이터 주입
+	 	document.getElementById("calendar_subject").textContent = data.subject;
+		document.getElementById("calendar_content").textContent = data.content;
+		document.getElementById("calendar_start_date").textContent = data.start_date;
+    	document.getElementById("calendar_end_date").textContent = data.end_date;
+	    document.getElementById("calendar_username").textContent = data.username; 	
+
 	}
 	
 	

@@ -31,7 +31,24 @@ public class MyPageController {
 		return new ModelAndView("/myPage/myPageBuyList");
 	}
 	
+	// 출장 리스트 이동 페이지
+	@GetMapping(value="/trip/list")
+	public ModelAndView tripListView() {
+		return new ModelAndView("/myPage/businessTripList");
+	}
 	
+	// 출장 리스트 이동 페이지
+	@GetMapping(value="/trip/write")
+	public ModelAndView tripWriteView() {
+		return new ModelAndView("/myPage/businessTripWrite");
+	}
 	
+	// 출장 리스트 이동 페이지
+	@GetMapping(value="/trip/update")
+	public ModelAndView tripUpdateView() {
+		return new ModelAndView("/myPage/businessTripUpdate");
+	}
+	
+		
 	
 }
