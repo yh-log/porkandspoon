@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.CalenderDAO;
+import kr.co.porkandspoon.dto.CalenderDTO;
 
 @Service
 public class CalenderService {
@@ -22,9 +23,16 @@ public class CalenderService {
 	}
 	
 	// 일정 등록
-	public boolean calenderWrite(Map<String, Object> params) {
-		return calenderDao.calenderWrite(params) > 0 ? true : false;
+	public boolean calenderWrite(CalenderDTO calederDto) {
+		return calenderDao.calenderWrite(calederDto) > 0 ? true : false;
 	}
 	
+	// 일정 상세보기
+	public CalenderDTO calenderDetail(int idx) {
+		
+		return calenderDao.calenderDetail(idx);
+	}
+	
+
 
 }
