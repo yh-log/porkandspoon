@@ -18,8 +18,10 @@ public interface ApprovalDAO {
 
 	Integer getMaxNumberForDate(String date);
 
-	int fileWrite(FileDTO img);
+	//int fileWrite(FileDTO img);
 
 	List<DeptDTO> getDeptList();
+
+	int fileSave(FileDTO fileDto);
 
 }
