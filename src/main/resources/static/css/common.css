@@ -456,6 +456,12 @@ table td {
 	width: 100% !important;	
 }
 
+.ico-required {
+	color: var(--bs-warning);
+	display: inline-block;
+	margin-right: 2px;
+}
+
 /* 버튼 */
 .buttons.align-l .btn:first-child{
 	margin-left: 0;
@@ -489,7 +495,7 @@ table td {
 }
 
 input[type="text"], input[type="password"], input[type="number"], input[type="date"] {
-    padding: 0 10px;
+    padding: 6px 10px;
 }
 
 /* 뱃지 */

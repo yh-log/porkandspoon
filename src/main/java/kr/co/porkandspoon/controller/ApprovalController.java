@@ -88,9 +88,8 @@ public class ApprovalController {
        // logger.info("체크!! : " + approvalDTO.getFileList().get(0).getNew_filename());
        // logger.info("체크 getUsername!! : " + approvalDTO.getUsername());
         
-		approvalService.saveDraft(approvalDTO);
-        
-        
+        approvalService.saveDraft(approvalDTO, files);
+
         
 
 		logger.info("여기까지옴: " );

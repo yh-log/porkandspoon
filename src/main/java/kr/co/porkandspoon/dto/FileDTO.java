@@ -6,7 +6,9 @@ public class FileDTO extends ResponseDTO{
 	private String ori_filename;
 	private String new_filename;
 	private String type;
-	private String pk_value;
+	private String pk_idx;
+	
+	 
 	
 	// 생성자
 	public FileDTO(String ori_filename, String new_filename, String type) {
@@ -53,12 +55,12 @@ public class FileDTO extends ResponseDTO{
 		this.code_name = code_name;
 	}
 
-	public String getPk_value() {
-		return pk_value;
+	public String getPk_idx() {
+		return pk_idx;
 	}
 
-	public void setPk_value(String pk_value) {
-		this.pk_value = pk_value;
+	public void setPk_idx(String pk_idx) {
+		this.pk_idx = pk_idx;
 	}
 	
 	
