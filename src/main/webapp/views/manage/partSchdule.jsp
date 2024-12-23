@@ -73,6 +73,9 @@
 	    background-color: transparent !important; /* 호버 시에도 배경 투명 */
 	    color: black !important; /* 호버 시 글자색 유지 */
 	}
+#home,#schedule{
+		width: 200px;
+	}
 </style>
 </head>
 <body>
@@ -81,34 +84,29 @@
    <div id="main">
       <jsp:include page="../header.jsp" />
       <div class="page-content">
-         <section id="menu">
-            <h4 class="menu-title">구내식당</h4>
-            <ul>
-               <li><a href="/ad/mealTicket">식권구매</a></li>
-               <li class="active"><a href="/ad/mealMenu">식단표</a></li>
-               <li><a href="/ad/mealMenu/Write">식단등록</a></li>
-               <li><a href="/ad/mealTicket/Write">식권등록</a></li>
-               <li><a href="/ad/meal/List">상품리스트</a></li>
-            </ul>
-         </section>
-         <section class="cont">
-            <div class="col-12 col-lg-12">
-               <div class="tit-area">
-                  <h5>식단표</h5>
+				<section id="menu">
+					<h4 class="menu-title">매장관리</h4>
+					<div class="buttons">							
+						<button class="btn btn-outline-primary" id="home"  onclick="location.href='/ad/spotManage'">매장관리 홈</button>
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchdule'">스케줄 관리</button> 
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/part/Write'">등록하기</button>
+					</div>
+	
+					<ul>
+						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li><a href="/ad/rest/List">휴점신청</a></li>
+					</ul>
+				</section>
+				<section class="cont">
+					<div class="col-12 col-lg-12">
+						<div class="tit-area">
+							<h5>아르바이트 관리</h5>
                </div>
                <div class="cont-body">
                   <div id="calendarBox">
-                     <div class="select">
-                        <select class="form-select short" id="mealTypeSelector" name="is_time">
-                           <option value="B" selected="selected">아침</option>
-                           <option value="L">점심</option>
-                           <option value="D">저녁</option>
-                        </select>
-                     </div>
+      
                      <div id='calender'></div>
                   </div>
-                  
-                  
                   <div id="modalBox" class="modal" style="display: none;">
 				    <div class="modal-content">
 				        <div class="modal-header">
@@ -116,7 +114,7 @@
 				            <button type="button" id="closeModal" class="modal-close">X</button>
 				        </div>
 				        <div class="modal-body">
-			            <form id="editMenuForm">
+				            <form id="editMenuForm">
 				            <div class="form-group">
 				            	<select class="form-select short" id="mealTypeSelector" name="is_time">
 		                           <option value="B" selected="selected">아침</option>
@@ -124,22 +122,24 @@
 		                           <option value="D">저녁</option>
 	                        	</select>
 				            </div>
-			                <div class="form-group">
-			                    <label for="menuStartDate">시작 날짜</label>
-			                    <input type="datetime-local" id="menuStartDate" class="form-input">
-			                </div>
-			                
-			                <div class="form-group">
-			                    <label for="menuEndDate">종료 날짜</label>
-			                    <input type="datetime-local" id="menuEndDate" class="form-input">
-			                </div>
-			                <div class="form-group">
-			                    <label for="menuContent">내용</label>
-			                    <textarea id="menuContent" class="form-input" rows="4" name="content"></textarea>
-			                </div>
-			            </form>
+				                
+				                <div class="form-group">
+				                    <label for="menuStartDate">시작 날짜</label>
+				                    <input type="datetime-local" id="menuStartDate" class="form-input">
+				                </div>
+				                
+				                <div class="form-group">
+				                    <label for="menuEndDate">종료 날짜</label>
+				                    <input type="datetime-local" id="menuEndDate" class="form-input">
+				                </div>
+				                
+				                <div class="form-group">
+				                    <label for="menuContent">내용</label>
+				                    <textarea id="menuContent" class="form-input" rows="4" name="content"></textarea>
+				                </div>
+				                
+				            </form>
 				        </div>
-				        
 				        <div class="modal-footer">
 				            <button type="button" id="saveMenu" class="btn btn-primary">저장</button>
 				            <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
@@ -214,10 +214,6 @@ document.addEventListener('DOMContentLoaded', function () {
         locale: 'ko',
         buttonText: {
             today: '오늘'
-        },
-        eventClick: function(info){
-        	formattedDate = info.dateStr;
-        	loadModal(calender, type, data); // 일정 확인, 수정 모달
         },
         initialView: 'dayGridMonth',
         events: []

@@ -95,12 +95,27 @@
 	 	cursor: pointer;
 	 }
 	 
+	 /* 글쓰기 input 창 크기 설정 */
 	 .review-write {
 	 	height: 80px;
 	 }
 	 
-	 .review-group {
-	 	
+	 /* 조회수에 마우스 올릴 시 커서 변경 */
+	 .user-list {
+	 	cursor: pointer;
+	 }
+	 
+	 /* 확인한 리스트 모달창 스타일 변경  */
+	 #modal .modal-user-list {
+ 	    top: 27%;
+	    width: 300px;
+	    height: 450px;
+	    overflow: auto;
+	 }
+	 
+	 /* 모달창 "예" 버튼 크기 수정 */
+	 .confirm{
+	 	width: 75px;
 	 }
 </style>
 <body>
@@ -122,8 +137,8 @@
                <div class="cont-body"> 
 					<div class="row">
 	               	  	<div class="col-sm-1"><a href="/board/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write">수정하기</button></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write">삭제하기</button></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-update btn-write">수정하기</button></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-delete btn-write">삭제하기</button></div>
 	               	  	<div class="col-sm-9"></div>
                	  	</div>
                	  <div class="row">
@@ -150,7 +165,28 @@
 							</tr>
 							<tr class="table-sun">
 								<td class="table-text table-text-text">
-									<i class="bi bi-chat"></i>&nbsp;댓글 2개&nbsp;|&nbsp;조회 5&nbsp;|&nbsp;<i class="bi bi-person-fill"></i>&nbsp;5
+									<i class="bi bi-chat"></i>&nbsp;<span>댓글 2개</span>&nbsp;|&nbsp;<span class="btnModal user-list">조회 5</span>&nbsp;|&nbsp;<i class="bi bi-person-fill"></i>&nbsp;<span>5</span>
+									<!-- 유저 리스트 모달 -->
+									<div id="modal" class="modal">
+										<div class="modal-cont modal-user-list">
+											<span class="close">&times;</span>
+											<div id="modal-body">
+												<h4 class="menu-title">확인한 직원 리스트</h4>
+												<table>
+													<colgroup>
+														<col width="30%" />
+														<col />
+													</colgroup>
+													<tbody>
+														<tr>
+															<td>사진</td>
+															<td>이름</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>									
 								</td>
 							</tr>
 							<tr></tr>
@@ -175,8 +211,8 @@
 										<button class="btn-review"><i class="bi bi-arrow-return-right"></i>댓글</button>&nbsp;&nbsp;<span style="color: gray; font-size: 14px;">2024.12.01</span>
 									</td>
 									<td>
-										<button class="btn icon btn-secondary"><i class="bi bi-pencil"></i></button>
-										<button class="btn icon btn-secondary"><i class="bi bi-trash"></i></button>
+										<button class="btn icon btn-secondary btn-update"><i class="bi bi-pencil"></i></button>
+										<button class="btn icon btn-secondary btn-delete"><i class="bi bi-trash"></i></button>
 									</td>
 								</tr>
 								<tr class="table-sun">
@@ -275,23 +311,23 @@
     FilePond.create(document.querySelector('input[type="file"]'));
     
  	// 댓글 삭제 버튼
-	function secondBtn1Act() {
+	function reviewdeleteY() {
 		console.log('댓글 삭제 하기');
 		removeAlert();
 	}
 
 	// 댓글 삭제 취소버튼
-	function secondBtn2Act() {
+	function reviewdeleteN() {
 		console.log('댓글 삭제 취소');
 		removeAlert();
 	}
 	
 	// 댓글 삭제 팝업
-	$('.btn-popup').on(
+	$('.btn-delete').on(
 			'click',
 			function() {
-				layerPopup('댓글을 삭제하시겠습니까?', '예', '아니오', secondBtn1Act,
-						secondBtn2Act);
+				layerPopup('댓글을 삭제하시겠습니까?', '예', '아니오', reviewdeleteY,
+						reviewdeleteN);
 			});
 
 	// 모달창 열기
@@ -305,23 +341,23 @@
 	});
 	
 	// 댓글 수정 버튼
-	function secondBtn1Actupdate() {
+	function reviewupdateY() {
 		console.log('댓글 수정 하기');
 		removeAlert();
 	}
 
 	// 댓글 수정 취소버튼
-	function secondBtn2Actupdate() {
+	function reviewupdateN() {
 		console.log('댓글 수정 취소');
 		removeAlert();
 	}
 	
 	// 댓글 수정 팝업
-	$('.btn-popup-update').on(
+	$('.btn-update').on(
 			'click',
 			function() {
-				layerPopup('댓글을 수정하시겠습니까?', '예', '아니오', secondBtn1Actupdate,
-						secondBtn2Actupdate);
+				layerPopup('댓글을 수정하시겠습니까?', '예', '아니오', reviewupdateY,
+						reviewupdateN);
 			});
 	
 	// 모달창 열기
@@ -333,5 +369,66 @@
 	$('#modal .close').on('click', function() {
 		$('#modal').hide();
 	});
+	
+	// 게시글 삭제 버튼
+	function writedeleteY() {
+		console.log('게시글 삭제 하기');
+		removeAlert();
+	}
+
+	// 게시글 삭제 취소버튼
+	function writedeleteN() {
+		console.log('게시글 삭제 취소');
+		removeAlert();
+	}
+	
+	// 게시글 삭제 팝업
+	$('.btn-write-delete').on(
+			'click',
+			function() {
+				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', writedeleteY,
+						writedeleteN);
+			});
+
+	// 모달창 열기
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
+	
+	//모달창 닫기
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
+	
+	// 게시글 수정 버튼
+	function writeupdateY() {
+		console.log('게시글 수정 하기');
+		removeAlert();
+	}
+
+	// 게시글 수정 취소버튼
+	function writeupdateN() {
+		console.log('게시글 수정 취소');
+		removeAlert();
+	}
+	
+	// 게시글 수정 팝업
+	$('.btn-write-update').on(
+			'click',
+			function() {
+				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', writeupdateY,
+						writeupdateN);
+			});
+	
+	// 모달창 열기
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
+
+	// 모달창 닫기
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
+	
 </script>
 </html>

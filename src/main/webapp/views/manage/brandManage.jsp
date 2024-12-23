@@ -38,37 +38,86 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-	.tit-area{
-		display: flex; 
-	}
-	
-	#home,#schedule{
-		width: 200px;
-	}
-	
-	h5 .count{
-		text-align: right;
-		margin-right: 10px;
-	}
-	.content{
-		display: flex; 
-		align-content: cetner;
-		border: 1px solid black;
-	}
-	
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 15%;
-	}
-	.form-control{
-		width: 350px;
-	}
+	.page-content {
+  padding: 20px;
+  background-color: #f9f9f9;
+  max-width: 1430px; /* 중앙 정렬을 위한 최대 너비 설정 */
+  
+  margin: 0 auto; /* 페이지 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 상단 영역 */
+.top-section {
+  display: flex;
+  gap: 20px;
+  height: 300px; /* 고정된 높이 설정 */
+}
+
+/* 상단 왼쪽 */
+.top-left {
+  flex: 2;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 상단 오른쪽 */
+.top-right {
+  flex: 3;
+  background-color: #ffffff;
+  padding: 20px;
+  
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 하단 영역 */
+.bottom-section {
+  display: flex;
+  gap: 20px;
+  height: 400px; /* 고정된 높이 설정 */
+}
+
+/* 하단 왼쪽 */
+.bottom-left {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 하단 오른쪽 */
+.bottom-right {
+  flex: 3.5;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 공통 스타일 */
+h3, h4 {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.chart-placeholder {
+  width: 100%;
+  height: 80%;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: #aaa;
+}
+
 </style>
 </head>
 
@@ -82,76 +131,54 @@
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="../header.jsp" />
+		<jsp:include page="../header.jsp" />
 
 			<div class="page-content">
-				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/rest/Write'">휴점 등록</button>
-					</div>
-	
-					<ul>
-						<li><a href="/ad/part/List">아르바이트 관리</a></li>
-						<li class="active"><a href="/ad/rest/List">휴점신청</a></li>
-					</ul>
-				</section>
-				<section class="cont">
-					<div class="col-12 col-lg-12">
-						<div class="tit-area">
-							<h5>휴점 리스트</h5>
-						</div>
-						<div class="cont-body">
-							<div class="row">
-								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>지점명</option>
-									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-							</div>
-							<div class="row">
-							<div class="col-12 col-lg-12">
-							<table>
-								<colgroup>
-									<col>
-									<col width="50%">
-									<col >
-									<col width="5%">
-									<col width="5%">
-								</colgroup>
-								<thead>
-									<tr>
-										<th>지점명</th>
-										<th class="align-l">휴점사유</th>
-										<th >휴점기간</th>
-										<th></th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>돼미남 강남점</td>
-										<td class="align-l elipsis">휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 
-										여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지</td>
-										<td>2024.12.11 ~ 2024.12.21</td>
-										<td onclick="location.href='/ad/rest/Update'">수정</td>
-										<td>아이콘</td>
-									</tr>
-								</tbody>
-							</table>
-							
-						
-							
-							</div>
-							</div>
-						</div> 
-					</div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-				</section>
+			  <!-- 상단 영역 -->
+			  <div class="top-section">
+			    <div class="top-left">
+			      <h3> P&S</h3>
+			      <p>직영점주: 박준규</p>
+			      <p>주소: 서울 강남구 강남대로 27 1층</p>
+			      
+			    </div>
+			    
+			    <div class="top-right">
+			      <h4>브랜드 리스트</h4>
+			      <table class="info-table">
+			        <thead>
+			          <tr>
+			            <th>로고</th>
+			            <th>브랜드이름</th>
+			            <th>주소</th>
+			            <th>시행일자</th>
+			          </tr>
+			        </thead>
+			        <tbody>
+			          <tr>
+			            <td>이경언</td>
+			            <td>25</td>
+			            <td>돼미남 강남점</td>
+			            <td>2024.04.06</td>
+			          </tr>
+			        </tbody>
+			      </table>
+			    </div>
+			  </div>
+			
+			  <!-- 하단 영역 -->
+			  <div class="bottom-section">
+			    <div class="bottom-left">
+			      <h4>브랜드별 매출</h4>
+			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			    </div>
+			    <div class="bottom-right">
+			      <h4>브랜드 총 매출 그래프</h4>
+			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			    </div>
+			  </div>
 			</div>
+		
 		</div>
 	</div>
 </body>

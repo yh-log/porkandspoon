@@ -34,148 +34,160 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<style >
-	.tit-area{
-		display: flex; 
-	}
-	
-	#home,#schedule{
-		width: 200px;
-	}
-	
-	h5 .count{
-		text-align: right;
-		margin-right: 10px;
-	}
-	.content{
-		display: flex; 
-		align-content: cetner;
-		border: 1px solid black;
-	}
-	
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 15%;
-	}
-	.form-control{
-		width: 350px;
-	}
-</style>
 </head>
+<style>
 
+	/* 버튼 크기 설정 */
+	.btn-write {
+		width: 90px;
+    	height: 40px;
+	}
+	
+	/* 테이블 텍스트 위치 조정 */
+	.table-text {
+		text-align: left;
+	}
+	
+	/* 테이블 하단 선 삭제 */
+	.table-sun {
+		border-bottom: none;
+	}
+	
+	/* 이미지 조정 */
+	.table-img {
+		width: 50px;
+	    height: 50px;
+	    border-radius: 50%;
+	    object-fit: cover;
+	}
+	
+	/* 내용창 설정 */
+	.table-textarea {
+	    width: 100%;
+	    height: 450px;
+	    border: solid white;
+	    text-align: left;
+	    resize: none;
+	}
+	
+	/* 사람 아이콘 크기 설정 */
+	.bi-person-fill {
+		font-size: 22px;
+	}
+	
+	/* 채팅 아이콘 크기 설정 */
+	.bi-chat {
+		font-size: 20px;
+	}
+	
+	/* 댓글 버튼 스타일 설정 */
+	.btn-review {
+	    background-color: white;
+	    border: none;
+	    color: gray;
+	}
+	
+	/* 아이콘 색상 변경 및 마우스 올리면 포인터 변환 */
+	 .bi-icon {
+	 	color: gray;
+	 	cursor: pointer;
+	 }
+	 
+	 /* 글쓰기 input 창 크기 설정 */
+	 .review-write {
+	 	height: 80px;
+	 }
+	 
+	 /* 조회수에 마우스 올릴 시 커서 변경 */
+	 .user-list {
+	 	cursor: pointer;
+	 }
+	 
+	 /* 확인한 리스트 모달창 스타일 변경  */
+	 #modal .modal-user-list {
+ 	    top: 27%;
+	    width: 300px;
+	    height: 450px;
+	    overflow: auto;
+	 }
+	 
+	 /* 모달창 "예" 버튼 크기 수정 */
+	 .confirm{
+	 	width: 75px;
+	 }
+</style>
 <body>
 	<!-- 부트스트랩 -->
 	<script src="/resources/assets/static/js/initTheme.js"></script>
 	<div id="app">
-
-		<!-- 사이드바 -->
-		<jsp:include page="../sidebar.jsp" />
-
-		<div id="main">
-			<!-- 헤더 -->
-			<jsp:include page="../header.jsp" />
-
-			<div class="page-content">
-				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/rest/Write'">휴점 등록</button>
-					</div>
-	
-					<ul>
-						<li><a href="/ad/part/List">아르바이트 관리</a></li>
-						<li class="active"><a href="/ad/rest/List">휴점신청</a></li>
-					</ul>
-				</section>
-				<section class="cont">
-					<div class="col-12 col-lg-12">
-						<div class="tit-area">
-							<h5>휴점 리스트</h5>
-						</div>
-						<div class="cont-body">
-							<div class="row">
-								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>지점명</option>
-									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-							</div>
-							<div class="row">
-							<div class="col-12 col-lg-12">
-							<table>
-								<colgroup>
-									<col>
-									<col width="50%">
-									<col >
-									<col width="5%">
-									<col width="5%">
-								</colgroup>
-								<thead>
-									<tr>
-										<th>지점명</th>
-										<th class="align-l">휴점사유</th>
-										<th >휴점기간</th>
-										<th></th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>돼미남 강남점</td>
-										<td class="align-l elipsis">휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 
-										여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지</td>
-										<td>2024.12.11 ~ 2024.12.21</td>
-										<td onclick="location.href='/ad/rest/Update'">수정</td>
-										<td>아이콘</td>
-									</tr>
-								</tbody>
-							</table>
-							
-						
-							
-							</div>
-							</div>
-						</div> 
-					</div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-				</section>
-			</div>
-		</div>
-	</div>
+   <jsp:include page="../sidebar.jsp" />
+   <div id="main">
+      <jsp:include page="../header.jsp" />
+      <div class="page-content">
+         <section id="menu">
+            <h4 class="menu-title">라이브러리</h4>
+         </section>
+         <section class="cont">
+            <div class="col-12 col-lg-12">
+               <div class="tit-area">
+                  <h5>글쓰기</h5>
+               </div>
+               <div class="cont-body"> 
+					<div class="row">
+	               	  	<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-update btn-write">수정하기</button></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-delete btn-write">삭제하기</button></div>
+	               	  	<div class="col-sm-9"></div>
+               	  	</div>
+               	  <div class="row">
+	                  <table>
+						<colgroup>
+							<col width="60%" />
+						</colgroup>
+						<thead>
+						</thead>
+						<tbody>
+							<tr class="table-sun">
+								<td class="table-text table-text-text"><h5>김순무 김열무 사귀다.(제목)</h5></td>
+							</tr>
+							<tr class="table-sun">
+								<td class="table-text table-text-text">
+									<img class="table-img" src="https://randomuser.me/api/portraits/men/1.jpg" alt="사람 이미지">&nbsp;&nbsp;인사팀 이진형
+								</td>
+							</tr>
+							<tr></tr>
+							<tr>
+								<td>
+									<textarea class="table-textarea">상세내용이 어쩌고 저쩌구...</textarea>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									파일 뷰어 영역
+								</td>
+							</tr>
+						</tbody>
+					</table>
+               	  </div>
+               </div>
+            </div>
+         </section>   
+      </div>
+   </div>
+</div>
 </body>
-
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
-
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
+<!-- 페이지네이션 -->
+<script src="/resources/js/jquery.twbsPagination.js"
+	type="text/javascript"></script>
+	
 <!-- 파일업로더 -->
 <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
@@ -193,14 +205,12 @@
 	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
-
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond/filepond.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 <script>
 	/* 페이지네이션 */
 	$('#pagination').twbsPagination({
@@ -214,69 +224,92 @@
 	} */
 	});
 
-	// 공통으로 옮기고, 
 	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
+	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
+	$('.page-item.prev').find('.page-link').html(
+			'<i class="bi bi-chevron-left"></i>');
+	$('.page-item.next').find('.page-link').html(
+			'<i class="bi bi-chevron-right"></i>');
+	$('.page-item.first').find('.page-link').html(
+			'<i class="bi bi-chevron-double-left"></i>');
+	$('.page-item.last').find('.page-link').html(
+			'<i class="bi bi-chevron-double-right"></i>');
+	
+	// 파일 업로더 텍스트 바꾸기
+	FilePond.registerPlugin(
+	        FilePondPluginFileValidateSize,
+	        FilePondPluginFileValidateType,
+	        FilePondPluginImagePreview,
+	        FilePondPluginImageExifOrientation,
+	        FilePondPluginImageResize
+	    );
+	
+    // 텍스트 변경 설정
+    FilePond.setOptions({
+        labelIdle: '이 곳에 파일을 드래그 하세요. 혹은 파일 선택(0MB)'
+    });
+
+    // FilePond를 모든 input[type="file"]에 적용
+    FilePond.create(document.querySelector('input[type="file"]'));
+    
+	// 게시글 삭제 팝업
+	$('.btn-write-delete').on(
+			'click',
+			function() {
+				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', writedeleteY,
+						writedeleteN);
+			});
+	
+	// 게시글 삭제 버튼
+	function writedeleteY() {
+		console.log('게시글 삭제 하기');
+		removeAlert();
+	}
+
+	// 게시글 삭제 취소버튼
+	function writedeleteN() {
+		console.log('게시글 삭제 취소');
+		removeAlert();
 	}
 	
+	// 모달창 열기
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
 	});
-
+	
+	//모달창 닫기
 	$('#modal .close').on('click', function() {
 		$('#modal').hide();
 	});
 	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
-
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
+	// 게시글 수정 팝업
+	$('.btn-write-update').on(
+			'click',
+			function() {
+				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', writeupdateY,
+						writeupdateN);
+			});
 	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
+	// 게시글 수정 버튼
+	function writeupdateY() {
+		console.log('게시글 수정 하기');
+		removeAlert();
 	}
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
+	// 게시글 수정 취소버튼
+	function writeupdateN() {
+		console.log('게시글 수정 취소');
+		removeAlert();
 	}
 	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
+	// 모달창 열기
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
 
-
+	// 모달창 닫기
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
 </script>
-
 </html>

@@ -34,148 +34,123 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<style >
-	.tit-area{
-		display: flex; 
+</head>
+<style>
+
+	/* 버튼 크기 설정 */
+	.btn-write-style {
+		width: 90px;
+    	height: 40px;
 	}
 	
-	#home,#schedule{
-		width: 200px;
+	/* 테이블 텍스트 위치 조정 */
+	.table-text {
+		text-align: left;
 	}
 	
-	h5 .count{
-		text-align: right;
-		margin-right: 10px;
-	}
-	.content{
-		display: flex; 
-		align-content: cetner;
-		border: 1px solid black;
+	/* 테이블 텍스트 굵기 조정 */
+	.table-text-text {
+		font-weight: bold;
 	}
 	
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 15%;
-	}
-	.form-control{
-		width: 350px;
+	/* 모달창 "예" 버튼 크기 수정 */
+	.confirm{
+	 	width: 75px;
 	}
 </style>
-</head>
-
 <body>
 	<!-- 부트스트랩 -->
 	<script src="/resources/assets/static/js/initTheme.js"></script>
 	<div id="app">
-
-		<!-- 사이드바 -->
-		<jsp:include page="../sidebar.jsp" />
-
-		<div id="main">
-			<!-- 헤더 -->
-			<jsp:include page="../header.jsp" />
-
-			<div class="page-content">
-				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/rest/Write'">휴점 등록</button>
-					</div>
-	
-					<ul>
-						<li><a href="/ad/part/List">아르바이트 관리</a></li>
-						<li class="active"><a href="/ad/rest/List">휴점신청</a></li>
-					</ul>
-				</section>
-				<section class="cont">
-					<div class="col-12 col-lg-12">
-						<div class="tit-area">
-							<h5>휴점 리스트</h5>
-						</div>
-						<div class="cont-body">
-							<div class="row">
-								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>지점명</option>
-									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+   <jsp:include page="../sidebar.jsp" />
+   <div id="main">
+      <jsp:include page="../header.jsp" />
+      <div class="page-content">
+         <section id="menu">
+            <h4 class="menu-title">라이브러리</h4>
+         </section>
+         <section class="cont">
+            <div class="col-12 col-lg-12">
+               <div class="tit-area">
+                  <h5>글쓰기</h5>
+               </div>
+               <div class="cont-body"> 
+					<div class="row">
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-style btn-write">등록하기</button></div>
+	               	  	<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-outline-primary btn-write-style">돌아가기</a></div>
+	               	  	<div class="col-sm-5"></div>
+	               	  	<div class="col-sm-5"></div>
+               	  	</div>
+                  <table>
+					<colgroup>
+						<col width="5%" />
+						<col width="60%" />
+					</colgroup>
+					<thead>
+					</thead>
+					<tbody>
+						<tr class="table-sun">
+							<th class="table-text table-text-text">작성자</th>
+							<td class="table-text">이진형</td>
+						</tr>
+						<tr class="table-sun">
+							<th class="table-text table-text-text">소속 부서</th>
+							<td class="table-text">인사팀</td>
+						</tr>
+						<tr class="table-sun">
+							<th class="table-text table-text-text">제목</th>
+							<td class="table-text"><input class="form-control" type="text" placeholder="제목을 입력해주세요."></td>
+						</tr>
+						<tr>
+							<th class="table-text table-text-text" style="vertical-align: top;">파일첨부</th>
+							<td>
+								<div class="filepond--root multiple-files-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
+									<input class="filepond--browser" type="file" id="filepond--browser-8hvxfnueg" name="filepond" aria-controls="filepond--assistant-8hvxfnueg" aria-labelledby="filepond--drop-label-8hvxfnueg" accept="" multiple="">
+									<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
+										<label for="filepond--browser-8hvxfnueg" id="filepond--drop-label-8hvxfnueg" aria-hidden="true">
+											이 곳에 파일을 드래그 하세요. 혹은 파일 선택(0MB)
+										</label>
+									</div>
+									<div class="filepond--list-scroller" style="transform: translate3d(0px, 60px, 0px);">
+										<ul class="filepond--list" role="list"></ul>
+									</div>
+									<div class="filepond--panel filepond--panel-root" data-scalable="true">
+										<div class="filepond--panel-top filepond--panel-root"></div>
+										<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
+										<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
+									</div>
+									<span class="filepond--assistant" id="filepond--assistant-8hvxfnueg" role="status" aria-live="polite" aria-relevant="additions"></span>
+									<fieldset class="filepond--data"></fieldset>
+									<div class="filepond--drip"></div>
 								</div>
-							</div>
-							<div class="row">
-							<div class="col-12 col-lg-12">
-							<table>
-								<colgroup>
-									<col>
-									<col width="50%">
-									<col >
-									<col width="5%">
-									<col width="5%">
-								</colgroup>
-								<thead>
-									<tr>
-										<th>지점명</th>
-										<th class="align-l">휴점사유</th>
-										<th >휴점기간</th>
-										<th></th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>돼미남 강남점</td>
-										<td class="align-l elipsis">휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 
-										여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지휴점을 못한이유는 여러가지</td>
-										<td>2024.12.11 ~ 2024.12.21</td>
-										<td onclick="location.href='/ad/rest/Update'">수정</td>
-										<td>아이콘</td>
-									</tr>
-								</tbody>
-							</table>
-							
-						
-							
-							</div>
-							</div>
-						</div> 
-					</div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-				</section>
-			</div>
-		</div>
-	</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								썸머노트 가져오기
+							</td>
+						</tr>
+					</tbody>
+				</table>
+               </div>
+            </div>
+         </section>   
+      </div>
+   </div>
+</div>
 </body>
-
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
-
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
+<!-- 페이지네이션 -->
+<script src="/resources/js/jquery.twbsPagination.js"
+	type="text/javascript"></script>
+	
 <!-- 파일업로더 -->
 <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
@@ -193,14 +168,12 @@
 	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
-
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond/filepond.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 <script>
 	/* 페이지네이션 */
 	$('#pagination').twbsPagination({
@@ -214,69 +187,62 @@
 	} */
 	});
 
-	// 공통으로 옮기고, 
 	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
+	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
+	$('.page-item.prev').find('.page-link').html(
+			'<i class="bi bi-chevron-left"></i>');
+	$('.page-item.next').find('.page-link').html(
+			'<i class="bi bi-chevron-right"></i>');
+	$('.page-item.first').find('.page-link').html(
+			'<i class="bi bi-chevron-double-left"></i>');
+	$('.page-item.last').find('.page-link').html(
+			'<i class="bi bi-chevron-double-right"></i>');
+	
+	// 파일 업로더 텍스트 바꾸기
+	FilePond.registerPlugin(
+	        FilePondPluginFileValidateSize,
+	        FilePondPluginFileValidateType,
+	        FilePondPluginImagePreview,
+	        FilePondPluginImageExifOrientation,
+	        FilePondPluginImageResize
+	    );
+	
+    // 텍스트 변경 설정
+    FilePond.setOptions({
+        labelIdle: '이 곳에 파일을 드래그 하세요. 혹은 파일 선택(0MB)'
+    });
+
+    // FilePond를 모든 input[type="file"]에 적용
+    FilePond.create(document.querySelector('input[type="file"]'));
+    
+ 	// 게시글 등록 버튼
+	function writeY() {
+		console.log('게시글 등록 하기');
+		removeAlert();
+	}
+
+	// 게시글 등록 취소버튼
+	function writeN() {
+		console.log('게시글 등록 취소');
+		removeAlert();
 	}
 	
+	// 게시글 등록 팝업
+	$('.btn-write').on(
+			'click',
+			function() {
+				layerPopup('게시글을 등록하시겠습니까?', '예', '아니오', writeY,
+						writeN);
+			});
+	
+	// 모달창 열기
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
 	});
 
+	// 모달창 닫기
 	$('#modal .close').on('click', function() {
 		$('#modal').hide();
 	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
-
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
-
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-
-
 </script>
-
 </html>

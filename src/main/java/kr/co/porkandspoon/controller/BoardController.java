@@ -43,6 +43,7 @@ public class BoardController {
 		return new ModelAndView("/board/boardDetail");
 	}
 	
+
 	// 투표 리스트 이동 페이지
 	@GetMapping(value="/vote/list")
 	public ModelAndView voteListView() {
@@ -68,4 +69,30 @@ public class BoardController {
 	}
 	
 	
+
+	@GetMapping(value="/lbboardlist/View")
+	public ModelAndView lbboardView() {
+		return new ModelAndView("/board/lbboardList");
+	}
+	
+	@GetMapping(value="/lbboardmylist/View")
+	public ModelAndView lbboardmyView() {
+		return new ModelAndView("/board/lbboardList");
+	}
+	
+	@GetMapping(value="/lbboardwrite/View")
+	public ModelAndView lbboardwriteView() {
+		return new ModelAndView("/board/lbboardWrite");
+	}
+	
+	@GetMapping(value="/lbboarddetail/View")
+	public ModelAndView lbboarddetailView() {
+		return new ModelAndView("/board/lbboardDetail");
+	}
+	
+	@GetMapping(value="/lbboardupdate/View")
+	public ModelAndView lbboardupdateView() {
+		return new ModelAndView("/board/lbboardUpdate");
+	}
+
 }

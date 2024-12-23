@@ -9,4 +9,10 @@
         FROM meal_menu
         WHERE is_time = #{is_time}
     </select>
+    
+    <insert id="getmealMenu" parameterType="Map">
+    	insert into meal_menu(start_date,end_date,is_time,content,creater)
+    		values(#{start_date},#{end_date},#{is_time},#{content},#{creater})
+    </insert>
+    
 </mapper>
