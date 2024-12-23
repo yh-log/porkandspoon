@@ -1,10 +1,12 @@
 package kr.co.porkandspoon.dto;
 
 public class FileDTO extends ResponseDTO{
-
+	private int file_idx;
+	private String code_name;
 	private String ori_filename;
 	private String new_filename;
 	private String type;
+	private String pk_value;
 	
 	// 생성자
 	public FileDTO(String ori_filename, String new_filename, String type) {
@@ -33,6 +35,30 @@ public class FileDTO extends ResponseDTO{
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public int getFile_idx() {
+		return file_idx;
+	}
+
+	public void setFile_idx(int file_idx) {
+		this.file_idx = file_idx;
+	}
+
+	public String getCode_name() {
+		return code_name;
+	}
+
+	public void setCode_name(String code_name) {
+		this.code_name = code_name;
+	}
+
+	public String getPk_value() {
+		return pk_value;
+	}
+
+	public void setPk_value(String pk_value) {
+		this.pk_value = pk_value;
 	}
 	
 	

@@ -34,55 +34,96 @@
 	type="text/javascript"></script>
 
 <style>
-.draftWrite table tr:hover {
-	background: #f7f7f7;
+.mailList .tit-area {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.draftWrite input {
-	width: 100%;
-	height: 100%;
+
+.mailList .tit-area .left {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mailList .tit-area .left button{
+	background: none;
 	border: none;
 }
 
-.draftWrite .search-area {
+.mailList .tab {
+	margin-left: 14px;
+}
+
+.mailList .tab .bar {
+	display: inline-block;
+	width: 1px;
+	height: 14px;
+	background: #ddd;
+}
+
+.mailList .tab button {
+	color: #888;
+}
+
+.mailList .tab button.selected {
+	color: #333;
+}
+
+.mailList table tr:hover {
+	background: #f7f7f7;
+}
+
+
+.mailList .search-area {
 	display: flex;
 	gap: 4px;
 }
 
-.draftWrite input[name="search-data"] {
+.mailList input[name="search-data"] {
 	width: 300px;
 	height: 38px;
 	margin: 14px 0;
 	border: 1px solid #DFE3E7;
 }
 
-.draftWrite .search-area select {
+.mailList .search-area select {
 	margin: 14px 0;
+    height: 38px;
 }
 
+.mailList .search-area .btn-sch {
+	margin: 14px 0;
+    height: 38px;
+}
 
-.draftWrite .buttons {
+.mailList .util-area {
 	display: flex;
 	justify-content: space-between;
-	padding: 4px 40px;
+    padding: 20px 40px;
+    border-bottom: 1px solid #ddd;
 }
 
-.draftWrite .buttons .btn {
-	margin: 14px 0;
+.mailList .util-area .left > * {
+	margin-right: 10px;
 }
 
-.draftWrite h4.doc-subject {
-	margin: 20px 0 50px;
-	text-align: center;
+.mailList .cont-body {
+	padding: 0;
 }
 
-.draftWrite .btm-area {
+.mailList .list-area .mail-item {
 	display: flex;
-	flex-wrap: wrap;
-	border-left: 1px solid #ddd;
-	border-top: 1px solid #ddd;
-	margin-top: 40px;
+	justify-content: space-between;
+    padding: 16px 40px;
+    border-bottom: 1px solid #ddd;
 }
-
+.mailList .list-area .mail-item .left > *{
+	margin-right: 10px;
+}
+.mailList .list-area .mail-item .name {
+	margin-right: 30px;
+}
 
 </style>
 
@@ -100,7 +141,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftWrite">
+			<div class="page-content mailList">
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
@@ -110,71 +151,53 @@
 						<li><a href="#">중요메일함</a></li>
 						<li><a href="#">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
+					<div class="btn btn-primary full-size">메일쓰기</div>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>나의 문서함</h5>
-						</div>
-						<div class="buttons">
-							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" class="btn btn-primary">전체</button>
-								<button type="button" class="btn">진행</button>
-								<button type="button" class="btn">완료</button>
-								<button type="button" class="btn">반려</button>
-								<button type="button" class="btn">회수</button>
+							<div class="left">
+								<h5>받은 메일함 <span class="mail-count">21</span></h5>
+								<div class="tab">
+									<button class="selected"><i class="bi bi-filter-left"></i> 전체</button>
+									<span class="bar"></span>
+									<button>안읽은 메일</button>
+								</div>
 							</div>
 							<div class="search-area">
 								<select name="seach-title" class="form-select" id="basicSelect">
 									<option value="subject">제목</option>
 								</select> <input type="text" name="search-data" class="form-control"
 									placeholder="검색내용을 입력하세요" width="80%" />
-								<button class="btn btn-primary">
+								<button class="btn btn-primary btn-sch">
 									<i class="bi bi-search"></i>
 								</button>
 							</div>
-							<!-- <button href="#" class="btn btn-primary"></button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">임시저장</button>
-							<button href="#" class="btn btn-outline-primary">취소</button> -->
 						</div>
+						<div class="util-area">
+							<div class="left">
+								<input type="checkbox" class="form-check-input" id="checkbox2">
+								<buttton>읽음</buttton>
+								<buttton>삭제</buttton>
+								<buttton>중요</buttton>
+							</div>
+							<div><i class="bi bi-arrow-clockwise"></i></div>
+						</div>
+
 						<div class="cont-body">
 
-							<table>
-								<colgroup>
-									<col>
-									<col>
-									<col width="40%">
-									<col>
-									<col>
-								</colgroup>
-								<thead>
-									<tr>
-										<th>게시글번호</th>
-										<th>문서번호</th>
-										<th class="align-l">제목</th>
-										<th>기안자</th>
-										<th>부서</th>
-										<th>결재일자</th>
-										<th>결재상태</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>20</td>
-										<td>B20241234</td>
-										<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은
-											왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-											제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-										<td>이진형</td>
-										<td>브랜드</td>
-										<td>-</td>
-										<td>진행</td>
-									</tr>
-								</tbody>
-							</table>
+							<div class="list-area">
+								<div class="mail-item">
+									<div class="left">
+										<input type="checkbox" class="form-check-input" id="checkbox2">
+										<i class="bi bi-star"></i>
+										<span class="name">김승현</span>
+										<span>[경영지원본부] 교육일정 전달의 건 <i class="bi bi-paperclip"></i></span>
+									</div>
+									<span>오전 11:40</span>
+								</div>
+							</div>
 
 							<nav aria-label="Page navigation">
 								<ul class="pagination justify-content-center" id="pagination"></ul>

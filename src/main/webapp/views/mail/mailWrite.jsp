@@ -21,68 +21,127 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
+<!-- 파일 업로더 -->
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond/filepond.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
+
+<!-- summernote bootstrap-->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- 부트스트랩 -->
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+
+<!-- select -->
+<link rel="stylesheet"
+	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+
+
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<!-- summernote -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
 
 <style>
-.draftWrite table tr:hover {
-	background: #f7f7f7;
+.mailList .tit-area {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
-.draftWrite input {
-	width: 100%;
-	height: 100%;
+
+.mailList .tit-area .left {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mailList .tit-area .left button{
+	background: none;
 	border: none;
 }
 
-.draftWrite .search-area {
+.mailList .tab {
+	margin-left: 14px;
+}
+
+.mailList .tab .bar {
+	display: inline-block;
+	width: 1px;
+	height: 14px;
+	background: #ddd;
+}
+
+.mailList .tab button {
+	color: #888;
+}
+
+.mailList .tab button.selected {
+	color: #333;
+}
+
+.mailList table tr:hover {
+	background: #f7f7f7;
+}
+
+
+.mailList .search-area {
 	display: flex;
 	gap: 4px;
 }
 
-.draftWrite input[name="search-data"] {
+.mailList input[name="search-data"] {
 	width: 300px;
 	height: 38px;
 	margin: 14px 0;
 	border: 1px solid #DFE3E7;
 }
 
-.draftWrite .search-area select {
+.mailList .search-area select {
 	margin: 14px 0;
+    height: 38px;
 }
 
+.mailList .search-area .btn-sch {
+	margin: 14px 0;
+    height: 38px;
+}
 
-.draftWrite .buttons {
+.mailList .util-area {
 	display: flex;
 	justify-content: space-between;
-	padding: 4px 40px;
+    padding: 20px 40px;
+    border-bottom: 1px solid #ddd;
 }
 
-.draftWrite .buttons .btn {
-	margin: 14px 0;
+.mailList .util-area .left > * {
+	margin-right: 10px;
 }
 
-.draftWrite h4.doc-subject {
-	margin: 20px 0 50px;
-	text-align: center;
+.mailList .cont-body {
+	padding: 0;
 }
 
-.draftWrite .btm-area {
+.mailList .list-area .mail-item {
 	display: flex;
-	flex-wrap: wrap;
-	border-left: 1px solid #ddd;
-	border-top: 1px solid #ddd;
-	margin-top: 40px;
+	justify-content: space-between;
+    padding: 16px 40px;
+    border-bottom: 1px solid #ddd;
 }
-
+.mailList .list-area .mail-item .left > *{
+	margin-right: 10px;
+}
+.mailList .list-area .mail-item .name {
+	margin-right: 30px;
+}
 
 </style>
 
@@ -100,7 +159,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftWrite">
+			<div class="page-content mailList">
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
@@ -110,75 +169,49 @@
 						<li><a href="#">중요메일함</a></li>
 						<li><a href="#">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
+					<div class="btn btn-primary full-size">메일쓰기</div>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>나의 문서함</h5>
-						</div>
-						<div class="buttons">
-							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" class="btn btn-primary">전체</button>
-								<button type="button" class="btn">진행</button>
-								<button type="button" class="btn">완료</button>
-								<button type="button" class="btn">반려</button>
-								<button type="button" class="btn">회수</button>
+							<div class="left">
+								<h5>메일쓰기 <buttton>임시보관 메일</buttton><span class="mail-count">21</span></h5>
 							</div>
-							<div class="search-area">
-								<select name="seach-title" class="form-select" id="basicSelect">
-									<option value="subject">제목</option>
-								</select> <input type="text" name="search-data" class="form-control"
-									placeholder="검색내용을 입력하세요" width="80%" />
-								<button class="btn btn-primary">
-									<i class="bi bi-search"></i>
-								</button>
-							</div>
-							<!-- <button href="#" class="btn btn-primary"></button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">임시저장</button>
-							<button href="#" class="btn btn-outline-primary">취소</button> -->
 						</div>
+						<div class="util-area">
+							<div class="left">
+								<buttton>보내기</buttton>
+								<buttton>임시저장</buttton>
+							</div>
+						</div>
+
 						<div class="cont-body">
-
-							<table>
-								<colgroup>
-									<col>
-									<col>
-									<col width="40%">
-									<col>
-									<col>
-								</colgroup>
-								<thead>
-									<tr>
-										<th>게시글번호</th>
-										<th>문서번호</th>
-										<th class="align-l">제목</th>
-										<th>기안자</th>
-										<th>부서</th>
-										<th>결재일자</th>
-										<th>결재상태</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>20</td>
-										<td>B20241234</td>
-										<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은
-											왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-											제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-										<td>이진형</td>
-										<td>브랜드</td>
-										<td>-</td>
-										<td>진행</td>
-									</tr>
-								</tbody>
-							</table>
-
-							<nav aria-label="Page navigation">
-								<ul class="pagination justify-content-center" id="pagination"></ul>
-							</nav>
+							<div class="line">
+								<label class="fw-600">받는 사람</label> 
+								<input name="myself" type="checkbox" class="form-check-input" id="checkbox2">
+								<label for="myself">나에게</label>
+								<button>조직도</button>
+							</div>
+							<div class="line">
+								<label class="fw-600">제목</label>
+								<input type="text" name="title"/>
+							</div>
+							<div class="line">
+								<label class="fw-600">파일첨부</label> 
+								<button>파일첨부</button>
+								<p>
+									<span>0KB</span>
+									/
+									<span>10MB</span>
+								</p>
+								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
+								
+							</div>			
+							<div class="editor-area">
+								<textarea name="content" id="summernote" maxlength="10000"></textarea>
+							</div>		
+							
 						</div>
 					</div>
 				</section>
@@ -190,36 +223,34 @@
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
+<!-- 파일업로더 -->
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
+<script src="/resources/assets/extensions/filepond/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script>
+
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/textEaditor.js'></script>
 
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
 </script>
 
 </html>
