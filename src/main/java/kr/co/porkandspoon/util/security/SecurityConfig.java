@@ -40,7 +40,7 @@ public class SecurityConfig {
 		
 		http.authorizeHttpRequests()
 		.antMatchers("/resources/**").permitAll() // resources 하위 폴더 허용
-		.antMatchers("/", "/joinView", "/joinWrite", "/pageListCall", "/findUserId", "/sendMail", "/chackAuthCode", "/displayUserId", "/findPassword", "/changePassword").permitAll() // joinView, joinWrite 추후 제거
+		.antMatchers("/", "/joinView", "/joinWrite", "/pageListCall", "/findUserId", "/sendMail", "/chackAuthCode", "/displayUserId/**", "/findPassword", "/changePassword", "/changePassword/**", "/timeoutAction").permitAll() // joinView, joinWrite 추후 제거
 		.antMatchers("/sa/**").hasRole("superadmin")
 		.antMatchers("/ad/**").hasAnyRole("superadmin", "admin")
 		.antMatchers("/ma/**").hasAnyRole("superadmin", "admin", "manager")

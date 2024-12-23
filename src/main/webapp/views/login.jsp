@@ -159,7 +159,7 @@
 					                    <input type="checkbox" id="rememberId" />
 					                    <label for="rememberId">아이디 저장</label>
 					                </div>
-					                <a href="#">아이디/비밀번호 찾기</a>
+					                <a href="/findUserId">아이디/비밀번호 찾기</a>
 					            </div>
 								<div>
 									<button type="submit" class="btn btn-lg btn-primary" id="loginBtn">로그인</button>
