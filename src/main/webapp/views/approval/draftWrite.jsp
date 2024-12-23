@@ -1,11 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>기안문 작성</title>
+
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -18,7 +23,14 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
+<!-- 파일 업로더 -->
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond/filepond.css">
+<link rel="stylesheet"
+	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
 
+<!-- summernote bootstrap-->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 <!-- 부트스트랩 -->
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
@@ -30,11 +42,10 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <!-- summernote -->
-	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-	
-	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <style>
 	.draftWrite table{
@@ -42,7 +53,7 @@
 		table-layout: auto;
 	}
 	.draftWrite table th, .draftWrite table td{
-		padding: 0 10px;
+		padding: 4px 10px;
 		border-right: 1px solid #ddd;
 		border-width: 1px;
 	}
@@ -65,14 +76,23 @@
 		width: 100%;
 		border: none;
 	}
+	.draftWrite table.user_info input:focus {
+		outline: none;
+	}
 	.draftWrite table.appr_line {
 		width: 410px;
 	}
 	.draftWrite table.appr_line th{
 		width: 44px;
 	}
+	.draftWrite table.appr_line tr:nth-child(2) td p{
+		margin-top: 1rem;
+	}
 	.draftWrite table.appr_line .date{
 		font-size: 13px;
+	}
+	.draftWrite table.appr_line .date > td {
+		height: 28px;
 	}
 	.draftWrite .buttons {
 	    border-bottom: 1px solid #ddd;
@@ -116,10 +136,13 @@
 	.draftWrite .btm-area .txt {
 		width: calc(100% - 160px);
 	}
+	
+	.editor-area .note-editor {
+		width: 100% !important;
+		margin-top: 20px;
+	}
 </style>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 
 <body>
@@ -144,7 +167,6 @@
 						<li><a href="#">중요메일함</a></li>
 						<li><a href="#">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
 
@@ -153,28 +175,28 @@
 							<h5>결재 작성</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary">결재 요청</button>
+							<button href="#" class="btn btn-primary" onclick="textEaditorWrite('/draftWrite')">결재 요청</button>
 							<button href="#" class="btn btn-outline-primary">결재 정보</button>
 							<button href="#" class="btn btn-outline-primary">임시저장</button>
 							<button href="#" class="btn btn-outline-primary">취소</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (브랜드 등록)</h4>
-							<form action="" method="POST">
+							<form>
 							
 								<div class="top-area">
 									<table class="user_info">
 										<tr>
 											<th>기안자</th>
-											<td><input type="text" name="user_id" value="홍길동" readonly/></td>
+											<td><input type="text" name="username" value="${userDTO.name}" readonly/></td>
 										</tr>
 										<tr>
 											<th>기안일</th>
-											<td><input type="text" name="create_date" value="홍길동" readonly/></td>
+											<td><input type="text" name="today" value="" readonly/></td>
 										</tr>
 										<tr>
 											<th>소속</th>
-											<td><input type="text" name="team_name" value="홍길동" readonly/></td>
+											<td><input type="text" name="team_name" value="${userDTO.text}" readonly/></td>
 										</tr>
 									</table>
 									
@@ -188,28 +210,28 @@
 										</tr>
 										<tr>
 											<td>
-												<img src="/resources/common/sign.png" alt="도장"/>
+												<input type="hidden" name="line1_username" value="홍길동"/>
 												<p>홍길동</p>
 											</td>
 											<td>
-												<img src="/resources/common/sign.png" alt="도장"/>
-												<p>홍길동</p>
+												<input type="hidden" name="line2_username" value="김길동"/>
+												<p>김길동</p>
 											</td>
 											<td>
-												<img src="/resources/common/sign.png" alt="도장"/>
-												<p>홍길동</p>
+												<input type="hidden" name="line2_username" value="박길동"/>
+												<p>박길동</p>
 											</td>
 											<td>
-												<img src="/resources/common/sign.png" alt="도장"/>
-												<p>홍길동</p>
+												<input type="hidden" name="line2_username" value="고길동"/>
+												<p>고길동</p>
 											</td>
 										</tr>
 										
 										<tr class="date">
-											<td>2024-12-01</td>
-											<td>2024-12-01</td>
-											<td>2024-12-01</td>
-											<td>2024-12 -01</td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
 										</tr>
 										
 									</table>
@@ -231,7 +253,7 @@
 									</div>
 									<div class="line">
 										<div class="tit">시행일자</div>
-										<div class="txt"><input type="text" name="from_date"/></div>
+										<div class="txt"><input type="date" name="from_date"/></div>
 									</div>
 								</div>
 								<div class="editor-area">
@@ -241,6 +263,13 @@
 								
 								<h5>파일 첨부</h5>
 								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
+								
+								
+								<!--check!!! 나중에 빼기  -->
+								<c:if test="${not empty error}">
+								    <div class="error-message">${error}</div>
+								</c:if>
+								
 								
 							</form>
 
@@ -252,11 +281,6 @@
 	</div>
 </body>
 
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
@@ -265,30 +289,55 @@
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
+<!-- 파일업로더 -->
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
+<script
+	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
+<script src="/resources/assets/extensions/filepond/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script>
+
 	
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/menu.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
-
-
 <script>
+// 기안일
+const today = new Date();   
+const year = today.getFullYear(); 
+const month = today.getMonth() + 1; 
+const date = today.getDate();  
+
+document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
+
+function fileSuccess(response){
+	console.log("파일성공");
+	console.log(response);
+	console.log("성공??",response.success);
+}
+
+//var loginId = '${pageContext.request.userPrincipal.name}';
+//console.log('로그인아이디',loginId);
 
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
+ 
+/* getAjax('/approvalUserInfo/'+loginId);
+
+function getSuccess(response){
+	var userDTO = response.userDTO;
+	console.log(response.userDTO.name);
 	
-	
-
+} */
 
 
 </script>

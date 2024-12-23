@@ -1,0 +1,173 @@
+package kr.co.porkandspoon.dto;
+
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+
+
+public class ApprovalDTO {
+	// 기안문 테이블
+	public String draft_idx;
+	public String document_number;
+	public String username;
+	public String target_type;
+	public String action_type;
+	public LocalDate create_date;
+	public String subject;
+	public String name;
+	
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	public LocalDate from_date;
+	public String content;
+	public String address;
+	public String address_detail;
+	public String cooper_dept_id;
+	public String status;
+	public String dept_id;
+	public LocalDate update_date;
+	
+    // 이미지 리스트
+    private List<FileDTO> fileList;
+
+	public String getDraft_idx() {
+		return draft_idx;
+	}
+
+	public void setDraft_idx(String draft_idx) {
+		this.draft_idx = draft_idx;
+	}
+
+	public String getDocument_number() {
+		return document_number;
+	}
+
+	public void setDocument_number(String document_number) {
+		this.document_number = document_number;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getTarget_type() {
+		return target_type;
+	}
+
+	public void setTarget_type(String target_type) {
+		this.target_type = target_type;
+	}
+
+	public String getAction_type() {
+		return action_type;
+	}
+
+	public void setAction_type(String action_type) {
+		this.action_type = action_type;
+	}
+
+	public LocalDate getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(LocalDate create_date) {
+		this.create_date = create_date;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public LocalDate getFrom_date() {
+		return from_date;
+	}
+
+	public void setFrom_date(LocalDate from_date) {
+		this.from_date = from_date;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getAddress_detail() {
+		return address_detail;
+	}
+
+	public void setAddress_detail(String address_detail) {
+		this.address_detail = address_detail;
+	}
+
+	public String getCooper_dept_id() {
+		return cooper_dept_id;
+	}
+
+	public void setCooper_dept_id(String cooper_dept_id) {
+		this.cooper_dept_id = cooper_dept_id;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getDept_id() {
+		return dept_id;
+	}
+
+	public void setDept_id(String dept_id) {
+		this.dept_id = dept_id;
+	}
+
+	public LocalDate getUpdate_date() {
+		return update_date;
+	}
+
+	public void setUpdate_date(LocalDate update_date) {
+		this.update_date = update_date;
+	}
+
+	public List<FileDTO> getFileList() {
+		return fileList;
+	}
+
+	public void setFileList(List<FileDTO> fileList) {
+		this.fileList = fileList;
+	}
+
+
+}

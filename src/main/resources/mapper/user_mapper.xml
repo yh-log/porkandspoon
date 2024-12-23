@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+>
+
+<mapper namespace="kr.co.porkandspoon.dao.UserDAO">
+	
+	<!-- 아이디 찾기 : 사용자 id 조회 -->
+	<select id="findUserId" parameterType="kr.co.porkandspoon.dto.UserDTO" resultType="String">
+		SELECT DISTINCT(IFNULL (
+		    (SELECT username FROM user 
+		     WHERE name = #{name} AND email = #{email}),
+		    'notFound'
+		)) AS username from user;
+	</select>
+	
+	<!-- 기존 인증코드 존재 여부 체크 -->
+	<select id="randomCodeCheck" resultType="Integer" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT COALESCE(
+		    (SELECT idx FROM authority_code WHERE username = #{username} AND use_yn = 'Y'),
+		    0
+		) AS idx;
+	</select>
+	
+	<!-- 기존 인증코드 업데이트 -->
+	<update id="randomCodeUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE authority_code SET use_yn = 'N' WHERE idx = #{idx}
+	</update>
+	
+	<!-- 새로운 인증코드 등록 -->
+	<insert id="randomCodeInsert" 
+		useGeneratedKeys="true"
+		keyColumn="idx"
+		keyProperty="idx"
+		
+		parameterType="kr.co.porkandspoon.dto.UserDTO">
+		INSERT INTO authority_code (authentication, username) VALUES(#{authentication}, #{username})
+	</insert>
+	
+	<!-- 인증코드 검증 -->
+	<select id="chackAuthCode" resultType="int" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT COUNT(idx) FROM authority_code WHERE idx = #{idx} AND authentication = #{authentication}
+	</select>
+	
+	<!-- 인증코드로 사용자 id 조회 -->
+	<select id="findUsername" resultType="String" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT username FROM authority_code WHERE idx = #{idx}
+	</select>
+	
+	<!-- 비밀번호 찾기 시 사용자 검증 -->
+	<select id="findUserPw" parameterType="kr.co.porkandspoon.dto.UserDTO" resultType="String">
+		SELECT DISTINCT(IFNULL (
+		    (SELECT username FROM user 
+		     WHERE name = #{name} AND email = #{email} AND username = #{username}),
+		    'notFound'
+		)) AS username from user;
+	</select>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="changePassword" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET password = #{password} WHERE username = #{username}
+	</update>
+	
+	
+</mapper>

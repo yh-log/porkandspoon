@@ -15,4 +15,5 @@ public interface CalenderDAO {
 
 	CalenderDTO calenderDetail(int idx);
 
+
 }

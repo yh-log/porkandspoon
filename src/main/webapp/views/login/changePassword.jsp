@@ -29,6 +29,9 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+	
 <style>
     .login-container {
         background: #ffffff;
@@ -105,6 +108,21 @@
 	    margin: 0px;
 	}
 	
+	#passMessage{
+		display: none;
+		font-size: 12px;
+		color: red;
+		margin-top: -5px;
+	}	
+	
+	#passChangeMessage{
+		display: none;
+		font-size: 12px;
+		color: red;
+		margin-top: -5px;
+	}
+	
+	
 </style>
 
 
@@ -126,29 +144,32 @@
 								</div>
 							</div>
 							<div style="margin-bottom: 10px;">
-								<p class="text-subtitle text-muted findText">변경할 비밀번호를 입력해주세요</p>
+								<p class="text-subtitle text-muted findText">8~20자 이내로 영어, 숫자, 특수문자를 포함한 비밀번호를 입력해주세요.</p>
 							</div>
+							<input type="hidden" name="username" value="${username}"/>
 							<div class="form-group position-relative has-icon-left">
 								<p class="textLayout">비밀번호</p>
-								<input type="text" name="name" class="form-control" placeholder="비밀번호 입력"/>
+								<input type="password" name="checkPassword" class="form-control" placeholder="비밀번호 입력" id="firstChangePw"/>
 								<div class="form-control-icon">
 									<i class="bi bi-shield-lock"></i>
 								</div>
 							</div>
+							<div id="passMessage">※ 영어(대소문자), 숫자(0-9), 특수문자를 포함해주세요</div>
 							<div class="form-group position-relative has-icon-left">
 								<p class="textLayout">비밀번호 확인</p>
-								<input type="text" name="username" class="form-control" placeholder="비밀번호 재입력"/>
+								<input type="password" name="password" class="form-control" placeholder="비밀번호 재입력" id="passReInput"/>
 								<div class="form-control-icon">
 									<i class="bi bi-shield-lock"></i>
 								</div>
 							</div>
+							<div id="passChangeMessage">※ 입력된 비밀번호가 다릅니다. 다시 확인해주세요</div>
 							<div>
 							</div>
 							<div>
-								<button class="btn btn-lg btn-primary disabled">비밀번호 변경</button>
+								<button class="btn btn-lg btn-primary" onclick="changePassword()">비밀번호 변경</button>
 							</div>
 							<div>
-								<a href="#">로그인</a>
+								<a href="/">로그인</a>
 							</div>
 							<div style="margin-top: 10px;">
 								<p class="text-subtitle text-muted findText">*이용 시 불편한 점이나 궁금한 사항이 있으시면 </p>
@@ -161,11 +182,6 @@
 		</div>
 	</div>
 </body>
-
-
-
-
-
 
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
@@ -181,7 +197,10 @@
 	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/user.js'></script>
 <script>
+
+
 
 
 

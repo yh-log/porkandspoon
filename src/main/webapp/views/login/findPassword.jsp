@@ -29,6 +29,9 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+	
 <style>
     .login-container {
         background: #ffffff;
@@ -105,6 +108,23 @@
 	    margin: 0px;
 	}
 	
+	#timeChack{
+		font-size: 12px;
+		color: red;
+		margin-left: 15px;
+		width: 35px;
+	}
+	#certificationChackBox{
+		left: 22px;
+	}
+	
+	#emailMessage{
+		display: none;
+		font-size: 12px;
+		color: red;
+		margin-top: -5px;
+	}
+	
 </style>
 
 
@@ -129,18 +149,20 @@
 								<p class="text-subtitle text-muted findText">등록하신 이메일 주소로 인증 번호를 발송해 드립니다.</p>
 								<p class="text-subtitle text-muted findText">직원 등록 시 입력한 정확한 이메일 주소를 입력해주세요.</p>
 							</div>
+							<input type="hidden" name="idx" value=""/>
+							<input type="hidden" name="type" value="pw"/>
 							<div class="form-group position-relative has-icon-left">
-								<p class="textLayout">이름</p>
-								<input type="text" name="name" class="form-control" placeholder="이름을 입력하세요"/>
+								<p class="textLayout">아이디</p>
+								<input type="text" name="username" class="form-control" placeholder="아이디를 입력하세요"  id="findIdUserName"/>
 								<div class="form-control-icon">
-									<i class="bi bi-justify"></i>
+									<i class="bi bi-person"></i>
 								</div>
 							</div>
 							<div class="form-group position-relative has-icon-left">
-								<p class="textLayout">아이디</p>
-								<input type="text" name="username" class="form-control" placeholder="아이디를 입력하세요"/>
+								<p class="textLayout">이름</p>
+								<input type="text" name="name" class="form-control" placeholder="이름을 입력하세요"  id="findIdName"/>
 								<div class="form-control-icon">
-									<i class="bi bi-person"></i>
+									<i class="bi bi-justify"></i>
 								</div>
 							</div>
 							<div>
@@ -148,28 +170,29 @@
 							<div class="form-group position-relative has-icon-left">
 								<p class="textLayout">이메일</p>
 								<div class="input-wrapper">
-									<input type="email" name="email" class="form-control" placeholder="이메일을 입력하세요"/>
-									<button class="btn btn-sm btn-outline-primary">인증</button>
+									<input type="email" name="email" class="form-control" placeholder="이메일을 입력하세요"  id="findIdEmail"/>
+									<button class="btn btn-sm btn-outline-primary" onclick="certificationSubmit()" id="certificationBtn">인증</button>
 								</div>
 								<div class="form-control-icon">
 									<i class="bi bi-envelope"></i>
 								</div>
 							</div>
-							<div class="form-group position-relative has-icon-left" id="certificationChackBox">
+							<div id="emailMessage">※ 잘못된 이메일 형식입니다. 다시 확인해주세요.</div>
+							<div class="form-group position-relative has-icon-left" id="certificationChackBox" style="display: none">
 								<p class="textLayout">인증번호</p>
 								<div class="input-wrapper">
-									<input type="text" name="certification" class="form-control" placeholder="인증번호를 입력하세요"/>
-									<button class="btn btn-sm btn-outline-primary">확인</button>
+									<input type="text" name="certification" class="form-control" placeholder="인증번호를 입력하세요" id="certificationCode"/>
+									<span id="timeChack">0:00</span>
 								</div>
 								<div class="form-control-icon">
 									<i class="bi bi-person-fill-lock"></i>
 								</div>
 							</div>
 							<div>
-								<button class="btn btn-lg btn-primary disabled">비밀번호 찾기</button>
+								<button class="btn btn-lg btn-primary disabled" type="button" id="findIdBtn" onclick="findUserInfo()">비밀번호 변경</button>
 							</div>
 							<div>
-								<a href="#">아이디 찾기</a> | <a href="#">로그인</a>
+								<a href="/findUserId">아이디 찾기</a> | <a href="/">로그인</a>
 							</div>
 							<div style="margin-top: 10px;">
 								<p class="text-subtitle text-muted findText">*이용 시 불편한 점이나 궁금한 사항이 있으시면 </p>
@@ -202,6 +225,7 @@
 	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/user.js'></script>
 <script>
 
 
