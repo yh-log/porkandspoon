@@ -1,5 +1,7 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -9,6 +11,7 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -19,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,9 +51,6 @@ public class UserController {
 	@Autowired PasswordEncoder encoder;
 	
 	final String host = "192.168.189.195";
-	
-	String authenticationCode = ""; 
-	String userId = "";
 	
 	/**
 	 * author yh.kim (24.12.18) 
@@ -127,21 +128,30 @@ public class UserController {
 	 * author yh.kim (24.12.19) 
 	 * 비밀번호 변경 페이지 이동
 	 */
-	@GetMapping(value="/changePassword")
-	public ModelAndView changePasswordView() {
-		return new ModelAndView("/login/changePassword");
+	@GetMapping(value="/changePassword/{username}")
+	public ModelAndView changePasswordView(@PathVariable String username) {
+		
+		logger.info("username => " + username);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("username", username);
+		mav.setViewName("/login/changePassword");
+		
+		return mav;
 	}
 	
 	/**
 	 * author yh.kim (24.12.19) 
 	 * 아이디 제공 페이지 이동
 	 */
-	@GetMapping(value="/displayUserId")
-	public ModelAndView displayUserIdView() {
+	@GetMapping(value="/displayUserId/{username}")
+	public ModelAndView displayUserIdView(@PathVariable String username) {
+		
+		logger.info("username => " + username);
 		
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("username", userId);
 		mav.setViewName("/login/displayUserId");
+		mav.addObject("username", username);
 		return mav;
 	}
 	
@@ -199,139 +209,188 @@ public class UserController {
 		return new ModelAndView("/user/storeDetail");
 	}
 	
+
+	
 	/**
-	 * author yh.kim (24.12.19) 
-	 * 메일 발송 기능
+	 * author yh.kim (24.12.22) 
+	 * 사용자 체크 및 메일 발송 메서드
+	 * 사용자 체크 → 인증번호 생성 → 메일 발송
 	 */
 	@PostMapping(value="/sendMail")
-    public ResponseDTO sendMail(@ModelAttribute UserDTO params) {
+	public UserDTO userCheck(@ModelAttribute UserDTO dto) {
 		
-    	
-    	// 클라이언트로 부터 받아온 값 사용
-    	userId = userService.findUserId(params);
-    	
-    	if(!userId.equals("notFound")) {
-    		String receiverId = params.getEmail();
-    		String subject = "포크앤스푼 인증코드 발송"; // 제목
-    		String authCode = randomAuthenticationCode(); // 인증코드
-    		
-    		Properties props = new Properties();
-    		props.put("mail.smtp.host", "smtp.gmail.com");
-    		props.put("mail.smtp.port", "465");
-    		props.put("mail.smtp.auth", "true");
-    		props.put("mail.smtp.ssl.enable", "true");
-    		props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-    		
-    		Session session = Session.getInstance(props, new Authenticator() {
-    			protected PasswordAuthentication getPasswordAuthentication() {
-    				return new PasswordAuthentication(emailId, emailPw);
-    			}
-    		});
-    		
-    		// Thymeleaf Context 객체 생성 (컨테이너 역할)
-    		Context context = new Context();
-    		// html 템플릿에서 ${authCode} 로 접근 (동적으로 값 전달)
-    		context.setVariable("authCode", authCode);
-    		// 템플릿과 context 결합 (process)
-    		String emailContent = templateEngine.process("template", context);
-    		
-    		MimeMessage message = new MimeMessage(session);
-    		try {
-    			message.setFrom(new InternetAddress(emailId));
-    			message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverId));
-    			message.setSubject(subject);
-    			message.setContent(emailContent, "text/html; charset=utf-8"); // 메일 content
-    			
-    			Transport.send(message);
-    			
-    			params.setStatus(200);
-        		params.setMessage("이메일 전송 성공했습니다.");
-    			
-    		} catch (MessagingException e) {
-    			e.printStackTrace();
-    			logger.info("이메일 전송 실패");
-    			params.setStatus(500);
-    			params.setMessage("이메일 전송 실패했습니다.");
-    		}
-    	}else {
-    		params.setStatus(400);
-    		params.setMessage("존재하지 않은 직원입니다.");
-    	}
-    	return params;
-    }
-	
-    /**
-     * author yh.kim (24.12.19) 
-     * 랜덤 인증 코드 생성 (숫자 6자리)
-     */
-	public String randomAuthenticationCode() {
+		logger.info("인증메일 발송 요청 => " + CommonUtil.toString(dto));
+		String username ="";
+		
+		if(dto.getType().equals("id")) {
+			// 아이디 찾기 시 사용자 검증
+			username = userService.findUserId(dto);
+		}else {
+			// 비밀번호 찾기 시 사용자 검증
+			username = userService.findUserPw(dto);
+		}
+		
+		// 예외일 경우 체크 (직원 정보가 없을 경우 리턴)
+		if(username.equals("notFound")) {
+			dto.setStatus(404);
+			dto.setMessage("존재하지 않는 정보입니다.");
+			return dto;
+		}
+		
+		dto.setUsername(username);
+		// 직원 정보가 있을 경우 랜덤 코드 생성
+		Map<String, Object> authCodeMap = randomAuthenticationCode(dto);
+		
+		dto.setAuthentication((String) authCodeMap.get("authenticationCode"));
+		
+		// 생성한 코드로 메일 전송
+		sendMail(dto);
+		dto.setIdx((int) authCodeMap.get("codeIdx"));
+		dto.setStatus(100);
+		dto.setMessage("인증번호 발송을 완료했습니다.");
+		
+		return dto;
+	}
+
+
+	/**
+	 * author yh.kim (24.12.22)
+	 * 인증 코드 생성 메서드
+	 */
+	public Map<String, Object> randomAuthenticationCode(UserDTO dto) {
+		
+		logger.info("인증코드 생성");
+		
 		Random random = new Random();
 		int randomNum = 0;
 		
-		// 기존 내용이 있다면 초기화
-		if(authenticationCode.length() > 0) {
-			authenticationCode = "";
-		}
-
-		for(int i = 0; i < 6; i++) {
+		String authenticationCode = "";
+		
+		// 랜덤 6자리 숫자 생성
+		for (int i = 0; i < 6; i++) {
 			randomNum = random.nextInt(10);
 			authenticationCode += Integer.toString(randomNum);
 		}
-		logger.info("발송 코드  ==> " + authenticationCode);
-		return authenticationCode;
+		
+		dto.setAuthentication(authenticationCode);
+		
+		int codeIdx = userService.randomAuthenticationCode(dto);
+		
+		Map<String, Object> authCode = new HashMap<>();
+		authCode.put("codeIdx", codeIdx);
+		authCode.put("authenticationCode", authenticationCode);
+		
+		return authCode;
 	}
 	
 	/**
-	 * author yh.kim (24.12.20) 
-	 * 사용자 아이디 조회
-	 * 인증코드와 사용자 입력 코드를 비교해 동일할 경우 아이디 리턴
+	 * author yh.kim (24.12.22)
+	 * 메일 발송 메서드
+	 */
+	private void sendMail(UserDTO dto) {
+		
+		logger.info("메일 발송");
+		
+		String receiverId = dto.getEmail();
+		String subject = "포크앤스푼 인증코드입니다.";
+		String authCode = dto.getAuthentication();
+		
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.port", "465");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.ssl.enable", "true");
+		props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+		
+		Session session = Session.getInstance(props, new Authenticator() {
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(emailId, emailPw);
+			}
+		});
+		
+		// Thymeleaf Context 객체 생성 (컨테이너 역할)
+		Context context = new Context();
+		// html 템플릿에서 ${authCode} 로 접근 (동적으로 값 전달)
+		context.setVariable("authCode", authCode);
+		// 템플릿과 context 결합 (process)
+		String emailContent = templateEngine.process("template", context);
+		
+		MimeMessage message = new MimeMessage(session);
+		
+		try {
+			message.setFrom(new InternetAddress(emailId));
+			message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiverId));
+			message.setSubject(subject);
+			message.setContent(emailContent, "text/html; charset=utf-8"); // 메일 content
+			
+			Transport.send(message);
+			
+		} catch (MessagingException e) {
+			e.printStackTrace();
+			logger.info("이메일 전송 실패");
+		}
+		
+	}
+	
+	/**
+	 * author yh.kim (24.12.22)
+	 * 인증코드 검증 메서드
 	 */
 	@PostMapping(value="/chackAuthCode")
-	public UserDTO chackAuthCode(@ModelAttribute UserDTO params){
+	public UserDTO chackAuthCode(@ModelAttribute UserDTO dto) {
 		
-		logger.info(CommonUtil.toString(params));
+		logger.info("인증 코드 검증 dto => " + CommonUtil.toString(dto));
 		
-		String code = params.getAuthentication();
-		
-		// 아이디 찾기의 경우
-		if(code.equals(authenticationCode)) {
-			//userId = userService.findUserId(params);
-			logger.info(CommonUtil.toString(params));
+		if(userService.chackAuthCode(dto)) {
+			dto.setStatus(200);
+			dto.setMessage("인증 번호 확인 완료 아이디 제공 페이지로 이동");
+			if(dto.getType().equals("pw")) {
+				dto.setStatus(202);
+				dto.setMessage("인증 번호 확인 완료 비밀번호 변경 페이지로 이동");
+				logger.info("리턴할 dto => " + CommonUtil.toString(dto));
 			
-			if(!userId.equals(params.getUsername())) {
-				params.setUsername(userId);
-				params.setStatus(201);
-				params.setMessage("입력 정보와 일치하는 아이디입니다.");
-			}
-			// 비밀번호 변경의 경우
-			if(userId.equals(params.getUsername())) {
-				logger.info(CommonUtil.toString(params));
-				params.setStatus(202);
-				params.setMessage("비밀번호 변경 페이지로 이동합니다.");
 			}
 			
 		}else {
-			logger.info("불일치합니다");
+			dto.setStatus(400);
+			dto.setMessage("잘못된 인증번호를 입력했습니다.");
 		}
 		
-		return params;
+		return dto;
 	}
 	
 	/**
-	 * author yh.kim (24.12.20) 
+	 * author yh.kim (24.12.22)
+	 * 인증번호 생성 후 2분 경과 시 실행 메서드
+	 */
+	@PutMapping(value="/timeoutAction")
+	public void timeoutAction(@ModelAttribute UserDTO dto) {
+		
+		logger.info("시간 초과됨 => "+CommonUtil.toString(dto));
+		userService.timeoutAction(dto);
+	}
+	
+	/**
+	 * author yh.kim (24.12.22)
 	 * 비밀번호 변경 메서드
 	 */
 	@PutMapping(value="/changePassword")
-	public UserDTO changePassword(@ModelAttribute UserDTO params) {
+	public UserDTO changePassword(@ModelAttribute UserDTO dto) {
 		
-		String hash = encoder.encode(params.getPassword());
-		params.setPassword(hash);
-		params.setUsername(userId);
-		if(userService.changePassword(params)) {
-			params.setStatus(205);
-			params.setMessage("비밀번호 변경이 완료되었습니다.");
+		logger.info(CommonUtil.toString(dto));
+		String hash = encoder.encode(dto.getPassword());
+		dto.setPassword(hash);
+		if(userService.changePassword(dto)) {
+			dto.setStatus(205);
+			dto.setMessage("비밀번호 변경이 완료되었습니다.");
+		}else {
+			dto.setStatus(400);
+			dto.setMessage("비밀번호 변경이 실패했습니다.");
 		}
 		
-		return params;
+		return dto;
 	}
+	
+	
+	
 }

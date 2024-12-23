@@ -32,6 +32,9 @@ public class UserDTO extends ResponseDTO{
    private String code_name;      // 코드분류
    
    private String authentication; // 인증코드
+   private Integer idx;				// 인증코드 idx
+   
+   private String type;
    
    
    public String getUsername() {
@@ -173,9 +176,18 @@ public class UserDTO extends ResponseDTO{
    public void setAuthentication(String authentication) {
       this.authentication = authentication;
    }
-
-   
-   
+	public Integer getIdx() {
+		return idx;
+	}
+	public void setIdx(Integer idx) {
+		this.idx = idx;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
    
    
 
