@@ -62,6 +62,12 @@
 	    height: 100%;
 	    border: none;
     }
+    .draftWrite .form-group {
+	    margin-bottom: 0;
+	}
+	.draftWrite select {
+		border: none;
+	}
 	.draftWrite .top-area {
 		display: flex;
 	    justify-content: space-between;
@@ -114,9 +120,22 @@
 	 	margin-top : 40px;
 	}
 
-	.draftWrite .btm-area .line{
+	.draftWrite .btm-area .line {
 		display: flex;
 		width: 50%;
+	}
+	.draftWrite .btm-area .addr-area {
+		display: none;
+    	width: 100%;
+	}
+	.draftWrite .btm-area .addr-area .line {
+		width: 100%;
+	}
+	.draftWrite .btm-area .addr-area .left {
+		width: 100%;
+	}
+	.draftWrite .btm-area .addr-area input[type="button"]{
+		width: 120px;
 	}
 	
 	.draftWrite .btm-area .line > div {
@@ -125,7 +144,7 @@
 	}
 	
 	.draftWrite .btm-area .tit {
-		width: 160px;
+		width: 120px;
 	    border-width: 1px;
 	    background: #f5f5f5;
 	    padding: 7px 16px;
@@ -134,7 +153,7 @@
 	}
 
 	.draftWrite .btm-area .txt {
-		width: calc(100% - 160px);
+		width: calc(100% - 120px);
 	}
 	
 	.editor-area .note-editor {
@@ -159,44 +178,52 @@
 
 			<div class="page-content draftWrite">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
+					<h4 class="menu-title">문서함</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li class="active"><a href="#" onclick="setForm('brand','open',this)">브랜드 등록</a></li>
+						<li><a href="#" onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
+						<li><a href="#" onclick="setForm('direct','open',this)">직영점 등록</a></li>
+						<li><a href="#" onclick="setForm('direct','close',this)">직영점 폐점</a></li>
 					</ul>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>결재 작성</h5>
+							<h5 class="change-tit">브랜드 등록</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary" onclick="textEaditorWrite('/draftWrite')">결재 요청</button>
+							<button href="#" class="btn btn-primary" onclick="sendApproval()">결재 요청</button>
 							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">임시저장</button>
+							<button href="#" class="btn btn-outline-primary" onclick="saveDraft()">임시저장</button>
 							<button href="#" class="btn btn-outline-primary">취소</button>
 						</div>
 						<div class="cont-body">  
-							<h4 class="doc-subject">업무 기안 (브랜드 등록)</h4>
-							<form>
-							
+							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
+							<form id="formDraft">
+								<input type="hidden" name="target_type" value="df001"/>
+								<input type="hidden" name="action_type" value="df011"/>
 								<div class="top-area">
 									<table class="user_info">
 										<tr>
 											<th>기안자</th>
-											<td><input type="text" name="username" value="${userDTO.name}" readonly/></td>
+											<td>
+												<input type="hidden" name="username" value="${userDTO.username}"/>
+												<input type="text" name="sender_name" value="${userDTO.name}" readonly/>
+											</td>
 										</tr>
 										<tr>
 											<th>기안일</th>
-											<td><input type="text" name="today" value="" readonly/></td>
+											<td>
+												<input type="text" name="today" value="" readonly/>
+											</td>
 										</tr>
 										<tr>
 											<th>소속</th>
-											<td><input type="text" name="team_name" value="${userDTO.text}" readonly/></td>
+											<td>
+												<input type="hidden" name="dept_id" value="${userDTO.parent}" readonly/>
+												<input type="text" name="team_name" value="${userDTO.text}" readonly/>
+											</td>
 										</tr>
 									</table>
 									
@@ -241,36 +268,52 @@
 								<div class="btm-area">
 									<div class="line">
 										<div class="tit">제목</div>
-										<div class="txt"><input type="text" name="subject"/></div>
+										<div class="txt"><input type="text" name="subject" required/></div>
 									</div>
 									<div class="line">
 										<div class="tit">협조부서</div>
-										<div class="txt"><input type="text" name="cooper_dept_id"/></div>
+										<div class="txt">
+											<fieldset class="form-group">
+												<select class="form-select" id="basicSelect" name="cooper_dept_id">
+													<c:forEach items="${deptList}" var="dept">
+														<option value="${dept.id}">${dept.text}</option>
+													</c:forEach>
+												</select>
+											</fieldset>
+										</div>
 									</div>
 									<div class="line">
 										<div class="tit">브랜드명</div>
-										<div class="txt"><input type="text" name="target_name"/></div>
+										<div class="txt"><input type="text" name="name" required/></div>
 									</div>
 									<div class="line">
 										<div class="tit">시행일자</div>
-										<div class="txt"><input type="date" name="from_date"/></div>
+										<div class="txt"><input type="date" name="from_date" required/></div>
 									</div>
+									<div class="addr-area">
+										<div class="left">
+											<div class="line addr">
+												<div class="tit">주소</div>
+												<div class="txt"><input type="text" id="sample6_address" name="address" required/></div>
+											</div>
+											<div class="line addr">
+												<div class="tit">상세주소</div>
+												<div class="txt"><input type="text" id="sample6_detailAddress" name="address" required/></div>
+											</div>
+										</div>
+										<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+									</div>
+									
 								</div>
 								<div class="editor-area">
-									<textarea name="approvalCont" id="summernote" maxlength="10000"></textarea>
+									<textarea name="content" id="summernote" maxlength="10000"></textarea>
 									
 								</div>
 								
 								<h5>파일 첨부</h5>
 								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
 								
-								
-								<!--check!!! 나중에 빼기  -->
-								<c:if test="${not empty error}">
-								    <div class="error-message">${error}</div>
-								</c:if>
-								
-								
+								<input type="hidden" name="status"/>
 							</form>
 
 						</div>
@@ -309,21 +352,107 @@
 
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
+
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+
+
 // 기안일
 const today = new Date();   
 const year = today.getFullYear(); 
 const month = today.getMonth() + 1; 
 const date = today.getDate();  
-
 document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
 
+// 기안문 종류에 따른 양식
+function setForm(type1, type2, element){
+	document.querySelectorAll('.change-tit').forEach(function(titEl) {
+		titEl.innerText = element.innerText; // 클릭한 텍스트로 변경
+	});
+	
+	if(type1 == 'brand'){
+		document.getElementsByClassName('addr-area')[0].style.display = 'none';
+		document.querySelector('input[name="target_type"]').value = 'df001';
+	}else if(type1 == 'direct'){
+		document.getElementsByClassName('addr-area')[0].style.display = 'flex';
+		document.querySelector('input[name="target_type"]').value = 'df002';
+	}
+	
+	if(type2 == 'open'){
+		document.querySelector('input[name="action_type"]').value = 'df011';
+	}else if(type2 == 'close'){
+		document.querySelector('input[name="action_type"]').value = 'df012';
+	}
+	
+}
+
+// 결재 요청
+function sendApproval(){
+	const form = document.getElementById("formDraft");
+    const inputs = form.querySelectorAll("input[required]");
+    const selects = form.querySelectorAll("select[required]");
+
+    let isValid = true;
+
+    // input 필드 유효성 검사
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            isValid = false;
+            var txtEl = input.parentNode;
+            console.log(txtEl);
+            var titleEl = txtEl.previousSibling;
+            console.log(titleEl.innerText);
+            //alert(input.parentNode.previousSibling.innerText+ " is required.");
+            //alert(input.name + " is required.");
+            return; // 입력 값이 비어있으면 경고 후 나가기
+        }
+    });
+
+    // select 필드 유효성 검사
+    selects.forEach(select => {
+        if (!select.value) {
+            isValid = false;
+            alert(select.name + " is required.");
+            return; // 선택되지 않은 경우 경고 후 나가기
+        }
+    });
+
+    /* if (isValid) {
+        // 모든 입력 값이 있는 경우 Ajax 전송
+        const formData = new FormData(form);
+
+        fetch('/your-url', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    } */
+    
+    
+    
+    
+	document.querySelector('input[name="status"]').value = "sd";
+	textEaditorWrite('/draftWrite');	
+}
+
+// 임시 저장
+function saveDraft(){
+	document.querySelector('input[name="status"]').value = "sv";
+	textEaditorWrite('/draftWrite');
+			
+	
+}
+
 function fileSuccess(response){
-	console.log("파일성공");
-	console.log(response);
-	console.log("성공??",response.success);
+	console.log("success : "+response.success);
+	location.href = "/approval/detail";
 }
 
 //var loginId = '${pageContext.request.userPrincipal.name}';
@@ -339,6 +468,29 @@ function getSuccess(response){
 	
 } */
 
+// 다음 주소 API
+function sample6_execDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+
+            document.getElementById("sample6_address").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("sample6_detailAddress").focus();
+        }
+    }).open();
+}
 
 </script>
 

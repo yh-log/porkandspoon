@@ -34,6 +34,9 @@ public class UserDTO extends ResponseDTO{
    private String authentication; // 인증코드
    
    
+   // 부서테이블
+   private String text; // 부서명
+   
    public String getUsername() {
       return username;
    }
@@ -173,6 +176,12 @@ public class UserDTO extends ResponseDTO{
    public void setAuthentication(String authentication) {
       this.authentication = authentication;
    }
+public String getText() {
+	return text;
+}
+public void setText(String text) {
+	this.text = text;
+}
 
    
    

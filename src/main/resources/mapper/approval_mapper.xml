@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.porkandspoon.dao.ApprovalDAO">
 	<select id="getUserInfo" resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT 
-			name, d.text
+			u.username, u.name, u.parent, d.text
 			FROM 
 				user u
 			JOIN department d
@@ -14,4 +14,54 @@
 			WHERE 
 				username = #{loginId}
 	</select>
+	
+	<select id="getDeptList" resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT id, text FROM department
+	</select>
+	
+	<insert id="saveDraft"
+		useGeneratedKeys="true"
+		keyColumn="draft_idx"
+		keyProperty="draft_idx"
+ 		parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+		INSERT INTO draft (username, target_type, action_type
+			, subject, name, from_date, content, status, dept_id, document_number
+		  	<if test="address != null">
+            	,address
+        	</if>
+		  	<if test="address_detail != null">
+            	,address_detail
+        	</if>
+		  	<if test="cooper_dept_id != null">
+            	,cooper_dept_id
+        	</if>
+		)
+		VALUES (
+			#{username}, #{target_type}, #{action_type}
+			, #{subject}, #{name}, #{from_date}, #{content}, #{status}, #{dept_id}, #{document_number}
+			<if test="address != null">
+            	,#{address}
+        	</if>
+		  	<if test="address_detail != null">
+            	,#{address_detail}
+        	</if>
+		  	<if test="cooper_dept_id != null">
+            	,#{cooper_dept_id}
+        	</if>
+		)
+	</insert>
+	
+	<select id="getMaxNumberForDate" resultType="Integer">
+	    SELECT MAX(SUBSTRING(document_number, 10, 6))
+	    FROM draft
+	    WHERE document_number LIKE CONCAT(#{date}, '%')
+	    FOR UPDATE
+	</select>
+	
+	<!-- 파일 정보 저장 -->
+	<insert id="fileWrite" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		insert into file (code_name, ori_filename, new_filename, type, pk_value)
+			values (#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_value})
+	</insert>
+	
 </mapper>

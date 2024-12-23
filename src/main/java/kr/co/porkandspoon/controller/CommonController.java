@@ -58,21 +58,7 @@ public class CommonController {
         return CommonUtil.download(paths, ori_filename, new_filename);
     }
 	
-//	@RequestMapping(value="{page}")
-//	public ModelAndView matchPath(@PathVariable String page) {
-//		return new ModelAndView(page);
-//	}
-//
-//	@RequestMapping(value="{path}/{page}")
-//	public ModelAndView matchPath(@PathVariable String path, @PathVariable String page) {
-//		return new ModelAndView(path+"/"+page);
-//	}
-//	
-//	@RequestMapping(value="{path1}/{path2}/{page}")
-//	public ModelAndView matchPath(@PathVariable String path1, @PathVariable String path2, @PathVariable String page) {
-//		return new ModelAndView(path1+"/"+path2+"/"+page);
-//	}
-	
+
 
 
 }

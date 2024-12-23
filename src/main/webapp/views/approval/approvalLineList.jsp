@@ -116,62 +116,42 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>나의 문서함</h5>
+							<h5>나의 결재라인</h5>
 						</div>
 						<div class="buttons">
 							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" class="btn btn-primary">전체</button>
-								<button type="button" class="btn">진행</button>
-								<button type="button" class="btn">완료</button>
-								<button type="button" class="btn">반려</button>
-								<button type="button" class="btn">회수</button>
+								<button type="button" class="btn btn-primary">조직도</button>
 							</div>
-							<div class="search-area">
-								<select name="seach-title" class="form-select" id="basicSelect">
-									<option value="subject">제목</option>
-								</select> <input type="text" name="search-data" class="form-control"
-									placeholder="검색내용을 입력하세요" width="80%" />
-								<button class="btn btn-primary">
-									<i class="bi bi-search"></i>
-								</button>
-							</div>
-							<!-- <button href="#" class="btn btn-primary"></button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">임시저장</button>
-							<button href="#" class="btn btn-outline-primary">취소</button> -->
 						</div>
 						<div class="cont-body">
 
 							<table>
 								<colgroup>
+									<col width="60px;">
 									<col>
 									<col>
-									<col width="40%">
 									<col>
 									<col>
+									<col width=80px;">
 								</colgroup>
 								<thead>
 									<tr>
-										<th>게시글번호</th>
-										<th>문서번호</th>
-										<th class="align-l">제목</th>
-										<th>기안자</th>
-										<th>부서</th>
-										<th>결재일자</th>
-										<th>결재상태</th>
+										<th>NO</th>
+										<th class="align-l">결재라인명</th>
+										<th>결재자1</th>
+										<th>결재자2</th>
+										<th>결재자3</th>
+										<th>삭제</th>
 									</tr>
 								</thead>
 								<tbody>
 									<tr>
-										<td>20</td>
-										<td>B20241234</td>
-										<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은
-											왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-											제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-										<td>이진형</td>
-										<td>브랜드</td>
-										<td>-</td>
-										<td>진행</td>
+										<td>1</td>
+										<td class="align-l">브랜드 등록 결재라인</td>
+										<td>이진형 과장</td>
+										<td>김진형 차장</td>
+										<td>김지원 대표</td>
+										<td><i class="bi bi-trash3"></i></td>
 									</tr>
 								</tbody>
 							</table>
