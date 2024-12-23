@@ -5,6 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
+
 <title>공통 레이아웃 CSS</title>
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
@@ -17,17 +20,7 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
@@ -67,7 +60,7 @@
 		justify-content: center;
 	}
 	.short{
-		width: 200px;
+		width: 280px;
 	}
 	
 </style>
@@ -105,36 +98,45 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-                     <table>
-                        <tr>
-                           <th class="align-l">일정</th>
-                           <td ><input class="form-control sor-1 short"  type="date"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">상태</th>
-                           <td>
-                           <select class="form-select short" id="basicSelect">
-								<option>아침</option>
-								<option>점심</option>
-								<option>저녁</option>
-							</select></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">내용</th>
-                           <td><textarea class="form-control art"></textarea></td>
-                        </tr>
-                        
-                     </table>
-                     
+		               <form action="/ad/mealMenu/Write" method="post">
+						    <input type="hidden" name="_csrf" value="${_csrf.token}" />
+						    <table>
+						        <tr>
+						            <th class="align-l">상태</th>
+						            <td>
+						                <select class="form-select short" id="basicSelect" name="is_time">
+						                    <option value="B" selected="selected">아침</option>
+						                    <option value="L">점심</option>
+						                    <option value="D">저녁</option>
+						                </select>
+						            </td>
+						        </tr>
+						        <tr>
+						            <th class="align-l">일정</th>
+						            <td>
+						                <input id="start" class="form-control sor-1 short" type="datetime-local" name="start_date" />
+						                <input id="end" class="form-control sor-1 short" type="datetime-local" name="end_date" />
+						            </td>
+						        </tr>
+						        <tr>
+						            <th class="align-l">내용</th>
+						            <td>
+						                <textarea id="content" class="form-control art" name="content"></textarea>
+						            </td>
+						        </tr>
+						    </table>
+						
+						    <div id="btn-gap">
+						        <button type="submit" class="btn btn-primary">등록</button>
+						        <button type="button" class="btn btn-outline-primary" onclick="location.href='ad/mealMenu/Write'">취소</button>
+						    </div>
+						</form>
+						
+						
+											
                   </div>
-			
-			
-							
-							<div id="btn-gap">							
-								<button class="btn btn-primary">등록</button>
-								<button class="btn btn-outline-primary">취소</button>
-							</div>
-
+	
+					
 							</div>
 						</div> 
 				</section>
@@ -143,127 +145,64 @@
 	</div>
 </body>
 
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+$(document).ready(function () {
+    // 초기값 설정
+    function setInitialValues() {
+        const selectedValue = $('#basicSelect').val(); // 초기 상태 값 가져오기
+        const now = new Date(); // 현재 날짜 가져오기
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const date = String(now.getDate()).padStart(2, '0');
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
+        let startTime = '';
+        let endTime = '';
 
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+        // 상태에 따라 시간 설정
+        if (selectedValue === 'B') { // 아침
+            startTime = year + '-' + month + '-' + date + 'T07:00';
+            endTime = year + '-' + month + '-' + date + 'T08:00';
+        } else if (selectedValue === 'L') { // 점심
+            startTime = year + '-' + month + '-' + date + 'T12:00';
+            endTime = year + '-' + month + '-' + date + 'T13:00';
+        } else if (selectedValue === 'D') { // 저녁
+            startTime = year + '-' + month + '-' + date + 'T18:00';
+            endTime = year + '-' + month + '-' + date + 'T19:00';
+        }
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
+        // input 값 설정
+        $('#start').val(startTime);
+        $('#end').val(endTime);
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
+        // 설정된 값 확인
+        console.log('Initial Start Time:', $('#start').val());
+        console.log('Initial End Time:', $('#end').val());
+    }
+
+    // 초기 실행
+    setInitialValues();
+
+    // 셀렉트 박스 변경 이벤트
+    $('#basicSelect').change(function () {
+        setInitialValues();
+    });
+});
 
 
+	
 </script>
 
 </html>

@@ -38,44 +38,86 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-	.tit-area,.text,.card-body{
-		display: flex;
-	}
-	.form-control{
-		margin: 15px 10px;
-		width: 80%;
-	}
-	.card-body{
-		margin: 10px 110px;
-	}
-	p{
-		margin: 20px 10px;
-		width: 80px;
-	}
-	#flexRadioDefault2{
-		margin-left: 10px;
-	}
-	#button1{
-		margin-left: 230px;
-	}
-	#home,#schedule{
-		width: 200px;
-	}
-	
-	
-	h5 .count{
-		text-align: right;
-		margin-right: 10px;
-	}
-	.content{
-		display: flex; 
-		align-content: cetner;
-		border: 1px solid black;
-	}
-	
-	row{
-		display: flex;
-	}
+	.page-content {
+  padding: 20px;
+  background-color: #f9f9f9;
+  max-width: 1430px; /* 중앙 정렬을 위한 최대 너비 설정 */
+  
+  margin: 0 auto; /* 페이지 가운데 정렬 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 상단 영역 */
+.top-section {
+  display: flex;
+  gap: 20px;
+  height: 300px; /* 고정된 높이 설정 */
+}
+
+/* 상단 왼쪽 */
+.top-left {
+  flex: 2;
+  background-color: #ffffff;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 상단 오른쪽 */
+.top-right {
+  flex: 3;
+  background-color: #ffffff;
+  padding: 20px;
+  
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 하단 영역 */
+.bottom-section {
+  display: flex;
+  gap: 20px;
+  height: 400px; /* 고정된 높이 설정 */
+}
+
+/* 하단 왼쪽 */
+.bottom-left {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 하단 오른쪽 */
+.bottom-right {
+  flex: 3.5;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 공통 스타일 */
+h3, h4 {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.chart-placeholder {
+  width: 100%;
+  height: 80%;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: #aaa;
+}
+
 </style>
 </head>
 
@@ -89,86 +131,56 @@
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="../header.jsp" />
+		<jsp:include page="../header.jsp" />
 
 			<div class="page-content">
-				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule">스케줄 관리</button>
-					</div>
-					
-					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
-						<li><a href="/ad/rest/List">휴점신청</a></li>
-						
-					</ul>
-				</section>
-				<section class="cont">
-					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-						<div class="tit-area">
-							<h5>아르바이트 등록</h5>
-						</div>
-						<div class="cont-body">
-							<div class="row">
-							<div class="col-9 col-lg-9">
-							
-							<div class="text">
-								<p class="title" id="text">이름</p>
-								<p class="title" id="text">이경언</p>											
-							</div>
-							
-						
-							
-							<div class="text">
-								<p class="title" id="text">생년월일</p>
-								<p class="title" id="text">1999.08.20</p>			
-							</div>	
-							
-							<div class="text">
-								<p class="title" id="text">성별</p>
-								<p class="title" id="text">남</p>			
-							</div>	
-							
-							<div class="text">
-								<p class="title" id="text">상태</p>
-								<p class="title" id="text">남</p>			
-							</div>	
-								
-								
-								<div class="text">
-									<p class="title" id="text">지점명</p>
-									<p class="title" id="text">돼미남 금천점</p>
-																		
-								</div>
-								
-								<div class="text">
-									<p class="title" id="text">전화번호</p>
-									<p class="title" id="text">010-2000-1564</p>
-								</div>		
-														
-								<div class="text">
-									<p class="title" id="text">주소</p>
-									<p class="title" id="text">서울특별시 금천구 동산1동</p>
-								</div>
-								
-								<div class="text">
-									<p class="title" id="text">근무요일</p>
-									<input type="text" class="form-control" id="basicInput" placeholder="상품 수량">		
-								</div>
-								
-								
-								
-							</div>
-								<div class="buttons">							
-									<button class="btn btn-primary" id="button1">등록</button>
-									<button class="btn btn-outline-primary">취소</button>
-								</div>
-							</div>
-						</div> 
-				</section>
+			  <!-- 상단 영역 -->
+			  <div class="top-section">
+			    <div class="top-left">
+			      <h3>돼미남 강남점 정보</h3>
+			      <p>직영점주: 박준규</p>
+			      <p>주소: 서울 강남구 강남대로 27 1층</p>
+			      <button class="btn btn-primary" >매출 등록하기</button>
+			      <button class="btn btn-outline-primary" onclick="location.href='/ad/rest/Write'">휴점 신청</button>
+			    </div>
+			    
+			    <div class="top-right">
+			      <h4>아르바이트 리스트</h4>
+			      <table class="info-table">
+			        <thead>
+			          <tr>
+			            <th>이름</th>
+			            <th>나이</th>
+			            <th>직영점명</th>
+			            <th>입사일</th>
+			          </tr>
+			        </thead>
+			        <tbody>
+			          <tr>
+			            <td>이경언</td>
+			            <td>25</td>
+			            <td>돼미남 강남점</td>
+			            <td>2024.04.06</td>
+			          </tr>
+			        </tbody>
+			      </table>
+			      <h6><a href="/ad/part/List">아르바이트 리스트 더보러가기</a></h6>
+			    </div>
+			  </div>
+			
+			  <!-- 하단 영역 -->
+			  <div class="bottom-section">
+			    <div class="bottom-left">
+			      <h4>요일별 매출</h4>
+			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			    </div>
+			    <div class="bottom-right">
+			      <h4>강남점 총 매출 그래프</h4>
+			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			    </div>
+			  </div>
 			</div>
+		
 		</div>
 	</div>
 </body>

@@ -26,6 +26,11 @@
 	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
 
+<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<link rel="stylesheet" href="/resources/css/common.css">
+
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
@@ -109,8 +114,8 @@
 				<section id="menu">
 					<h4 class="menu-title">매장관리</h4>
 					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule">스케줄 관리</button>
+						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchdule'">스케줄 관리</button>
 					</div>
 					
 					<ul>
