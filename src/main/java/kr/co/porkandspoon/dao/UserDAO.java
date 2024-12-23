@@ -55,4 +55,10 @@ public interface UserDAO{
 	 */
 	String findUserPw(UserDTO dto);
 
+	/**
+	 * author yh.kim (24.12.23)
+	 * 직원 아이디 중복 체크
+	 */
+	int usernameOverlay(UserDTO dto);
+
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
@@ -391,6 +392,34 @@ public class UserController {
 		return dto;
 	}
 	
+	/**
+	 * author yh.kim (24.12.23)
+	 * 직원 아이디 중복 체크
+	 */
+	@GetMapping(value="/ad/user/overlay")
+	public UserDTO usernameOverlay(@ModelAttribute UserDTO dto) {
+		
+		logger.info(CommonUtil.toString(dto));
+		
+		boolean result = false;
+		
+		// null 일 경우 체크
+		if(dto.getUsername() == null || dto.getUsername().equals("")) {
+			dto.setStatus(400);
+			dto.setMessage("아이디를 입력하지 않았습니다.");
+			return dto;
+		}
+		
+		if(userService.usernameOverlay(dto)) {
+			dto.setStatus(200);
+			dto.setMessage("사용 가능한 아이디 입니다.");
+		}else {
+			dto.setStatus(400);
+			dto.setMessage("사용중인 아이디 입니다.");
+		}
+		
+		return dto;
+	}
 	
 	
 }

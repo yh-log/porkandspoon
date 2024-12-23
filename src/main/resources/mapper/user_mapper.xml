@@ -61,5 +61,9 @@
 		UPDATE user SET password = #{password} WHERE username = #{username}
 	</update>
 	
+	<!-- 직원 아이디 중복체크 -->
+	<select id="usernameOverlay" resultType="int" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT COUNT(username) FROM user WHERE username = #{username}
+	</select>
 	
 </mapper>

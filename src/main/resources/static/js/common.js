@@ -2,16 +2,21 @@
 /* 공통 ajax */
 
 /* GET 방식 */
-
-function getAjax(url){
+/**
+* url : 이동 url
+* type : dataType
+*/
+function getAjax(url, type, data = null) { // data 매개변수 추가, 기본값 null
+    console.log('실행');
     $.ajax({
-        type : 'GET',
-        url : url,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
+        type: 'GET',
+        url: url,
+        data: data ? data : {}, // data가 null이 아니면 전송, 아니면 빈 객체
+        dataType: type,
+        success: function(response) {
             getSuccess(response);
-        },error: function(e){
+        },
+        error: function(e) {
             console.log(e);
         }
     });
