@@ -68,6 +68,9 @@
 	.draftWrite select {
 		border: none;
 	}
+	.draftWrite input[type=date].form-control {
+		line-height: 1.5;
+	}
 	.draftWrite .top-area {
 		display: flex;
 	    justify-content: space-between;
@@ -267,11 +270,11 @@
 								
 								<div class="btm-area">
 									<div class="line">
-										<div class="tit">제목</div>
-										<div class="txt"><input type="text" name="subject" required/></div>
+										<div class="tit"><span class="ico-required">*</span>제목</div>
+										<div class="txt"><input class="form-control" type="text" name="subject" required/></div>
 									</div>
 									<div class="line">
-										<div class="tit">협조부서</div>
+										<div class="tit"><span class="ico-required">*</span>협조부서</div>
 										<div class="txt">
 											<fieldset class="form-group">
 												<select class="form-select" id="basicSelect" name="cooper_dept_id">
@@ -283,22 +286,22 @@
 										</div>
 									</div>
 									<div class="line">
-										<div class="tit">브랜드명</div>
-										<div class="txt"><input type="text" name="name" required/></div>
+										<div class="tit"><span class="ico-required">*</span>브랜드명</div>
+										<div class="txt"><input class="form-control" type="text" name="name" required/></div>
 									</div>
 									<div class="line">
-										<div class="tit">시행일자</div>
-										<div class="txt"><input type="date" name="from_date" required/></div>
+										<div class="tit"><span class="ico-required">*</span>시행일자</div>
+										<div class="txt"><input class="form-control" type="date" name="from_date" required/></div>
 									</div>
 									<div class="addr-area">
 										<div class="left">
 											<div class="line addr">
-												<div class="tit">주소</div>
-												<div class="txt"><input type="text" id="sample6_address" name="address" required/></div>
+												<div class="tit"><span class="ico-required">*</span>주소</div>
+												<div class="txt"><input class="form-control" type="text" id="sample6_address" name="address" required/></div>
 											</div>
 											<div class="line addr">
-												<div class="tit">상세주소</div>
-												<div class="txt"><input type="text" id="sample6_detailAddress" name="address" required/></div>
+												<div class="tit"><span class="ico-required">*</span>상세주소</div>
+												<div class="txt"><input class="form-control" type="text" id="sample6_detailAddress" name="address" required/></div>
 											</div>
 										</div>
 										<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
@@ -311,7 +314,7 @@
 								</div>
 								
 								<h5>파일 첨부</h5>
-								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
+								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB">
 								
 								<input type="hidden" name="status"/>
 							</form>
@@ -389,6 +392,8 @@ function setForm(type1, type2, element){
 
 // 결재 요청
 function sendApproval(){
+	document.querySelector('input[name="status"]').value = "sd";
+	
 	const form = document.getElementById("formDraft");
     const inputs = form.querySelectorAll("input[required]");
     const selects = form.querySelectorAll("select[required]");
@@ -405,6 +410,7 @@ function sendApproval(){
             console.log(titleEl.innerText);
             //alert(input.parentNode.previousSibling.innerText+ " is required.");
             //alert(input.name + " is required.");
+
             return; // 입력 값이 비어있으면 경고 후 나가기
         }
     });
@@ -413,7 +419,7 @@ function sendApproval(){
     selects.forEach(select => {
         if (!select.value) {
             isValid = false;
-            alert(select.name + " is required.");
+            //alert(select.name + " is required.");
             return; // 선택되지 않은 경우 경고 후 나가기
         }
     });
@@ -435,11 +441,11 @@ function sendApproval(){
         });
     } */
     
-    
-    
-    
-	document.querySelector('input[name="status"]').value = "sd";
-	textEaditorWrite('/draftWrite');	
+    if (isValid) {
+		textEaditorWrite('/draftWrite');	
+    }else{
+        layerPopup("필수 값을 모두 입력하세요.",'확인',false);
+    }
 }
 
 // 임시 저장
@@ -453,6 +459,20 @@ function saveDraft(){
 function fileSuccess(response){
 	console.log("success : "+response.success);
 	location.href = "/approval/detail";
+}
+
+/* 알림 팝업 */
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
+
+	removeAlert(); // 기존팝업닫기
+}
+function btn2Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
+
+	removeAlert(); // 기존팝업닫기
 }
 
 //var loginId = '${pageContext.request.userPrincipal.name}';

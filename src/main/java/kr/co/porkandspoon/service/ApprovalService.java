@@ -3,17 +3,21 @@ package kr.co.porkandspoon.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+
+import javax.mail.Multipart;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
+import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.porkandspoon.dao.ApprovalDAO;
 import kr.co.porkandspoon.dto.ApprovalDTO;
@@ -39,7 +43,8 @@ public class ApprovalService {
 		return approvalDAO.getDeptList();
 	}
 
-	public int saveDraft(ApprovalDTO approvalDTO) {
+	@Transactional
+	public int saveDraft(ApprovalDTO approvalDTO, MultipartFile[] files) {
 		approvalDTO.setDocument_number(generateDocumentNumber());
 		logger.info("docNumber : "+ approvalDTO.getDocument_number());
 		logger.info("getUsername : "+ approvalDTO.getUsername());
@@ -55,16 +60,53 @@ public class ApprovalService {
             for (FileDTO img : imgs) {
             	logger.info("img : "+ img);
             	logger.info("img.getOri_filename() : "+ img.getOri_filename());
-                img.setPk_value(draftIdx);
+                img.setPk_idx(draftIdx);
                 img.setCode_name("draft");
                 img.setType("img"); //이게맞나...?check!!!
                 fileWrite(img); // 게시글 이미지 파일 복사 저장
             }
         }
+        
+        // 첨부파일 저장
+        saveFile(files, draftIdx);
+        
         return row;
 	}
 	
 	
+	private void saveFile(MultipartFile[] files, String draftIdx) {
+		
+		for(MultipartFile file : files) {
+			try {
+				//check!!! 얘도 if문안에 넣어야하는게 아닌가?
+				String ori_filename = file.getOriginalFilename();
+				logger.info("file 비어있나? : "+file.isEmpty()); // true
+				
+				if(!file.isEmpty()) {
+					logger.info("파일이 있는 경우만 타야하는데");
+					String ext = ori_filename.substring(ori_filename.lastIndexOf("."));
+					String new_filename = UUID.randomUUID()+ext;
+					
+					byte[] arr = file.getBytes();
+					// check!! 경로바꾸기
+					Path path = Paths.get("C:/upload/"+new_filename);
+					Files.write(path, arr);
+					
+					// db에 저장
+					FileDTO fileDto = new FileDTO();
+					fileDto.setOri_filename(ori_filename);
+					fileDto.setNew_filename(new_filename);
+					fileDto.setCode_name("df000");
+					fileDto.setPk_idx(draftIdx);
+					fileDto.setType(file.getContentType());
+					approvalDAO.fileSave(fileDto);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	// 이미지 파일 복사 저장
     private void fileWrite(FileDTO img) {
         logger.info("파일까지 가는 경로 가능하냐!!");
@@ -78,14 +120,13 @@ public class ApprovalService {
             // 파일 복사
             Files.copy(srcFile.toPath(), descDir.toPath());
             logger.info("복사 되었니?");
-            approvalDAO.fileWrite(img);
+            //approvalDAO.fileWrite(img);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 	
-	// 문서번호 생성
-
+		// 문서번호 생성
 		@Transactional
 		public String generateDocumentNumber() {
 		    String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
