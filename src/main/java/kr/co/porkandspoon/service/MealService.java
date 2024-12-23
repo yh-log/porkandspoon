@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,11 @@ public class MealService {
 	public List<MealDTO> getMealMenu(String is_time) {
 		
 		return mealDAO.getMealMenu(is_time);
+	}
+
+	public int getmealMenu(Map<String, String> params) {
+		
+		return mealDAO.getmealMenu(params);
 	}
 	
 	

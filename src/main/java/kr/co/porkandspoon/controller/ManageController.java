@@ -43,13 +43,19 @@ public class ManageController {
 	
 	@GetMapping(value="/ad/part/Update")
 	public ModelAndView partUpdateView() {
-		return new ModelAndView("/manage/partWrite");
+		return new ModelAndView("/manage/partUpdate");
 	}
 	
 	@GetMapping(value="/ad/part/Detail")
 	public ModelAndView partDetailView() {
 		return new ModelAndView("/manage/partDetail");
 	}
+	
+	@GetMapping(value="/ad/partSchdule")
+	public ModelAndView partSchduleView() {
+		return new ModelAndView("/manage/partSchdule");
+	}
+	
 	
 	
 	//휴점
