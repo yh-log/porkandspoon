@@ -127,7 +127,7 @@
       <jsp:include page="../header.jsp" />
       <div class="page-content">
          <section id="menu">
-            <h4 class="menu-title">공지사항</h4>
+            <h4 class="menu-title">라이브러리</h4>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
@@ -136,7 +136,7 @@
                </div>
                <div class="cont-body"> 
 					<div class="row">
-	               	  	<div class="col-sm-1"><a href="/board/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
+	               	  	<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
 	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-update btn-write">수정하기</button></div>
 	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-delete btn-write">삭제하기</button></div>
 	               	  	<div class="col-sm-9"></div>
@@ -158,76 +158,18 @@
 								</td>
 							</tr>
 							<tr></tr>
-							<tr class="table-sun">
+							<tr>
 								<td>
 									<textarea class="table-textarea">상세내용이 어쩌고 저쩌구...</textarea>
 								</td>
 							</tr>
-							<tr class="table-sun">
-								<td class="table-text table-text-text">
-									<i class="bi bi-chat"></i>&nbsp;<span>댓글 2개</span>&nbsp;|&nbsp;<span class="btnModal user-list">조회 5</span>&nbsp;|&nbsp;<i class="bi bi-person-fill"></i>&nbsp;<span>5</span>
-									<!-- 유저 리스트 모달 -->
-									<div id="modal" class="modal">
-										<div class="modal-cont modal-user-list">
-											<span class="close">&times;</span>
-											<div id="modal-body">
-												<h4 class="menu-title">확인한 직원 리스트</h4>
-												<table>
-													<colgroup>
-														<col width="30%" />
-														<col />
-													</colgroup>
-													<tbody>
-														<tr>
-															<td>사진</td>
-															<td>이름</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>									
+							<tr>
+								<td>
+									파일 뷰어 영역
 								</td>
 							</tr>
-							<tr></tr>
 						</tbody>
 					</table>
-					<div>
-						<table>
-							<colgroup>
-								<col width="5%" />
-								<col width="75%" />
-								<col width="20%" />
-							</colgroup>
-							<thead>
-							</thead>
-							<tbody>
-								<tr class="table-sun">
-									<td class="table-text table-text-text">
-										<img class="table-img" src="https://randomuser.me/api/portraits/men/1.jpg" alt="사람 이미지">
-									</td>
-									<td class="table-text table-text-text">
-										인사팀 이경언
-										<button class="btn-review"><i class="bi bi-arrow-return-right"></i>댓글</button>&nbsp;&nbsp;<span style="color: gray; font-size: 14px;">2024.12.01</span>
-									</td>
-									<td>
-										<button class="btn icon btn-secondary btn-update"><i class="bi bi-pencil"></i></button>
-										<button class="btn icon btn-secondary btn-delete"><i class="bi bi-trash"></i></button>
-									</td>
-								</tr>
-								<tr class="table-sun">
-									<td></td>
-									<td class="table-text table-text-text">
-										<span>대단합니다!!!</span>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="review-group">
-							<input class="form-control review-write" type="text" placeholder="댓글을 입력하세요.">
-							<button class="btn btn-lg btn-primary"><span>등록</span></button>
-						</div>
-					</div>
                	  </div>
                </div>
             </div>
@@ -310,65 +252,13 @@
     // FilePond를 모든 input[type="file"]에 적용
     FilePond.create(document.querySelector('input[type="file"]'));
     
- 	// 댓글 삭제 버튼
-	function reviewdeleteY() {
-		console.log('댓글 삭제 하기');
-		removeAlert();
-	}
-
-	// 댓글 삭제 취소버튼
-	function reviewdeleteN() {
-		console.log('댓글 삭제 취소');
-		removeAlert();
-	}
-	
-	// 댓글 삭제 팝업
-	$('.btn-delete').on(
+	// 게시글 삭제 팝업
+	$('.btn-write-delete').on(
 			'click',
 			function() {
-				layerPopup('댓글을 삭제하시겠습니까?', '예', '아니오', reviewdeleteY,
-						reviewdeleteN);
+				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', writedeleteY,
+						writedeleteN);
 			});
-
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-	
-	//모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	// 댓글 수정 버튼
-	function reviewupdateY() {
-		console.log('댓글 수정 하기');
-		removeAlert();
-	}
-
-	// 댓글 수정 취소버튼
-	function reviewupdateN() {
-		console.log('댓글 수정 취소');
-		removeAlert();
-	}
-	
-	// 댓글 수정 팝업
-	$('.btn-update').on(
-			'click',
-			function() {
-				layerPopup('댓글을 수정하시겠습니까?', '예', '아니오', reviewupdateY,
-						reviewupdateN);
-			});
-	
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	// 모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
 	
 	// 게시글 삭제 버튼
 	function writedeleteY() {
@@ -382,14 +272,6 @@
 		removeAlert();
 	}
 	
-	// 게시글 삭제 팝업
-	$('.btn-write-delete').on(
-			'click',
-			function() {
-				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', writedeleteY,
-						writedeleteN);
-			});
-
 	// 모달창 열기
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
@@ -399,6 +281,14 @@
 	$('#modal .close').on('click', function() {
 		$('#modal').hide();
 	});
+	
+	// 게시글 수정 팝업
+	$('.btn-write-update').on(
+			'click',
+			function() {
+				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', writeupdateY,
+						writeupdateN);
+			});
 	
 	// 게시글 수정 버튼
 	function writeupdateY() {
@@ -412,14 +302,6 @@
 		removeAlert();
 	}
 	
-	// 게시글 수정 팝업
-	$('.btn-write-update').on(
-			'click',
-			function() {
-				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', writeupdateY,
-						writeupdateN);
-			});
-	
 	// 모달창 열기
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
@@ -429,6 +311,5 @@
 	$('#modal .close').on('click', function() {
 		$('#modal').hide();
 	});
-	
 </script>
 </html>

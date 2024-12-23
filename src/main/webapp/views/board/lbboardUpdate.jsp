@@ -50,73 +50,11 @@
 		text-align: left;
 	}
 	
-	/* 테이블 하단 선 삭제 */
-	.table-sun {
-		border-bottom: none;
+	/* 테이블 텍스트 굵기 조정 */
+	.table-text-text {
+		font-weight: bold;
 	}
 	
-	/* 이미지 조정 */
-	.table-img {
-		width: 50px;
-	    height: 50px;
-	    border-radius: 50%;
-	    object-fit: cover;
-	}
-	
-	/* 내용창 설정 */
-	.table-textarea {
-	    width: 100%;
-	    height: 450px;
-	    border: solid white;
-	    text-align: left;
-	    resize: none;
-	}
-	
-	/* 사람 아이콘 크기 설정 */
-	.bi-person-fill {
-		font-size: 22px;
-	}
-	
-	/* 채팅 아이콘 크기 설정 */
-	.bi-chat {
-		font-size: 20px;
-	}
-	
-	/* 댓글 버튼 스타일 설정 */
-	.btn-review {
-	    background-color: white;
-	    border: none;
-	    color: gray;
-	}
-	
-	/* 아이콘 색상 변경 및 마우스 올리면 포인터 변환 */
-	 .bi-icon {
-	 	color: gray;
-	 	cursor: pointer;
-	 }
-	 
-	 /* 글쓰기 input 창 크기 설정 */
-	 .review-write {
-	 	height: 80px;
-	 }
-	 
-	 /* 조회수에 마우스 올릴 시 커서 변경 */
-	 .user-list {
-	 	cursor: pointer;
-	 }
-	 
-	 /* 확인한 리스트 모달창 스타일 변경  */
-	 #modal .modal-user-list {
- 	    top: 27%;
-	    width: 300px;
-	    height: 450px;
-	    overflow: auto;
-	 }
-	 
-	 /* 모달창 "예" 버튼 크기 수정 */
-	 .confirm{
-	 	width: 75px;
-	 }
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -127,7 +65,7 @@
       <jsp:include page="../header.jsp" />
       <div class="page-content">
          <section id="menu">
-            <h4 class="menu-title">공지사항</h4>
+            <h4 class="menu-title">라이브러리</h4>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
@@ -136,99 +74,62 @@
                </div>
                <div class="cont-body"> 
 					<div class="row">
-	               	  	<div class="col-sm-1"><a href="/board/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-update btn-write">수정하기</button></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-delete btn-write">삭제하기</button></div>
-	               	  	<div class="col-sm-9"></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write">등록하기</button></div>
+	               	  	<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
+	               	  	<div class="col-sm-5"></div>
+	               	  	<div class="col-sm-5"></div>
                	  	</div>
-               	  <div class="row">
-	                  <table>
-						<colgroup>
-							<col width="60%" />
-						</colgroup>
-						<thead>
-						</thead>
-						<tbody>
-							<tr class="table-sun">
-								<td class="table-text table-text-text"><h5>김순무 김열무 사귀다.(제목)</h5></td>
-							</tr>
-							<tr class="table-sun">
-								<td class="table-text table-text-text">
-									<img class="table-img" src="https://randomuser.me/api/portraits/men/1.jpg" alt="사람 이미지">&nbsp;&nbsp;인사팀 이진형
-								</td>
-							</tr>
-							<tr></tr>
-							<tr class="table-sun">
-								<td>
-									<textarea class="table-textarea">상세내용이 어쩌고 저쩌구...</textarea>
-								</td>
-							</tr>
-							<tr class="table-sun">
-								<td class="table-text table-text-text">
-									<i class="bi bi-chat"></i>&nbsp;<span>댓글 2개</span>&nbsp;|&nbsp;<span class="btnModal user-list">조회 5</span>&nbsp;|&nbsp;<i class="bi bi-person-fill"></i>&nbsp;<span>5</span>
-									<!-- 유저 리스트 모달 -->
-									<div id="modal" class="modal">
-										<div class="modal-cont modal-user-list">
-											<span class="close">&times;</span>
-											<div id="modal-body">
-												<h4 class="menu-title">확인한 직원 리스트</h4>
-												<table>
-													<colgroup>
-														<col width="30%" />
-														<col />
-													</colgroup>
-													<tbody>
-														<tr>
-															<td>사진</td>
-															<td>이름</td>
-														</tr>
-													</tbody>
-												</table>
-											</div>
-										</div>
-									</div>									
-								</td>
-							</tr>
-							<tr></tr>
-						</tbody>
-					</table>
-					<div>
-						<table>
-							<colgroup>
-								<col width="5%" />
-								<col width="75%" />
-								<col width="20%" />
-							</colgroup>
-							<thead>
-							</thead>
-							<tbody>
-								<tr class="table-sun">
-									<td class="table-text table-text-text">
-										<img class="table-img" src="https://randomuser.me/api/portraits/men/1.jpg" alt="사람 이미지">
-									</td>
-									<td class="table-text table-text-text">
-										인사팀 이경언
-										<button class="btn-review"><i class="bi bi-arrow-return-right"></i>댓글</button>&nbsp;&nbsp;<span style="color: gray; font-size: 14px;">2024.12.01</span>
-									</td>
-									<td>
-										<button class="btn icon btn-secondary btn-update"><i class="bi bi-pencil"></i></button>
-										<button class="btn icon btn-secondary btn-delete"><i class="bi bi-trash"></i></button>
-									</td>
-								</tr>
-								<tr class="table-sun">
-									<td></td>
-									<td class="table-text table-text-text">
-										<span>대단합니다!!!</span>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="review-group">
-							<input class="form-control review-write" type="text" placeholder="댓글을 입력하세요.">
-							<button class="btn btn-lg btn-primary"><span>등록</span></button>
-						</div>
-					</div>
-               	  </div>
+                  <table>
+					<colgroup>
+						<col width="5%" />
+						<col width="60%" />
+					</colgroup>
+					<thead>
+					</thead>
+					<tbody>
+						<tr class="table-sun">
+							<th class="table-text table-text-text">작성자</th>
+							<td class="table-text">이진형</td>
+						</tr>
+						<tr class="table-sun">
+							<th class="table-text table-text-text">소속 부서</th>
+							<td class="table-text">인사팀</td>
+						</tr>
+						<tr class="table-sun">
+							<th class="table-text table-text-text">제목</th>
+							<td class="table-text"><input class="form-control" type="text" placeholder="제목을 입력해주세요."></td>
+						</tr>
+						<tr>
+							<th class="table-text table-text-text" style="vertical-align: top;">파일첨부</th>
+							<td>
+								<div class="filepond--root multiple-files-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
+									<input class="filepond--browser" type="file" id="filepond--browser-8hvxfnueg" name="filepond" aria-controls="filepond--assistant-8hvxfnueg" aria-labelledby="filepond--drop-label-8hvxfnueg" accept="" multiple="">
+									<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
+										<label for="filepond--browser-8hvxfnueg" id="filepond--drop-label-8hvxfnueg" aria-hidden="true">
+											이 곳에 파일을 드래그 하세요. 혹은 파일 선택(0MB)
+										</label>
+									</div>
+									<div class="filepond--list-scroller" style="transform: translate3d(0px, 60px, 0px);">
+										<ul class="filepond--list" role="list"></ul>
+									</div>
+									<div class="filepond--panel filepond--panel-root" data-scalable="true">
+										<div class="filepond--panel-top filepond--panel-root"></div>
+										<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
+										<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
+									</div>
+									<span class="filepond--assistant" id="filepond--assistant-8hvxfnueg" role="status" aria-live="polite" aria-relevant="additions"></span>
+									<fieldset class="filepond--data"></fieldset>
+									<div class="filepond--drip"></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								썸머노트 가져오기
+							</td>
+						</tr>
+					</tbody>
+				</table>
                </div>
             </div>
          </section>   
@@ -309,126 +210,5 @@
 
     // FilePond를 모든 input[type="file"]에 적용
     FilePond.create(document.querySelector('input[type="file"]'));
-    
- 	// 댓글 삭제 버튼
-	function reviewdeleteY() {
-		console.log('댓글 삭제 하기');
-		removeAlert();
-	}
-
-	// 댓글 삭제 취소버튼
-	function reviewdeleteN() {
-		console.log('댓글 삭제 취소');
-		removeAlert();
-	}
-	
-	// 댓글 삭제 팝업
-	$('.btn-delete').on(
-			'click',
-			function() {
-				layerPopup('댓글을 삭제하시겠습니까?', '예', '아니오', reviewdeleteY,
-						reviewdeleteN);
-			});
-
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-	
-	//모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	// 댓글 수정 버튼
-	function reviewupdateY() {
-		console.log('댓글 수정 하기');
-		removeAlert();
-	}
-
-	// 댓글 수정 취소버튼
-	function reviewupdateN() {
-		console.log('댓글 수정 취소');
-		removeAlert();
-	}
-	
-	// 댓글 수정 팝업
-	$('.btn-update').on(
-			'click',
-			function() {
-				layerPopup('댓글을 수정하시겠습니까?', '예', '아니오', reviewupdateY,
-						reviewupdateN);
-			});
-	
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	// 모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	// 게시글 삭제 버튼
-	function writedeleteY() {
-		console.log('게시글 삭제 하기');
-		removeAlert();
-	}
-
-	// 게시글 삭제 취소버튼
-	function writedeleteN() {
-		console.log('게시글 삭제 취소');
-		removeAlert();
-	}
-	
-	// 게시글 삭제 팝업
-	$('.btn-write-delete').on(
-			'click',
-			function() {
-				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', writedeleteY,
-						writedeleteN);
-			});
-
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-	
-	//모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	// 게시글 수정 버튼
-	function writeupdateY() {
-		console.log('게시글 수정 하기');
-		removeAlert();
-	}
-
-	// 게시글 수정 취소버튼
-	function writeupdateN() {
-		console.log('게시글 수정 취소');
-		removeAlert();
-	}
-	
-	// 게시글 수정 팝업
-	$('.btn-write-update').on(
-			'click',
-			function() {
-				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', writeupdateY,
-						writeupdateN);
-			});
-	
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	// 모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
 </script>
 </html>
