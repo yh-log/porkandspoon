@@ -81,7 +81,7 @@
 								<input type="text" name="name" class="form-control" value="${username}" disabled="disabled" id="usernameResult"/>
 							</div>
 							<div>
-								<a href="#">비밀번호 찾기</a> | <a href="#">로그인</a>
+								<a href="/findPassword">비밀번호 찾기</a> | <a href="/">로그인</a>
 							</div>
 							<div style="margin-top: 10px;">
 								<p class="text-subtitle text-muted findText">*이용 시 불편한 점이나 궁금한 사항이 있으시면 </p>
@@ -100,5 +100,7 @@
 
 <!-- 페이지네이션 -->
 <script src='/resources/js/common.js'></script>
-
+<script>
+	
+</script>
 </html>

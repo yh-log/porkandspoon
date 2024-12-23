@@ -49,6 +49,123 @@
 		border-radius: 20px;
 	}
 
+	.chatPersonListBox{
+		display: flex;
+		align-items: center;
+  		gap: 10px;
+	}
+	
+	.chatUserProfileBox{
+		width: 40px;
+		height: 40px;
+		background-color: #3498db;
+		border-radius: 50%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+	
+	.chatSubject{
+	    color: var(--bs-primary);
+	    font-size: 18px;
+    	font-weight: 600;
+	}
+	
+	#no-chat-box{
+		height: 500px;
+		width: 1200px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+	}
+	
+	#no-chat-font{
+		color: #CCCCCC;
+		font-weight: 600;
+		font-size: 18px;
+	}
+	hr{
+		color: var(--bs-secondary);
+	}
+	
+
+	#chat-input-box{
+		display: flex;
+		gap: 15px;
+	}
+	
+	textarea.form-control.chatInputText{
+		max-width: 90%; /* 최대 크기를 90%로 제한 */
+	  	word-wrap: break-word; /* 단어가 넘치면 줄바꿈 */
+	 	word-break: break-word; /* 긴 단어도 줄바꿈 */
+	  	overflow-wrap: break-word; /* 최신 브라우저 호환성 */
+	  	padding: 10px; /* 내부 여백 */
+	  	resize: none; /* 수동 크기 조정 비활성화 */
+		overflow: auto; /* 넘칠 경우 스크롤 처리 */
+	}
+
+	.chat-item {
+	    display: flex; /* 수평 정렬 */
+	    align-items: flex-start; /* 상단 정렬 (왼쪽 기준) */
+	    padding: 10px 10px 0px 0; /* 왼쪽에 패딩 제거 */
+	    margin-bottom: 10px; /* 요소 간 간격 */
+	}
+	
+	.profile-container {
+	    position: relative; /* 상태 표시가 프로필 내부에 겹쳐지도록 설정 */
+	    flex: 0 0 40px; /* 가로 크기를 고정 (40px) */
+	    height: 40px; /* 세로 크기 */
+	    margin-right: 10px; /* 텍스트와 간격 */
+	}
+	
+	.profile-image {
+	    width: 100%; /* 프로필 컨테이너에 맞춤 */
+	    height: 100%;
+	    background-color: #3498db; /* 배경색 */
+	    border-radius: 50%; /* 원형 모양 */
+	    display: flex; /* 중앙 정렬을 위한 flexbox */
+	    justify-content: center; /* 가로 중앙 정렬 */
+	    align-items: center; /* 세로 중앙 정렬 */
+	}
+	
+	.status-indicator {
+	    position: absolute; /* 프로필 이미지 위에 겹쳐지도록 설정 */
+	    width: 12px; /* 상태 표시 크기 */
+	    height: 12px;
+	    background-color: #28a745; /* 초록색 (온라인 상태) */
+	    border-radius: 50%; /* 원형 모양 */
+	    bottom: 2px; /* 프로필 이미지의 아래쪽 여백 */
+	    right: 2px; /* 프로필 이미지의 오른쪽 여백 */
+	    border: 2px solid #ffffff; /* 흰색 테두리로 구분 */
+	}
+	
+	.chat-details {
+	    flex: 1; /* 가변 크기 */
+	    display: flex;
+	    flex-direction: column; /* 수직 정렬 */
+	    overflow: hidden; /* 넘치는 내용 숨김 */
+	}
+	
+	.chat-name {
+	    font-size: 16px; /* 채팅방 이름 폰트 크기 */
+	    font-weight: bold; /* 굵은 텍스트 */
+	    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+	    overflow: hidden; /* 넘치는 내용 숨김 */
+	    text-overflow: ellipsis; /* 말줄임표 표시 */
+	    margin-bottom: 5px; /* 메시지와 간격 */
+	}
+	
+	.chat-message {
+	    font-size: 14px; /* 메시지 폰트 크기 */
+	    color: #555; /* 메시지 색상 */
+	    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+	    overflow: hidden; /* 넘치는 내용 숨김 */
+	    text-overflow: ellipsis; /* 말줄임표 표시 */
+	}
+
+
 
 </style>
 
@@ -79,8 +196,57 @@
 						</div>
 					</div>
 					<div class="btn btn-primary full-size">새로운 채팅</div>
-					<div>채팅방 인원</div>
-					<div>채팅 리스트</div>
+					<div>
+						<p class="chatSubject">Chat Participants</p>
+						<div> <!-- 채팅방 리스트 반복으로 넣기 -->
+							<div class="chat-item">
+							    <div class="profile-container">
+							        <div class="profile-image"></div> <!-- 프로필 이미지 -->
+							    	<div class="status-indicator"></div> <!-- 상태 표시 -->
+							    </div>
+							    <div class="chat-details">
+							    	<div class="chat-name">홍길동 사원</div> <!-- 채팅방 이름 -->
+							    	<div class="chat-message">기획부서 마케팅팀</div> <!-- 최근 메시지 -->
+							    </div>
+							</div>
+							<div class="chat-item">
+							    <div class="profile-container">
+							        <div class="profile-image"></div> <!-- 프로필 이미지 -->
+							    	<div class="status-indicator"></div> <!-- 상태 표시 -->
+							    </div>
+							    <div class="chat-details">
+							    	<div class="chat-name">김철수 대리</div> <!-- 채팅방 이름 -->
+							    	<div class="chat-message">기획부서 마케팅팀</div> <!-- 최근 메시지 -->
+							    </div>
+							</div>
+						</div>
+					</div>
+					<hr/>
+					<div>
+						<p class="chatSubject">Chats</p>
+						<div> <!-- 채팅방 리스트 반복으로 넣기 -->
+							<div class="chat-item">
+							    <div class="profile-container">
+							        <div class="profile-image"></div> <!-- 프로필 이미지 -->
+							    	<div class="status-indicator"></div> <!-- 상태 표시 -->
+							    </div>
+							    <div class="chat-details">
+							    	<div class="chat-name">인사팀 채팅방</div> <!-- 채팅방 이름 -->
+							    	<div class="chat-message">이번 인사이동은 언제 시작하죠?</div> <!-- 최근 메시지 -->
+							    </div>
+							</div>
+							<div class="chat-item">
+							    <div class="profile-container">
+							        <div class="profile-image"></div> <!-- 프로필 이미지 -->
+							    	<div class="status-indicator"></div> <!-- 상태 표시 -->
+							    </div>
+							    <div class="chat-details">
+							    	<div class="chat-name">총무팀 친구들을 위한 메신저방</div> <!-- 채팅방 이름 -->
+							    	<div class="chat-message">오늘 점심 뭐먹을지 고민이네..ㅜㅜ</div> <!-- 최근 메시지 -->
+							    </div>
+							</div>
+						</div>
+					</div>
 				</section>
 				<section class="cont">
 
@@ -89,9 +255,14 @@
 							<h5>채팅방 이름!</h5>
 						</div>
 						<div class="cont-body">  
-						<!-- 여기에 컨텐츠 넣어주시면 됩니다!!! -->
-						
-
+							<div id="no-chat-box">
+								<img src="/resources/img/chatIcon.png" height="100px"/><br/>
+								<p id="no-chat-font">채팅을 시작해보세요</p>
+							</div>
+							<div id="chat-input-box">
+								<textarea name="content" class="form-control chatInputText" rows="2"></textarea>
+								<button class="btn btn-primary"><i class="bi bi-send"></i>&nbsp;전송</button>
+							</div>
 						</div>
 					</div> 
 				</section>
