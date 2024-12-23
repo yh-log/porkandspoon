@@ -44,35 +44,70 @@
     height: auto;
   }
 
-  .select {
-    width: auto;
-    position: absolute;
-    right: 15px;
-    margin-bottom: 10px;
-     z-index: 10; /* z-index로 다른 요소 위로 올리기 */
+  /* 헤더 툴바 스타일 */
+  .fc-header-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
   }
 
- .fc-event {
-    background-color: transparent !important; /* 배경색 투명 */
-    border: none !important; /* 테두리 제거 */
-    color: black !important; /* 글자색 검정 */
-    font-size: 14px; /* 글자 크기 */
-    white-space: pre-wrap; /* 줄바꿈 허용 */
-    text-align: center !important; /* 가로 중앙 정렬 */
-    line-height: 1.5; /* 줄 간격 */
-    display: flex; /* 플렉스박스 사용 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-}
-	
-	.fc-daygrid-event .fc-event-title {
-	    color: black !important; /* 제목 글자색 검정 */
+  /* 페이지 이동 버튼 왼쪽 정렬 */
+  .fc-toolbar-chunk:first-child {
+      order: -1;
+  }
+
+  /* 캘린더 제목 중앙 정렬 */
+  .fc-toolbar-title {
+      text-align: center;
+      flex-grow: 1;
+      font-size: 18px;
+      font-weight: bold;
+  }
+
+  /* 셀렉트 박스 위치 조정 */
+  .select {
+      position: absolute;
+      right: 15px;
+     
+      z-index: 10;
+  }
+
+	.short{
+		width: 100px;
 	}
-	
-	.fc-daygrid-event:hover {
-	    background-color: transparent !important; /* 호버 시에도 배경 투명 */
-	    color: black !important; /* 호버 시 글자색 유지 */
-	}
+
+  /* 캘린더 날짜 중앙 정렬 */
+  .fc-daygrid-day-top {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+
+  /* 이벤트 내용 중앙 정렬 */
+  .fc-event-title {
+      text-align: center !important;
+  }
+
+  /* "오늘" 버튼 제거 */
+  .fc-today-button {
+      display: none;
+  }
+
+  /* 이벤트 스타일 */
+  .fc-event {
+      background-color: transparent !important;
+      border: none !important;
+      color: black !important;
+      font-size: 14px;
+      white-space: pre-wrap;
+      text-align: center !important;
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  
+ 
 </style>
 </head>
 <body>
@@ -107,48 +142,35 @@
                      </div>
                      <div id='calender'></div>
                   </div>
-                  
-                  
-                  <div id="modalBox" class="modal" style="display: none;">
-				    <div class="modal-content">
-				        <div class="modal-header">
-				            <h5>식단 수정</h5>
-				            <button type="button" id="closeModal" class="modal-close">X</button>
-				        </div>
-				        <div class="modal-body">
-			            <form id="editMenuForm">
-				            <div class="form-group">
-				            	<select class="form-select short" id="mealTypeSelector" name="is_time">
-		                           <option value="B" selected="selected">아침</option>
-		                           <option value="L">점심</option>
-		                           <option value="D">저녁</option>
-	                        	</select>
-				            </div>
-			                <div class="form-group">
-			                    <label for="menuStartDate">시작 날짜</label>
-			                    <input type="datetime-local" id="menuStartDate" class="form-input">
-			                </div>
-			                
-			                <div class="form-group">
-			                    <label for="menuEndDate">종료 날짜</label>
-			                    <input type="datetime-local" id="menuEndDate" class="form-input">
-			                </div>
-			                <div class="form-group">
-			                    <label for="menuContent">내용</label>
-			                    <textarea id="menuContent" class="form-input" rows="4" name="content"></textarea>
-			                </div>
-			            </form>
-				        </div>
-				        
-				        <div class="modal-footer">
-				            <button type="button" id="saveMenu" class="btn btn-primary">저장</button>
-				            <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
-				        </div>
-				    </div>
-				</div>
-                  
-                  
                </div>
+               
+                <div id="modalBox" class="modal" style="display: none;">
+			     <div class="modal-content">
+                    <h3>식단 수정</h3>
+                    <form id="editEventForm">
+                        <label for="title">제목:</label>
+                        <input type="text" id="title" name="title" required />
+
+                        <label for="start">시작 날짜:</label>
+                        <input type="date" id="start" name="start" required />
+
+                        <label for="end">종료 날짜:</label>
+                        <input type="date" id="end" name="end" />
+
+                        <label for="mealType">식단 종류:</label>
+                        <select class="form-select short" id="mealType" name="mealType">
+                           <option value="B">아침</option>
+                           <option value="L">점심</option>
+                           <option value="D">저녁</option>
+                        </select>
+
+                        <div class="modal-actions">
+                            <button type="button" id="cancelModal">취소</button>
+                            <button type="submit" id="saveModal">저장</button>
+                        </div>
+                    </form>
+                 </div>
+			  </div>
             </div>
          </section>
       </div>
@@ -161,21 +183,19 @@
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/calender.js'></script>
 
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calender');
     var mealTypeSelector = document.getElementById('mealTypeSelector');
     var calendar;
 
-    // 캘린더 데이터 로드 함수
     function loadEvents(is_time) {
-        var url = '/ad/mealMenu/' + is_time; // 엔드포인트에 is_time 추가
+        var url = '/ad/mealMenu/' + is_time;
         $.ajax({
             url: url,
             method: 'GET',
             success: function (data) {
-                updateCalendar(data); // 데이터 업데이트
+                updateCalendar(data);
             },
             error: function (err) {
                 console.error('Failed to load events:', err);
@@ -183,57 +203,75 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 캘린더 업데이트 함수
     function updateCalendar(events) {
         var formattedEvents = events.map(function (item) {
             return {
-                title: formatEventContent(item), // 포맷된 텍스트로 변환
+                title: formatEventContent(item),
                 start: item.start_date,
                 end: item.end_date
             };
         });
 
-        calendar.removeAllEvents(); // 기존 이벤트 제거
-        calendar.addEventSource(formattedEvents); // 새로운 이벤트 추가
+        calendar.removeAllEvents();
+        calendar.addEventSource(formattedEvents);
     }
 
-    // 메뉴 데이터를 줄바꿈 포맷으로 변환
     function formatEventContent(item) {
-        const meals = item.content.split(','); // 예: "흑미밥,두부조림" -> ["흑미밥", "두부조림"]
-        return meals.join('\n'); // 각 메뉴를 줄바꿈으로 연결
+        const meals = item.content.split(',');
+        return meals.join('\n');
     }
 
-    // FullCalendar 초기화
     calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['dayGrid', 'interaction'], 
-        headerToolbar: {
-            left: 'prev,next today',
+        plugins: ['dayGrid', 'interaction'],
+        header: {
+            left: 'prev,next',
             center: 'title',
             right: ''
         },
         locale: 'ko',
-        buttonText: {
-            today: '오늘'
-        },
-        eventClick: function(info){
-        	formattedDate = info.dateStr;
-        	loadModal(calender, type, data); // 일정 확인, 수정 모달
-        },
         initialView: 'dayGridMonth',
-        events: []
-    });
+        events: [],
+        dayHeaderContent: function (args) {
+            return args.date.getDate() + '일';
+        },
+        eventClick: function(info) {
+            // 클릭된 이벤트 데이터 가져오기
+            var eventData = {
+                id: info.event.id,
+                title: info.event.title,
+                start_date: info.event.start,
+                end_date: info.event.end_date,
+                mealType: info.event.extendedProps.mealType || 'B'
+            };
 
+            // 모달 열기
+            loadModal('calender','Info',eventData);
+            setupModalEvents('closeModal');
+        },
+    });
+    
     calendar.render();
 
-    // 초기값 설정 및 데이터 로드
     var initialMealType = mealTypeSelector.value;
     loadEvents(initialMealType);
 
-    // 셀렉트박스 변경 시 데이터 갱신
     mealTypeSelector.addEventListener('change', function () {
         var selectedMealType = mealTypeSelector.value;
         loadEvents(selectedMealType);
     });
 });
+
+
+//모달창 열기
+$('.btnModal').on('click', function() {
+	$('#modal').show();
+});
+
+// 모달창 닫기
+$('#modal .close').on('click', function() {
+	$('#modal').hide();
+});
+
+
 </script>
 </html>
