@@ -8,10 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.service.CalenderService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -41,14 +43,32 @@ public class CalenderController {
 	
 	// 일정 등록 ajax
 	@PostMapping(value="/calenderWrite")
-	public Map<String, Object> calenderWrite(@RequestParam Map<String, Object> params){
+	public Map<String, Object> calenderWrite(@RequestBody CalenderDTO calederDto){
 		
-		logger.info("받아온 값 => " + params);
-		
+		logger.info("받아온 값 => " + calederDto);
+				
 		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("success", calenderService.calenderWrite(params));
+		resultMap.put("success", calenderService.calenderWrite(calederDto));
 		
 		return resultMap;
 	}
+	
+	// 일정 조회 ajax
+    @GetMapping(value="/calenderDetail")
+    public Map<String, Object> calenderDetail(@RequestParam("idx") int idx){
+        logger.info("일정 상세 조회 실행, IDX: " + idx);
+        CalenderDTO schedule = calenderService.calenderDetail(idx);
+        System.out.println(CommonUtil.toString(schedule));
+        //schedule.setStart_date(CommonUtil.formatDateTime(schedule.getStart_date(), "yyyy-mm-dd HH:mm:ss"));
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        if(schedule != null) {
+            resultMap.put("success", true);
+            resultMap.put("schedule", schedule);
+        } else {
+            resultMap.put("success", false);
+            resultMap.put("message", "일정을 찾을 수 없습니다.");
+        }
+        return resultMap;
+    }
 
 }

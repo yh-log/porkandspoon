@@ -108,6 +108,7 @@ function getSuccess(response){
 
     response.result.forEach(function(item){
         event.push({
+        	id: item.idx,
             title : item.subject,
             start : item.start_date,
             end : item.end_date
