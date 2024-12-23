@@ -40,7 +40,7 @@
 <style>
 
 	/* 버튼 크기 설정 */
-	.btn-write {
+	.btn-write-style {
 		width: 90px;
     	height: 40px;
 	}
@@ -55,9 +55,9 @@
 		font-weight: bold;
 	}
 	
-	/* 테이블 하단 선 삭제 */
-	.table-sun{
-		border-bottom: none;
+	/* 모달창 "예" 버튼 크기 수정 */
+	.confirm{
+	 	width: 75px;
 	}
 </style>
 <body>
@@ -78,8 +78,8 @@
                </div>
                <div class="cont-body"> 
 					<div class="row">
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write">등록하기</button></div>
-	               	  	<div class="col-sm-1"><a href="/board/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-style btn-write">등록하기</button></div>
+	               	  	<div class="col-sm-1"><a href="/board/View" class="btn btn-outline-primary btn-write-style">돌아가기</a></div>
 	               	  	<div class="col-sm-5"></div>
 	               	  	<div class="col-sm-5"></div>
                	  	</div>
@@ -92,15 +92,15 @@
 					</thead>
 					<tbody>
 						<tr class="table-sun">
-							<td class="table-text table-text-text">작성자</td>
+							<th class="table-text table-text-text">작성자</th>
 							<td class="table-text">이진형</td>
 						</tr>
 						<tr class="table-sun">
-							<td class="table-text table-text-text">제목</td>
+							<th class="table-text table-text-text">제목</th>
 							<td class="table-text"><input class="form-control" type="text" placeholder="제목을 입력해주세요."></td>
 						</tr>
 						<tr>
-							<td class="table-text table-text-text" style="vertical-align: top;">파일첨부</td>
+							<th class="table-text table-text-text" style="vertical-align: top;">파일첨부</th>
 							<td>
 								<div class="filepond--root multiple-files-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
 									<input class="filepond--browser" type="file" id="filepond--browser-8hvxfnueg" name="filepond" aria-controls="filepond--assistant-8hvxfnueg" aria-labelledby="filepond--drop-label-8hvxfnueg" accept="" multiple="">
@@ -129,15 +129,15 @@
 							</td>
 						</tr>
 						<tr class="table-sun">
-							<td class="table-text table-text-text">공개 설정</td>
+							<th class="table-text table-text-text">공개 설정</th>
 							<td class="table-text">
 								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="" checked> 공개
 								&nbsp;
-								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value=""> 비공개
+								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value=""> 비공개	
 							</td>
 						</tr>
 						<tr class="table-sun">
-							<td class="table-text table-text-text"></td>
+							<th class="table-text table-text-text">부서</th>
 							<td class="table-text">
 								<select class="form-select" id="basicSelect" style="width: 200px;">
 									<option>인사팀</option>
@@ -228,5 +228,35 @@
 
     // FilePond를 모든 input[type="file"]에 적용
     FilePond.create(document.querySelector('input[type="file"]'));
+    
+ 	// 게시글 등록 버튼
+	function writeY() {
+		console.log('게시글 등록 하기');
+		removeAlert();
+	}
+
+	// 게시글 등록 취소버튼
+	function writeN() {
+		console.log('게시글 등록 취소');
+		removeAlert();
+	}
+	
+	// 게시글 등록 팝업
+	$('.btn-write').on(
+			'click',
+			function() {
+				layerPopup('게시글을 등록하시겠습니까?', '예', '아니오', writeY,
+						writeN);
+			});
+	
+	// 모달창 열기
+	$('.btnModal').on('click', function() {
+		$('#modal').show();
+	});
+
+	// 모달창 닫기
+	$('#modal .close').on('click', function() {
+		$('#modal').hide();
+	});
 </script>
 </html>
