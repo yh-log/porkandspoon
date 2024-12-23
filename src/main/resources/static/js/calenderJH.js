@@ -56,8 +56,8 @@ function initializeCalendar(event) {
             agenda: 'H(:mm)' //h:mm{ - h:mm}'
         },
         dateClick: function (info) {
-            formattedDate = info.dateStr; 
-            loadModal(section, type); // 일정 등록 모달
+            formattedDate = info.dateStr;
+            loadModal(section, 'Input'); // 일정 등록 모달
         },
         eventClick: function(info){
         	formattedDate = info.dateStr;

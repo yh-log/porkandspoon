@@ -177,9 +177,9 @@
 	
 	$(document).ready(function () {
 		loadCalender(section);
-		dataSetting('calender', 'Info');
 	});
 	
+	// 일정 등록 이벤트
 	document.addEventListener('click', function (event) {
 	    if (event.target && event.target.id === 'addSchedule') {
 	    	console.log('일정 등록 클릭');
@@ -270,7 +270,7 @@
 	        dataType: 'JSON',
 	        success: function(response) {
 	            if (response.success) {
-	                const schedule = response.schedule;
+	                var schedule = response.schedule;
 	
 	                // 모달 열기
 	                loadModal("calender", "Info", {
@@ -291,28 +291,18 @@
 	    });
 	}
 
-	
+	// 데이터 주입
 	function setModalData(data) {
 	    // 데이터 확인
 	    console.log("주입할 데이터:", data);
 
-	    // 데이터가 없을 경우 기본값 설정
-	    const defaultData = {
-	        subject: "제목 없음",
-	        content: "내용 없음",
-	        start_date: "시작일 없음",
-	        end_date: "종료일 없음",
-	        username: "등록자 없음"
-	    };
-
-	    const modalData = { ...defaultData, ...data };
-
 	    // 데이터 주입
-	    document.getElementById("calendar_subject").textContent = modalData.subject;
-	    document.getElementById("calendar_content").textContent = modalData.content;
-	    document.getElementById("calendar_start_date").textContent = modalData.start_date;
-	    document.getElementById("calendar_end_date").textContent = modalData.end_date;
-	    document.getElementById("calendar_username").textContent = modalData.username;
+	 	document.getElementById("calendar_subject").textContent = data.subject;
+		document.getElementById("calendar_content").textContent = data.content;
+		document.getElementById("calendar_start_date").textContent = data.start_date;
+    	document.getElementById("calendar_end_date").textContent = data.end_date;
+	    document.getElementById("calendar_username").textContent = data.username; 	
+
 	}
 	
 	

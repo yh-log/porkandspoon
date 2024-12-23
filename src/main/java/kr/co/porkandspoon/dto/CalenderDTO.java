@@ -14,7 +14,7 @@ public class CalenderDTO {
 	private String reservation_type;
 	private String no; // 물품,회의실 no
 	private String personnel;
-	private String id; // 부서코드
+	private String id; // 부서,직영 코드
 	
 	public String getIdx() {
 		return idx;
@@ -25,8 +25,8 @@ public class CalenderDTO {
 	public LocalDateTime getStart_date() {
 		return start_date;
 	}
-	public void setStart_date(LocalDateTime start_date) {
-		this.start_date = start_date;
+	public void setStart_date(LocalDateTime string) {
+		this.start_date = string;
 	}
 	public LocalDateTime getEnd_date() {
 		return end_date;

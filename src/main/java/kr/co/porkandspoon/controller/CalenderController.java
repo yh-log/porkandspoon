@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,19 +46,20 @@ public class CalenderController {
 	public Map<String, Object> calenderWrite(@RequestBody CalenderDTO calederDto){
 		
 		logger.info("받아온 값 => " + calederDto);
-		
+				
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("success", calenderService.calenderWrite(calederDto));
 		
 		return resultMap;
 	}
 	
-	// 일정 상세 조회 ajax
+	// 일정 조회 ajax
     @GetMapping(value="/calenderDetail")
     public Map<String, Object> calenderDetail(@RequestParam("idx") int idx){
         logger.info("일정 상세 조회 실행, IDX: " + idx);
         CalenderDTO schedule = calenderService.calenderDetail(idx);
-        
+        System.out.println(CommonUtil.toString(schedule));
+        //schedule.setStart_date(CommonUtil.formatDateTime(schedule.getStart_date(), "yyyy-mm-dd HH:mm:ss"));
         Map<String, Object> resultMap = new HashMap<String, Object>();
         if(schedule != null) {
             resultMap.put("success", true);
