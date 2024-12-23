@@ -42,4 +42,30 @@ public class BoardController {
 	public ModelAndView boarddetailView() {
 		return new ModelAndView("/board/boardDetail");
 	}
+	
+	// 투표 리스트 이동 페이지
+	@GetMapping(value="/vote/list")
+	public ModelAndView voteListView() {
+		return new ModelAndView("/board/voteList");
+	}
+	
+	// 투표 상세보기 이동 페이지
+	@GetMapping(value="/vote/detail")
+	public ModelAndView voteDetailView() {
+		return new ModelAndView("/board/voteDetail");
+	}
+	
+	// 투표 등록 이동 페이지
+	@GetMapping(value="/vote/write")
+	public ModelAndView voteWriteView() {
+		return new ModelAndView("/board/voteWrite");
+	}
+	
+	// 투표 수정 이동 페이지
+	@GetMapping(value="/vote/update")
+	public ModelAndView voteUpdateView() {
+		return new ModelAndView("/board/voteUpdate");
+	}
+	
+	
 }

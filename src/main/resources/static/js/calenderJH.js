@@ -61,7 +61,9 @@ function initializeCalendar(event) {
         },
         eventClick: function(info){
         	formattedDate = info.dateStr;
-        	loadModal(section, type, data); // 일정 확인, 수정 모달
+        	var idx = info.event.id; // FullCalendar의 id 필드에서 idx를 가져옴
+    		console.log("클릭한 일정의 idx:", idx);
+        	scheduleDetail(idx);
         },
         // 일정 수정 가능 여부 설정
         editable: false,

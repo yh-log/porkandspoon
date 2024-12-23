@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class CalenderDTO {
 	
+	private String idx;
 	private String username;
 	private LocalDateTime start_date;
 	private LocalDateTime end_date;
@@ -15,7 +16,12 @@ public class CalenderDTO {
 	private String personnel;
 	private String id; // 부서코드
 	
-	
+	public String getIdx() {
+		return idx;
+	}
+	public void setIdx(String idx) {
+		this.idx = idx;
+	}
 	public LocalDateTime getStart_date() {
 		return start_date;
 	}

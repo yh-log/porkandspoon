@@ -10,4 +10,15 @@
 		SELECT * FROM schedule
 	</select>
 	
+	<!-- 캘린더 일정 등록 -->
+	<insert id="calenderWrite" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
+		INSERT INTO schedule(username,start_date,end_date,subject,content,type)
+							VALUES(#{username},#{start_date},#{end_date},#{subject},#{content},#{type})
+	</insert>
+	
+	<!-- 캘린더 일정 상세보기 -->
+    <select id="calenderDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+        SELECT * FROM schedule WHERE idx = #{idx}
+    </select>
+	
 </mapper>
