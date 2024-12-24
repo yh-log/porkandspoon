@@ -8,11 +8,42 @@
 	<!-- 조직도 노드 불러오기 -->
 	<select id="setChart" resultType="kr.co.porkandspoon.dto.DeptDTO">
 		SELECT 
-			id,
-			CASE WHEN parent IS NULL THEN '#' ELSE parent END AS parent,
-			text,
-			type 
-			FROM department
+        d.id, 
+        d.text, 
+        CASE WHEN d.parent IS NULL THEN '#' ELSE d.parent END AS parent,
+        'default' AS type,
+        NULL AS menuOrder,
+        NULL AS position
+    FROM department d
+    UNION ALL
+    SELECT 
+        u.username AS id,
+        u.name AS text,   
+        u.parent AS parent, 
+        'file' AS type,
+        CAST(SUBSTRING(u.position, 3) AS UNSIGNED) AS menuOrder,
+        NULL AS position
+    FROM user u
+    WHERE u.parent IS NOT NULL
 	</select>
 
+	<!-- 노드에서 클릭된 사원 정보 가져오기(부서명도 같이) -->
+	<select id="getUserlist" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT 
+        u.*,
+        d.text AS text
+    	FROM 
+        user u
+    	LEFT JOIN 
+        department d
+    	ON 
+        u.parent = d.id
+    	WHERE 
+        u.username = #{username}
+	</select>
+	
+	<select id="getOrgchart" resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT * FROM department
+	</select>
+	
 </mapper>

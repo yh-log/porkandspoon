@@ -2,16 +2,20 @@
 /* 공통 ajax */
 
 /* GET 방식 */
-
-function getAjax(url){
+/**
+* url : 이동 url
+* type : dataType
+*/
+function getAjax(url, type, data = null) { // data 매개변수 추가, 기본값 null
     $.ajax({
-        type : 'GET',
-        url : url,
-        data: {},
-        dataType: 'JSON',
-        success: function(response){
+        type: 'GET',
+        url: url,
+        data: data ? data : {}, // data가 null이 아니면 전송, 아니면 빈 객체
+        dataType: type,
+        success: function(response) {
             getSuccess(response);
-        },error: function(e){
+        },
+        error: function(e) {
             console.log(e);
         }
     });
@@ -32,7 +36,7 @@ function getAjax(url){
 
 function httpAjax(type, url, params){
 
-	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+   var csrfToken = document.querySelector('meta[name="_csrf"]').content;
     var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
     $.ajax({
@@ -44,7 +48,7 @@ function httpAjax(type, url, params){
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         success : function(response){
-	            httpSuccess(response);
+               httpSuccess(response);
         },error: function(e){
             console.log(e);
         }
@@ -65,7 +69,7 @@ function httpAjax(type, url, params){
 
 function fileAjax(type, url, formData){
 
-	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+   var csrfToken = document.querySelector('meta[name="_csrf"]').content;
     var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
     $.ajax({
@@ -146,8 +150,8 @@ function download(ori_filename, new_filename) {
  * 
  * 아래 형태로 div 요소 삽입 필요
  * <div id="modalBox" class="modal" style="display: none;">
- *	    <div class="modal-content"></div>
- *	</div>
+ *       <div class="modal-content"></div>
+ *   </div>
  * 
  */
 // 모달 오픈
@@ -246,7 +250,7 @@ function layerPopup(message, btn1, btn2, btn1Callback = btn1Act, btn2Callback = 
 
 // 팝업 공통 기능
 function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
-	if(btn2){
+   if(btn2){
         confirmBox.getElementsByClassName('buttons')[0].insertAdjacentHTML('beforeend', '<button class="cancel btn btn-outline-primary">'+btn2+'</button>');
     }
 
@@ -299,41 +303,41 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
  * filtering : 필터링 값
  */
 if($('#pagination')){
-	
+   
     function pageCall(page, cnt, url, { option = '', search = '', filtering = '' } = {}){
         
         var requestData = {
-	        page: page,
-	        cnt: cnt,
-	        option: option,
-	        search: search,
-	        filtering: filtering
-	    };
-	    console.log(requestData);
+           page: page,
+           cnt: cnt,
+           option: option,
+           search: search,
+           filtering: filtering
+       };
+       console.log(requestData);
         
         $.ajax({
-        	type: 'GET',
-        	url: url,
-        	data: requestData,
-        	dataType: 'JSON',
-        	success: function(response){
-        		console.log('성공함');
-        		// 성공 시 실행 함수
-        		pringList(response);
-        		
-				$('#pagination').twbsPagination({ 
-					startPage: 1, 
-            		totalPages: response.totalPages, 
-            		visiblePages: 10,
-            		onPageClick:function(evt, page){
-            			pageCall(page);
-            		}
-				});
+           type: 'GET',
+           url: url,
+           data: requestData,
+           dataType: 'JSON',
+           success: function(response){
+              console.log('성공함');
+              // 성공 시 실행 함수
+              pringList(response);
+              
+            $('#pagination').twbsPagination({ 
+               startPage: 1, 
+                  totalPages: response.totalPages, 
+                  visiblePages: 10,
+                  onPageClick:function(evt, page){
+                     pageCall(page);
+                  }
+            });
 
-        		
-        	}, error: function(e){
-        		console.log('페이지 네이션 에러 => ', e);
-        	}
+              
+           }, error: function(e){
+              console.log('페이지 네이션 에러 => ', e);
+           }
         
         });
     }

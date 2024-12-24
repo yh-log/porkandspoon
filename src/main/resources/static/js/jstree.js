@@ -41,11 +41,45 @@ function loadResources(callback) {
 
 // jsTree 초기화 함수
 function getSuccess(response) {
-    // menuOrder를 기준으로 정렬
+
+    // 정렬
     response.sort(function (a, b) {
         return a.menuOrder - b.menuOrder;
+    }).forEach(function (item) {
+        if (item.type === "file") { // user 데이터만 position 설정
+            switch (item.menuOrder) {
+                case 0:
+                    item.position = "대표";
+                    break;
+                case 1:
+                    item.position = "부장";
+                    break;
+                case 2:
+                    item.position = "차장";
+                    break;
+                case 3:
+                    item.position = "과장";
+                    break;
+                case 4:
+                    item.position = "대리";
+                    break;
+                case 5:
+                    item.position = "주임";
+                    break;
+                case 6:
+                    item.position = "사원";
+                    break;
+                case 7:
+                    item.position = "직영점주";
+                    break;
+                default:
+                    item.position = "기타";
+                    break;
+            }
+            item.text = `[${item.position}] ${item.text}`;
+        }
     });
-
+	console.log("처리된 데이터:", response);
     // jsTree 초기화
     $('#jstree').jstree({
         'core': {
