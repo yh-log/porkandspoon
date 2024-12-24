@@ -182,7 +182,7 @@ public class CommonUtil {
 	 * @throws IllegalArgumentException 파일 배열이 비어 있는 경우
 	 * @throws RuntimeException 파일 저장 중 오류가 발생한 경우
      */
-    public static List<FileDTO> uploadFiles(MultipartFile[] files){
+    public static List<FileDTO> uploadFiles(MultipartFile... files){
     	
     	if(files == null || files.length == 0) {
     		throw new IllegalArgumentException("업로드된 파일이 없습니다.");
@@ -205,6 +205,22 @@ public class CommonUtil {
 			}	
 		}
     	return results;
+    }
+    
+    /**
+     * 단일 파일 업로드를 위한 메서드 (배열 형태로 위임)
+     *
+     * @param file 업로드할 단일 파일
+     * @return 저장된 파일 정보를 담은 {@link FileDTO}
+     * @throws IllegalArgumentException 파일이 없는 경우
+     */
+    public static FileDTO uploadSingleFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("업로드된 파일이 없습니다.");
+        }
+
+        // 단일 파일 처리 결과를 반환
+        return uploadFiles(file).get(0);
     }
 
     /**

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class DeptDTO extends ResponseDTO{
 
+
    private String id;
    private String text;
    private String parent;
