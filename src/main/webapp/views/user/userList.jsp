@@ -105,36 +105,7 @@
 										</tr>
 									</thead>
 									<tbody id="userList">
-										<tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
+										
 									</tbody>
 								</table>
 							</div>
@@ -165,10 +136,35 @@
 	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script>
 
+getAjax('/ad/user/list');
 
+function getSuccess(response){
+	console.log(response);
+	
+	var content = '';
+	response.forEach(function(item){
+		content += '<tr>';
+		content += '<td>' + item.person_num + '</td>';
+		content += '<td>' + item.dept_name + '</td>';
+		content += '<td>' + item.name + '</td>';
+		content += '<td>' + item.position_content + '</td>';
+		content += '<td>' + item.company_num + '</td>';
+		content += '<td>' + item.join_date + '</td>';
+		
+		if(item.user_yn === 'N'){
+			content += '<td><p class="btn icon btn-success" style="margin:0px 5px;">재직</p></td>';			
+		}else{
+			content += '<td><p class="btn icon btn-danger" style="margin:0px 5px;">퇴사</p></td>';						
+		}
+		
+		content += '</tr>';
+	});
+	
+	$('#userList').append(content);
+	
+}
 
 
 </script>

@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
@@ -26,11 +27,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.co.porkandspoon.dto.CareerDTO;
+import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.ResponseDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.UserService;
@@ -55,9 +65,17 @@ public class UserController {
 	
 	/**
 	 * author yh.kim (24.12.18) 
-	 * 직원 리스트 이동
+	 * 직원 리스트 조회
 	 */
 	@GetMapping(value="/ad/user/list")
+	public List<UserDTO> userList() {
+		
+		List<UserDTO> dtoList = userService.userList();
+		
+		return dtoList;
+	}
+	
+	@GetMapping(value="/ad/user/listView")
 	public ModelAndView userListView() {
 		return new ModelAndView("/user/userList");
 	}
@@ -401,8 +419,6 @@ public class UserController {
 		
 		logger.info(CommonUtil.toString(dto));
 		
-		boolean result = false;
-		
 		// null 일 경우 체크
 		if(dto.getUsername() == null || dto.getUsername().equals("")) {
 			dto.setStatus(400);
@@ -421,5 +437,138 @@ public class UserController {
 		return dto;
 	}
 	
+	/**
+	 * author yh.kim (24.12.23)
+	 * 부서 리스트 조회
+	 */
+	@GetMapping(value="/dept/list")
+	public List<DeptDTO> deptList() {
+		
+		List<DeptDTO> deptList = userService.deptList();
+		
+		return deptList;
+	}
+	
+	/**
+	 * author yh.kim (24.12.23)
+	 * 직원 등록 메서드
+	 */
+	@PostMapping(value="/ad/user/write")
+	public UserDTO userWrite(@ModelAttribute UserDTO dto,
+							 @RequestParam("careerStr") String careerStr,
+							 @RequestPart(value = "file", required = false) MultipartFile file) {
+		logger.info(CommonUtil.toString(dto));
+		logger.info(CommonUtil.toString(careerStr));
+		logger.info(file.getOriginalFilename());
+		
+		try {
+		    ObjectMapper objectMapper = new ObjectMapper();
+
+		    // Map 형태로 변환
+		    Map<String, List<CareerDTO>> careerMap = objectMapper.readValue(careerStr, new TypeReference<Map<String, List<CareerDTO>>>() {});
+		    
+		    // "career" 키의 리스트를 추출
+		    List<CareerDTO> careerList = careerMap.get("career");
+
+		    // DTO에 설정
+		    dto.setCareer(careerList);
+		    
+		    // 로그 확인을 위함
+		    careerList.forEach(career -> {
+		        try {
+		            String json = objectMapper.writeValueAsString(career);
+		            logger.info("CareerDTO as JSON: " + json);
+		        } catch (Exception e) {
+		            logger.error("Error converting CareerDTO to JSON", e);
+		        }
+		    });
+		    
+
+		    logger.info("파싱된 DTO => " + CommonUtil.toString(dto));
+		    
+		    String hash = encoder.encode("1111");
+			dto.setPassword(hash);
+		    
+		    boolean result = userService.userWrite(dto, file);
+		    logger.info("직원 등록 결과 => " + result);
+		    
+		} catch (JsonMappingException e) {
+		    logger.error("JsonMappingException 예외 발생", e);
+		    e.printStackTrace();
+		} catch (JsonProcessingException e) {
+		    logger.error("JsonProcessingException 예외 발생", e);
+		    e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 정보 조회 (수정 페이지)
+	 */
+	@PostMapping(value="/ad/user/detail/{username}")
+	public UserDTO userDetail(@PathVariable String username) {
+		
+		logger.info("조회 하는 username => " + username);
+		UserDTO dto = new UserDTO();
+		dto.setType("D");
+		
+		if(username == null || username.equals("")) {
+			dto.setStatus(404);
+			dto.setMessage("직원 아이디가 존재하지 않습니다.");
+			return dto;
+		}
+		
+		dto = userService.userDetail(username);
+		
+		if(dto == null) {
+			dto.setStatus(501);
+			dto.setMessage("직원 정보를 불러오지 못했습니다.");
+			return dto;
+		}
+		
+		dto.setStatus(202);
+		dto.setMessage("직원 정보를 불러오는데 성공했습니다.");
+		
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 정보 수정 
+	 */
+	@PutMapping(value="/ad/user/update")
+	public UserDTO userUpdate(@ModelAttribute UserDTO dto,
+			 @RequestParam("careerStr") String careerStr,
+			 @RequestPart(value = "file", required = false) MultipartFile file) {
+		
+			logger.info(CommonUtil.toString(dto));
+			logger.info(CommonUtil.toString(careerStr));
+			logger.info(file.getOriginalFilename());
+		
+			try {
+				ObjectMapper obj = new ObjectMapper();
+				Map<String, List<CareerDTO>> careerMap = obj.readValue(careerStr, new TypeReference<Map<String, List<CareerDTO>>>() {});
+				// "career" 키의 리스트를 추출
+				List<CareerDTO> careerList = careerMap.get("career");
+				
+				// DTO에 설정
+				dto.setCareer(careerList);
+				
+				boolean result = userService.userUpdate(dto, file);
+			    logger.info("직원 업데이트 결과 => " + result);
+			    
+			} catch (JsonMappingException e) {
+				logger.error("JsonMappingException 예외 발생", e);
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				logger.error("JsonProcessingException 예외 발생", e);
+				e.printStackTrace();
+			}
+		    
+			
+		return null;
+	}
 	
 }

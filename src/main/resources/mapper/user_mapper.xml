@@ -66,4 +66,76 @@
 		SELECT COUNT(username) FROM user WHERE username = #{username}
 	</select>
 	
+	<!-- 부서 이름 조회 (최상위 부모 제외)-->
+	<select id="deptList" resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT text, id FROM department WHERE parent IS NOT NULL
+	</select>
+	
+	<!-- 직원 등록 -->
+	<insert id="userWrite" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		INSERT INTO user(username, name, password, email, gender, phone, parent, birth, join_date, title, position,
+		
+		<if test="company_num != null and company_num != ''">company_num,</if>
+		
+		address, role) 
+		
+			VALUES(#{username}, #{name}, #{password}, #{email}, #{gender}, #{phone}, #{parent}, #{birth}, #{join_date}, #{title}, #{position},
+			
+			 <if test="company_num != null and company_num != ''">#{company_num},</if>
+			 
+			#{address}, #{role})
+	</insert>
+	
+	<!-- 직원 이력 등록 -->
+	<insert id="userCareerWrite" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		INSERT INTO career (username, type, subject, content, start_date, end_date, creater) 
+			VALUES
+				<foreach collection="career" item="item" separator=",">
+		        (
+		        #{item.username}, #{item.type}, #{item.subject}, #{item.content}, #{item.start_date}, #{item.end_date}, #{item.creater}
+		        )
+    </foreach>
+	</insert>
+	
+	<!-- 직원 프로필 이미지 등록 -->
+	<insert id="userFileWriet" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		INSERT INTO file (ori_filename, new_filename, type, code_name, pk_idx) 
+			VALUES(#{ori_filename}, #{new_filename}, #{type}, #{code_name}, #{pk_idx})
+	</insert>
+	
+	<!-- 직원 상세 정보 조회 (프로필, 부서, 직급) -->
+	<select id="userDetail" resultType="kr.co.porkandspoon.dto.UserDTO" parameterType="String">
+		SELECT u.username, u.person_num, u.name, u.email, u.birth, u.phone, u.company_num, u.address, u.gender, u.join_date, u.leave_date, u.position, u.parent, u.title, c.content AS position_content, d.`text` AS dept_name, f.new_filename AS profile
+			FROM user u LEFT JOIN code c ON u.position = c.name
+				LEFT JOIN department d ON u.parent = d.id 
+				LEFT JOIN file f ON u.username = f.pk_idx
+			WHERE u.username = #{username}
+	</select>
+	
+	<!-- 직원 이력 조회 -->
+	<select id="userCareerDetail" resultType="kr.co.porkandspoon.dto.CareerDTO" parameterType="String">
+		SELECT username, type, subject, content, start_date, end_date FROM career WHERE username = #{username}
+	</select>
+	
+	<!-- 직원 정보 수정 -->
+	<update id="userUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET
+			name = #{name},
+			email = #{email},
+			phone = #{phone},
+			<if test="company_num != null and company_num != ''">company_num = #{company_num}</if>
+			
+			WHERE username = #{username}
+	</update>
+	
+	<!-- 직원 프로필 이미지 삭제 -->
+	<delete id="userFileDelete" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		DELETE FROM file WHERE new_filename = #{new_filename}
+	</delete>
+	
+	<!-- 전 직원 조회 -->
+	<select id="userList" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT u.name, u.join_date, u.user_yn, u.company_num, u.person_num, u.username, u.title, d.`text` AS dept_name, c.content AS position_content FROM user u left join department d on u.parent = d.id LEFT JOIN code c on u.`position` = c.name 
+	</select>
+	
 </mapper>
