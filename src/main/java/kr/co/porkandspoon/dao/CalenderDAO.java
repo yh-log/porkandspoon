@@ -9,11 +9,17 @@ import kr.co.porkandspoon.dto.CalenderDTO;
 @Mapper
 public interface CalenderDAO {
 
-	List<Map<String, Object>> calenderList();
+	List<Map<String, Object>> calenderList(String loginId, String dept);
 
 	int calenderWrite(CalenderDTO calederDto);
 
 	CalenderDTO calenderDetail(int idx);
+
+	int calenderUpdate(String idx, CalenderDTO calenderDto);
+
+	int calenderDelete(String idx);
+
+	String dept(String loginId);
 
 
 }

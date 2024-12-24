@@ -10,6 +10,8 @@ var params;
 var method;
 var submitUrl;
 
+var currentEventData = null;
+
 
 function dataSetting(sectionData, typeData, paramData){
 	section = sectionData;
@@ -79,10 +81,24 @@ function initializeCalendar(event) {
 
 
 document.addEventListener('click', function(event){
-    if(event.target && event.target.id === 'addSchedule' || event.target && event.target.id === 'amendSchedule' || event.target && event.target.id === 'deleteSchedule'){
-        httpAjax(method, submitUrl, params);
+    if(event.target){
+        // 일정 등록 버튼 클릭
+        if(event.target.id === 'addSchedule'){
+            handleAddSchedule();
+        }
+        // 일정 수정 버튼 클릭
+        else if(event.target.id === 'amendSchedule'){
+            handleAmendSchedule();
+        }
+        // 일정 삭제 버튼 클릭
+        else if(event.target.id === 'deleteSchedule'){
+            handleDeleteSchedule();
+        }
+        // 일정 수정 저장 버튼 클릭
+        else if(event.target.id === 'saveEditSchedule'){
+            handleSaveEditSchedule();
+        }
     }
-
 });
 
 function initializeModal(ids = []){

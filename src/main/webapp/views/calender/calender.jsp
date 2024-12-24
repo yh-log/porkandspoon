@@ -135,13 +135,13 @@
       <div class="page-content">
          <section id="menu">
             <h4 class="menu-title">캘린더</h4>
-            <div class="btn btn-primary full-size">일정추가</div>
             <ul>
                <li class="active">전체 캘린더</li>
                <li>공지 캘린더</li>
                <li>팀별 캘린더</li>
                <li>개인 캘린더</li>
             </ul>
+            <div class="btn btn-primary full-size" onclick="loadModal('calender','Input')">일정추가</div>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
@@ -175,61 +175,49 @@
 
 	var section= 'calender';
 	
+	var params;
+	
 	$(document).ready(function () {
 		loadCalender(section);
 	});
-	
-	// 일정 등록 이벤트
-	document.addEventListener('click', function (event) {
-	    if (event.target && event.target.id === 'addSchedule') {
-	    	console.log('일정 등록 클릭');
-	        // 입력 데이터 가져오기
-	        var start_date = document.getElementById('calendar_start_date').value; // 시작일
-	        console.log(start_date,'시작일');
-	        var end_date = document.getElementById('calendar_end_date').value; // 종료일
-	        console.log(end_date,'종료일');
-	        var subject = document.getElementById('calendar_subject').value; // 일정 제목
-	        console.log(subject,'제목');
-	        var content = document.getElementById('calendar_content').value; // 일정 내용
-	        console.log(content,'내용');
-	        var type = document.getElementById('calendar_type').value; // 일정 타입
-	        console.log(type,'타입');
-
-	        // 입력값 유효성 검사
-	        if (!content) {
-	            alert("일정 내용을 입력하세요.");
-	            return;
-	        }
-	        if (!start_date || !end_date) {
-	            alert("시작일과 종료일을 입력하세요.");
-	            return;
-	        }
-	        if (new Date(start_date) > new Date(end_date)) {
-	            alert("종료일은 시작일 이후여야 합니다.");
-	            return;
-	        }
-	        if (!subject) {
-	            alert("일정 제목을 입력하세요.");
-	            return;
-	        }
-
-	        // 서버로 전송할 데이터
-	        var params = {
-	        	username:'${pageContext.request.userPrincipal.name}',
-	            subject: subject,
-	            content: content,
-	            start_date: start_date,
-	            end_date: end_date,
-	            type: type
-	        };
-	        
-	        // 서버 요청
-	        httpAjax('POST', '/calenderWrite', params);
-
-	        // 모달 닫기 및 초기화
-	        initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+		
+	function handleAddSchedule() {
+		console.log('일정 등록 클릭');
+        // 입력 데이터 가져오기
+        var start_date = document.getElementById('calendar_start_date_input').value; // 시작일
+        console.log(start_date,'시작일');
+        var end_date = document.getElementById('calendar_end_date_input').value; // 종료일
+        console.log(end_date,'종료일');
+        var subject = document.getElementById('calendar_subject_input').value; // 일정 제목
+        console.log(subject,'제목');
+        var content = document.getElementById('calendar_content_input').value; // 일정 내용
+        console.log(content,'내용');
+        var type = document.getElementById('calendar_type').value; // 일정 타입
+        console.log(type,'타입');
+		
+        // 컨펌박스로 교체	        
+	    // 데이터 유효성 검사
+	    if (!subject || !start_date || !end_date || !content) {
+	        alert("필수 항목을 모두 입력해주세요.");
+	        return;
 	    }
-	});
+
+        // 서버로 전송할 데이터
+        var params = {
+        	username:'${pageContext.request.userPrincipal.name}',
+            subject: subject,
+            content: content,
+            start_date: start_date,
+            end_date: end_date,
+            type: type
+        };
+        
+        // 서버 요청
+        httpAjax('POST', '/calenderWrite', params);
+
+        // 모달 닫기 및 초기화
+        initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+	}
 
 	function httpSuccess(response){
 	    loadCalender(section);    
@@ -265,21 +253,23 @@
 	function scheduleDetail(idx) {
 	    $.ajax({
 	        type: 'GET',
-	        url: '/calenderDetail', // 컨트롤러의 상세 조회 엔드포인트
-	        data: { idx: idx }, // 전달할 idx
+	        url: '/calenderDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
 	        dataType: 'JSON',
 	        success: function(response) {
 	            if (response.success) {
 	                var schedule = response.schedule;
+	                console.log('상세보기 파람스 주입 : ',schedule.idx);
+	                var params = {
+	                		idx: schedule.idx,
+	                		subject: schedule.subject,
+	 	                    content: schedule.content,
+	 	                    start_date: schedule.start_date,
+	 	                    end_date: schedule.end_date,
+	 	                    username: schedule.username         		
+	                };
 	
 	                // 모달 열기
-	                loadModal("calender", "Info", {
-	                    subject: schedule.subject,
-	                    content: schedule.content,
-	                    start_date: schedule.start_date,
-	                    end_date: schedule.end_date,
-	                    username: schedule.username
-	                });
+	                loadModal("calender", "Info", params);
 	            } else {
 	                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
 	            }
@@ -290,20 +280,133 @@
 	        }
 	    });
 	}
+	   
+ 	// 데이터 주입 함수 수정
+    function setModalData(type, data) {
+        console.log('셋모달데이타 : ',data);
+        if (type === 'Input') {
+            // 일정 추가 모드: 입력 필드 초기화
+            console.log("일정 추가 모드: 데이터 없음");
+            document.getElementById("calendar_subject_input").value = '';
+            document.getElementById("calendar_content_input").value = '';
+            document.getElementById("calendar_start_date_input").value = '';
+            document.getElementById("calendar_end_date_input").value = '';
+            document.getElementById("calendar_username_input").textContent = '${pageContext.request.userPrincipal.name}'; // 작성자 자동 입력
+        } else if (type === 'Info') {
+            // 일정 상세 보기 모드: 데이터 주입
+            console.log("일정 상세 보기 모드: 데이터 주입", data);
+            document.getElementById("subject").textContent = data.subject;
+            document.getElementById("content").textContent = data.content;
+            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
+            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
+            document.getElementById("username").textContent = data.username;
+            document.getElementById("event_id").value = data.idx;
+        } else if (type === 'Edit') {
+            // 일정 수정 모드: 데이터 주입
+            console.log("일정 수정 모드: 데이터 주입", data);       
+            document.getElementById("edit_calendar_event_id").value = data.idx;
+            document.getElementById("calendar_subject_edit").value = data.subject;
+            document.getElementById("calendar_content_edit").value = data.content;
+            document.getElementById("calendar_start_date_edit").value = data.start_date;
+            document.getElementById("calendar_end_date_edit").value = data.end_date;
+            document.getElementById("calendar_type_edit").value = data.type
+            document.getElementById("edit_calendar_event_username").value = data.username;
+        }
+    }
 
-	// 데이터 주입
-	function setModalData(data) {
-	    // 데이터 확인
-	    console.log("주입할 데이터:", data);
+    function handleAmendSchedule() {
+    	 // 현재 상세보기 모달에서 데이터 수집
+        var eventId = $('#event_id').val();
+    	console.log('수집할때 받아와?',eventId);
+        var subject = $('#subject').text();
+        var content = $('#content').text();
+        var start_date = $('#start_date').text();
+        var end_date = $('#end_date').text();
+        var username = $('#username').text(); // 필요에 따라 사용
 
-	    // 데이터 주입
-	 	document.getElementById("calendar_subject").textContent = data.subject;
-		document.getElementById("calendar_content").textContent = data.content;
-		document.getElementById("calendar_start_date").textContent = data.start_date;
-    	document.getElementById("calendar_end_date").textContent = data.end_date;
-	    document.getElementById("calendar_username").textContent = data.username; 	
+        // 수정 모달에 전달할 데이터 객체 생성
+        var editData = {
+            idx: eventId,
+            subject: subject,
+            content: content,
+            start_date: start_date,
+            end_date: end_date,
+            username: username
+        };
 
+        // 현재 모달 닫기
+        $('#modalBox').hide();
+        $('#modalBox .modal-content').html('');
+
+        // 수정 모달 열기
+        loadModal('calender', 'Edit', editData);
 	}
+    
+    function handleSaveEditSchedule() {
+    	// 수정 모달에서 데이터 수집
+        var idx = $('#edit_calendar_event_id').val();
+    	console.log('idx 받아옴?',idx);
+        var subject = $('#calendar_subject_edit').val();
+        var content = $('#calendar_content_edit').val();
+        var startDate = $('#calendar_start_date_edit').val();
+        var endDate = $('#calendar_end_date_edit').val();
+        var type = $('#calendar_type_edit').val();
+        var username = '${pageContext.request.userPrincipal.name}';
+        console.log('수정자 이름 받아옴?',username);
+
+        // 데이터 유효성 검사
+        if (!subject || !startDate || !endDate) {
+            alert("필수 항목을 모두 입력해주세요.");
+            return;
+        }
+
+        // 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
+        var params = {
+        	username: username,
+            subject: subject,
+            content: content,
+            start_date: startDate,
+            end_date: endDate,
+            type: type
+        };
+
+        // AJAX PUT 요청을 통해 일정 수정 (Path Variable 사용)
+        $.ajax({
+            type: 'PUT',
+            url: '/calenderUpdate/' + idx, // 수정 엔드포인트에 id 포함
+            data: JSON.stringify(params),
+            contentType: 'application/json; charset=UTF-8',
+            dataType: 'JSON',
+            beforeSend: function(xhr) {
+                var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
+            },
+            success: function(response) {
+                if(response.success){
+                    // 모달 닫기
+                    $('#modalBox').hide();
+                    $('#modalBox .modal-content').html('');
+
+                    // 캘린더 갱신
+                    loadCalender(section);
+                }
+            },
+            error: function(e){
+                console.log('수정 AJAX 에러 => ', e);
+                alert("일정 수정에 실패했습니다.");
+            }
+        });
+	}
+    
+    // 삭제 버튼 클릭 시 삭제 실행
+    function handleDeleteSchedule() {
+    	var idx = $('#event_id').val();
+    	console.log('삭제할때 받아와?',idx);
+    	httpAjax('DELETE', '/calenderDelete/'+idx);
+	}
+
+  	
 	
 	
 </script>

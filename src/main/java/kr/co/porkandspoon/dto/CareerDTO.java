@@ -79,4 +79,6 @@ public class CareerDTO {
 		this.update_date = update_date;
 	}
 	
+
+	
 }

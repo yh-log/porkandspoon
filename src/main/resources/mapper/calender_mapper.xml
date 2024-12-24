@@ -7,18 +7,53 @@
 
 	<!-- 캘린더 데이터 조회 -->
 	<select id="calenderList">
-		SELECT * FROM schedule
+		SELECT * FROM schedule WHERE (type = 'C' OR (type = 'P' AND username = #{loginId}) OR (type = 'T' AND id = #{dept}));
+	</select>
+	
+	<!-- 로그인한 유저의 부서정보 -->
+	<select id="dept">
+		SELECT parent FROM user WHERE username = #{loginId}
 	</select>
 	
 	<!-- 캘린더 일정 등록 -->
 	<insert id="calenderWrite" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
-		INSERT INTO schedule(username,start_date,end_date,subject,content,type)
-							VALUES(#{username},#{start_date},#{end_date},#{subject},#{content},#{type})
+		INSERT INTO schedule(username,start_date,end_date,subject,content,type,id)
+							VALUES(#{username},#{start_date},#{end_date},#{subject},#{content},#{type},#{id})
 	</insert>
 	
 	<!-- 캘린더 일정 상세보기 -->
     <select id="calenderDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.CalenderDTO">
         SELECT * FROM schedule WHERE idx = #{idx}
     </select>
+    
+    <!-- 캘린더 일정 수정 -->
+    <update id="calenderUpdate" parameterType="map">
+	    UPDATE schedule SET 
+	        start_date = #{calenderDto.start_date},
+	        end_date = #{calenderDto.end_date},
+	        subject = #{calenderDto.subject},
+	        content = #{calenderDto.content},
+	        type = #{calenderDto.type},
+	        updater = #{calenderDto.username}
+	    WHERE idx = #{idx}
+	</update>
+	
+	<!-- 캘린더 일정 삭제 -->
+	<delete id="calenderDelete">
+		DELETE FROM schedule WHERE idx = #{idx}
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 </mapper>
