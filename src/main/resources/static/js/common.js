@@ -7,7 +7,6 @@
 * type : dataType
 */
 function getAjax(url, type, data = null) { // data 매개변수 추가, 기본값 null
-    console.log('실행');
     $.ajax({
         type: 'GET',
         url: url,

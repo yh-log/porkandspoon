@@ -2,9 +2,9 @@ package kr.co.porkandspoon.dto;
 
 import java.time.LocalDateTime;
 
-public class DeptDTO {
+public class DeptDTO extends ResponseDTO{
 
-	private int id;
+	private String id;
 	private String text;
 	private String parent;
 	private String type;
@@ -13,10 +13,12 @@ public class DeptDTO {
 	private String updater;
 	private LocalDateTime update_date;
 	private String use_yn;
-	public int getId() {
+	
+	
+	public String getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	public String getText() {

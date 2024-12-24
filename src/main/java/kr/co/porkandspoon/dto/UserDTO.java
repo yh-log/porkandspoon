@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class UserDTO extends ResponseDTO{
    
@@ -17,7 +18,7 @@ public class UserDTO extends ResponseDTO{
    private String company_num;      // 사내번호
    private String address;         // 주소
    private String gender;         // 성별
-   private LocalDate join_date;   // 입사일
+   private String join_date;   // 입사일
    
    private String creater;         // 등록자
    private LocalDate create_date;   // 생성일
@@ -31,12 +32,49 @@ public class UserDTO extends ResponseDTO{
    private String position;          // 직급
    private String title;		  // 직책
    private String code_name;      // 코드분류
+   
    private DeptDTO dept;		// 부서 dto 객체
    
    private String authentication; // 인증코드
    private Integer idx;            // 인증코드 idx
    
+   private String parent;		// 부서 코드
+   private String dept_name; 	// 부서 이름
+   
+   private List<CareerDTO> career;
+   
    private String type;
+
+   private String profile;
+   
+   private String position_content;
+   
+   
+   
+   
+	public String getDept_name() {
+		return dept_name;
+	}
+	
+	public void setDept_name(String dept_name) {
+		this.dept_name = dept_name;
+	}
+
+	public String getPosition_content() {
+		return position_content;
+	}
+	
+	public void setPosition_content(String position_content) {
+		this.position_content = position_content;
+	}
+
+	public String getProfile() {
+		return profile;
+	}
+	
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
 
 	public String getUsername() {
 		return username;
@@ -127,11 +165,11 @@ public class UserDTO extends ResponseDTO{
 		this.gender = gender;
 	}
 	
-	public LocalDate getJoin_date() {
+	public String getJoin_date() {
 		return join_date;
 	}
 	
-	public void setJoin_date(LocalDate join_date) {
+	public void setJoin_date(String join_date) {
 		this.join_date = join_date;
 	}
 	
@@ -231,14 +269,31 @@ public class UserDTO extends ResponseDTO{
 		this.idx = idx;
 	}
 	
+	public List<CareerDTO> getCareer() {
+		return career;
+	}
+
+	public void setCareer(List<CareerDTO> career) {
+		this.career = career;
+	}
+
 	public String getType() {
 		return type;
 	}
-	
+
 	public void setType(String type) {
 		this.type = type;
 	}
 
+	public String getParent() {
+		return parent;
+	}
+
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+
+	
 
 }
 

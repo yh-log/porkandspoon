@@ -1,7 +1,12 @@
 package kr.co.porkandspoon.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.co.porkandspoon.dto.CareerDTO;
+import kr.co.porkandspoon.dto.DeptDTO;
+import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
@@ -60,5 +65,57 @@ public interface UserDAO{
 	 * 직원 아이디 중복 체크
 	 */
 	int usernameOverlay(UserDTO dto);
+
+	/**
+	 * author yh.kim (24.12.23)
+	 * 부서 리스트 조회
+	 */
+	List<DeptDTO> deptList();
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 등록
+	 */
+	int userWrite(UserDTO dto);
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 이력 등록
+	 */
+	int userCareerWrite(UserDTO dto);
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 프로필 이미지 등록
+	 */
+	int userFileWriet(FileDTO fileDtoList);
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 정보 조회 
+	 */
+	UserDTO userDetail(String username);
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 이력 조회
+	 */
+	List<CareerDTO> userCareerDetail(String username);
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 직원 정보 수정
+	 */
+	int userUpdate(UserDTO dto);
+
+	/**
+	 * author yh.kim (24.12.24)
+	 * 기존 직원 프로필 이미지 삭제
+	 */
+	int userFileDelete(UserDTO dto);
+
+	List<UserDTO> userList();
+
+
 
 }
