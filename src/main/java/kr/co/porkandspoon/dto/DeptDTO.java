@@ -83,4 +83,5 @@ public String getId() {
    public void setUse_yn(String use_yn) {
       this.use_yn = use_yn;
    }
+
 }

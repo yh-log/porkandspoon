@@ -44,15 +44,28 @@ public class ApprovalService {
 	}
 
 	@Transactional
-	public int saveDraft(ApprovalDTO approvalDTO, MultipartFile[] files) {
+	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, String status) {
 		approvalDTO.setDocument_number(generateDocumentNumber());
 		logger.info("docNumber : "+ approvalDTO.getDocument_number());
 		logger.info("getUsername : "+ approvalDTO.getUsername());
 		
-		int row = approvalDAO.saveDraft(approvalDTO);
-		logger.info("row : "+ row);
+		// draft_idx 가져오기 
 		String draftIdx = approvalDTO.getDraft_idx();
-		logger.info("draftIdx : "+ draftIdx);
+		logger.info("draftIdx DTO : "+ draftIdx);
+		if(draftIdx == null || draftIdx.isEmpty()) {
+		    draftIdx = String.valueOf(approvalDAO.getDraftIdx());
+			approvalDTO.setDraft_idx(draftIdx);
+			logger.info("draftIdx db: "+ draftIdx);
+		}
+		int row = approvalDAO.saveDraft(approvalDTO);
+		
+	    // 결재라인이 저장되지 않은 경우에만 저장
+	    int existingCount = approvalDAO.checkExistingApprovalLine(draftIdx);
+	    if (existingCount == 0) {
+	        approvalDAO.saveApprovalLine(draftIdx, appr_user);
+	    }
+		logger.info("row : "+ row);
+
 		
 	    // 이미지 정보 저장 (이미지가 있을 경우 반복문 사용)
         List<FileDTO> imgs = approvalDTO.getFileList();
@@ -70,7 +83,7 @@ public class ApprovalService {
         // 첨부파일 저장
         saveFile(files, draftIdx);
         
-        return row;
+        return draftIdx;
 	}
 	
 	
@@ -139,6 +152,15 @@ public class ApprovalService {
 		}
 	   // String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
 	   //return date + "-" + String.format("%06d", documentId);  // "YYYYMMDD-000001" 형식
+
+		public ApprovalDTO getDraftInfo(String draft_idx) {
+			
+			return approvalDAO.getDraftInfo(draft_idx);
+		}
+
+		public List<ApprovalDTO> getApprLine(String draft_idx) {
+			return approvalDAO.getApprLine(draft_idx);
+		}
 
 	
 

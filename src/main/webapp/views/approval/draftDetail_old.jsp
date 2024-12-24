@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>기안문 수정</title>
+<title>기안문 상세보기</title>
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -19,18 +18,9 @@
 	type="image/png">
 
 
-<!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
 
-<!-- summernote bootstrap-->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+
 <!-- 부트스트랩 -->
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
@@ -40,12 +30,6 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<!-- summernote -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <style>
 	.draftDetail table{
@@ -62,15 +46,6 @@
 	    height: 100%;
 	    border: none;
     }
-    .draftDetail .form-group {
-	    margin-bottom: 0;
-	}
-	.draftDetail select {
-		border: none;
-	}
-	.draftDetail input[type=date].form-control {
-		line-height: 1.5;
-	}
 	.draftDetail .top-area {
 		display: flex;
 	    justify-content: space-between;
@@ -85,23 +60,14 @@
 		width: 100%;
 		border: none;
 	}
-	.draftDetail table.user_info input:focus {
-		outline: none;
-	}
 	.draftDetail table.appr_line {
 		width: 410px;
 	}
 	.draftDetail table.appr_line th{
 		width: 44px;
 	}
-	.draftDetail table.appr_line tr:nth-child(2) td p{
-		margin-top: 1rem;
-	}
 	.draftDetail table.appr_line .date{
 		font-size: 13px;
-	}
-	.draftDetail table.appr_line .date > td {
-		height: 28px;
 	}
 	.draftDetail .buttons {
 	    border-bottom: 1px solid #ddd;
@@ -123,22 +89,9 @@
 	 	margin-top : 40px;
 	}
 
-	.draftDetail .btm-area .line {
+	.draftDetail .btm-area .line{
 		display: flex;
 		width: 50%;
-	}
-	.draftDetail .btm-area #addr-area {
-		display: flex;
-    	width: 100%;
-	}
-	.draftDetail .btm-area #addr-area .line {
-		width: 100%;
-	}
-	.draftDetail .btm-area #addr-area .left {
-		width: 100%;
-	}
-	.draftDetail .btm-area #addr-area input[type="button"]{
-		width: 120px;
 	}
 	
 	.draftDetail .btm-area .line > div {
@@ -147,7 +100,7 @@
 	}
 	
 	.draftDetail .btm-area .tit {
-		width: 120px;
+		width: 160px;
 	    border-width: 1px;
 	    background: #f5f5f5;
 	    padding: 7px 16px;
@@ -156,12 +109,60 @@
 	}
 
 	.draftDetail .btm-area .txt {
-		width: calc(100% - 120px);
+		width: calc(100% - 160px);
 	}
 	
-	.editor-area .note-editor {
-		width: 100% !important;
-		margin-top: 20px;
+	.txt-area{
+		height: 400px;
+		border: 1px solid #ddd;
+    	border-top: none;
+	}
+	
+	
+	/* file */
+	div.attach_file {
+		border:1px solid #ddd;
+		border-top: none;
+	}
+	div.attach_file ul.file_wrap {
+		margin-top:0; 
+		background:#f5f5f5;
+	}
+	div.attach_file ul.file_wrap > li {
+		padding: 8px; 
+		border-top:1px solid #e6e6e6;
+	}
+	div.attach_file div.attach_file_header {
+		position:relative; 
+		background:#f7f7f7; 
+		padding:8px;
+	}
+	div.attach_file div.attach_file_header span.subject span.ic_file_s {
+		vertical-align:top; 
+		margin-top:0;
+	}
+	div.attach_file div.attach_file_header span.subject span.num {
+		margin-left:-1px;
+	}
+	div.attach_file div.attach_file_header span.subject span.etc {
+		font-size:11px; 
+		color:#777; 
+		letter-spacing:-1px;
+	}
+	div.attach_file div.attach_file_header span.subject span.etc strong {
+		color:red; 
+		font-weight:normal; 
+		letter-spacing:0;
+	}
+	div.attach_file span.btn_area {
+		position:absolute; 
+		top: 9px; 
+		right: 12px; 
+		margin-left:20px; 
+		text-align:right;
+	}
+	div.attach_file span.btn_area span.btn_wrap {
+		font-size: 13px;
 	}
 </style>
 
@@ -181,57 +182,47 @@
 
 			<div class="page-content draftDetail">
 				<section id="menu">
-					<h4 class="menu-title">문서함</h4>
+					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						<li class="active"><a href="#" onclick="setForm('brand','open',this)">브랜드 등록</a></li>
-						<li><a href="#" onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
-						<li><a href="#" onclick="setForm('direct','open',this)">직영점 등록</a></li>
-						<li><a href="#" onclick="setForm('direct','close',this)">직영점 폐점</a></li>
+						<li class="active"><a href="#">받은메일함</a></li>
+						<li><a href="#">보낸메일함</a></li>
+						<li><a href="#">임시보관함</a></li>
+						<li><a href="#">중요메일함</a></li>
+						<li><a href="#">휴지통</a></li>
 					</ul>
+					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>기안 수정페이지</h5>
+							<h5>결재 작성</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary" onclick="saveTemp()">수정</button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">취소</button>
+							<button href="#" class="btn btn-outline-primary">돌아가기</button>
+							<button href="#" class="btn btn-outline-primary">수정(임시저장문서만)</button>
 						</div>
 						<div class="cont-body">  
-							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
-							<form id="formDraft">
-								<input type="hidden" name="draft_idx" value="${DraftInfo.target_type}"/>
-								<input type="hidden" name="target_type" value="${DraftInfo.target_type}"/>
-								<input type="hidden" name="action_type" value="${DraftInfo.action_type}"/>
+							<h4 class="doc-subject">업무 기안 (브랜드 등록)</h4>
+							<form action="" method="POST">
+							
 								<div class="top-area">
 									<table class="user_info">
 										<tr>
 											<th>기안자</th>
-											<td>
-												<input type="hidden" name="username" value="${DraftInfo.username}"/>
-												<input type="text" name="sender_name" value="${DraftInfo.user_name}" readonly/>
-											</td>
+											<td><input type="text" name="user_id" value="홍길동" readonly/></td>
 										</tr>
 										<tr>
 											<th>기안일</th>
-											<td>
-												<c:if test="${DraftInfo.status == 'sd'}">
-													<input type="text" name="today" value="${DraftInfo.create_date}" readonly/>
-												</c:if>
-												<c:if test="${DraftInfo.status == 'sv'}">
-													<input type="text" name="today" value="-" readonly/>
-												</c:if>
-											</td>
+											<td><input type="text" name="create_date" value="홍길동" readonly/></td>
 										</tr>
 										<tr>
 											<th>소속</th>
-											<td>
-												<input type="hidden" name="dept_id" value="${DraftInfo.dept_id}" readonly/>
-												<input type="text" name="team_name" value="${DraftInfo.dept_id}" readonly/>
-											</td>
+											<td><input type="text" name="team_name" value="홍길동" readonly/></td>
+										</tr>
+										<tr>
+											<th>문서번호(임시저장문서는 X)</th>
+											<td><input type="text" name="document_number" value="B20241352" readonly/></td>
 										</tr>
 									</table>
 									
@@ -245,28 +236,28 @@
 										</tr>
 										<tr>
 											<td>
-												<input type="hidden" name="appr_user" value="wjsaus123"/>
+												<img src="/resources/common/sign.png" alt="도장"/>
 												<p>홍길동</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="jwbak"/>
-												<p>김길동</p>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="qtgks9"/>
-												<p>박길동</p>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="qwre"/>
-												<p>고길동</p>
+												<img src="/resources/common/sign.png" alt="도장"/>
+												<p>홍길동</p>
 											</td>
 										</tr>
 										
 										<tr class="date">
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
+											<td>2024-12-01</td>
+											<td>2024-12-01</td>
+											<td>2024-12-01</td>
+											<td>2024-12 -01</td>
 										</tr>
 										
 									</table>
@@ -275,43 +266,40 @@
 								
 								<div class="btm-area">
 									<div class="line">
-										<div class="tit"><span class="ico-required">*</span>제목</div>
-										<div class="txt"><input class="form-control" type="text" name="subject" value="${DraftInfo.subject}" required/></div>
+										<div class="tit">제목</div>
+										<div class="txt"><input type="text" name="subject"/></div>
 									</div>
 									<div class="line">
-										<div class="tit"><span class="ico-required">*</span>협조부서</div>
-										<div class="txt">
-											<fieldset class="form-group">
-												<select class="form-select" id="basicSelect" name="cooper_dept_id">
-													<c:forEach items="${deptList}" var="dept">
-														<option value="${dept.id}"
-															<c:if test="${dept.id == DraftInfo.cooper_dept_id}">selected</c:if>>
-															${dept.text}
-														</option>
-													</c:forEach>
-												</select>
-											</fieldset>
+										<div class="tit">협조부서</div>
+										<div class="txt"><input type="text" name="cooper_dept_id"/></div>
+									</div>
+									<div class="line">
+										<div class="tit">브랜드명</div>
+										<div class="txt"><input type="text" name="target_name"/></div>
+									</div>
+									<div class="line">
+										<div class="tit">시행일자</div>
+										<div class="txt"><input type="text" name="from_date"/></div>
+									</div>
+								</div>
+								<div class="txt-area"></div>
+								
+								<div id="attachView">
+									<div class="attach_file" style="display:">
+										<div class="attach_file_header">
+											<span class="subject">
+												<span class="ic ic_file_s"></span>
+												<strong>첨부파일</strong>
+												<span class="num">0</span>개
+												<span class="size">(0.0Byte)</span>
+											</span>
 										</div>
+										<ul class="file_wrap" id="file_wrap"></ul>
+										<ul class="img_wrap" id="img_wrap" style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px; margin-top: 0px;"></ul>
 									</div>
-									<div class="line">
-										<div class="tit"><span class="ico-required">*</span>브랜드명</div>
-										<div class="txt"><input class="form-control" type="text" name="name" value="${DraftInfo.name}" required/></div>
-									</div>
-									<div class="line">
-										<div class="tit"><span class="ico-required">*</span>시행일자</div>
-										<div class="txt"><input class="form-control" type="date" name="from_date" value="${DraftInfo.name}" required/></div>
-									</div>
-									
-								</div>
-								<div class="editor-area">
-									<textarea name="content" id="summernote" maxlength="10000"></textarea>
-									
-								</div>
+								</div>								
+
 								
-								<h5>파일 첨부</h5>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB">
-								
-								<input type="hidden" name="status"/>
 							</form>
 
 						</div>
@@ -350,73 +338,11 @@
 
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/menu.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
-
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-// 기안일
-/* const today = new Date();   
-const year = today.getFullYear(); 
-const month = today.getMonth() + 1; 
-const date = today.getDate();  
-document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date; */
 
-var target = '${DraftInfo.target_type}' == 'df001' ?  '브랜드' : '직영점';
-console.log('target: '+target);
-var action = '${DraftInfo.action_type}' == 'df011' ?  '등록' : '폐점';
-console.log('action: '+action);
-
-$('.change-tit').text(target+' ' +action);
-
-
-console.log('ApprLine: '+ '${ApprLine}');
-console.log('DraftInfo: '+ '${DraftInfo}');
-
-// 기안문 종류에 따른 양식
-function setForm(type1, type2, element){
-	document.querySelectorAll('.change-tit').forEach(function(titEl) {
-		titEl.innerText = element.innerText; // 클릭한 텍스트로 변경
-	});
-	
-	// 브랜드 기안의 경우
-	if(type1 == 'brand'){
-		//document.getElementsByClassName('addr-area')[0].style.display = 'none';
-		document.querySelector('input[name="target_type"]').value = 'df001';
-		// 주소칸 제거
-		if($("#addr-area").length >= 1){
-			$("#addr-area").remove();
-		}
-	// 직영점 기안의 경우
-	}else if(type1 == 'direct'){
-		document.querySelector('input[name="target_type"]').value = 'df002';
-		// 주소칸 추가
-		if($("#addr-area").length == 0){
-	
-			let addressForm = `
-			    <div id="addr-area">
-			        <div class="left">
-			            <div class="line addr">
-			                <div class="tit"><span class="ico-required">*</span>주소</div>
-			                <div class="txt">
-			                    <input class="form-control" type="text" id="sample6_address" name="address" required/>
-			                </div>
-			            </div>
-			            <div class="line addr">
-			                <div class="tit"><span class="ico-required">*</span>상세주소</div>
-			                <div class="txt">
-			                    <input class="form-control" type="text" id="sample6_detailAddress" name="address" required/>
-			                </div>
-			            </div>
-			        </div>
-			        <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-			    </div>
-		    `;
-	
-			document.getElementsByClassName('btm-area')[0].insertAdjacentHTML('beforeend', addressForm);
-		}
-	}
-	
 
 
 </script>

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.ApprovalService;
 
 @RestController
@@ -41,8 +42,10 @@ public class ApprovalController {
 		String loginId = userDetails.getUsername();
 		logger.info("userId : "+loginId);
 		ModelAndView mav = new ModelAndView("/approval/draftWrite");  
-		mav.addObject("userDTO", approvalService.getUserInfo(loginId));
+		UserDTO userDTO = approvalService.getUserInfo(loginId);
+		mav.addObject("userDTO", userDTO);
 		mav.addObject("deptList", approvalService.getDeptList());
+		logger.info("deptDTO 두번"+userDTO.getDept().getId());
 		return mav;
 	}
 
@@ -57,9 +60,11 @@ public class ApprovalController {
 //	}
 	
 	// 기안문 저장
-	// 일단 가져오기만함 (파라미터 runBoardDTO 수정하기!! => DTO하나 만들어서 그걸로 대체+ img배열 담는 변수도 있어야함.)
-	@PostMapping(value="/draftWrite")
-	public Map<String, Object> draftWrite(@RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, MultipartFile[] files) {
+	@PostMapping(value="/draftWrite/{status}")
+	public Map<String, Object> draftWrite(String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, MultipartFile[] files, @PathVariable String status) {
+		logger.info("appr_user : "+ appr_user);
+		logger.info("appr_user : "+ appr_user[0]);
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		logger.info("fromdate체크: "+approvalDTO.getFrom_date());
@@ -88,20 +93,29 @@ public class ApprovalController {
        // logger.info("체크!! : " + approvalDTO.getFileList().get(0).getNew_filename());
        // logger.info("체크 getUsername!! : " + approvalDTO.getUsername());
         
-        approvalService.saveDraft(approvalDTO, files);
+        // 이거 살려 check!!!
+        String draftIdx = approvalService.saveDraft(appr_user, approvalDTO, files, status);
 
         
 
 		logger.info("여기까지옴: " );
 		//approvalService.draftWrite();
 		result.put("success", true);
+		
+		 // 이거 살려 check!!!
+		result.put("draftIdx", draftIdx);
 		return result;
 	}
 	
-	@GetMapping(value="/approval/detail")
-	public ModelAndView draftDetailView() {
+	@GetMapping(value="/approval/detail/{draft_idx}")
+	public ModelAndView draftDetailView(@PathVariable String draft_idx) {
 		ModelAndView mav = new ModelAndView("/approval/draftDetail");  
-		//mav.addObject("userDTO", approvalService.getUserInfo(loginId));
+		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
+		mav.addObject("DraftInfo", DraftInfo);
+		mav.addObject("ApprLine", approvalService.getApprLine(draft_idx));
+		logger.info("DraftInfo!! : "+DraftInfo.getName());
+		logger.info("DraftInfo!! : "+DraftInfo.getUsername());
+		logger.info("DraftInfo!! : "+DraftInfo.getSubject());
 		return mav;
 	}
 	

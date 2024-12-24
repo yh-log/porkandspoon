@@ -4,7 +4,37 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.ApprovalDAO">
-	<select id="getUserInfo" resultType="kr.co.porkandspoon.dto.UserDTO">
+   <!-- DeptDTO에 대한 ResultMap-->
+    <resultMap id="DeptMap" type="kr.co.porkandspoon.dto.DeptDTO">
+        <result property="text" column="text"/>
+        <result property="parent" column="parent"/>
+    </resultMap>
+
+    <!-- UserDTO에 대한 ResultMap -->
+    <resultMap id="UserMap" type="kr.co.porkandspoon.dto.UserDTO">
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <!-- dept는 DeptMap을 참조 -->
+        <association property="dept" resultMap="DeptMap"/>
+    </resultMap>
+
+    <!-- 사용자 정보를 가져오는 select 문 -->
+    <select id="getUserInfo" resultMap="UserMap">
+        SELECT 
+            u.username, u.name, u.parent, d.text
+        FROM 
+            user u
+        JOIN 
+            department d
+        ON  
+            u.parent = d.id
+        WHERE 
+            u.username = #{loginId}
+    </select>
+	
+	
+	
+<!-- 	<select id="getUserInfo" resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT 
 			u.username, u.name, u.parent, d.text
 			FROM 
@@ -13,19 +43,47 @@
 			ON  u.parent = d.id
 			WHERE 
 				username = #{loginId}
-	</select>
+	</select> -->
 	
 	<select id="getDeptList" resultType="kr.co.porkandspoon.dto.DeptDTO">
 		SELECT id, text FROM department
 	</select>
 	
-	<insert id="saveDraft"
-		useGeneratedKeys="true"
+	<select id="getDraftIdx">
+		SELECT MAX(draft_idx) + 1 FROM draft
+	</select>
+	
+	
+<!-- 	INSERT INTO draft_document (document_id, title, content)
+VALUES (1, '기안문 제목', '기안문 내용')
+ON DUPLICATE KEY UPDATE
+title = VALUES(title),
+content = VALUES(content); -->
+	
+	
+	
+<!-- 	useGeneratedKeys="true"
 		keyColumn="draft_idx"
-		keyProperty="draft_idx"
- 		parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
-		INSERT INTO draft (username, target_type, action_type
-			, subject, name, from_date, content, status, dept_id, document_number
+		keyProperty="draft_idx" -->
+	
+	<insert id="saveDraft" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+		INSERT INTO draft (username, target_type, action_type,
+			 status, dept_id, document_number
+			 <if test="draft_idx != null">
+			 ,draft_idx
+			 </if>
+			 <if test="subject != null">
+			 ,subject
+			 </if>
+			 <if test="name != null">
+			 ,name
+			 </if>
+			 <if test="content != null">
+			 ,content
+			 </if>
+			 <if test="from_date != null">
+			 ,from_date
+			 </if>
 		  	<if test="address != null">
             	,address
         	</if>
@@ -38,7 +96,22 @@
 		)
 		VALUES (
 			#{username}, #{target_type}, #{action_type}
-			, #{subject}, #{name}, #{from_date}, #{content}, #{status}, #{dept_id}, #{document_number}
+			 ,#{status}, #{dept_id}, #{document_number}
+			 <if test="draft_idx != null">
+			  , #{draft_idx}
+			 </if>
+			<if test="subject != null">
+			 , #{subject}
+			 </if>
+			<if test="name != null">
+			 , #{name}
+			 </if>
+			<if test="content != null">
+			  ,#{content}
+			</if>
+			<if test="from_date != null">
+			  ,#{from_date}
+			</if>
 			<if test="address != null">
             	,#{address}
         	</if>
@@ -48,8 +121,34 @@
 		  	<if test="cooper_dept_id != null">
             	,#{cooper_dept_id}
         	</if>
-		)
+		) ON DUPLICATE KEY UPDATE
+			status = VALUES(status),
+			dept_id = VALUES(dept_id),
+			subject = VALUES(subject),
+			name = VALUES(name),
+			content = VALUES(content),
+			from_date = VALUES(from_date),
+			address = VALUES(address),
+			address_detail = VALUES(address_detail),
+			cooper_dept_id = VALUES(cooper_dept_id)
 	</insert>
+	
+	<select id="checkExistingApprovalLine" resultType="int">
+	    SELECT COUNT(*)
+	    FROM approval_line
+	    WHERE draft_idx = #{draftIdx}
+	</select>
+	
+	<insert id="saveApprovalLine">
+		INSERT INTO approval_line (draft_idx, username, order_num) 
+		values
+	    <foreach collection="appr_user" item="appritem" index="index" separator=",">
+	        (#{draftIdx}, #{appritem}, 1)
+	    </foreach>
+	</insert>
+	
+	
+	
 	
 	<select id="getMaxNumberForDate" resultType="Integer">
 	    SELECT MAX(SUBSTRING(document_number, 10, 6))
@@ -68,5 +167,18 @@
 		insert into file (code_name, ori_filename, new_filename, type, pk_idx)
 			values (#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
 	</insert>
+	
+	
+	<select id="getDraftInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT d.draft_idx, d.document_number, d.username, d.target_type, d.action_type, d.subject, d.name, d.from_date, d.content, d.address, d.address_detail, d.cooper_dept_id, d.dept_id, d.status, u.name AS user_name 
+			FROM draft d LEFT JOIN user u ON d.username = u.username
+			LEFT JOIN department de ON d.dept_id = de.id
+			WHERE draft_idx = #{draft_idx}
+	</select>
+	
+	<select id="getApprLine" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT * FROM approval_line 
+			WHERE draft_idx = #{draft_idx}
+	</select>
 	
 </mapper>
