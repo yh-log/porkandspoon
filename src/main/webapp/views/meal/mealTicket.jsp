@@ -49,6 +49,66 @@
 		align-content: cetner;
 		border: 1px solid black;
 	}
+	
+	.tit-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	}
+	
+	.align-right {
+	    display: flex;
+	    justify-content: flex-end;
+	    align-items: center;
+	    gap: 10px; /* 요소 간 간격 */
+	}
+	.cont-body {
+    display: flex; /* 플렉스 컨테이너로 설정 */
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 세로 정렬 (필요 시) */
+    flex-wrap: wrap; /* 내용이 넘치면 줄 바꿈 */
+    padding: 24px 40px; /* 기존 패딩 유지 */
+}
+
+.ticket-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개 */
+    gap: 20px; /* 항목 간 간격 */
+    width: 100%; /* 부모 요소의 너비에 맞춤 */
+    max-width: 1200px; /* 최대 너비 설정 */
+}
+	.ticket-item {
+	    border: 1px solid #ddd; /* 테두리 */
+	    border-radius: 8px; /* 둥근 모서리 */
+	    padding: 15px;
+	    text-align: center; /* 중앙 정렬 */
+	    background-color: #fff; /* 배경색 */
+	    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+	    width: 200px; /* 고정된 너비 */
+	}
+	
+	.ticket-item img {
+	    max-width: 100%; /* 이미지 크기 조정 */
+	    height: auto;
+	    margin-bottom: 10px;
+	}
+	
+	.ticket-item h4 {
+	    font-size: 16px;
+	    margin: 10px 0 5px;
+	}
+	
+	.ticket-item h5 {
+	    font-size: 14px;
+	    color: #555;
+	    margin-bottom: 10px;
+	}
+	
+	.ticket-item .btn {
+	    padding: 8px 12px;
+	    font-size: 14px;
+	}
+	
 </style>
 </head>
 
@@ -77,22 +137,55 @@
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-						<div class="tit-area">
-						
-							<h5>식권구매</h5>
-							<h5 class="count">식권 보유량 :</h5> 
-							<a href="#" class="btn btn-primary">사용/구매 내역 보러가기</a>
-						</div>
+					<div class="tit-area justify-end">
+					    <h5>식권구매</h5>
+					    <div class="align-right">
+					        <h5 class="count">식권 보유량 : </h5> <!-- 로그인한 id에서 식권 보유량 찾아서 가져오기 -->
+					        <a href="#" class="btn btn-primary count">사용/구매 내역 보러가기</a>
+					    </div>
+					</div>
 						<div class="cont-body">
 							<div class="row">
 							<div class="col-12 col-lg-2">
-								<div class="content">
-									<img src="resources/img/logo.jpg" alt="Logo" >
-									<h4>식권</h4>
-									<h5>7,000</h5>
-									<a href="#" class="btn btn-primary" onclick="layerPopup('해당상품을 구매하시겠습니까?','구매','취소')">구매</a>
-									
-							</div>
+								<div class="ticket-container">
+								    <!-- 반복될 항목 -->
+								    <div class="ticket-item">
+								        <img src="resources/img/logo.jpg" alt="Logo">
+								        <h4>식권 1장</h4>
+								        <h5>7,000원</h5>
+								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								    </div>
+								    <div class="ticket-item">
+								        <img src="resources/img/logo.jpg" alt="Logo">
+								        <h4>식권 10장</h4>
+								        <h5>65,000원</h5>
+								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								    </div>
+								    <div class="ticket-item">
+								        <img src="resources/img/logo.jpg" alt="Logo">
+								        <h4>식권 50장</h4>
+								        <h5>120,000원</h5>
+								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								    </div>
+								    <div class="ticket-item">
+								        <img src="resources/img/logo.jpg" alt="Logo">
+								        <h4>식권 100장</h4>
+								        <h5>300,000원</h5>
+								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								    </div>
+								    <div class="ticket-item">
+								        <img src="resources/img/logo.jpg" alt="Logo">
+								        <h4>식권 100장</h4>
+								        <h5>300,000원</h5>
+								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								    </div>
+								    <div class="ticket-item">
+								        <img src="resources/img/logo.jpg" alt="Logo">
+								        <h4>식권 100장</h4>
+								        <h5>300,000원</h5>
+								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								    </div>
+								</div>
 							</div>
 
 						</div>
@@ -114,9 +207,6 @@
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
@@ -141,38 +231,9 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
-
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
+	
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();

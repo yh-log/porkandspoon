@@ -113,68 +113,70 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-                     <table>
-                        <tr>
-                           <th class="align-l">상품명</th>
-                           <td ><input class="form-control sor-1 "  type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">상품가격</th>
-                           <td ><input class="form-control sor-1 "  type="text" placeholder="상품가격을 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">상품수량</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
-                        </tr>
-                        
-                        <tr>
-                           <th class="align-l">파일첨부</th>
-                          <td ><div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
-							<input class="filepond--browser" type="file" id="filepond--browser-rd9ou40mc" name="filepond" aria-controls="filepond--assistant-rd9ou40mc" aria-labelledby="filepond--drop-label-rd9ou40mc" accept="">
-								<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
-									<label for="filepond--browser-rd9ou40mc" id="filepond--drop-label-rd9ou40mc" aria-hidden="true">Drag &amp; Drop your files or 
-										<span class="filepond--label-action" tabindex="0">Browse</span>
-									</label>
-								</div>
-								<div class="filepond--list-scroller" style="transform: translate3d(0px, 0px, 0px);">
-									<ul class="filepond--list" role="list"></ul>
-								</div>
-								<div class="filepond--panel filepond--panel-root" data-scalable="true">
-									<div class="filepond--panel-top filepond--panel-root"></div>
-									<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
-									<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
-								</div>
-									<span class="filepond--assistant" id="filepond--assistant-rd9ou40mc" role="status" aria-live="polite" aria-relevant="additions"></span>
-										<fieldset class="filepond--data"></fieldset>
-										<div class="filepond--drip"></div>
-							</div>
-						</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">활성여부</th>
-                          <td ><div class="card-body">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											활성 </label>
+			         <form action="/ad/mealTicket/Write" method="post" enctype="multipart/form-data">
+	                     <input type="hidden" name="_csrf" value="${_csrf.token}" />
+	                     <table>
+	                        <tr>
+	                           <th class="align-l">상품명</th>
+	                           <td ><input class="form-control sor-1 "  name="name" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">상품가격</th>
+	                           <td ><input class="form-control sor-1 "  name="cost" type="text" placeholder="상품가격을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">상품수량</th>
+	                          <td ><input class="form-control sor-1 "  name="count" type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        
+	                        <tr>
+	                           <th class="align-l">파일첨부</th>
+	                          <td ><div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
+								<input class="filepond--browser" type="file" id="filepond--browser-rd9ou40mc" name="filepond" aria-controls="filepond--assistant-rd9ou40mc" aria-labelledby="filepond--drop-label-rd9ou40mc" accept="">
+									<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
+										<label for="filepond--browser-rd9ou40mc" id="filepond--drop-label-rd9ou40mc" aria-hidden="true">Drag &amp; Drop your files or 
+											<span class="filepond--label-action" tabindex="0">Browse</span>
+										</label>
 									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											비활성 </label>
+									<div class="filepond--list-scroller" style="transform: translate3d(0px, 0px, 0px);">
+										<ul class="filepond--list" role="list"></ul>
 									</div>
-								</div>	
+									<div class="filepond--panel filepond--panel-root" data-scalable="true">
+										<div class="filepond--panel-top filepond--panel-root"></div>
+										<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
+										<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
+									</div>
+										<span class="filepond--assistant" id="filepond--assistant-rd9ou40mc" role="status" aria-live="polite" aria-relevant="additions"></span>
+											<fieldset class="filepond--data"></fieldset>
+											<div class="filepond--drip"></div>
+								</div>
 							</td>
-                        </tr>
-                     </table>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">활성여부</th>
+	                          <td ><div class="card-body">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
+												활성 </label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault2" >
+											<label class="form-check-label" for="flexRadioDefault2">
+												비활성 </label>
+										</div>
+									</div>	
+								</td>
+	                        </tr>
+	                     </table>
+							<div id="btn-gap">							
+								<button   type="submit" class="btn btn-primary">등록</button>
+								<button class="btn btn-outline-primary">취소</button>
+							</div>
+			         </form>
                      
                   </div>
 			
 			
-							
-							<div id="btn-gap">							
-								<button class="btn btn-primary">등록</button>
-								<button class="btn btn-outline-primary">취소</button>
-							</div>
 
 							</div>
 						</div> 
@@ -186,18 +188,12 @@
 
 
 
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
@@ -222,38 +218,20 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
+	//FilePond 초기화
+	FilePond.create(document.querySelector('input[type="file"]'), {
+	    server: {
+	        process: '/ad/mealTicket/Write', // 파일 업로드를 처리할 서버 URL
+	        revert: null, // 업로드 취소 처리를 위해 필요 (선택 사항)
+	        headers: {
+	            'X-CSRF-TOKEN': '${_csrf.token}' // CSRF 토큰 추가
+	        }
+	    }
+	});
+	
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();

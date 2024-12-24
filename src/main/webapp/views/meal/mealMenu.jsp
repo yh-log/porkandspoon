@@ -106,7 +106,45 @@
       justify-content: center;
       align-items: center;
   }
-  
+  #modalBox {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+    top: 0;
+    left: 0;
+	z-index: 996;
+	background: rgba(0,0,0,0.6);
+}
+#modal .close {
+    font-size: 40px;
+    font-weight: 300;
+    position: absolute;
+    z-index: 996;
+    top: 24px;
+    right: 24px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 27px;
+    text-align: center;
+    cursor: pointer;
+}
+ .modal-content{
+	position: absolute;
+	left: 50%;
+	top: 40px;
+	transform: translateX(-50%);
+    width: 700px;
+    height: 800px;
+    padding: 30px;
+    background: #fff;
+    border: none;
+   	border-radius: 8px;
+   }
+   #modal-body {
+   	background: #fff;
+   	border-radius: 10px;
+   }
  
 </style>
 </head>
@@ -147,26 +185,30 @@
                 <div id="modalBox" class="modal" style="display: none;">
 			     <div class="modal-content">
                     <h3>식단 수정</h3>
-                    <form id="editEventForm">
+                    <form action="/ad/mealMenu/Update" method="post">
+                    	<input type="hidden" name="_method" value="put"> 
+                    
+                     	<input type="hidden" name="_csrf" value="${_csrf.token}" />
                         <label for="title">제목:</label>
-                        <input type="text" id="title" name="title" required />
+                        <input type="text" id="title" name="content" required />
+                        <input type="text" id="idx" name="menu_idx"  hidden=""/>
 
                         <label for="start">시작 날짜:</label>
-                        <input type="date" id="start" name="start" required />
+                        <input type="datetime-local" id="start" name="start_date" required />
 
                         <label for="end">종료 날짜:</label>
-                        <input type="date" id="end" name="end" />
+                        <input type="datetime-local" id="end" name="end_date" />
 
                         <label for="mealType">식단 종류:</label>
-                        <select class="form-select short" id="mealType" name="mealType">
+                        <select class="form-select short" id="mealType" name="is_time">
                            <option value="B">아침</option>
                            <option value="L">점심</option>
                            <option value="D">저녁</option>
                         </select>
 
                         <div class="modal-actions">
-                            <button type="button" id="cancelModal">취소</button>
                             <button type="submit" id="saveModal">저장</button>
+                            <button type="button" id="cancelModal">취소</button>
                         </div>
                     </form>
                  </div>
@@ -204,13 +246,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateCalendar(events) {
+        console.log("Received events data:", events);
+
         var formattedEvents = events.map(function (item) {
             return {
                 title: formatEventContent(item),
+                idx: item.menu_idx,
                 start: item.start_date,
-                end: item.end_date
+                end: item.end_date, // 종료 날짜가 없으면 null 설정
+                is_time: item.is_time,
             };
         });
+
+        console.log("Formatted events data:", formattedEvents);
 
         calendar.removeAllEvents();
         calendar.addEventSource(formattedEvents);
@@ -234,22 +282,24 @@ document.addEventListener('DOMContentLoaded', function () {
         dayHeaderContent: function (args) {
             return args.date.getDate() + '일';
         },
-        eventClick: function(info) {
-            // 클릭된 이벤트 데이터 가져오기
+        eventClick: function (info) {
             var eventData = {
-                id: info.event.id,
-                title: info.event.title,
-                start_date: info.event.start,
-                end_date: info.event.end_date,
-                mealType: info.event.extendedProps.mealType || 'B'
-            };
+            		
+                title: info.event.title || '',
+                start: info.event.start ? formatLocalDateTime(info.event.start) : '',
+                end: info.event.end ? formatLocalDateTime(info.event.end) : '',
+            	is_time: info.event.extendedProps.is_time || '',
+              	idx: info.event.extendedProps.idx || '' // 저장한 idx 값을 가져옴
+                	    };
+
+            console.log("Event data:", eventData); // 디버깅용 로그
 
             // 모달 열기
-            loadModal('calender','Info',eventData);
-            setupModalEvents('closeModal');
-        },
+            loadModal('menu', 'Update', eventData);
+        }, // 일정 수정 가능 여부 설정
+        editable: true,
     });
-    
+
     calendar.render();
 
     var initialMealType = mealTypeSelector.value;
@@ -261,17 +311,67 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// 모달 열기 함수
+function loadModal(section, type, data) {
+    var modal = document.getElementById("modalBox");
+    var modalContent = modal.querySelector(".modal-content");
 
-//모달창 열기
-$('.btnModal').on('click', function() {
-	$('#modal').show();
+    // 모달 HTML이 이미 설정되어 있으므로 데이터만 주입
+    modal.style.display = "block";
+
+    // 데이터 주입
+    setModalData(data);
+}
+
+//모달 데이터 주입 함수
+function setModalData(data) {
+    console.log("Setting modal data:", data); // 디버깅 로그
+
+    // 제목 설정
+    document.getElementById('title').value = data.title ? data.title.replace(/\n/g, ',') : ''; // 줄바꿈을 콤마로 변환
+
+    // 시작 날짜 설정
+    if (data.start) {
+        document.getElementById('start').value = data.start;
+    } else {
+        document.getElementById('start').value = '';
+    }
+
+    // 종료 날짜 설정
+    if (data.end) {
+        document.getElementById('end').value = data.end;
+    } else {
+        document.getElementById('end').value = '';
+    }
+
+    // 식단 종류 설정
+    if (data.is_time) {
+        document.getElementById('mealType').value = data.is_time;
+    } else {
+        document.getElementById('mealType').value = '';
+    }
+    
+    // idx 설정 (hidden input에 값 주입)
+    if (data.idx) {
+        document.getElementById('idx').value = data.idx;
+    } else {
+        document.getElementById('idx').value = ''; // 없을 경우 빈 값 설정
+    }
+
+}
+// 로컬 시간대를 유지하며 datetime-local 형식으로 변환
+function formatLocalDateTime(date) {
+    let localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+    return localDate.toISOString().slice(0, 16);
+}
+
+// 모달 닫기
+document.addEventListener('click', function (event) {
+    if (event.target.id === 'cancelModal' || event.target.id === 'closeModal') {
+        var modal = document.getElementById("modalBox");
+        modal.style.display = "none";
+    }
 });
-
-// 모달창 닫기
-$('#modal .close').on('click', function() {
-	$('#modal').hide();
-});
-
 
 </script>
 </html>

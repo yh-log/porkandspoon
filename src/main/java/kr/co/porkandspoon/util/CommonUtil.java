@@ -177,34 +177,50 @@ public class CommonUtil {
      * author yh.kim (24.12.14)
      * 지정된 경로에 파일 저장, 파일 정보 {@link FileDTO} 리스트로 반환
      *
-	 * @param files 업로드할 파일 배열
-	 * @return 저장된 파일 정보를 담은 {@link FileDTO} 리스트
-	 * @throws IllegalArgumentException 파일 배열이 비어 있는 경우
-	 * @throws RuntimeException 파일 저장 중 오류가 발생한 경우
+    * @param files 업로드할 파일 배열
+    * @return 저장된 파일 정보를 담은 {@link FileDTO} 리스트
+    * @throws IllegalArgumentException 파일 배열이 비어 있는 경우
+    * @throws RuntimeException 파일 저장 중 오류가 발생한 경우
      */
-    public static List<FileDTO> uploadFiles(MultipartFile[] files){
-    	
-    	if(files == null || files.length == 0) {
-    		throw new IllegalArgumentException("업로드된 파일이 없습니다.");
-    	}
-    	
-    	List<FileDTO> results = new ArrayList<FileDTO>();
-    	
-    	for (MultipartFile file : files) {
-			String ori_filename = file.getOriginalFilename();
-			String type = ori_filename.substring(ori_filename.lastIndexOf("."));
-			String new_filename =  UUID.randomUUID().toString() + type;
-			
-			try {
-				Path path = Paths.get("C:/upload/", new_filename);
-				Files.write(path, file.getBytes());
-				
-				results.add(new FileDTO(ori_filename, new_filename, type));
-			} catch (IOException e) {
-				throw new RuntimeException("파일 저장 중 오류 발생: " + new_filename, e);
-			}	
-		}
-    	return results;
+    public static List<FileDTO> uploadFiles(MultipartFile... files){
+       
+       if(files == null || files.length == 0) {
+          throw new IllegalArgumentException("업로드된 파일이 없습니다.");
+       }
+       
+       List<FileDTO> results = new ArrayList<FileDTO>();
+       
+       for (MultipartFile file : files) {
+         String ori_filename = file.getOriginalFilename();
+         String type = ori_filename.substring(ori_filename.lastIndexOf("."));
+         String new_filename =  UUID.randomUUID().toString() + type;
+         
+         try {
+            Path path = Paths.get("C:/upload/", new_filename);
+            Files.write(path, file.getBytes());
+            
+            results.add(new FileDTO(ori_filename, new_filename, type));
+         } catch (IOException e) {
+            throw new RuntimeException("파일 저장 중 오류 발생: " + new_filename, e);
+         }   
+      }
+       return results;
+    }
+    
+    /**
+     * 단일 파일 업로드를 위한 메서드 (배열 형태로 위임)
+     *
+     * @param file 업로드할 단일 파일
+     * @return 저장된 파일 정보를 담은 {@link FileDTO}
+     * @throws IllegalArgumentException 파일이 없는 경우
+     */
+    public static FileDTO uploadSingleFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("업로드된 파일이 없습니다.");
+        }
+
+        // 단일 파일 처리 결과를 반환
+        return uploadFiles(file).get(0);
     }
 
     /**
