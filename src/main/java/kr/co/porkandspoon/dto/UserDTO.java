@@ -26,7 +26,7 @@ public class UserDTO extends ResponseDTO{
    private LocalDate leave_date;   // 퇴사일
    private String user_yn;         // 퇴사 여부
    
-  // private String parent;            // 부서코드
+   //private String parent;            // 부서코드
    
    private String position;          // 직급
    private String title;		  // 직책

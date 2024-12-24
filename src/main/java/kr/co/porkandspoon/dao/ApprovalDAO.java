@@ -24,4 +24,16 @@ public interface ApprovalDAO {
 
 	int fileSave(FileDTO fileDto);
 
+	int getDraftIdx();
+
+	int saveApprovalLine(String draftIdx, String[] appr_user);
+
+	int checkExistingApprovalLine(String draftIdx);
+
+	ApprovalDTO getDraftInfo(String draft_idx);
+
+	List<ApprovalDTO> getApprLine(String draft_idx);
+
+
+
 }

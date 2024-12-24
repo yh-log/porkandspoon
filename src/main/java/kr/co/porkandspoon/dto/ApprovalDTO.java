@@ -19,7 +19,14 @@ public class ApprovalDTO {
 	public LocalDate create_date;
 	public String subject;
 	public String name;
+	public String user_name;
 	
+	
+	public String appr_user1;
+	public String appr_user2;
+	public String appr_user3;
+	public String appr_user4;
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	public LocalDate from_date;
 	public String content;
@@ -30,7 +37,46 @@ public class ApprovalDTO {
 	public String dept_id;
 	public LocalDate update_date;
 	
-    // 이미지 리스트
+	// 결재라인 테이블
+	public String line_idx;
+	public String order_num;
+	public LocalDateTime approval_date;
+	public String comment;
+	
+	
+    public String getLine_idx() {
+		return line_idx;
+	}
+
+	public String getOrder_num() {
+		return order_num;
+	}
+
+	public LocalDateTime getApproval_date() {
+		return approval_date;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setLine_idx(String line_idx) {
+		this.line_idx = line_idx;
+	}
+
+	public void setOrder_num(String order_num) {
+		this.order_num = order_num;
+	}
+
+	public void setApproval_date(LocalDateTime approval_date) {
+		this.approval_date = approval_date;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	// 이미지 리스트
     private List<FileDTO> fileList;
 
 	public String getDraft_idx() {
@@ -167,6 +213,46 @@ public class ApprovalDTO {
 
 	public void setFileList(List<FileDTO> fileList) {
 		this.fileList = fileList;
+	}
+
+	public String getAppr_user1() {
+		return appr_user1;
+	}
+
+	public String getAppr_user2() {
+		return appr_user2;
+	}
+
+	public String getAppr_user3() {
+		return appr_user3;
+	}
+
+	public String getAppr_user4() {
+		return appr_user4;
+	}
+
+	public void setAppr_user1(String appr_user1) {
+		this.appr_user1 = appr_user1;
+	}
+
+	public void setAppr_user2(String appr_user2) {
+		this.appr_user2 = appr_user2;
+	}
+
+	public void setAppr_user3(String appr_user3) {
+		this.appr_user3 = appr_user3;
+	}
+
+	public void setAppr_user4(String appr_user4) {
+		this.appr_user4 = appr_user4;
+	}
+
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
 	}
 
 

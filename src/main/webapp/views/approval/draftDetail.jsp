@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>기안문 작성</title>
+<title>기안문 수정</title>
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -48,74 +48,74 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <style>
-	.draftWrite table{
+	.draftDetail table{
 		border: 1px solid #ddd;
 		table-layout: auto;
 	}
-	.draftWrite table th, .draftWrite table td{
+	.draftDetail table th, .draftDetail table td{
 		padding: 4px 10px;
 		border-right: 1px solid #ddd;
 		border-width: 1px;
 	}
-	.draftWrite input{
+	.draftDetail input{
 		width: 100%;
 	    height: 100%;
 	    border: none;
     }
-    .draftWrite .form-group {
+    .draftDetail .form-group {
 	    margin-bottom: 0;
 	}
-	.draftWrite select {
+	.draftDetail select {
 		border: none;
 	}
-	.draftWrite input[type=date].form-control {
+	.draftDetail input[type=date].form-control {
 		line-height: 1.5;
 	}
-	.draftWrite .top-area {
+	.draftDetail .top-area {
 		display: flex;
 	    justify-content: space-between;
 	}
-	.draftWrite .top-area > table {
+	.draftDetail .top-area > table {
 		width: 340px;
 	}
-	.draftWrite table.user_info th{
+	.draftDetail table.user_info th{
 		width: 120px;
 	}
-	.draftWrite table.user_info input {
+	.draftDetail table.user_info input {
 		width: 100%;
 		border: none;
 	}
-	.draftWrite table.user_info input:focus {
+	.draftDetail table.user_info input:focus {
 		outline: none;
 	}
-	.draftWrite table.appr_line {
+	.draftDetail table.appr_line {
 		width: 410px;
 	}
-	.draftWrite table.appr_line th{
+	.draftDetail table.appr_line th{
 		width: 44px;
 	}
-	.draftWrite table.appr_line tr:nth-child(2) td p{
+	.draftDetail table.appr_line tr:nth-child(2) td p{
 		margin-top: 1rem;
 	}
-	.draftWrite table.appr_line .date{
+	.draftDetail table.appr_line .date{
 		font-size: 13px;
 	}
-	.draftWrite table.appr_line .date > td {
+	.draftDetail table.appr_line .date > td {
 		height: 28px;
 	}
-	.draftWrite .buttons {
+	.draftDetail .buttons {
 	    border-bottom: 1px solid #ddd;
 	    padding: 4px 40px;
     }
-	.draftWrite .buttons .btn {
+	.draftDetail .buttons .btn {
 	    margin: 14px 2px;
 	}
-	.draftWrite h4.doc-subject{
+	.draftDetail h4.doc-subject{
 		margin: 20px 0 50px;
 		text-align: center;
 	}
 	
-	.draftWrite .btm-area {
+	.draftDetail .btm-area {
 		display: flex;
 		flex-wrap: wrap;
 		border-left: 1px solid #ddd;
@@ -123,30 +123,30 @@
 	 	margin-top : 40px;
 	}
 
-	.draftWrite .btm-area .line {
+	.draftDetail .btm-area .line {
 		display: flex;
 		width: 50%;
 	}
-	.draftWrite .btm-area #addr-area {
+	.draftDetail .btm-area #addr-area {
 		display: flex;
     	width: 100%;
 	}
-	.draftWrite .btm-area #addr-area .line {
+	.draftDetail .btm-area #addr-area .line {
 		width: 100%;
 	}
-	.draftWrite .btm-area #addr-area .left {
+	.draftDetail .btm-area #addr-area .left {
 		width: 100%;
 	}
-	.draftWrite .btm-area #addr-area input[type="button"]{
+	.draftDetail .btm-area #addr-area input[type="button"]{
 		width: 120px;
 	}
 	
-	.draftWrite .btm-area .line > div {
+	.draftDetail .btm-area .line > div {
 	    border-right: 1px solid #ddd;
 	    border-bottom: 1px solid #ddd;
 	}
 	
-	.draftWrite .btm-area .tit {
+	.draftDetail .btm-area .tit {
 		width: 120px;
 	    border-width: 1px;
 	    background: #f5f5f5;
@@ -155,7 +155,7 @@
 	    text-align: center;
 	}
 
-	.draftWrite .btm-area .txt {
+	.draftDetail .btm-area .txt {
 		width: calc(100% - 120px);
 	}
 	
@@ -179,7 +179,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftWrite">
+			<div class="page-content draftDetail">
 				<section id="menu">
 					<h4 class="menu-title">문서함</h4>
 					<ul>
@@ -193,40 +193,44 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 class="change-tit">브랜드 등록</h5>
+							<h5>기안 수정페이지</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary" onclick="sendApproval()">결재 요청</button>
+							<button href="#" class="btn btn-primary" onclick="saveTemp()">수정</button>
 							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary" onclick="saveTemp()">임시저장</button>
 							<button href="#" class="btn btn-outline-primary">취소</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
 							<form id="formDraft">
-								<input type="hidden" name="draft_idx" value=""/>
-								<input type="hidden" name="target_type" value="df001"/>
-								<input type="hidden" name="action_type" value="df011"/>
+								<input type="hidden" name="draft_idx" value="${DraftInfo.target_type}"/>
+								<input type="hidden" name="target_type" value="${DraftInfo.target_type}"/>
+								<input type="hidden" name="action_type" value="${DraftInfo.action_type}"/>
 								<div class="top-area">
 									<table class="user_info">
 										<tr>
 											<th>기안자</th>
 											<td>
-												<input type="hidden" name="username" value="${userDTO.username}"/>
-												<input type="text" name="sender_name" value="${userDTO.name}" readonly/>
+												<input type="hidden" name="username" value="${DraftInfo.username}"/>
+												<input type="text" name="sender_name" value="${DraftInfo.user_name}" readonly/>
 											</td>
 										</tr>
 										<tr>
 											<th>기안일</th>
 											<td>
-												<input type="text" name="today" value="" readonly/>
+												<c:if test="${DraftInfo.status == 'sd'}">
+													<input type="text" name="today" value="${DraftInfo.create_date}" readonly/>
+												</c:if>
+												<c:if test="${DraftInfo.status == 'sv'}">
+													<input type="text" name="today" value="-" readonly/>
+												</c:if>
 											</td>
 										</tr>
 										<tr>
 											<th>소속</th>
 											<td>
-												<input type="hidden" name="dept_id" value="${userDTO.dept.parent}" readonly/>
-												<input type="text" name="team_name" value="${userDTO.dept.text}" readonly/>
+												<input type="hidden" name="dept_id" value="${DraftInfo.dept_id}" readonly/>
+												<input type="text" name="team_name" value="${DraftInfo.dept_id}" readonly/>
 											</td>
 										</tr>
 									</table>
@@ -272,7 +276,7 @@
 								<div class="btm-area">
 									<div class="line">
 										<div class="tit"><span class="ico-required">*</span>제목</div>
-										<div class="txt"><input class="form-control" type="text" name="subject" required/></div>
+										<div class="txt"><input class="form-control" type="text" name="subject" value="${DraftInfo.subject}" required/></div>
 									</div>
 									<div class="line">
 										<div class="tit"><span class="ico-required">*</span>협조부서</div>
@@ -280,19 +284,22 @@
 											<fieldset class="form-group">
 												<select class="form-select" id="basicSelect" name="cooper_dept_id">
 													<c:forEach items="${deptList}" var="dept">
-														<option value="${dept.id}">${dept.text}</option>
+														<option value="${dept.id}"
+															<c:if test="${dept.id == DraftInfo.cooper_dept_id}">selected</c:if>>
+															${dept.text}
+														</option>
 													</c:forEach>
 												</select>
 											</fieldset>
 										</div>
 									</div>
 									<div class="line">
-										<div class="tit"><span class="ico-required">*</span><span class="name_type">브랜드명</span></div>
-										<div class="txt"><input class="form-control" type="text" name="name" required/></div>
+										<div class="tit"><span class="ico-required">*</span>브랜드명</div>
+										<div class="txt"><input class="form-control" type="text" name="name" value="${DraftInfo.name}" required/></div>
 									</div>
 									<div class="line">
 										<div class="tit"><span class="ico-required">*</span>시행일자</div>
-										<div class="txt"><input class="form-control" type="date" name="from_date" required/></div>
+										<div class="txt"><input class="form-control" type="date" name="from_date" value="${DraftInfo.name}" required/></div>
 									</div>
 									
 								</div>
@@ -349,11 +356,22 @@
 <script>
 
 // 기안일
-const today = new Date();   
+/* const today = new Date();   
 const year = today.getFullYear(); 
 const month = today.getMonth() + 1; 
 const date = today.getDate();  
-document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
+document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date; */
+
+var target = '${DraftInfo.target_type}' == 'df001' ?  '브랜드' : '직영점';
+console.log('target: '+target);
+var action = '${DraftInfo.action_type}' == 'df011' ?  '등록' : '폐점';
+console.log('action: '+action);
+
+$('.change-tit').text(target+' ' +action);
+
+
+console.log('ApprLine: '+ '${ApprLine}');
+console.log('DraftInfo: '+ '${DraftInfo}');
 
 // 기안문 종류에 따른 양식
 function setForm(type1, type2, element){
@@ -365,7 +383,6 @@ function setForm(type1, type2, element){
 	if(type1 == 'brand'){
 		//document.getElementsByClassName('addr-area')[0].style.display = 'none';
 		document.querySelector('input[name="target_type"]').value = 'df001';
-		document.querySelector('.name_type').innerText = '브랜드명';
 		// 주소칸 제거
 		if($("#addr-area").length >= 1){
 			$("#addr-area").remove();
@@ -373,7 +390,6 @@ function setForm(type1, type2, element){
 	// 직영점 기안의 경우
 	}else if(type1 == 'direct'){
 		document.querySelector('input[name="target_type"]').value = 'df002';
-		document.querySelector('.name_type').innerText = '지점명';
 		// 주소칸 추가
 		if($("#addr-area").length == 0){
 	
@@ -401,164 +417,7 @@ function setForm(type1, type2, element){
 		}
 	}
 	
-	// 등록인 경우
-	if(type2 == 'open'){
-		document.querySelector('input[name="action_type"]').value = 'df011';
-	// 폐점인 경우
-	}else if(type2 == 'close'){
-		document.querySelector('input[name="action_type"]').value = 'df012';
-	}
-	
-}
 
-
-
-//최종 글 작성
-//글 전송할 url 파라미터 포함
-//전송 버튼에 textEaditorWrite(url) 함수 사용
-function textEaditorWrite(url, after){
-	var formData = new FormData($('form')[0]); // formData
-	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
-	formData.append('content', content);
-	
-	var tempDom = $('<div>').html(content);
- var imgsInEditor = []; // 최종 파일을 담을 배열
- 
- tempDom.find('img').each(function () {
-         var src = $(this).attr('src');
-         if (src && src.includes('/photoTem/')) {  // 경로 검증
-             var filename = src.split('/').pop();  // 파일명 추출
-             imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
-         }
- });
- 
- // new_filename과 일치하는 항목만 필터링
- var finalImgs = tempImg.filter(function (temp) {
-     return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
- });
- 
- formData.append('imgsJson', JSON.stringify(finalImgs));
- 
- fileAjax('POST', url, formData, after);
-}
-
-
-// 에디터 이미지 저장
-function fileAjax(type, url, formData, after){
-
-	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-    $.ajax({
-        type : type,
-        url : url,
-        data : formData,
-        contentType : false,
-        processData : false,
-        enctype : 'multipart/form-data',
-        beforeSend: function(xhr) {
-            xhr.setRequestHeader(csrfHeader, csrfToken);
-        },
-        success : function(response){
-            fileSuccess(response, after);
-        },error : function(e){
-            console.log(e);
-        }
-    });
-}
-
-// 결재 요청
-function sendApproval(){
-	document.querySelector('input[name="status"]').value = "sd";
-	const form = document.getElementById("formDraft");
-    const inputs = form.querySelectorAll("input[required]");
-    const selects = form.querySelectorAll("select[required]");
-
-    let isValid = true;
-
-    // input 필드 유효성 검사
-    inputs.forEach(input => {
-        if (!input.value.trim()) {
-            isValid = false;
-            var txtEl = input.parentNode;
-            console.log("t0:::"+txtEl);
-            var titleEl = txtEl.previousSibling;
-            console.log("t1:::"+titleEl.innerText);
-            return; 
-        }
-    });
-
-    // select 필드 유효성 검사
-    selects.forEach(select => {
-        if (!select.value) {
-            isValid = false;
-            //alert(select.name + " is required.");
-            return;
-        }
-    });
-    
-    if (isValid) {
-		textEaditorWrite('/draftWrite/sd',true);	
-    }else {
-    	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
-    }
-}
-
-// 임시 저장
-function saveTemp(){
-	document.querySelector('input[name="status"]').value = "sv";
-	textEaditorWrite('/draftWrite/sv',false);	
-	
-}
-
-//1분마다 자동저장
-setInterval(saveTemp, 6000);
-
-
-
-// 저장 성공 후 상세페이지 이동
-function fileSuccess(response, after){
-	console.log("success : "+response.success);
-	console.log("success : "+response.draftIdx);
-	if(after){
-		location.href = "/approval/detail";
-	}else{
-		$('input[name="draft_idx"]').val(response.draftIdx);
-	}
-	
-} 
-
-// 알림 팝업(유효성 검사)
-function btn1Act() {
-	removeAlert(); // 기존팝업닫기
-}
-function btn2Act() {
-	removeAlert(); // 기존팝업닫기
-}
-
-// 다음 주소 API
-function sample6_execDaumPostcode() {
-    new daum.Postcode({
-        oncomplete: function(data) {
-            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
-            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-            var addr = ''; // 주소 변수
-
-            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                addr = data.roadAddress;
-            } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                addr = data.jibunAddress;
-            }
-
-            document.getElementById("sample6_address").value = addr;
-            // 커서를 상세주소 필드로 이동한다.
-            document.getElementById("sample6_detailAddress").focus();
-        }
-    }).open();
-}
 
 </script>
 
