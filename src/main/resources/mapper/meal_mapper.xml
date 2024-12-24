@@ -10,9 +10,50 @@
         WHERE is_time = #{is_time}
     </select>
     
-    <insert id="getmealMenu" parameterType="Map">
+    <insert id="setmealMenu" parameterType="Map">
     	insert into meal_menu(start_date,end_date,is_time,content,creater)
     		values(#{start_date},#{end_date},#{is_time},#{content},#{creater})
     </insert>
+    
+    <update id="editmealMenu" parameterType="Map">
+   	 UPDATE meal_menu
+		    SET 
+		        start_date = #{start_date},
+		        end_date = #{end_date},
+		        is_time = #{is_time},
+		        content = #{content}
+	    WHERE menu_idx = #{menu_idx}
+    </update>
+    
+    <insert
+	    useGeneratedKeys="true"
+	     keyColumn="meal_idx"
+	     keyProperty="meal_idx"
+	     id="setmealTicket" parameterType="Map">
+	    	INSERT INTO meal(name,cost,count,use_yn,creater,code_name)
+	    		VALUES(#{name},#{cost},#{count},#{use_yn},#{creater},#{code_name})
+    </insert>
+    
+    <select id="detailmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="int">
+    	SELECT name,cost,count,use_yn FROM meal WHERE meal_idx = #{meal_idx}
+    </select>
+    
+    <update id="editmealTicket" parameterType="Map">
+   	 UPDATE meal
+		    SET 
+		        name = #{name},
+		        cost = #{cost},
+		        count = #{count},
+		        use_yn = #{use_yn}
+	    WHERE meal_idx = #{meal_idx}
+    </update>
+    
+    <insert id="setmealFile" parameterType="kr.co.porkandspoon.dto.FileDTO">
+    	INSERT INTO file(code_name,ori_filename,new_filename,type,pk_idx)
+    		VALUES(#{code_name},#{ori_filename},#{new_filename},#{type},#{idx})
+    </insert>
+    
+    
+    
     
 </mapper>
