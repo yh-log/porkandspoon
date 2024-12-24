@@ -6,10 +6,15 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.DeptDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
 public interface DeptDAO {
 
 	List<DeptDTO> setChart();
+
+	UserDTO getUserlist(Map<String, Object> params);
+
+	List<DeptDTO> getOrgchart();
 
 }
