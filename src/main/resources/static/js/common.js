@@ -178,7 +178,9 @@ function loadModal(section, type, data) {
                 modal.style.display = "block";
 
                 // 데이터 주입 (data가 없을 경우 빈 객체로 처리)
-                setModalData(data || {});
+                //setModalData(data || {});
+                setModalData(type,data !== undefined ? data : null);
+                console.log('여기 오니?',data);
 
                 // 모달 닫기 및 기타 이벤트 설정
                 setupModalEvents(modal);

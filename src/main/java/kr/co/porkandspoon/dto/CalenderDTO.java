@@ -8,6 +8,7 @@ public class CalenderDTO {
 	private String username;
 	private LocalDateTime start_date;
 	private LocalDateTime end_date;
+	private String updater;
 	private String subject;
 	private String content;
 	private String type; // 캘린더 유형(전사P,팀T,개인S)
@@ -15,7 +16,28 @@ public class CalenderDTO {
 	private String no; // 물품,회의실 no
 	private String personnel;
 	private String id; // 부서,직영 코드
+	private String name;
+	private String parent;
 	
+	
+	public String getParent() {
+		return parent;
+	}
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+	public String getUpdater() {
+		return updater;
+	}
+	public void setUpdater(String updater) {
+		this.updater = updater;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public String getIdx() {
 		return idx;
 	}
