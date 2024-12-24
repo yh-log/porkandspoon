@@ -39,12 +39,6 @@
 </head>
 <style>
 
-	/* 버튼 크기 설정 */
-	.btn-write {
-		width: 90px;
-    	height: 40px;
-	}
-	
 	/* 테이블 텍스트 위치 조정 */
 	.table-text {
 		text-align: left;
@@ -117,6 +111,10 @@
 	 .confirm{
 	 	width: 75px;
 	 }
+	 
+	 .btn-div-write {
+	 	text-align: right;
+	 }
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -132,15 +130,9 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>글쓰기</h5>
+                  <h5>게시글</h5>
                </div>
                <div class="cont-body"> 
-					<div class="row">
-	               	  	<div class="col-sm-1"><a href="/board/View" class="btn btn-outline-primary btn-write">돌아가기</a></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-update btn-write">수정하기</button></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-outline-primary btn-write-delete btn-write">삭제하기</button></div>
-	               	  	<div class="col-sm-9"></div>
-               	  	</div>
                	  <div class="row">
 	                  <table>
 						<colgroup>
@@ -189,7 +181,6 @@
 									</div>									
 								</td>
 							</tr>
-							<tr></tr>
 						</tbody>
 					</table>
 					<div>
@@ -223,10 +214,21 @@
 								</tr>
 							</tbody>
 						</table>
-						<div class="review-group">
-							<input class="form-control review-write" type="text" placeholder="댓글을 입력하세요.">
-							<button class="btn btn-lg btn-primary"><span>등록</span></button>
+						<div class="review-group btn-div-write">
+							<div class="row">
+			               	  	<div class="col-sm-11"><input class="form-control review-write" type="text" placeholder="댓글을 입력하세요."></div>
+			               	  	<div class="col-sm-1"><button class="btn btn-primary btn-review-write"><span>등록</span></button></div>
+	               	  		</div>
 						</div>
+						<hr>
+							<div class="row">
+								<div class="col-sm-2">
+									<button type="button" class="btn btn-outline-primary btn-update">수정</button>
+									<button type="submit" class="btn btn-outline-secondary btn-delete">삭제</button>
+								</div>
+								<div class="col-sm-9"></div>
+								<div class="col-sm-1"><a href="/board/View" class="btn btn-primary">목록</a></div>
+					    	</div>
 					</div>
                	  </div>
                </div>
