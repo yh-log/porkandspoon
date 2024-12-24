@@ -35,6 +35,9 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="/resources/js/daumApi.js"></script>
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
+
 <style>
 	.selectStyle{
 		width: 160px;
@@ -113,6 +116,10 @@
     color : var(--bs-primary);
     float: left;
 }
+
+.required-value{
+	color: var(--bs-danger);
+}
 </style>
 
 
@@ -153,19 +160,15 @@
 										<td rowspan="4" class="filebox">
 											<div id="imgPreview"></div>
 											<label for="file">+ 프로필 등록</label>
-											<input type="file" id="file" name="profile" onchange="preview(this)"/>
+											<input type="file" id="file" name="file" onchange="preview(this)" id="fileInput"/>
 										</td>
-										<th>이름</th>
+										<th>이름<span class="required-value">*</span></th>
 										<td colspan="2">
-											<input type="text" name="name" class="form-control"/>
+											<input type="text" name="name" class="form-control" data-required="true"/>
 										</td>
-										<th>부서</th>
+										<th>부서<span class="required-value">*</span></th>
 										<td>
-											<select class="form-select selectStyle">
-												<option>나중에</option>
-												<option>DB에서</option>
-												<option>데이터</option>
-												<option>가져오기</option>
+											<select class="form-select selectStyle" name="parent" id="deptSelect">
 											</select>
 										</td>
 									</tr>
@@ -178,12 +181,13 @@
 										<td>
 											<div class="inline-layout">
 												<select class="form-select selectStyle" name="position">
-													<option value="position6">사원</option>
-													<option value="position5">주임</option>
-													<option value="position4">대리</option>
-													<option value="position3">과장</option>
-													<option value="position2">차장</option>
-													<option value="position1">부장</option>
+													<option value="po6">사원</option>
+													<option value="po5">주임</option>
+													<option value="po4">대리</option>
+													<option value="po3">과장</option>
+													<option value="po2">차장</option>
+													<option value="po1">부장</option>
+													<option value="po7">직영점주</option>
 												</select> / 
 												<select class="form-select selectStyle" name="title">
 													<option value="T">팀장</option>
@@ -193,30 +197,30 @@
 										</td>
 									</tr>
 									<tr class="custom-height-row">
-										<th>아이디</th>
+										<th>아이디<span class="required-value">*</span></th>
 										<td colspan="2">
 											<div class="inline-layout">
-												<input type="text" name="username" class="form-control"/>
+												<input type="text" name="username" class="form-control" id="username" data-required="true"/>
 												<button type="button" class="btn btn-sm btn-outline-primary" onclick="usernameOverlay()"><i class="bi bi-check-lg"></i></button>
 											</div>
 											<div id="overlayMessage"></div>
 										</td>
-										<th>핸드폰</th>
+										<th>핸드폰<span class="required-value">*</span></th>
 										<td>
-											<input type="text" name="phone" class="form-control" id="inputFieldPhone"/>
+											<input type="text" name="phone" class="form-control" id="inputFieldPhone" data-required="true"/>
 										</td>
 									</tr>
 									<tr>
-										<th>이메일</th>
+										<th>이메일<span class="required-value">*</span></th>
 										<td colspan="2">
 											<div class="inline-layout">
-												<input type="email" name="email" class="form-control"/> @ 
-												<select class="form-select selectStyle">
-													<option value="naver.com">naver.com</option>
-													<option value="gmail.com">gmail.com</option>
-													<option value="daum.net">daum.net</option>
-													<option value="nate.com">nate.com</option>
-													<option value="hanmail.net">hanmail.net</option>
+												<input type="email" name="emailInfo" class="form-control" data-required="true"/> @ 
+												<select class="form-select selectStyle" name="emailAddr" id="emailAddr">
+													<option value="@naver.com">naver.com</option>
+													<option value="@gmail.com">gmail.com</option>
+													<option value="@daum.net">daum.net</option>
+													<option value="@nate.com">nate.com</option>
+													<option value="@hanmail.net">hanmail.net</option>
 													<!-- 기타일 경우 input 창으로 전환 -->
 													<option value="ect">기타</option>
 												</select>
@@ -225,12 +229,12 @@
 										</td>
 										<th>사내번호</th>
 										<td>
-											<input type="text" name="company_num1" class="form-control" id="inputFieldComNum"/>
+											<input type="text" name="company_num" class="form-control" id="inputFieldComNum"/>
 										</td>
 									</tr>
 									<tr><th colspan="6">기타정보</th></tr>
 									<tr>
-										<th>생년월일</th>
+										<th>생년월일 / 성별<span class="required-value">*</span></th>
 										<td colspan="2">
 											<div class="inline-layout">
  												<!-- 년도 선택 -->
@@ -239,26 +243,26 @@
 									            <select class="form-select selectStyle" id="birthMonth" name="birthMonth"></select>월
 									            <!-- 일 선택 -->
 									            <select class="form-select selectStyle" id="birthDay" name="birthDay"></select>일
-											</div>
+											</div> 
 										</td>
 										<td> 
-											<div class="inline-layout"> <span style="font-weight: 500;">성별</span>
+											<div class="inline-layout">/ <span style="font-weight: 500;">성별</span>
 											<select class="form-select selectStyle" name="gender">
 												<option value="F">여</option>
 												<option value="M">남</option>
 											</select>
 											</div>
 										</td>
-										<th>입사일</th>
+										<th>입사일<span class="required-value">*</span></th>
 										<td>
-											<input type="date" name="join_date" class="form-control" />
+											<input type="date" name="join_date" class="form-control" data-required="true"/>
 										</td>
 									</tr>
 									<tr class="custom-height-row">
-										<th>주소</th>
+										<th>주소<span class="required-value">*</span></th>
 										<td colspan="3">
 											<div class="inline-layout">
-												<input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled"/>
+												<input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true"/>
 												<button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
 											</div>
 										</td>
@@ -269,26 +273,26 @@
 									</tr>
 									<tr><th colspan="6">이력사항</th></tr>
 									<tr>
-										<th>학력</th>
+										<th>학력<span class="required-value">*</span></th>
 										    <td colspan="2">
 												<input type="hidden" name="type" value="education" />
 										        <div class="inline-layout">
-										            기간 <input type="date" name="start_date" class="form-control" /> ~ <input type="date" name="end_date" class="form-control" />
+										            기간 <input type="date" name="start_date" class="form-control" data-required="true"/> ~ <input type="date" name="end_date" class="form-control" data-required="true"/>
 										        </div>
 										    </td>
 										    <td colspan="2">
 										        <div class="inline-layout">
-										            학교명 <input type="text" name="subject" class="form-control" />
+										            학교명 <input type="text" name="subject" class="form-control" data-required="true"/>
 										        </div>
 										    </td>
 										    <td>
 										        <div class="inline-layout">
 										            상태
 										            <select class="form-select selectStyle" name="content">
-										                <option value="">졸업</option>
-										                <option value="">재학</option>
-										                <option value="">휴학</option>
-										                <option value="">중퇴</option>
+										                <option value="GR">졸업</option>
+										                <option value="EN">재학</option>
+										                <option value="LV">휴학</option>
+										                <option value="DR">중퇴</option>
 										            </select>
 										        </div>
 										    </td>
@@ -335,6 +339,7 @@
 										<td colspan="6">
 											<div id="btn-gap">
 												<button type="button" class="btn btn-primary" onclick="userWrite()">등록</button>
+												<!-- todo - 리스트로 이동 -->
 												<button type="button" class="btn btn-outline-secondary">취소</button>
 											</div>
 										</td>
@@ -363,95 +368,22 @@
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/userInfo.js'></script>
 
 <script>
-    // 년도 추가 (1900년부터 현재년도까지)
-    var currentYear = new Date().getFullYear();
-    var yearSelect = document.getElementById("birthYear");
-    for (let year = 1900; year <= currentYear; year++) {
-        let option = document.createElement("option");
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-    }
 
-    // 월 추가 (1월부터 12월까지)
-    var monthSelect = document.getElementById("birthMonth");
-    for (let month = 1; month <= 12; month++) {
-        let option = document.createElement("option");
-        option.value = month;
-        option.textContent = month;
-        monthSelect.appendChild(option);
-    }
+	$(document).ready(function(){
+	    // 부서 조회
+	    getAjax('/dept/list');
+	});
 
-    // 일 추가 (1일부터 31일까지)
-    var daySelect = document.getElementById("birthDay");
-    for (let day = 1; day <= 31; day++) {
-        let option = document.createElement("option");
-        option.value = day;
-        option.textContent = day;
-        daySelect.appendChild(option);
-    }
-    
-    // 핸드폰 번호
-    document.getElementById('inputFieldPhone').addEventListener('input', function (e) {
-        var regExp = /^[0-9]*$/; // 숫자만 허용
-        var input = e.target.value;
 
-        // 숫자가 아닌 문자가 입력되었으면 제거
-        if (!regExp.test(input)) {
-            e.target.value = input.replace(/[^0-9]/g, '');
-        }
 
-        // 길이가 11자리를 초과하면 잘라냄
-        if (e.target.value.length > 11) {
-            e.target.value = e.target.value.substring(0, 11);
-        }
-    });
     
-    // 사내번호
-    document.getElementById('inputFieldComNum').addEventListener('input', function (e) {
-        var regExp = /^[0-9]*$/; // 숫자만 허용
-        var input = e.target.value;
 
-        // 숫자가 아닌 문자가 입력되었으면 제거
-        if (!regExp.test(input)) {
-            e.target.value = input.replace(/[^0-9]/g, '');
-        }
-    });
     
-    // 아이디 중복 체크 여부
-    var usernameCheck = false;
+
     
-    function usernameOverlay(){
-    	var dto = {'username' : $('input[name="username"]').val()};
-    	console.log('실행', dto);
-    	getAjax('/ad/user/overlay', 'JSON', dto);
-    }
-    
-     function getSuccess(response){
-    	 console.log(response);
-    	if(response.status == 200){
-    		usernameCheck = true;
-    		$('#overlayMessage').show();
-    		$('#overlayMessage').text(response.message);
-    	}else{
-    		$('#overlayMessage').show();
-    		$('#overlayMessage').css('color', 'var(--bs-warning)');
-    		$('#overlayMessage').text(response.message);
-    	}
-    } 
-     
-    function userWrite(){
-    	
-    	var form = $('form')[0]; // 정확히 DOM 객체를 선택
-        var formData = new FormData(form);
-    	
-        for (var pair of formData.entries()) {
-            console.log(pair[0] + ': ' + pair[1]);
-        }
-    }
-     
     
      
 </script>

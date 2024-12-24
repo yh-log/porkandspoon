@@ -17,6 +17,8 @@
 <!-- select -->
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+	
+
 
 
 
@@ -28,6 +30,13 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- 다음 주소 검색 api 사용 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/resources/js/daumApi.js"></script>
+
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <style>
 	.selectStyle{
@@ -57,6 +66,65 @@
 	    padding-top: 0;
 	    padding-bottom: 0;
 	}
+	
+	.filebox .upload-name {
+	    display: inline-block;
+	    height: 40px;
+	    padding: 0 10px;
+	    vertical-align: middle;
+	    border: 1px solid var(--bs-light-dark);
+	    width: 78%;
+	    color: #999999;
+	}
+	
+	.filebox label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    color: var(--bs-secondary);
+	    vertical-align: middle;
+	    background-color: #fff;
+	    cursor: pointer;
+	    height: 40px;
+	    margin-left: 10px;
+	}
+	
+	.filebox input[type="file"] {
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    border: 0;
+	}
+	
+	.priview{
+		width: 170px;
+		height: 270px;
+	}
+	
+	
+.gender-th {
+    width: 80px; 
+    text-align: center; 
+}
+
+#overlayMessage{
+    display: none;
+    margin-bottom: -15px;
+    margin-top: -32px;
+    font-size: 14px;
+    color : var(--bs-primary);
+    float: left;
+}
+
+.required-value{
+	color: var(--bs-danger);
+}
+
+#userProfile{
+	width: 170px;
+	height: 270px;
+}
 </style>
 
 
@@ -92,116 +160,144 @@
 						<div class="cont-body"> 
 							<!-- 등록 폼 작성 -->
 							<form>
-								<table>
+								<table style="width: 100%; table-layout: fixed;">
 									<tr>
-										<td rowspan="4">프로필</td>
-										<th>이름</th>
-										<td colspan="2">
-											<input type="text" name="name" class="form-control"/>
+										<td rowspan="4" class="filebox">
+											<div id="imgPreview"></div>
+											<img src="" id="userProfile"/>
+											<label for="file">+ 프로필 수정</label>
+											<input type="file" id="file" name="file" onchange="preview(this)" id="fileInput"/>
 										</td>
-										<th>부서</th>
+										<th>이름<span class="required-value">*</span></th>
+										<td colspan="2">
+											<input type="text" name="name" class="form-control" id="name-value" data-required="true"/>
+										</td>
+										<th>부서<span class="required-value">*</span></th>
 										<td>
-											<select class="form-select selectStyle">
-												<option>나중에</option>
-												<option>DB에서</option>
-												<option>데이터</option>
-												<option>가져오기</option>
+											<select class="form-select selectStyle" name="parent" id="deptSelect" disabled="disabled" >
 											</select>
 										</td>
 									</tr>
 									<tr>
 										<th>사번</th>
 										<td colspan="2">
-											<input type="text" name="person_num" class="form-control" disabled="disabled"/>
+											<input type="text" name="person_num" class="form-control" id="person_num-value" disabled="disabled"/>
 										</td>
 										<th>직위/직책</th>
 										<td>
-											<select class="form-select selectStyle" name="position_idx">
-												<option value="position6">사원</option>
-												<option value="position5">주임</option>
-												<option value="position4">대리</option>
-												<option value="position3">과장</option>
-												<option value="position2">차장</option>
-												<option value="position1">부장</option>
-											</select>
+											<div class="inline-layout">
+												<select class="form-select selectStyle" name="position" id="position-select">
+													<option value="po6">사원</option>
+													<option value="po5">주임</option>
+													<option value="po4">대리</option>
+													<option value="po3">과장</option>
+													<option value="po2">차장</option>
+													<option value="po1">부장</option>
+													<option value="po7">직영점주</option>
+												</select> / 
+												<select class="form-select selectStyle" name="title" id="title-select">
+													<option value="T">팀장</option>
+													<option value="U">팀원</option>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr class="custom-height-row">
-										<th>아이디</th>
+										<th>아이디<span class="required-value">*</span></th>
 										<td colspan="2">
 											<div class="inline-layout">
-												<input type="text" name="username" class="form-control"/>
-												<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
+												<input type="text" name="username" class="form-control" id="username" data-required="true" disabled="disabled"/>
 											</div>
+											<div id="overlayMessage"></div>
 										</td>
-										<th>핸드폰</th>
+										<th>핸드폰<span class="required-value">*</span></th>
 										<td>
-											<input type="text" name="phone" class="form-control"/>
+											<input type="text" name="phone" class="form-control" id="inputFieldPhone" data-required="true"/>
 										</td>
 									</tr>
 									<tr>
-										<th>이메일</th>
+										<th>이메일<span class="required-value">*</span></th>
 										<td colspan="2">
-											<input type="email" name="email" class="form-control"/>
+											<div class="inline-layout">
+												<input type="email" name="emailInfo" id="emailFirst" class="form-control" data-required="true"/> @ 
+												<select class="form-select selectStyle" name="emailAddr" id="emailAddr">
+													<option value="@naver.com">naver.com</option>
+													<option value="@gmail.com">gmail.com</option>
+													<option value="@daum.net">daum.net</option>
+													<option value="@nate.com">nate.com</option>
+													<option value="@hanmail.net">hanmail.net</option>
+													<!-- 기타일 경우 input 창으로 전환 -->
+													<option value="ect">기타</option>
+												</select>
+												
+											</div>
 										</td>
 										<th>사내번호</th>
 										<td>
-											<input type="text" name="company_num1" class="form-control"/>
+											<input type="text" name="company_num" class="form-control" id="inputFieldComNum"/>
 										</td>
 									</tr>
 									<tr><th colspan="6">기타정보</th></tr>
 									<tr>
-										<th>생년월일</th>
-										<td>
-											년 / 월 / 일
+										<th>생년월일 / 성별<span class="required-value">*</span></th>
+										<td colspan="2">
+											<div class="inline-layout">
+ 												<!-- 년도 선택 -->
+									            <select class="form-select selectStyle" id="birthYear" name="birthYear"></select>년
+									            <!-- 월 선택 -->
+									            <select class="form-select selectStyle" id="birthMonth" name="birthMonth"></select>월
+									            <!-- 일 선택 -->
+									            <select class="form-select selectStyle" id="birthDay" name="birthDay"></select>일
+											</div> 
 										</td>
-										<th>성별</th>
-										<td>
-											<select class="form-select selectStyle" name="gender">
-												<option>여</option>
-												<option>남</option>
+										<td> 
+											<div class="inline-layout">/ <span style="font-weight: 500;">성별</span>
+											<select class="form-select selectStyle" name="gender" id="gender-select">
+												<option value="F">여</option>
+												<option value="M">남</option>
 											</select>
+											</div>
 										</td>
-										<th>입사일</th>
+										<th>입사일<span class="required-value">*</span></th>
 										<td>
-											<input type="date" name="join_date" class="form-control" />
+											<input type="date" name="join_date" class="form-control" id="join_date-value" data-required="true"/>
 										</td>
 									</tr>
 									<tr class="custom-height-row">
-										<th>주소</th>
+										<th>주소<span class="required-value">*</span></th>
 										<td colspan="3">
 											<div class="inline-layout">
-												<input type="text" name="address" class="form-control" disabled="disabled"/>
-												<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-geo-alt-fill"></i></button>
+												<input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true"/>
+												<button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
 											</div>
 										</td>
 										<th>퇴사일</th>
 										<td>
-											<input type="date" name="leave_date" class="form-control" />
+											<input type="date" name="leave_date" class="form-control"/>
 										</td>
 									</tr>
 									<tr><th colspan="6">이력사항</th></tr>
 									<tr>
-										<th>학력</th>
+										<th>학력<span class="required-value">*</span></th>
 										    <td colspan="2">
 												<input type="hidden" name="type" value="education" />
 										        <div class="inline-layout">
-										            기간 <input type="date" name="start_date" class="form-control" /> ~ <input type="date" name="end_date" class="form-control" />
+										            기간 <input type="date" name="start_date" class="form-control" data-required="true"/> ~ <input type="date" name="end_date" class="form-control" data-required="true"/>
 										        </div>
 										    </td>
 										    <td colspan="2">
 										        <div class="inline-layout">
-										            학교명 <input type="text" name="subject" class="form-control" />
+										            학교명 <input type="text" name="subject" class="form-control" data-required="true"/>
 										        </div>
 										    </td>
 										    <td>
 										        <div class="inline-layout">
 										            상태
 										            <select class="form-select selectStyle" name="content">
-										                <option value="">졸업</option>
-										                <option value="">재학</option>
-										                <option value="">휴학</option>
-										                <option value="">중퇴</option>
+										                <option value="GR">졸업</option>
+										                <option value="EN">재학</option>
+										                <option value="LV">휴학</option>
+										                <option value="DR">중퇴</option>
 										            </select>
 										        </div>
 										    </td>
@@ -247,7 +343,8 @@
 									<tr>
 										<td colspan="6">
 											<div id="btn-gap">
-												<button type="button" class="btn btn-primary">등록</button>
+												<button type="button" class="btn btn-primary" onclick="userUpdate()">수정</button>
+												<!-- todo - 리스트로 이동 -->
 												<button type="button" class="btn btn-outline-secondary">취소</button>
 											</div>
 										</td>
@@ -275,18 +372,21 @@
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
-	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
+<script src='/resources/js/userInfo.js'></script>
+
 <script>
 
-
-
-
+$(document).ready(function(){
+    // 부서 조회
+    getAjax('/dept/list');
+    
+    // todo - 나중에 동적으로 username 받아서 넘기기 (list, write 에서)
+    var username = 'qtgks9';
+    httpAjax('POST', '/ad/user/detail/qtgks9', username);
+    
+});
+     
 </script>
 
 </html>
