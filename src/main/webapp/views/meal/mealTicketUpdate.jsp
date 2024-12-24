@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -45,11 +46,39 @@
 		text-align: right;
 		margin-right: 10px;
 	}
+	.card-body{
+		display: flex;	
+	}
+	#flexRadioDefault2{
+		margin-left: 20px;
+	}
+	
+	
 	.content{
 		display: flex; 
 		align-content: cetner;
 		border: 1px solid black;
 	}
+	buttons{
+		align-content: cetner;
+	}
+	.art{
+		height: 280px;
+	}
+	.align-l{
+		width: 300px;
+		text-align: center
+	}
+	#btn-gap{
+		display: flex;
+		gap: 30px;
+		align-items: center;
+		justify-content: center;
+	}
+	.short{
+		width: 300px;
+	}
+	
 </style>
 </head>
 
@@ -69,30 +98,41 @@
 				<section id="menu">
 					<h4 class="menu-title">구내식당</h4>
 					<ul>
-						<li ><a href="/ad/mealTicket">식권구매</a></li>
+						<li><a href="/ad/mealTicket">식권구매</a></li>
 						<li><a href="/ad/mealMenu">식단표</a></li>
-						<li><a href="/ad/mealMenu/Write">식단등록</a></li>
+						<li ><a href="/ad/mealMenu/Write">식단등록</a></li>
 						<li class="active"><a href="/ad/mealTicket/Write">식권등록</a></li>
 						<li><a href="/ad/meal/List">상품리스트</a></li>
 					</ul>
 				</section>
 				<section class="cont">
-					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
+					 <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>식권등록</h5>
+							<h5>식단등록</h5>
 						</div>
 						<div class="cont-body">
-							<div class="row">
-							<div class="col-12 col-lg-12">
-								<p class="title2" id="text">상품명</p>
-								<input type="text" class="form-control" id="basicInput" placeholder="상품명">			
-								<p class="title2" id="text">상품가격</p>
-								<input type="text" class="form-control" id="basicInput" placeholder="상품가격">			
-								<p class="title2" id="text">상품수량</p>
-								<input type="text" class="form-control" id="basicInput" placeholder="상품 수량">		
-								
-								<!-- 파일 업로드 -->
-								<div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
+						<div class="row">
+
+			         <div class="col-12 col-lg-12">
+			         <form action="/ad/mealTicket/Write" method="post">
+	                     <input type="hidden" name="_csrf" value="${_csrf.token}" />
+	                     <table>
+	                        <tr>
+	                           <th class="align-l">상품명</th>
+	                           <td ><input class="form-control sor-1 "  name="name" value="${info.name}" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">상품가격</th>
+	                           <td ><input class="form-control sor-1 "  name="cost" value="${info.cost}" type="text" placeholder="상품가격을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">상품수량</th>
+	                          <td ><input class="form-control sor-1 "  name="count" value="${info.count}" type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        
+	                        <tr>
+	                           <th class="align-l">파일첨부</th>
+	                          <td ><div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
 								<input class="filepond--browser" type="file" id="filepond--browser-rd9ou40mc" name="filepond" aria-controls="filepond--assistant-rd9ou40mc" aria-labelledby="filepond--drop-label-rd9ou40mc" accept="">
 									<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
 										<label for="filepond--browser-rd9ou40mc" id="filepond--drop-label-rd9ou40mc" aria-hidden="true">Drag &amp; Drop your files or 
@@ -111,23 +151,39 @@
 											<fieldset class="filepond--data"></fieldset>
 											<div class="filepond--drip"></div>
 								</div>
-								
-								<div class="card-body">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											활성 </label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											비활성 </label>
-									</div>
-								</div>	
-							</div>
-								<div class="buttons">							
-									<button class="btn btn-primary">등록</button>
+							</td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">활성여부</th>
+		                          <td >
+		                          	<div class="card-body">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault1"
+												<c:if test="${info.use_yn eq 'N'}">checked</c:if>						
+												/>
+												</div> <label class="form-check-label" for="flexRadioDefault1">
+													활성 </label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault2" 
+												<c:if test="${info.use_yn eq 'N'}">checked</c:if>						
+												/>
+												<label class="form-check-label" for="flexRadioDefault2">
+													비활성 </label>
+											</div>
+									</td>
+		                        </tr>
+		                     </table>
+								<div id="btn-gap">							
+									<button   type="submit" class="btn btn-primary">수정</button>
 									<button class="btn btn-outline-primary">취소</button>
 								</div>
+				         </form>
+	                     
+	                  </div>
+			
+			
+
 							</div>
 						</div> 
 				</section>
@@ -147,9 +203,6 @@
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
@@ -174,38 +227,9 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
-
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
+	
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();

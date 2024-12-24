@@ -110,7 +110,7 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-		               <form action="/ad/mealMenu/Write" method="post">
+		               <form id="mealForm" action="/ad/mealMenu/Write" method="post">
 						    <input type="hidden" name="_csrf" value="${_csrf.token}" />
 						    <table>
 						        <tr>
@@ -138,18 +138,18 @@
 						        <tr>
 						            <th class="align-l">내용</th>
 						            <td>
-						                <textarea id="content" class="form-control art" name="content" placeholder="메뉴 입력시 , 를구분좌로 사용하여야 됩니다."></textarea>
+						                <textarea id="content" class="form-control art" name="content" placeholder="메뉴 입력시 , 를구분좌로 사용하여야 됩니다." required="required"></textarea>
 						            </td>
 						        </tr>
 						    </table>
 						
 						    <div id="btn-gap">
-						        <button type="submit" class="btn btn-primary">등록</button>
-						        <button type="button" class="btn btn-outline-primary" onclick="location.href='ad/mealMenu/Write'">취소</button>
+						        <button type="button" class="btn btn-primary btn-popup" >등록</button> 
+						        <button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/mealMenu/Write'">초기화</button>
 						    </div>
 						</form>
 						
-						
+						<!--  onclick="layerPopup('해당상품을 구매하시겠습니까?','구매','취소')" -->
 											
                   </div>
 	
@@ -221,6 +221,45 @@ $(document).ready(function () {
 
 
 
+/* 알림 팝업 */
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
+
+	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+	removeAlert(); // 기존팝업닫기
+	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+	layerPopup("두번째", "체크", false, secondBtn1Act, secondBtn2Act);
+}
+
+function btn2Act() {
+	// 2번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
+
+function secondBtn1Act() {
+	// 두번째팝업 1번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 1번 버튼 동작');
+	getAjax();
+	
+	$('#mealForm').submit(); // 폼 제출
+	removeAlert(); // 팝업닫기
+}
+
+function secondBtn2Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
+
+
+$('.btn-popup').on(
+		'click',
+		function() {
+			layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', secondBtn1Act,
+					secondBtn2Act);
+		});
 
 	
 </script>

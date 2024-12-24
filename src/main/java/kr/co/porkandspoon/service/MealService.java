@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.MealDAO;
+import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MealDTO;
+import kr.co.porkandspoon.util.CommonUtil;
 
 @Service
 public class MealService {
@@ -23,10 +25,42 @@ public class MealService {
 		return mealDAO.getMealMenu(is_time);
 	}
 
-	public int getmealMenu(Map<String, String> params) {
+	public int setmealMenu(Map<String, String> params) {
 		
-		return mealDAO.getmealMenu(params);
+		return mealDAO.setmealMenu(params);
 	}
+
+	public int editmealMenu(Map<String, String> params) {
+		return mealDAO.editmealMenu(params);
+		
+	}
+
+	public int setmealTicket(Map<String, String> params) {
+		return mealDAO.setmealTicket(params);
+		
+	}
+	
+	public int setmealTicket(Map<String, String> params, FileDTO dto) {
+		mealDAO.setmealTicket(params);
+		 String idx =CommonUtil.toString(params.get("meal_idx"));
+		dto.setPk_idx(idx);
+		
+		
+		return mealDAO.setmealFile(dto);
+		
+	}
+	
+
+	public MealDTO detailmealTicket(int meal_idx) {
+		return mealDAO.detailmealTicket(meal_idx);
+		
+	}
+
+	public int editmealTicket(Map<String, String> params) {
+		return mealDAO.editmealTicket(params);
+		
+	}
+
 	
 	
 	
