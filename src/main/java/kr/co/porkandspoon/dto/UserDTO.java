@@ -49,6 +49,17 @@ public class UserDTO extends ResponseDTO{
    
    private String position_content;
    
+   private int menuOrder;
+   
+   public int getMenuOrder() {
+	   return menuOrder;
+	}
+	
+	public void setMenuOrder(int menuOrder) {
+	   this.menuOrder = menuOrder;
+	}
+
+   
    
    
    
