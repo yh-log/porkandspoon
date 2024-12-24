@@ -1,6 +1,5 @@
 package kr.co.porkandspoon.dto;
 
-<<<<<<< HEAD
 import java.time.LocalDate;
 
 public class CareerDTO {
@@ -80,10 +79,4 @@ public class CareerDTO {
 		this.update_date = update_date;
 	}
 	
-
-	
-=======
-public class CareerDTO {
-
->>>>>>> 28814aa7a5ff0fb112f7df0e4031ae5c8d1fbde1
 }
