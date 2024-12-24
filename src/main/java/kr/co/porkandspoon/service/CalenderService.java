@@ -18,8 +18,8 @@ public class CalenderService {
 	@Autowired CalenderDAO calenderDao;
 	
 	// 일정리스트 호출
-	public List<Map<String, Object>> calenderList() {
-		return calenderDao.calenderList();
+	public List<Map<String, Object>> calenderList(String loginId, String dept) {
+		return calenderDao.calenderList(loginId,dept);
 	}
 	
 	// 일정 등록
@@ -31,6 +31,20 @@ public class CalenderService {
 	public CalenderDTO calenderDetail(int idx) {
 		
 		return calenderDao.calenderDetail(idx);
+	}
+	// 일정 수정
+	public boolean calenderUpdate(String idx, CalenderDTO calenderDto) {
+		int result = calenderDao.calenderUpdate(idx, calenderDto);
+		return result > 0;
+	}
+	// 일정 삭제
+	public boolean calenderDelete(String idx) {	
+		return calenderDao.calenderDelete(idx) > 0 ? true : false;
+	}
+	// 로그인한 유저의 부서정보
+	public String dept(String loginId) {
+		return calenderDao.dept(loginId);
+		
 	}
 	
 
