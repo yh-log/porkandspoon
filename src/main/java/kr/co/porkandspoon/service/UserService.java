@@ -92,6 +92,14 @@ public class UserService {
 		return userDao.findUserPw(dto);
 	}
 
+	/**
+	 * author yh.kim (24.12.23)
+	 * 직원 아이디 중복 체크
+	 */
+	public boolean usernameOverlay(UserDTO dto) {
+		return userDao.usernameOverlay(dto) <= 0? true : false;
+	}
+
 
 
 

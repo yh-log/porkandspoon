@@ -16,7 +16,7 @@ public class FoodieController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired FoodieService foodieService;
 
-	@GetMapping(value="foodielist/View")
+	@GetMapping(value="/foodielist/View")
 	public ModelAndView foodielistView() {
 		return new ModelAndView("/foodie/foodieList");
 	}

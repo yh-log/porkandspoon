@@ -42,17 +42,28 @@
 		display: flex; 
 		align-content: cetner;
 		border: 1px solid black;
+		
 	}
 	buttons{
 		align-content: cetner;
 	}
 	.art{
 		height: 280px;
+		resize: none;
 	}
 	.align-l{
+		
 		width: 300px;
 		text-align: center
 	}
+	
+	/* 날짜 입력 필드 가로 정렬 */
+	.datetime-group {
+	    display: flex;
+	    gap: 10px; /* 필드 간 간격 */
+	    align-items: center;
+	}
+	
 	#btn-gap{
 		display: flex;
 		gap: 30px;
@@ -61,6 +72,7 @@
 	}
 	.short{
 		width: 280px;
+	
 	}
 	
 </style>
@@ -111,17 +123,22 @@
 						                </select>
 						            </td>
 						        </tr>
+						        
 						        <tr>
-						            <th class="align-l">일정</th>
-						            <td>
-						                <input id="start" class="form-control sor-1 short" type="datetime-local" name="start_date" />
-						                <input id="end" class="form-control sor-1 short" type="datetime-local" name="end_date" />
-						            </td>
-						        </tr>
+							    <th class="align-l datetime">일정</th>
+							    <td>
+							        <div class="datetime-group">
+							            <input id="start" class="form-control sor-1 short" type="datetime-local" name="start_date" />
+							            	~
+							            <input id="end" class="form-control sor-1 short" type="datetime-local" name="end_date" />
+							        </div>
+							    </td>
+							</tr>
+						        
 						        <tr>
 						            <th class="align-l">내용</th>
 						            <td>
-						                <textarea id="content" class="form-control art" name="content"></textarea>
+						                <textarea id="content" class="form-control art" name="content" placeholder="메뉴 입력시 , 를구분좌로 사용하여야 됩니다."></textarea>
 						            </td>
 						        </tr>
 						    </table>
@@ -144,7 +161,7 @@
 		</div>
 	</div>
 </body>
-
+ 
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
@@ -159,6 +176,7 @@
 
 
 <script>
+// 초기값 설정 같은 날자 넣었을때 처리하는 방법 어캐할 건지 
 $(document).ready(function () {
     // 초기값 설정
     function setInitialValues() {
@@ -200,6 +218,8 @@ $(document).ready(function () {
         setInitialValues();
     });
 });
+
+
 
 
 	

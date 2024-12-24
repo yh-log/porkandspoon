@@ -17,6 +17,8 @@
 <!-- select -->
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+	
+
 
 
 
@@ -28,6 +30,10 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- 다음 주소 검색 api 사용 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/resources/js/daumApi.js"></script>
 
 <style>
 	.selectStyle{
@@ -57,6 +63,56 @@
 	    padding-top: 0;
 	    padding-bottom: 0;
 	}
+	
+	.filebox .upload-name {
+	    display: inline-block;
+	    height: 40px;
+	    padding: 0 10px;
+	    vertical-align: middle;
+	    border: 1px solid var(--bs-light-dark);
+	    width: 78%;
+	    color: #999999;
+	}
+	
+	.filebox label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    color: var(--bs-secondary);
+	    vertical-align: middle;
+	    background-color: #fff;
+	    cursor: pointer;
+	    height: 40px;
+	    margin-left: 10px;
+	}
+	
+	.filebox input[type="file"] {
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    border: 0;
+	}
+	
+	.priview{
+		width: 170px;
+		height: 270px;
+	}
+	
+	
+.gender-th {
+    width: 80px; 
+    text-align: center; 
+}
+
+#overlayMessage{
+    display: none;
+    margin-bottom: -15px;
+    margin-top: -32px;
+    font-size: 14px;
+    color : var(--bs-primary);
+    float: left;
+}
 </style>
 
 
@@ -92,9 +148,13 @@
 						<div class="cont-body"> 
 							<!-- 등록 폼 작성 -->
 							<form>
-								<table>
+								<table style="width: 100%; table-layout: fixed;">
 									<tr>
-										<td rowspan="4">프로필</td>
+										<td rowspan="4" class="filebox">
+											<div id="imgPreview"></div>
+											<label for="file">+ 프로필 등록</label>
+											<input type="file" id="file" name="profile" onchange="preview(this)"/>
+										</td>
 										<th>이름</th>
 										<td colspan="2">
 											<input type="text" name="name" class="form-control"/>
@@ -116,14 +176,20 @@
 										</td>
 										<th>직위/직책</th>
 										<td>
-											<select class="form-select selectStyle" name="position_idx">
-												<option value="position6">사원</option>
-												<option value="position5">주임</option>
-												<option value="position4">대리</option>
-												<option value="position3">과장</option>
-												<option value="position2">차장</option>
-												<option value="position1">부장</option>
-											</select>
+											<div class="inline-layout">
+												<select class="form-select selectStyle" name="position">
+													<option value="position6">사원</option>
+													<option value="position5">주임</option>
+													<option value="position4">대리</option>
+													<option value="position3">과장</option>
+													<option value="position2">차장</option>
+													<option value="position1">부장</option>
+												</select> / 
+												<select class="form-select selectStyle" name="title">
+													<option value="T">팀장</option>
+													<option value="U">팀원</option>
+												</select>
+											</div>
 										</td>
 									</tr>
 									<tr class="custom-height-row">
@@ -131,36 +197,57 @@
 										<td colspan="2">
 											<div class="inline-layout">
 												<input type="text" name="username" class="form-control"/>
-												<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
+												<button type="button" class="btn btn-sm btn-outline-primary" onclick="usernameOverlay()"><i class="bi bi-check-lg"></i></button>
 											</div>
+											<div id="overlayMessage"></div>
 										</td>
 										<th>핸드폰</th>
 										<td>
-											<input type="text" name="phone" class="form-control"/>
+											<input type="text" name="phone" class="form-control" id="inputFieldPhone"/>
 										</td>
 									</tr>
 									<tr>
 										<th>이메일</th>
 										<td colspan="2">
-											<input type="email" name="email" class="form-control"/>
+											<div class="inline-layout">
+												<input type="email" name="email" class="form-control"/> @ 
+												<select class="form-select selectStyle">
+													<option value="naver.com">naver.com</option>
+													<option value="gmail.com">gmail.com</option>
+													<option value="daum.net">daum.net</option>
+													<option value="nate.com">nate.com</option>
+													<option value="hanmail.net">hanmail.net</option>
+													<!-- 기타일 경우 input 창으로 전환 -->
+													<option value="ect">기타</option>
+												</select>
+												
+											</div>
 										</td>
 										<th>사내번호</th>
 										<td>
-											<input type="text" name="company_num1" class="form-control"/>
+											<input type="text" name="company_num1" class="form-control" id="inputFieldComNum"/>
 										</td>
 									</tr>
 									<tr><th colspan="6">기타정보</th></tr>
 									<tr>
 										<th>생년월일</th>
-										<td>
-											년 / 월 / 일
+										<td colspan="2">
+											<div class="inline-layout">
+ 												<!-- 년도 선택 -->
+									            <select class="form-select selectStyle" id="birthYear" name="birthYear"></select>년
+									            <!-- 월 선택 -->
+									            <select class="form-select selectStyle" id="birthMonth" name="birthMonth"></select>월
+									            <!-- 일 선택 -->
+									            <select class="form-select selectStyle" id="birthDay" name="birthDay"></select>일
+											</div>
 										</td>
-										<th>성별</th>
-										<td>
+										<td> 
+											<div class="inline-layout"> <span style="font-weight: 500;">성별</span>
 											<select class="form-select selectStyle" name="gender">
-												<option>여</option>
-												<option>남</option>
+												<option value="F">여</option>
+												<option value="M">남</option>
 											</select>
+											</div>
 										</td>
 										<th>입사일</th>
 										<td>
@@ -171,13 +258,13 @@
 										<th>주소</th>
 										<td colspan="3">
 											<div class="inline-layout">
-												<input type="text" name="address" class="form-control" disabled="disabled"/>
-												<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-geo-alt-fill"></i></button>
+												<input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled"/>
+												<button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
 											</div>
 										</td>
 										<th>퇴사일</th>
 										<td>
-											<input type="date" name="leave_date" class="form-control" />
+											<input type="date" name="leave_date" class="form-control" value="9999-12-31" disabled="disabled"/>
 										</td>
 									</tr>
 									<tr><th colspan="6">이력사항</th></tr>
@@ -247,7 +334,7 @@
 									<tr>
 										<td colspan="6">
 											<div id="btn-gap">
-												<button type="button" class="btn btn-primary">등록</button>
+												<button type="button" class="btn btn-primary" onclick="userWrite()">등록</button>
 												<button type="button" class="btn btn-outline-secondary">취소</button>
 											</div>
 										</td>
@@ -275,18 +362,98 @@
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
-	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
+
 <script>
+    // 년도 추가 (1900년부터 현재년도까지)
+    var currentYear = new Date().getFullYear();
+    var yearSelect = document.getElementById("birthYear");
+    for (let year = 1900; year <= currentYear; year++) {
+        let option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
 
+    // 월 추가 (1월부터 12월까지)
+    var monthSelect = document.getElementById("birthMonth");
+    for (let month = 1; month <= 12; month++) {
+        let option = document.createElement("option");
+        option.value = month;
+        option.textContent = month;
+        monthSelect.appendChild(option);
+    }
 
+    // 일 추가 (1일부터 31일까지)
+    var daySelect = document.getElementById("birthDay");
+    for (let day = 1; day <= 31; day++) {
+        let option = document.createElement("option");
+        option.value = day;
+        option.textContent = day;
+        daySelect.appendChild(option);
+    }
+    
+    // 핸드폰 번호
+    document.getElementById('inputFieldPhone').addEventListener('input', function (e) {
+        var regExp = /^[0-9]*$/; // 숫자만 허용
+        var input = e.target.value;
 
+        // 숫자가 아닌 문자가 입력되었으면 제거
+        if (!regExp.test(input)) {
+            e.target.value = input.replace(/[^0-9]/g, '');
+        }
 
+        // 길이가 11자리를 초과하면 잘라냄
+        if (e.target.value.length > 11) {
+            e.target.value = e.target.value.substring(0, 11);
+        }
+    });
+    
+    // 사내번호
+    document.getElementById('inputFieldComNum').addEventListener('input', function (e) {
+        var regExp = /^[0-9]*$/; // 숫자만 허용
+        var input = e.target.value;
+
+        // 숫자가 아닌 문자가 입력되었으면 제거
+        if (!regExp.test(input)) {
+            e.target.value = input.replace(/[^0-9]/g, '');
+        }
+    });
+    
+    // 아이디 중복 체크 여부
+    var usernameCheck = false;
+    
+    function usernameOverlay(){
+    	var dto = {'username' : $('input[name="username"]').val()};
+    	console.log('실행', dto);
+    	getAjax('/ad/user/overlay', 'JSON', dto);
+    }
+    
+     function getSuccess(response){
+    	 console.log(response);
+    	if(response.status == 200){
+    		usernameCheck = true;
+    		$('#overlayMessage').show();
+    		$('#overlayMessage').text(response.message);
+    	}else{
+    		$('#overlayMessage').show();
+    		$('#overlayMessage').css('color', 'var(--bs-warning)');
+    		$('#overlayMessage').text(response.message);
+    	}
+    } 
+     
+    function userWrite(){
+    	
+    	var form = $('form')[0]; // 정확히 DOM 객체를 선택
+        var formData = new FormData(form);
+    	
+        for (var pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+    }
+     
+    
+     
 </script>
 
 </html>
