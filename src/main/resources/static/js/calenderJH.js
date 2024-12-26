@@ -57,6 +57,13 @@ function initializeCalendar(event) {
 		timeFormat: {
             agenda: 'H(:mm)' //h:mm{ - h:mm}'
         },
+        // 학원에서 추가한 부분
+        titleFormat: function (date) {
+	      year = date.date.year;
+	      month = date.date.month + 1;
+	
+	      return year + "년 " + month + "월";
+    	},
         dateClick: function (info) {
             formattedDate = info.dateStr;
             loadModal(section, 'Input'); // 일정 등록 모달
@@ -120,6 +127,14 @@ function httpSuccess(response){
 }
 
 
+
+var typeColorMap = {
+    'C': { background: '#D7F5FC', text: '#000000' }, // 
+    'P': { background: '#FFF2D6', text: '#000000' }, // 
+    'T': { background: '#EDC0FF', text: '#000000' }, // 
+};
+
+
 // 일정 불러오기 완료 후 함수
 function getSuccess(response){
 	var event = [];
@@ -129,7 +144,9 @@ function getSuccess(response){
         	id: item.idx,
             title : item.subject,
             start : item.start_date,
-            end : item.end_date
+            end : item.end_date,
+            color: typeColorMap[item.type]?.background || '#3788d8', // 배경색
+        	textColor: typeColorMap[item.type]?.text || '#000000',   // 글자색
         });
     });
     initializeCalendar(event);
