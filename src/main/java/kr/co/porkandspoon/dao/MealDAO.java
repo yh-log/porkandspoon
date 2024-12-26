@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,12 @@ public interface MealDAO {
 	int editmealTicket(Map<String, String> params);
 
 	int setmealFile(FileDTO dto);
+
+	FileDTO getFile(int meal_idx);
+
+	List<MealDTO> getmealTicket();
+
+	Integer menuOverlay(LocalDateTime start_date, LocalDateTime end_date);
 
 	
 

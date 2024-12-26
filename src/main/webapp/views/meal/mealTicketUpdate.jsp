@@ -153,26 +153,35 @@
 								</div>
 							</td>
 	                        </tr>
-	                        <tr>
-	                           <th class="align-l">활성여부</th>
-		                          <td >
-		                          	<div class="card-body">
-										<div class="form-check">
-											<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault1"
-												<c:if test="${info.use_yn eq 'N'}">checked</c:if>						
-												/>
-												</div> <label class="form-check-label" for="flexRadioDefault1">
-													활성 </label>
-											</div>
-											<div class="form-check">
-												<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault2" 
-												<c:if test="${info.use_yn eq 'N'}">checked</c:if>						
-												/>
-												<label class="form-check-label" for="flexRadioDefault2">
-													비활성 </label>
-											</div>
-									</td>
-		                        </tr>
+	                     <tr>
+						   <th class="align-l">활성여부</th>
+						   <td>
+						      <div class="card-body">
+						         <div class="form-check">
+						            <input 
+						               class="form-check-input" 
+						               type="radio" 
+						               name="use_yn" 
+						               value="Y" 
+						               id="flexRadioDefault1"
+						               <c:if test="${info.use_yn == 'Y'}">checked</c:if>
+						            >
+						            <label class="form-check-label" for="flexRadioDefault1">활성</label>
+						         </div>
+						         <div class="form-check">
+						            <input 
+						               class="form-check-input" 
+						               type="radio" 
+						               name="use_yn" 
+						               value="N" 
+						               id="flexRadioDefault2"
+						               <c:if test="${info.use_yn == 'N'}">checked</c:if>
+						            >
+						            <label class="form-check-label" for="flexRadioDefault2">비활성</label>
+						         </div>
+						      </div>
+						   </td>
+						</tr>
 		                     </table>
 								<div id="btn-gap">							
 									<button   type="submit" class="btn btn-primary">수정</button>
@@ -229,7 +238,37 @@
 
 
 <script>
-	
+document.addEventListener('DOMContentLoaded', function () {
+    // FilePond 인스턴스 가져오기
+    const fileInput = document.querySelector('.filepond--browser');
+
+    // FilePond 초기화
+    FilePond.create(fileInput);
+
+    // 서버에서 가져온 파일 URL과 이름 설정
+    var fileUrl = '${fileUrl}';
+    var fileName = '${fileName}';
+	console.log(fileUrl);
+	console.log(fileName);
+    
+    
+    if (fileUrl && fileName) {
+        // FilePond에 기존 파일 설정
+        FilePond.find(fileInput).setOptions({
+            files: [
+                {
+                    source: fileUrl, // 서버에서 제공된 파일 URL
+                    options: {
+                        type: 'local',
+                        file: {
+                            name: fileName, // 파일 이름
+                        },
+                    },
+                },
+            ],
+        });
+    }
+});
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
