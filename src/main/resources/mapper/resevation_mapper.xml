@@ -5,13 +5,53 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.ResevationDAO">
 	
-	<!-- 물품 등록(등록자 정보) -->
+	<!-- 물품 등록 페이지(등록자 정보) -->
 	<select id="info">
 		SELECT name FROM user WHERE username = #{loginId}
 	</select>
 	
+	<!-- 물품 등록 -->
+	<insert id="articleWrite" parameterType="map">
+		INSERT INTO item(username,type,item_name,model_name,content,is_item)
+						values(#{username},#{type},#{item_name},#{model_name},#{content},#{is_item})
+	</insert>
 	
-	
+	<!-- 자원리스트 조회 -->
+	<select id="list" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT 
+		    no,
+		    username,
+		    'room' AS category,
+		    room_name AS name,
+		    NULL AS type,
+		    NULL AS model_name,
+		    count,
+		    content,
+		    create_date,
+		    updater,
+		    update_date,
+		    is_room AS is_active,
+		    use_yn 
+		FROM 
+		    room WHERE use_yn = 'Y'
+		UNION ALL
+		SELECT 
+		    no,
+		    username,
+		    'item' AS category,
+		    item_name AS name,
+		    type,
+		    model_name,
+		    NULL AS count,
+		    content,
+		    create_date,
+		    updater,
+		    update_date,
+		    is_item AS is_active,
+		    use_yn
+		FROM 
+		    item WHERE use_yn = 'Y'
+	</select>
 	
 	
 	
