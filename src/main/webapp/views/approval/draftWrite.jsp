@@ -24,11 +24,12 @@
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 <!-- 파일 업로더 -->
-<link rel="stylesheet"
+<!-- <link rel="stylesheet"
 	href="/resources/assets/extensions/filepond/filepond.css">
 <link rel="stylesheet"
 	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-
+ -->
+ 
 <!-- summernote bootstrap-->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 <!-- 부트스트랩 -->
@@ -37,6 +38,11 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+ <!-- FilePond CSS -->
+  <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
+  <!-- FilePond JavaScript -->
+  <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -298,11 +304,13 @@
 								</div>
 								<div class="editor-area">
 									<textarea name="content" id="summernote" maxlength="10000"></textarea>
-									
 								</div>
 								
+								<h5>로고파일 첨부</h5>
+								<input type="file" class="filepond" data-max-file-size="10MB" multiple="" name="logo" type="file"/>
+
 								<h5>파일 첨부</h5>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file">
+								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
 								
 								<input type="hidden" name="status"/>
 							</form>
@@ -324,7 +332,7 @@
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <!-- 파일업로더 -->
-<script
+<!-- <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
 <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
@@ -339,7 +347,7 @@
 <script
 	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script> -->
 
 	
 <script src='/resources/js/common.js'></script>

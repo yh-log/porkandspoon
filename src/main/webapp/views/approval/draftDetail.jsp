@@ -385,7 +385,6 @@
 										<div class="tit">시행일자</div>
 										<div class="txt"><input class="form-control" type="date" name="from_date" value="${DraftInfo.from_date}" readonly required/></div>
 									</div>
-									
 								</div>
 								<div class="editor-area">
 									<textarea name="content" id="summernote" maxlength="10000">${DraftInfo.content}</textarea>
