@@ -462,6 +462,18 @@ table td {
 	margin-right: 2px;
 }
 
+.mb-10 {
+	margin-bottom: 10px;	
+}
+
+.mb-15 {
+	margin-bottom: 10px;	
+}
+
+.mb-20 {
+	margin-bottom: 10px;	
+}
+
 /* 버튼 */
 .buttons.align-l .btn:first-child{
 	margin-left: 0;

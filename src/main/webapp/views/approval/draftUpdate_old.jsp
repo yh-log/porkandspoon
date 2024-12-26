@@ -48,90 +48,74 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 <style>
-	.draftDetail table{
+	.draftWrite table{
 		border: 1px solid #ddd;
 		table-layout: auto;
 	}
-	.draftDetail table th, .draftDetail table td{
+	.draftWrite table th, .draftWrite table td{
 		padding: 4px 10px;
 		border-right: 1px solid #ddd;
 		border-width: 1px;
 	}
-	.draftDetail input{
+	.draftWrite input{
 		width: 100%;
 	    height: 100%;
 	    border: none;
     }
-    .draftDetail .form-group {
+    .draftWrite .form-group {
 	    margin-bottom: 0;
 	}
-	.draftDetail select {
+	.draftWrite select {
 		border: none;
 	}
-	.draftDetail input[type=date].form-control {
+	.draftWrite input[type=date].form-control {
 		line-height: 1.5;
 	}
-	.draftDetail .top-area {
+	.draftWrite .top-area {
 		display: flex;
 	    justify-content: space-between;
 	}
-	.draftDetail .top-area > table {
+	.draftWrite .top-area > table {
 		width: 340px;
 	}
-	.draftDetail table.user_info th{
+	.draftWrite table.user_info th{
 		width: 120px;
 	}
-	.draftDetail table.user_info input {
+	.draftWrite table.user_info input {
 		width: 100%;
 		border: none;
-		background: none;
 	}
-	.draftDetail input:focus {
+	.draftWrite table.user_info input:focus {
 		outline: none;
-		box-shadow: none;
-		border: none;
 	}
-	.draftDetail table.appr_line {
+	.draftWrite table.appr_line {
 		width: 410px;
 	}
-	.draftDetail table.appr_line th{
+	.draftWrite table.appr_line th{
 		width: 44px;
-		 writing-mode: vertical-rl; /* 텍스트를 세로로 표시 (오른쪽에서 왼쪽) */
-   		 text-orientation: upright; /* 문자의 방향을 정상적으로 유지 */
 	}
-	.draftDetail table.appr_line th, .draftDetail table.appr_line td {
-    	padding: 4px 0;
-    }
-	.draftDetail table.appr_line tr:nth-child(2) td p{
-		margin-top: 0.7rem;
-		margin-bottom: 0.5rem;
+	.draftWrite table.appr_line tr:nth-child(2) td p{
+		margin-top: 1rem;
 	}
-	.draftDetail table.appr_line .sign-area {
-		height: 40px;
-	    margin-top: 0.7rem;
-	}
-	.draftDetail table.appr_line .sign{
-		width: 40px;
-	}
-	.draftDetail table.appr_line .date{
+	.draftWrite table.appr_line .date{
 		font-size: 13px;
 	}
-	.draftDetail table.appr_line .date > td {
+	.draftWrite table.appr_line .date > td {
 		height: 28px;
 	}
-	.draftDetail .buttons {
+	.draftWrite .buttons {
 	    border-bottom: 1px solid #ddd;
 	    padding: 4px 40px;
     }
-	.draftDetail .buttons .btn {
+	.draftWrite .buttons .btn {
 	    margin: 14px 2px;
 	}
-	.draftDetail h4.doc-subject{
+	.draftWrite h4.doc-subject{
 		margin: 20px 0 50px;
 		text-align: center;
 	}
 	
-	.draftDetail .btm-area {
+	.draftWrite .btm-area {
 		display: flex;
 		flex-wrap: wrap;
 		border-left: 1px solid #ddd;
@@ -139,30 +123,30 @@
 	 	margin-top : 40px;
 	}
 
-	.draftDetail .btm-area .line {
+	.draftWrite .btm-area .line {
 		display: flex;
 		width: 50%;
 	}
-	.draftDetail .btm-area #addr-area {
+	.draftWrite .btm-area #addr-area {
 		display: flex;
     	width: 100%;
 	}
-	.draftDetail .btm-area #addr-area .line {
+	.draftWrite .btm-area #addr-area .line {
 		width: 100%;
 	}
-	.draftDetail .btm-area #addr-area .left {
+	.draftWrite .btm-area #addr-area .left {
 		width: 100%;
 	}
-	.draftDetail .btm-area #addr-area input[type="button"]{
+	.draftWrite .btm-area #addr-area input[type="button"]{
 		width: 120px;
 	}
 	
-	.draftDetail .btm-area .line > div {
+	.draftWrite .btm-area .line > div {
 	    border-right: 1px solid #ddd;
 	    border-bottom: 1px solid #ddd;
 	}
 	
-	.draftDetail .btm-area .tit {
+	.draftWrite .btm-area .tit {
 		width: 120px;
 	    border-width: 1px;
 	    background: #f5f5f5;
@@ -171,57 +155,13 @@
 	    text-align: center;
 	}
 
-	.draftDetail .btm-area .txt {
+	.draftWrite .btm-area .txt {
 		width: calc(100% - 120px);
 	}
 	
 	.editor-area .note-editor {
 		width: 100% !important;
 		margin-top: 20px;
-	}
-	
-	.attached-file {
-		background: #eaeaea;
-		border-radius: 6px;
-	    min-height: 4.75em;
-	    padding: 18px;
-	    color: #4f4f4f;
-	}
-	.attached-file ul {
-		margin: 0;
-		padding: 0;	
-	}
-	.attached-file ul li:not(:last-child){
-		margin-bottom: 10px;
-	}
-	.attached-file .file-item{
-		display: flex;
-		align-items: center;
-		background: #666;
-		border-radius: 6px;
-	    padding: 8px 10px;
-	    color: #ccc;
-	}
-	.attached-file .file-item p{
-		color: #eee;
-		font-size: 13px;
-		font-weight: 500;
-		margin-bottom: 0;
-	}
-	.attached-file .file-item .file-size{
-		color: #ccc;
-	}
-	.attached-file .delete{
-		background: #333;
-		border-radius: 50%;
-		width: 28px;
-		height: 28px;
-		border: none;
-		margin-right: 10px;
-		color: #eee;
-	}
-	.attached-file .file-name {
-	
 	}
 </style>
 
@@ -239,7 +179,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftDetail">
+			<div class="page-content draftWrite">
 				<section id="menu">
 					<h4 class="menu-title">문서함</h4>
 					<ul>
@@ -253,58 +193,45 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>기안 수정페이지</h5>
+							<h5 class="change-tit">브랜드 등록</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary" onclick="updateDraft()">수정</button>
+							<button href="#" class="btn btn-primary" onclick="sendApproval()">결재 요청</button>
 							<button href="#" class="btn btn-outline-primary">결재 정보</button>
+							<button href="#" class="btn btn-outline-primary" onclick="saveTemp()">임시저장</button>
 							<button href="#" class="btn btn-outline-primary">취소</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
 							<form id="formDraft">
-								<input type="hidden" name="draft_idx" value="${DraftInfo.draft_idx}"/>
-								<input type="hidden" name="target_type" value="${DraftInfo.target_type}"/>
-								<input type="hidden" name="action_type" value="${DraftInfo.action_type}"/>
+								<input type="hidden" name="draft_idx" value=""/>
+								<input type="hidden" name="target_type" value="df001"/>
+								<input type="hidden" name="action_type" value="df011"/>
 								<div class="top-area">
 									<table class="user_info">
 										<tr>
 											<th>기안자</th>
 											<td>
-												<input type="hidden" name="username" value="${DraftInfo.username}"/>
-												<input type="text" name="sender_name" value="${DraftInfo.user_name}" readonly/>
+												<input type="hidden" name="username" value="${userDTO.username}"/>
+												<input type="text" name="sender_name" value="${userDTO.name}" readonly/>
 											</td>
 										</tr>
 										<tr>
 											<th>기안일</th>
 											<td>
-												<c:if test="${DraftInfo.status == 'sd'}">
-													<input type="text" name="today" value="${DraftInfo.create_date}" readonly/>
-												</c:if>
-												<c:if test="${DraftInfo.status == 'sv'}">
-													<input type="text" name="today" value="-" readonly/>
-												</c:if>
+												<input type="text" name="today" value="" readonly/>
 											</td>
 										</tr>
 										<tr>
 											<th>소속</th>
 											<td>
-												<input type="hidden" name="dept_id" value="${DraftInfo.dept_id}" readonly/>
-												<input type="text" name="team_name" value="${DraftInfo.dept_name}" readonly/>
+												<input type="hidden" name="dept_id" value="${userDTO.dept.parent}" readonly/>
+												<input type="text" name="team_name" value="${userDTO.dept.text}" readonly/>
 											</td>
 										</tr>
 									</table>
 									
 									<table class="appr_line">
-										<thead>
-											<colgroup>
-												<col width="10%"></col>
-												<col width="22%"></col>
-												<col width="22%"></col>
-												<col width="22%"></col>
-												<col width="22%"></col>
-											</colgroup>
-										</thead>
 										<tr>
 											<th rowspan="3">결재</th>
 											<td>사원</td>
@@ -314,48 +241,28 @@
 										</tr>
 										<tr>
 											<td>
-												<input type="hidden" name="appr_user" value="${ApprLine[0].username}"/>
-												<div class="sign-area">
-													<c:if test="${ApprLine[0].approval_date != null}">
-														<img class="sign" src="/photo/${ApprLine[0].sign}" alt="서명"/>
-													</c:if>
-												</div>
-												<p>${ApprLine[0].user_name}</p>
+												<input type="hidden" name="appr_user" value="wjsaus123"/>
+												<p>홍길동</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="${ApprLine[1].username}"/>
-												<div class="sign-area">
-													<c:if test="${ApprLine[1].approval_date != null}">
-														<img class="sign" src="/photo/${ApprLine[1].sign}" alt="서명"/>
-													</c:if>
-												</div>
-												<p>${ApprLine[1].user_name}</p>
+												<input type="hidden" name="appr_user" value="jwbak"/>
+												<p>김길동</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="${ApprLine[2].username}"/>
-												<div class="sign-area">
-	 												<c:if test="${ApprLine[2].approval_date != null}">
-														<img class="sign" src="/photo/${ApprLine[2].sign}" alt="서명"/>
-													</c:if>
-												</div>
-												<p>${ApprLine[2].user_name}</p>
+												<input type="hidden" name="appr_user" value="qtgks9"/>
+												<p>박길동</p>
 											</td>
 											<td>
-												<div class="sign-area">
-													<c:if test="${ApprLine[3].approval_date != null}">
-														<img class="sign" src="/photo/${ApprLine[3].sign}" alt="서명"/>
-													</c:if>
-												</div>
-												<input type="hidden" name="appr_user" value="${ApprLine[3].username}"/>
-												<p>${ApprLine[3].user_name}</p>
+												<input type="hidden" name="appr_user" value="qwre"/>
+												<p>고길동</p>
 											</td>
 										</tr>
 										
 										<tr class="date">
-											<td>${ApprLine[0].approval_date}</td>
-											<td>${ApprLine[1].approval_date}</td>
-											<td>${ApprLine[2].approval_date}</td>
-											<td>${ApprLine[3].approval_date}</td>
+											<td></td>
+											<td></td>
+											<td></td>
+											<td></td>
 										</tr>
 										
 									</table>
@@ -364,55 +271,39 @@
 								
 								<div class="btm-area">
 									<div class="line">
-										<div class="tit">제목</div>
-										<div class="txt"><input class="form-control" type="text" name="subject" value="${DraftInfo.subject}" readonly required/></div>
+										<div class="tit"><span class="ico-required">*</span>제목</div>
+										<div class="txt"><input class="form-control" type="text" name="subject" required/></div>
 									</div>
 									<div class="line">
-										<div class="tit">협조부서</div>
+										<div class="tit"><span class="ico-required">*</span>협조부서</div>
 										<div class="txt">
-											<c:forEach items="${deptList}" var="dept">
-												<c:if test="${dept.id == DraftInfo.cooper_dept_id}">
-													<input class="form-control" type="text" name="cooper_dept_id" value="${dept.text}" readonly required/>
-												</c:if>
-											</c:forEach>
+											<fieldset class="form-group">
+												<select class="form-select" id="basicSelect" name="cooper_dept_id">
+													<c:forEach items="${deptList}" var="dept">
+														<option value="${dept.id}">${dept.text}</option>
+													</c:forEach>
+												</select>
+											</fieldset>
 										</div>
 									</div>
 									<div class="line">
-										<div class="tit">브랜드명</div>
-										<div class="txt"><input class="form-control" type="text" name="name" value="${DraftInfo.name}" readonly required/></div>
+										<div class="tit"><span class="ico-required">*</span><span class="name_type">브랜드명</span></div>
+										<div class="txt"><input class="form-control" type="text" name="name" required/></div>
 									</div>
 									<div class="line">
-										<div class="tit">시행일자</div>
-										<div class="txt"><input class="form-control" type="date" name="from_date" value="${DraftInfo.from_date}" readonly required/></div>
+										<div class="tit"><span class="ico-required">*</span>시행일자</div>
+										<div class="txt"><input class="form-control" type="date" name="from_date" required/></div>
 									</div>
 									
 								</div>
 								<div class="editor-area">
-									<textarea name="content" id="summernote" maxlength="10000">${DraftInfo.content}</textarea>
+									<textarea name="content" id="summernote" maxlength="10000"></textarea>
+									
 								</div>
-								<br/>
-
+								
 								<h5>파일 첨부</h5>
-								<br/>
-								<h6>첨부된 파일</h6>
-								<div class="attached-file">
-									<ul>
-										<c:forEach items="${attachedFiles}" var="file"> 
-											<li class="file-item">
-											<button class="delete" onclick="deleteFile(this)">x</button>
-											<div>
-												<input type="hidden" name="new_filename" value="${file.new_filename}"/>
-												<input type="hidden" name="pk_idx" value="${file.pk_idx}"/>
-												<p class="file-name">${file.ori_filename}</p>
-											</div>
-										</li>
-										</c:forEach>
-									</ul>
-								</div>
-								<br/>
-								<h6>추가 첨부</h6>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file">
-													
+								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB">
+								
 								<input type="hidden" name="status"/>
 							</form>
 
@@ -457,18 +348,12 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-
-
-var target = '${DraftInfo.target_type}' == 'df001' ?  '브랜드' : '직영점';
-console.log('target: '+target);
-var action = '${DraftInfo.action_type}' == 'df011' ?  '등록' : '폐점';
-console.log('action: '+action);
-
-$('.change-tit').text(target+' ' +action);
-
-
-console.log('ApprLine: '+ '${ApprLine}');
-console.log('DraftInfo: '+ '${DraftInfo}');
+// 기안일
+const today = new Date();   
+const year = today.getFullYear(); 
+const month = today.getMonth() + 1; 
+const date = today.getDate();  
+document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
 
 // 기안문 종류에 따른 양식
 function setForm(type1, type2, element){
@@ -480,6 +365,7 @@ function setForm(type1, type2, element){
 	if(type1 == 'brand'){
 		//document.getElementsByClassName('addr-area')[0].style.display = 'none';
 		document.querySelector('input[name="target_type"]').value = 'df001';
+		document.querySelector('.name_type').innerText = '브랜드명';
 		// 주소칸 제거
 		if($("#addr-area").length >= 1){
 			$("#addr-area").remove();
@@ -487,6 +373,7 @@ function setForm(type1, type2, element){
 	// 직영점 기안의 경우
 	}else if(type1 == 'direct'){
 		document.querySelector('input[name="target_type"]').value = 'df002';
+		document.querySelector('.name_type').innerText = '지점명';
 		// 주소칸 추가
 		if($("#addr-area").length == 0){
 	
@@ -514,147 +401,164 @@ function setForm(type1, type2, element){
 		}
 	}
 	
-}
-
-
-
-
-
-//기존 첨부파일 삭제
-var deleteFiles = [];
-function deleteFile(elem){
-	console.log("new_filename : ", $(elem).parent().find('input[name="new_filename"]').val());
-	console.log("pk_idx : ", $(elem).parent().find('input[name="pk_idx"]').val());
-	var deleteFile = {
-		"new_filename": $(elem).parent().find('input[name="new_filename"]').val(),
-		"pk_idx": $(elem).parent().find('input[name="pk_idx"]').val()
+	// 등록인 경우
+	if(type2 == 'open'){
+		document.querySelector('input[name="action_type"]').value = 'df011';
+	// 폐점인 경우
+	}else if(type2 == 'close'){
+		document.querySelector('input[name="action_type"]').value = 'df012';
 	}
-	console.log("deleteFile", deleteFile);
-	deleteFiles.push(deleteFile);
-	$(elem).parent().remove();
-	console.log("deleteFiles",  deleteFiles);
-}
-
-
-//저장 성공 후 상세페이지 이동
-function fileSuccess(response){
-	//location.href = "/approval/detail/${DraftInfo.draft_idx}";
 	
-	
-} 
+}
 
-// 알림 팝업(유효성 검사)
-/* function btn1Act() {
-	removeAlert(); // 기존팝업닫기
-}
-function btn2Act() {
-	removeAlert(); // 기존팝업닫기
-}
- */
 
 
 //최종 글 작성
 //글 전송할 url 파라미터 포함
 //전송 버튼에 textEaditorWrite(url) 함수 사용
-function textEaditorWrite(url){
+function textEaditorWrite(url, after){
 	var formData = new FormData($('form')[0]); // formData
 	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
 	formData.append('content', content);
-	formData.append('deleteFiles', JSON.stringify(deleteFiles));
 	
 	var tempDom = $('<div>').html(content);
-var imgsInEditor = []; // 최종 파일을 담을 배열
-
-tempDom.find('img').each(function () {
-       var src = $(this).attr('src');
-       if (src && src.includes('/photoTem/')) {  // 경로 검증
-           var filename = src.split('/').pop();  // 파일명 추출
-           imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
-       }
-});
-
-// new_filename과 일치하는 항목만 필터링
-var finalImgs = tempImg.filter(function (temp) {
-   return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
-});
-
-formData.append('imgsJson', JSON.stringify(finalImgs));
-
-fileAjax('POST', url, formData);
-console.log("fileAjax()실행");
+ var imgsInEditor = []; // 최종 파일을 담을 배열
+ 
+ tempDom.find('img').each(function () {
+         var src = $(this).attr('src');
+         if (src && src.includes('/photoTem/')) {  // 경로 검증
+             var filename = src.split('/').pop();  // 파일명 추출
+             imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
+         }
+ });
+ 
+ // new_filename과 일치하는 항목만 필터링
+ var finalImgs = tempImg.filter(function (temp) {
+     return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
+ });
+ 
+ formData.append('imgsJson', JSON.stringify(finalImgs));
+ 
+ fileAjax('POST', url, formData, after);
 }
 
 
-//에디터 이미지 저장
-function fileAjax(type, url, formData){
+// 에디터 이미지 저장
+function fileAjax(type, url, formData, after){
 
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-  var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-  $.ajax({
-      type : type,
-      url : url,
-      data : formData,
-      contentType : false,
-      processData : false,
-      enctype : 'multipart/form-data',
-      beforeSend: function(xhr) {
-          xhr.setRequestHeader(csrfHeader, csrfToken);
-      },
-      success : function(response){
-          fileSuccess(response);
-      },error : function(e){
-          console.log(e);
-      }
-  });
+    $.ajax({
+        type : type,
+        url : url,
+        data : formData,
+        contentType : false,
+        processData : false,
+        enctype : 'multipart/form-data',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+            fileSuccess(response, after);
+        },error : function(e){
+            console.log(e);
+        }
+    });
 }
 
-
-
-//결재 요청
-function updateDraft(){
-	console.log('updateDraft() 실행');
-	// file required 속성 해제
-	/* document.getElementsByClassName('filepond--browser')[0].removeAttribute('required');
-	
-	//document.querySelector('input[name="status"]').value = "sd";
+// 결재 요청
+function sendApproval(){
+	document.querySelector('input[name="status"]').value = "sd";
 	const form = document.getElementById("formDraft");
     const inputs = form.querySelectorAll("input[required]");
     const selects = form.querySelectorAll("select[required]");
 
     let isValid = true;
 
-  // input 필드 유효성 검사
-  inputs.forEach(input => {
-      if (!input.value.trim()) {
-          isValid = false;
-          var txtEl = input.parentNode;
-          console.log("t0:::"+txtEl);
-          var titleEl = txtEl.previousSibling;
-          console.log("t1:::"+titleEl.innerText);
-          return; 
-      }
-  });
+    // input 필드 유효성 검사
+    inputs.forEach(input => {
+        if (!input.value.trim()) {
+            isValid = false;
+            var txtEl = input.parentNode;
+            console.log("t0:::"+txtEl);
+            var titleEl = txtEl.previousSibling;
+            console.log("t1:::"+titleEl.innerText);
+            return; 
+        }
+    });
 
-  // select 필드 유효성 검사
-  selects.forEach(select => {
-      if (!select.value) {
-          isValid = false;
-          //alert(select.name + " is required.");
-          return;
-      }
-  });
-  
-  if (isValid) {
-	  	console.log("textEaditorWrite() 실행");
-		textEaditorWrite('/draftUpdate');	
-  }else {
-  	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
-  } */
-	textEaditorWrite('/draftUpdate');	
-  
+    // select 필드 유효성 검사
+    selects.forEach(select => {
+        if (!select.value) {
+            isValid = false;
+            //alert(select.name + " is required.");
+            return;
+        }
+    });
+    
+    if (isValid) {
+		textEaditorWrite('/draftWrite/sd',true);	
+    }else {
+    	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
+    }
 }
 
+// 임시 저장
+function saveTemp(){
+	document.querySelector('input[name="status"]').value = "sv";
+	textEaditorWrite('/draftWrite/sv',false);	
+	
+}
+
+//1분마다 자동저장
+setInterval(saveTemp, 6000);
+
+
+
+// 저장 성공 후 상세페이지 이동
+function fileSuccess(response, after){
+	console.log("success : "+response.success);
+	console.log("success : "+response.draftIdx);
+	if(after){
+		location.href = "/approval/detail";
+	}else{
+		$('input[name="draft_idx"]').val(response.draftIdx);
+	}
+	
+} 
+
+// 알림 팝업(유효성 검사)
+function btn1Act() {
+	removeAlert(); // 기존팝업닫기
+}
+function btn2Act() {
+	removeAlert(); // 기존팝업닫기
+}
+
+// 다음 주소 API
+function sample6_execDaumPostcode() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+            // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+            // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+            var addr = ''; // 주소 변수
+
+            //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+            if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                addr = data.roadAddress;
+            } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                addr = data.jibunAddress;
+            }
+
+            document.getElementById("sample6_address").value = addr;
+            // 커서를 상세주소 필드로 이동한다.
+            document.getElementById("sample6_detailAddress").focus();
+        }
+    }).open();
+}
 
 </script>
 

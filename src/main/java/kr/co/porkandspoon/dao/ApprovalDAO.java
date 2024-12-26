@@ -34,6 +34,20 @@ public interface ApprovalDAO {
 
 	List<ApprovalDTO> getApprLine(String draft_idx);
 
+	int checkExistingFile(String draftIdx);
+
+	List<FileDTO> getAttachedFiles(String draft_idx);
+
+	int updateDraft(ApprovalDTO approvalDTO);
+
+	int updateApprovalLine(String draftIdx, String[] appr_user);
+
+	int removeApprovalLine(String draftIdx);
+
+	int deleteFiles(FileDTO file);
+
+	int checkExistingFile(String draftIdx, String ori_filename);
+
 
 
 }
