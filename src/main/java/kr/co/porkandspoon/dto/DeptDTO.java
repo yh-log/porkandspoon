@@ -14,7 +14,7 @@ public class DeptDTO extends ResponseDTO{
    private String updater;
    private LocalDateTime update_date;
    private String use_yn;
-   private int menuOrder;
+   private String menuOrder;
    private String position;
    
    public String getPosition() {
@@ -23,10 +23,10 @@ public class DeptDTO extends ResponseDTO{
 public void setPosition(String position) {
 	this.position = position;
 }
-public int getMenuOrder() {
+public String getMenuOrder() {
 	return menuOrder;
 }
-public void setMenuOrder(int menuOrder) {
+public void setMenuOrder(String menuOrder) {
 	this.menuOrder = menuOrder;
 }
 public String getId() {

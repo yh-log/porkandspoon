@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.DeptDTO;
+import kr.co.porkandspoon.dto.DirectstoreDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.DeptService;
 
@@ -56,5 +57,16 @@ public class DeptController {
 	@GetMapping(value="/getOrgchart")
 	public List<DeptDTO> getOrgchart() {
 	    return deptService.getOrgchart();
+	}
+	
+	@GetMapping(value="/getUserdata")
+	public UserDTO getUserdata(@RequestParam Map<String, Object> params) {
+	    return deptService.getUserlist(params); 
+	}
+	
+	@GetMapping(value="/getDeptdata")
+	public List<DirectstoreDTO> getDeptdata(@RequestParam Map<String, Object> params) {
+		logger.info("params : {}", params);
+		return deptService.getDeptdata(params);
 	}
 }
