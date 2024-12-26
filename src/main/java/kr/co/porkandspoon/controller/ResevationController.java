@@ -1,14 +1,22 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.service.ResevationService;
 
 @RestController
@@ -27,6 +35,20 @@ public class ResevationController {
 	@GetMapping(value="/ad/resevation/list")
 	public ModelAndView resevationListView() {
 		return new ModelAndView("/resevation/resevationList");
+	}
+	
+	// 자원리스트 호출
+	@GetMapping(value="/resevationList")
+	public Map<String,Object> resevationList(
+			@RequestParam(value = "page", defaultValue = "1") int page,
+	        @RequestParam(value = "size", defaultValue = "6") int size){
+		
+		List<CalenderDTO> list = resService.list(page,size);
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.put("list", list);
+		
+		return result;
 	}
 	
 	// 회의실 등록 이동
@@ -58,11 +80,29 @@ public class ResevationController {
 		
 		return mav;
 	}
+	
+	// 물품 등록
+	@PostMapping(value="/articleWrite")
+	public Map<String,Object> articleWrite(@RequestParam Map<String,Object> params){
+		
+		logger.info("받아온 데이터 : "+params);
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		result.put("success",resService.articleWrite(params));
+		
+		return result;
+	}
 		
 	// 물품 상세보기 이동
 	@GetMapping(value="/ad/article/detail")
-	public ModelAndView articleDetailView() {
-		return new ModelAndView("/resevation/articleDetail");
+	public ModelAndView articleDetailView(@PathVariable String no) {
+		
+		ModelAndView mav = new ModelAndView("/resevation/articleDetail");
+		
+		
+		
+		return mav;
 	}
 		
 	// 물품 수정 이동

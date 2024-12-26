@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -174,43 +175,46 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>빔프로젝트 상세정보</h5>
+                  <h5> 상세정보</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
+                  	  <input type="hidden" value=""/>
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>물품 명</th>
-	                  		<td class="align-l">빔프로젝트</td>
+	                  		<td class="align-l"></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">김진형</td>
+	                  		<td class="align-l"></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록일</th>
-	                  		<td class="align-l">2024. 12. 19</td>
+	                  		<td class="align-l"></td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>물품 수량</th>
-	                  		<td class="align-l">20 개</td>
+	                  		<th>모델 명</th>
+	                  		<td class="align-l"></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>물품 유형</th>
-	                  		<td class="align-l">단기 대여</td>
+	                  		<td class="align-l">
+	                  		
+	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
 	                  		<td class="align-l">
-	                  			리모콘이 있어 프로젝트 용도로 쓰기 적합한 빔프로젝트 입니다.
-	                  			리모콘이 있어 프로젝트 용도로 쓰기 적합한 빔프로젝트 입니다.
-	                  			리모콘이 있어 프로젝트 용도로 쓰기 적합한 빔프로젝트 입니다.
+
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>활성 상태</th>
-	                  		<td class="align-l">활성</td>
+	                  		<td class="align-l">
+	                  		
+	                  		</td>
 	                  	</tr>
 	                  </table>
                   </div>

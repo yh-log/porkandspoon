@@ -20,13 +20,45 @@ public class CalenderDTO {
 	private String name;
 	private String parent;
 	
-	//물품등록 테이블
+	//물품 등록 테이블
 	private String item_name;
 	private String model_name;
 	private String is_item;
 	private String use_yn;
 	
+	//회의실 등록 테이블
+	private String room_name;
+	private String count;
+	private String is_room;
 	
+	// 회의실 물품 조회시 쓸 가상컬럼
+	private String category;
+	
+	
+	public String getCategory() {
+		return category;
+	}
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	public String getRoom_name() {
+		return room_name;
+	}
+	public void setRoom_name(String room_name) {
+		this.room_name = room_name;
+	}
+	public String getCount() {
+		return count;
+	}
+	public void setCount(String count) {
+		this.count = count;
+	}
+	public String getIs_room() {
+		return is_room;
+	}
+	public void setIs_room(String is_room) {
+		this.is_room = is_room;
+	}
 	public String getItem_name() {
 		return item_name;
 	}
