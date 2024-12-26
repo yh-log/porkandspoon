@@ -1,5 +1,8 @@
 package kr.co.porkandspoon.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,8 +38,20 @@ public class MealController {
 	@GetMapping(value="/ad/mealTicket")// /ad/meal/Ticket
 	//ad/meal/TickerWrite
 	public ModelAndView mealTicketView() {
-		return new ModelAndView("/meal/mealTicket");
+		List<MealDTO> list = mealService.getmealTicket();
+	    
+	    // 파일 정보를 DTO에 추가
+	    for (MealDTO dto : list) {
+	        FileDTO fileDTO = mealService.getFile(dto.getMeal_idx());
+	        dto.setFiledto(fileDTO);
+	    }
+
+	    // 리스트를 JSP로 전달
+	    ModelAndView mav = new ModelAndView("/meal/mealTicket");
+	    mav.addObject("list", list);
+	    return mav;
 	}
+	
 	
 	
 	@GetMapping(value = "/ad/mealMenu")
@@ -88,6 +105,33 @@ public class MealController {
 		return new ModelAndView("/meal/mealMenuWrite");
 	}
 	
+	@GetMapping(value = "/ad/mealMenu/Overlay")
+	@ResponseBody
+	public Map<String, Integer> menuOverlay(String start, String end) {
+	    logger.info("start date : {}", start);
+	    logger.info("end date : {}", end);
+
+	    if (start == null || end == null) {
+	        throw new IllegalArgumentException("Start 또는 End 값이 null입니다.");
+	    }
+
+	    // String 값을 LocalDateTime으로 변환
+	    LocalDateTime start_date = LocalDateTime.parse(start);
+	    LocalDateTime end_date = LocalDateTime.parse(end);
+
+	    // 서비스 호출
+	    int menu_idx = mealService.menuOverlay(start_date, end_date);
+	    logger.info("menu_idx 반환값: {}", menu_idx);
+
+	    // JSON 형태의 응답 생성
+	    Map<String, Integer> response = new HashMap<>();
+	    response.put("menu_idx", menu_idx);
+	    return response;
+	}
+	
+	
+	
+	
 	//식단표 수정
 	@PutMapping(value = "/ad/mealMenu/Update")
 	public ModelAndView editmealMenu(@RequestParam Map<String, String> params,HttpSession session) {
@@ -97,6 +141,10 @@ public class MealController {
 		
 		return new ModelAndView("redirect:/ad/mealMenu");
 	}
+	
+	
+	
+		
 	
 	//식권 등록 뷰이동
 	@GetMapping(value="/ad/mealTicket/Write")
@@ -132,12 +180,10 @@ public class MealController {
 		FileDTO dto = CommonUtil.uploadSingleFile(file);
 		logger.info("dto : {}",dto);
 		
-		if (dto != null) {
+		
 			dto.setCode_name("MT001");
 			mealService.setmealTicket(params,dto);
-		}else {
-			mealService.setmealTicket(params);
-		}
+	
 		
 		
 		
@@ -149,19 +195,49 @@ public class MealController {
 	
 	@GetMapping(value="/ad/meal/List")
 	public ModelAndView mealListView() {
-		return new ModelAndView("/meal/mealList");
+		
+		
+		List<MealDTO> list = mealService.getmealTicket();
+	    
+		 list.forEach(ticket -> {
+		        System.out.println("Ticket Name: " + ticket.getName());
+		        System.out.println("Ticket Count: " + ticket.getCount());
+		    });
+
+		
+	    // 파일 정보를 DTO에 추가
+	    for (MealDTO dto : list) {
+	        FileDTO fileDTO = mealService.getFile(dto.getMeal_idx());
+	        dto.setFiledto(fileDTO);
+	    }
+
+	    // 리스트를 JSP로 전달
+	    ModelAndView mav = new ModelAndView("/meal/mealList");
+	    mav.addObject("list", list);
+	    return mav;
 	}
-	
 	
 	
 	@GetMapping(value="/ad/mealTicket/Update/{meal_idx}")
 	public ModelAndView mealTicketUpdateView(@PathVariable int meal_idx) {
-		MealDTO dto = mealService.detailmealTicket(meal_idx);
-		ModelAndView mav = new ModelAndView("/meal/mealTicketUpdate");
-		mav.addObject(dto);		
-		
-		return mav;
-	}
+		 MealDTO dto = mealService.detailmealTicket(meal_idx);
+		    FileDTO fto = mealService.getFile(meal_idx);
+
+		    ModelAndView mav = new ModelAndView("/meal/mealTicketUpdate");
+		    mav.addObject("info", dto);
+		    
+		    // 파일 경로 추가
+		    if (fto != null) {
+		        String fileUrl = "/C:/upload/" + fto.getNew_filename(); // 브라우저가 직접 접근할 수 있는 절대 경로
+		        mav.addObject("fileUrl", fileUrl);
+		        mav.addObject("fileName", fto.getOri_filename());
+		    } else {
+		        mav.addObject("fileUrl", null);
+		        mav.addObject("fileName", null);
+		    }
+
+		    return mav;
+		}
 	
 	@PostMapping(value="/ad/mealTicket/Update")
 	public ModelAndView editmealTicket(@RequestParam Map<String, String> params) {

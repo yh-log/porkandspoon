@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,6 +50,66 @@
 		align-content: cetner;
 		border: 1px solid black;
 	}
+	
+	.tit-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	}
+	
+	.align-right {
+	    display: flex;
+	    justify-content: flex-end;
+	    align-items: center;
+	    gap: 10px; /* 요소 간 간격 */
+	}
+	.cont-body {
+    display: flex; /* 플렉스 컨테이너로 설정 */
+    justify-content: center; /* 중앙 정렬 */
+    align-items: center; /* 세로 정렬 (필요 시) */
+    flex-wrap: wrap; /* 내용이 넘치면 줄 바꿈 */
+    padding: 24px 40px; /* 기존 패딩 유지 */
+}
+
+.ticket-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개 */
+    gap: 20px; /* 항목 간 간격 */
+    width: 100%; /* 부모 요소의 너비에 맞춤 */
+    max-width: 1200px; /* 최대 너비 설정 */
+}
+	.ticket-item {
+	    border: 1px solid #ddd; /* 테두리 */
+	    border-radius: 8px; /* 둥근 모서리 */
+	    padding: 15px;
+	    text-align: center; /* 중앙 정렬 */
+	    background-color: #fff; /* 배경색 */
+	    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+	    width: 200px; /* 고정된 너비 */
+	}
+	
+	.ticket-item img {
+	    max-width: 100%; /* 이미지 크기 조정 */
+	    height: auto;
+	    margin-bottom: 10px;
+	}
+	
+	.ticket-item h4 {
+	    font-size: 16px;
+	    margin: 10px 0 5px;
+	}
+	
+	.ticket-item h5 {
+	    font-size: 14px;
+	    color: #555;
+	    margin-bottom: 10px;
+	}
+	
+	.ticket-item .btn {
+	    padding: 8px 12px;
+	    font-size: 14px;
+	}
+	
 </style>
 </head>
 
@@ -68,31 +129,46 @@
 				<section id="menu">
 					<h4 class="menu-title">구내식당</h4>
 					<ul>
-						<li ><a href="/ad/mealTicket">식권구매</a></li>
+						<li><a href="/ad/mealTicket">식권구매</a></li>
 						<li><a href="/ad/mealMenu">식단표</a></li>
 						<li><a href="/ad/mealMenu/Write">식단등록</a></li>
 						<li><a href="/ad/mealTicket/Write">식권등록</a></li>
-						<li class="active"><a href="/ad/meal/List">상품리스트</a></li>
+						<li  class="active"><a href="/ad/meal/List">상품리스트</a></li>
 					</ul>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-						<div class="tit-area">
-						
-							<h5>상품 리스트</h5>
-							
-							
-						</div>
+					<div class="tit-area justify-end">
+					    <h5>식권구매</h5>
+					    <div class="align-right">
+					        <h5 class="count">식권 보유량 : </h5> <!-- 로그인한 id에서 식권 보유량 찾아서 가져오기 -->
+					        <a href="#" class="btn btn-primary count">사용/구매 내역 보러가기</a>
+					    </div>
+					</div>
 						<div class="cont-body">
 							<div class="row">
 							<div class="col-12 col-lg-2">
-								<div class="content">
-									<img src="resources/img/logo.jpg" alt="Logo" >
-									<h4>식권</h4>
-									<h5>7,000</h5>
-									<a href="#" class="btn btn-primary">수정</a>
-									
-							</div>
+								<div class="ticket-container">
+								    <c:forEach var="ticket" items="${list}">
+								    <c:if test="${not empty ticket.name}">
+								        <div class="ticket-item">
+								            <!-- filedto와 new_filename이 null인지 확인하여 기본 이미지 설정 -->
+								            <c:choose>
+								                <c:when test="${not empty ticket.filedto and not empty ticket.filedto.new_filename}">
+								                    <img src="/uploads/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                </c:when>
+								                <c:otherwise>
+								                    <img src="/resources/img/default.jpg" alt="기본 이미지">
+								                </c:otherwise>
+								            </c:choose>
+								            <h4>${ticket.name} ${ticket.count}장</h4>
+								            <h5>${ticket.cost}</h5>
+								            <a href="#" class="btn btn-primary" 
+								               onclick="layerPopup('${ticket.name} 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								        </div>
+								    </c:if>
+								</c:forEach>
+								</div>
 							</div>
 
 						</div>
@@ -114,9 +190,6 @@
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
@@ -141,14 +214,9 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
+	
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
