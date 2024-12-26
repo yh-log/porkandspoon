@@ -48,28 +48,28 @@ function getSuccess(response) {
     }).forEach(function (item) {
         if (item.type === "file") { // user 데이터만 position 설정
             switch (item.menuOrder) {
-                case 0:
+                case "po0":
                     item.position = "대표";
                     break;
-                case 1:
+                case "po1":
                     item.position = "부장";
                     break;
-                case 2:
+                case "po2":
                     item.position = "차장";
                     break;
-                case 3:
+                case "po3":
                     item.position = "과장";
                     break;
-                case 4:
+                case "po4":
                     item.position = "대리";
                     break;
-                case 5:
+                case "po5":
                     item.position = "주임";
                     break;
-                case 6:
+                case "po6":
                     item.position = "사원";
                     break;
-                case 7:
+                case "po7":
                     item.position = "직영점주";
                     break;
                 default:
