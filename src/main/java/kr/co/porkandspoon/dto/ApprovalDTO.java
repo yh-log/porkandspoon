@@ -50,6 +50,11 @@ public class ApprovalDTO {
 	public String comment;
 	
 	public FileDTO fileDTO;
+
+	// 부서 이름
+	public String dept_text;
+	
+
 	
     public String getLine_idx() {
 		return line_idx;
@@ -262,6 +267,7 @@ public class ApprovalDTO {
 		this.user_name = user_name;
 	}
 
+
 	public String getDept_name() {
 		return dept_name;
 	}
@@ -293,6 +299,17 @@ public class ApprovalDTO {
 	public void setFileDTO(FileDTO fileDTO) {
 		this.fileDTO = fileDTO;
 	}
+
+	public String getDept_text() {
+		return dept_text;
+	}
+
+	public void setDept_text(String dept_text) {
+		this.dept_text = dept_text;
+	}
+	
+	
+
 
 
 }

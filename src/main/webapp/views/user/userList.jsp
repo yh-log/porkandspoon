@@ -82,13 +82,13 @@
 							<div class="row">
 								<div class="col-5 col-lg-5"></div>
 								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>부서</option>
-										<option>이름</option>
-										<option>직위</option>
+									<select class="form-select selectStyle" id="searchOption">
+										<option value="dept">부서</option>
+										<option value="name">이름</option>
+										<option value="position">직위</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+									<button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button>
 								</div>
 							</div>
 							<div class="col-12 col-lg-12">
@@ -108,6 +108,11 @@
 										
 									</tbody>
 								</table>
+							</div>
+							<div class="">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center" id="pagination"></ul>
+								</nav>
 							</div>
 						</div> <!-- cont-body -->
 					</div>
@@ -138,10 +143,80 @@
 <script src='/resources/js/common.js'></script>
 <script>
 
-getAjax('/ad/user/list');
+
+var firstPage = 1;
+var paginationInitialized = false;
+
+$(document).ready(function () {
+	pageCall(firstPage);
+});
+
+
+// 검색 폼 제출 시 AJAX 호출
+$('#searchBtn').on('click', function(event) {
+    event.preventDefault();  // 폼 제출 기본 동작 중지
+    firstPage = 1;
+    paginationInitialized = false;
+    pageCall(firstPage);  // 검색어가 추가된 상태에서 호출
+});
+
+
+
+
+function pageCall(page = 1) {
+    var option = $('#searchOption').val();
+    var keyword = $('input[name="search"]').val();  // 검색어
+
+    $.ajax({
+        type: 'GET',
+        url: '/ad/user/list',
+        data: {
+            'page': page || 1, // 페이지 기본값 설정
+            'cnt': 10,         // 한 페이지당 항목 수
+            'option': option,
+            'keyword': keyword  // 검색어
+        },
+        datatype: 'JSON',
+        success: function(response) {
+            console.log("응답 데이터:", response);
+
+            // 데이터 처리
+            if (response && response.length > 0) {
+                getSuccess(response); // 검색 결과를 테이블에 렌더링
+            } else {
+                $('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+            }
+
+            // 페이지네이션 초기화
+            var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
+            console.log('총 페이지 수:', totalPages);
+
+            if (!paginationInitialized || keyword !== '') {
+                $('#pagination').twbsPagination('destroy');
+                $('#pagination').twbsPagination({
+                    startPage: page,
+                    totalPages: totalPages,
+                    visiblePages: 5,
+                    initiateStartPageClick: false,
+                    onPageClick: function (evt, page) {
+                        console.log('클릭된 페이지:', page);
+                        pageCall(page);
+                    }
+                });
+                paginationInitialized = true;
+            }
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+}
+
 
 function getSuccess(response){
 	console.log(response);
+	
+	$('#userList').empty();
 	
 	var content = '';
 	response.forEach(function(item){
