@@ -13,7 +13,6 @@ function getAjax(url, type, data = null) { // data 매개변수 추가, 기본�
         type: 'GET',
         url: url,
         data: data ? data : {}, // data가 null이 아니면 전송, 아니면 빈 객체
-        traditional: true,
         dataType: type,
         success: function(response) {
             getSuccess(response);
