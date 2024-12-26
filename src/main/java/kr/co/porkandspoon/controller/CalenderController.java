@@ -1,6 +1,8 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -34,20 +36,54 @@ public class CalenderController {
 		return new ModelAndView("/calender/calender");
 	}
 	
-	// 일정 리스트 호출 ajax
-	@GetMapping(value="/calenderList")
-	public Map<String, Object> calenderList(@AuthenticationPrincipal UserDetails userDetails){
-		
-		String loginId = userDetails.getUsername(); // 로그인 한 유저의 아이디
-		String dept = calenderService.dept(loginId); // 로그인 한 유저의 부서
-		logger.info("부서 정보"+CommonUtil.toString(dept));
-		logger.info("일정 불러오기 실행");
-		Map<String, Object> resultMap = new HashMap<String, Object>();
-		resultMap.put("result", calenderService.calenderList(loginId,dept));
-		System.out.println(CommonUtil.toString(calenderService.calenderList(loginId,dept)));
-		
-		return resultMap;
-	}
+//	// 일정 리스트 호출 ajax
+//	@GetMapping(value="/calenderList")
+//	public Map<String, Object> calenderList(@AuthenticationPrincipal UserDetails userDetails){
+//		
+//		String loginId = userDetails.getUsername(); // 로그인 한 유저의 아이디
+//		String dept = calenderService.dept(loginId); // 로그인 한 유저의 부서
+//		logger.info("부서 정보"+CommonUtil.toString(dept));
+//		logger.info("일정 불러오기 실행");
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		resultMap.put("result", calenderService.calenderList(loginId,dept));
+//		System.out.println(CommonUtil.toString(calenderService.calenderList(loginId,dept)));
+//		
+//		return resultMap;
+//	}
+	
+    // 일정 리스트 호출 ajax
+    @GetMapping(value="/calenderList")
+    public Map<String, Object> calenderList(
+        @RequestParam(value = "filters", required = false) List<String> filters,
+        @AuthenticationPrincipal UserDetails userDetails){
+        String loginId = userDetails.getUsername(); // 로그인 한 유저의 아이디
+        String dept = calenderService.dept(loginId); // 로그인 한 유저의 부서 찾기
+        logger.info("부서 정보: " + CommonUtil.toString(dept));
+        logger.info("필터항목 : "+filters);
+        logger.info("일정 불러오기 실행");
+
+        // '전체' 필터가 포함된 경우 모든 타입 포함
+        if (filters != null && filters.contains("all")) {
+            filters.remove("all"); // 'all' 제거
+            filters.add("C");
+            filters.add("P");
+            filters.add("T");
+        }
+
+        // 필터가 비어있거나 null인 경우 모든 타입 포함
+        if (filters == null || filters.isEmpty()) {
+            filters = Arrays.asList("C", "P", "T");
+        }
+
+        // 필터링된 일정 조회
+        List<CalenderDTO> schedules = calenderService.calenderList(filters, loginId, dept);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result", schedules);
+        System.out.println(CommonUtil.toString(schedules));
+        
+        return resultMap;
+    }
 	
 	// 일정 등록 ajax
 	@PostMapping(value="/calenderWrite")

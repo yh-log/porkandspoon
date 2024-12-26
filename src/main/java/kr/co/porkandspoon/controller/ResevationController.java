@@ -2,14 +2,20 @@ package kr.co.porkandspoon.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
+import kr.co.porkandspoon.service.ResevationService;
 
 @RestController
 public class ResevationController {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
+	@Autowired ResevationService resService;
 	
 	// 예약하기(캘린더) 이동
 	@GetMapping(value="/resevation")
@@ -43,8 +49,14 @@ public class ResevationController {
 	
 	// 물품 등록 이동
 	@GetMapping(value="/ad/article/write")
-	public ModelAndView articleWrtieView() {
-		return new ModelAndView("/resevation/articleWrite");
+	public ModelAndView articleWrtieView(@AuthenticationPrincipal UserDetails userDetails) {
+		
+		String loginId = userDetails.getUsername();
+		
+		ModelAndView mav = new ModelAndView("/resevation/articleWrite");
+		mav.addObject("info",resService.info(loginId));
+		
+		return mav;
 	}
 		
 	// 물품 상세보기 이동

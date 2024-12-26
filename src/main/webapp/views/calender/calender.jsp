@@ -135,18 +135,25 @@
       <div class="page-content">
          <section id="menu">
             <h4 class="menu-title">캘린더</h4>
-            <ul>
-               <li class="active">전체 캘린더</li>
-               <li>공지 캘린더</li>
-               <li>팀별 캘린더</li>
-               <li>개인 캘린더</li>
-            </ul>
+			<div>
+		        <input type="checkbox" id="filterAll" onchange="toggleAllFilters()" checked>
+		        <label for="filterAll">전체</label>
+		
+		        <input type="checkbox" id="filterC" onchange="handleIndividualFilter()">
+		        <label for="filterC">공지</label>
+		
+		        <input type="checkbox" id="filterT" onchange="handleIndividualFilter()">
+		        <label for="filterT">팀</label>
+		
+		        <input type="checkbox" id="filterP" onchange="handleIndividualFilter()">
+		        <label for="filterP">개인</label>
+   			</div>
             <div class="btn btn-primary full-size" onclick="loadModal('calender','Input')">일정추가</div>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>캘린더(많이수정)</h5>
+                  <h5>캘린더</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -175,11 +182,60 @@
 
 	var section= 'calender';
 	
-	var params;
+	var data;
+	
+
+		
+/* 	$(document).ready(function () {
+		//loadCalender(section);
+		var url= "/" + section + "List";
+    	getAjax(url,'JSON')
+	}); */
 	
 	$(document).ready(function () {
-		loadCalender(section);
+	    applyFilter(); // 초기 필터 적용 (전체)
 	});
+	
+	// 체크박스 간 상호작용을 관리하는 함수
+	function toggleAllFilters() {
+	    var isChecked = $('#filterAll').is(':checked');
+	    $('#filterC, #filterT, #filterP').prop('checked', isChecked);
+	    applyFilter();
+	}
+	
+	function handleIndividualFilter() {
+	    // 모든 개별 필터가 선택되었는지 확인
+	    var allChecked = $('#filterC').is(':checked') && $('#filterT').is(':checked') && $('#filterP').is(':checked');
+	    $('#filterAll').prop('checked', allChecked);
+	    applyFilter();
+	}
+	
+	// 필터링 기능
+	function applyFilter() {
+	    // 체크된 필터 값 수집
+	    var filters = [];
+	    
+	    if ($('#filterAll').is(':checked')) {
+	        // '전체'가 체크된 경우 모든 타입을 포함
+	        filters.push('C', 'P', 'T');
+	    } else {
+	        // 개별 체크박스 상태에 따라 필터링
+	        if ($('#filterC').is(':checked')) filters.push('C');
+	        if ($('#filterT').is(':checked')) filters.push('T');
+	        if ($('#filterP').is(':checked')) filters.push('P');
+	    }
+
+	    // 서버로 전송할 데이터 객체 생성
+	    var data = {
+	        filters: filters
+	    };
+	    
+	    console.log("필터 항목",data);
+	    
+	    var url= "/" + section + "List";
+    	getAjax(url,'JSON',data);
+
+	}
 		
 	function handleAddSchedule() {
 		console.log('일정 등록 클릭');
@@ -265,7 +321,8 @@
 	 	                    content: schedule.content,
 	 	                    start_date: schedule.start_date,
 	 	                    end_date: schedule.end_date,
-	 	                    username: schedule.username         		
+	 	                    username: schedule.username,
+	 	                    type: schedule.type
 	                };
 	
 	                // 모달 열기
@@ -295,6 +352,14 @@
         } else if (type === 'Info') {
             // 일정 상세 보기 모드: 데이터 주입
             console.log("일정 상세 보기 모드: 데이터 주입", data);
+        	if(data.type == 'C'){
+        		document.getElementById("detail").textContent = '공지 상세정보';
+        	}else if(data.type == 'T'){
+        		document.getElementById("detail").textContent = '팀 상세정보';
+        	}else{
+        		document.getElementById("detail").textContent = '일정 상세정보';
+        	}
+            
             document.getElementById("subject").textContent = data.subject;
             document.getElementById("content").textContent = data.content;
             document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
@@ -405,6 +470,8 @@
     	console.log('삭제할때 받아와?',idx);
     	httpAjax('DELETE', '/calenderDelete/'+idx);
 	}
+    
+
 
   	
 	

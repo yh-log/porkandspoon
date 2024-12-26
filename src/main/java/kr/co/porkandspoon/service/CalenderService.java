@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +19,13 @@ public class CalenderService {
 	@Autowired CalenderDAO calenderDao;
 	
 	// 일정리스트 호출
-	public List<Map<String, Object>> calenderList(String loginId, String dept) {
-		return calenderDao.calenderList(loginId,dept);
-	}
+    public List<CalenderDTO> calenderList(List<String> filters, String loginId, String dept) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("filters", filters);
+        params.put("loginId", loginId);
+        params.put("dept", dept);
+        return calenderDao.calenderList(params);
+    }
 	
 	// 일정 등록
 	public boolean calenderWrite(CalenderDTO calederDto) {
