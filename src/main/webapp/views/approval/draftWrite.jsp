@@ -306,11 +306,11 @@
 									<textarea name="content" id="summernote" maxlength="10000"></textarea>
 								</div>
 								
-								<h5>로고파일 첨부</h5>
-								<input type="file" class="filepond" data-max-file-size="10MB" multiple="" name="logo" type="file"/>
+								<h5><span class="ico-required">*</span>로고파일 첨부</h5>
+								<input type="file" class="filepond" data-max-file-size="10MB" name="logoFile" type="file" required/>
 
 								<h5>파일 첨부</h5>
-								<input type="file" class="filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+								<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
 								
 								<input type="hidden" name="status"/>
 							</form>
@@ -357,11 +357,26 @@
 <script>
 
 //FilePond를 모든 파일 입력 요소에 적용
-FilePond.create(document.querySelector('.filepond'));
+/* FilePond.create(document.querySelector('.filepond'));
+
 FilePond.setOptions({
-    allowMultiple: true,
-    maxFiles: 5,
     labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요'
+}); */
+//첫 번째 FilePond에 설정 적용
+const logoFilePond = FilePond.create(document.querySelector('input.filepond'), {
+	allowMultiple: false,
+	maxFiles: 1,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (1개)',
+    instantUpload: false
+});
+
+// 두 번째 FilePond에 다른 설정 적용
+const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
+    allowMultiple: true,
+    maxFiles: 3,
+    allowImagePreview: false,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
+    instantUpload: false
 });
 
 
@@ -436,14 +451,31 @@ function setForm(type1, type2, element){
 //글 전송할 url 파라미터 포함
 //전송 버튼에 textEaditorWrite(url) 함수 사용
 function textEaditorWrite(url, after){
+	// check!!! 이거두줄
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+	
 	var formData = new FormData($('form')[0]); // formData
 	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
 	formData.append('content', content);
 	
+	
+	  // 로고 파일 추가
+    const logoFile = logoFilePond.getFiles();
+    formData.append('logoFile', logoFile[0].file);  // 첫 번째 파일을 formData에 추가
+    
+    //첨부 파일 추가
+    const attachedFiles = attachedFilesPond.getFiles();
+    if (attachedFiles.length > 0) {
+    	attachedFiles.forEach(function(file, index) {
+    	    formData.append('files', file.file); 
+    	});
+    }
+	
 	var tempDom = $('<div>').html(content);
- var imgsInEditor = []; // 최종 파일을 담을 배열
+ 	var imgsInEditor = []; // 최종 파일을 담을 배열
  
- tempDom.find('img').each(function () {
+ 	tempDom.find('img').each(function () {
          var src = $(this).attr('src');
          if (src && src.includes('/photoTem/')) {  // 경로 검증
              var filename = src.split('/').pop();  // 파일명 추출
@@ -491,7 +523,7 @@ function sendApproval(){
 	document.querySelector('input[name="status"]').value = "sd";
 	
 	// file required 속성 해제
-	document.getElementsByClassName('filepond--browser')[0].removeAttribute('required');
+	//document.getElementsByClassName('filepond--browser')[0].removeAttribute('required');
 	
 	const form = document.getElementById("formDraft");
     const inputs = form.querySelectorAll("input[required]");
@@ -534,8 +566,8 @@ function saveTemp(){
 	
 }
 
-//1분마다 자동 임시저장
-setInterval(saveTemp, 60000);
+//1분마다 자동 임시저장 check!!! 나중에 풀기
+//setInterval(saveTemp, 60000);
 
 
 

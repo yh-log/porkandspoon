@@ -44,7 +44,7 @@ public class ApprovalService {
 	}
 
 	@Transactional
-	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, String status) {
+	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile, String status) {
 		approvalDTO.setDocument_number(generateDocumentNumber());
 		logger.info("docNumber : "+ approvalDTO.getDocument_number());
 		logger.info("getUsername : "+ approvalDTO.getUsername());
@@ -85,14 +85,33 @@ public class ApprovalService {
 //	    if (existingFile == 0) {
 //	        saveFile(files, draftIdx);
 //	    }
-        saveFile(files, draftIdx);
+//     // 로고 파일 저장 처리
+//        if (logoFile != null && !logoFile.isEmpty()) {
+//            logger.info("로고 파일 있음: " + logoFile.getOriginalFilename());
+//            String oriLogoFilename = logoFile.getOriginalFilename();
+//            String logoExt = oriLogoFilename.substring(oriLogoFilename.lastIndexOf("."));
+//            String newLogoFilename = UUID.randomUUID() + logoExt;
+//
+//            try {
+//                byte[] logoBytes = logoFile.getBytes();
+//                Path logoPath = Paths.get(paths + newLogoFilename);
+//                Files.write(logoPath, logoBytes);
+//                logger.info("로고 파일 저장 완료: " + newLogoFilename);
+//            } catch (IOException e) {
+//                logger.error("로고 파일 저장 오류", e);
+//            }
+//        }
+        
+        saveFile(logoFile, draftIdx, true);
+        
+        saveFile(files, draftIdx, false);
         
         
         return draftIdx;
 	}
 	
 	
-	private void saveFile(MultipartFile[] files, String draftIdx) {
+	private void saveFile(MultipartFile[] files, String draftIdx, boolean logoYn) {
 		
 		for(MultipartFile file : files) {
 			try {
@@ -114,7 +133,11 @@ public class ApprovalService {
 						FileDTO fileDto = new FileDTO();
 						fileDto.setOri_filename(ori_filename);
 						fileDto.setNew_filename(new_filename);
-						fileDto.setCode_name("df000");
+						if(logoYn) {
+							fileDto.setCode_name("bl001");
+						}else {
+							fileDto.setCode_name("df000");
+						}
 						fileDto.setPk_idx(draftIdx);
 						fileDto.setType(file.getContentType());
 						approvalDAO.fileSave(fileDto);
@@ -225,7 +248,7 @@ public class ApprovalService {
 	            }
 	        }
 	        
-	        saveFile(files, draftIdx);
+	        saveFile(files, draftIdx, false);
 			
 		}
 
@@ -247,6 +270,10 @@ public class ApprovalService {
 	            approvalDAO.deleteFiles(file);
 	        }
 			
+		}
+
+		public FileDTO getLogoFile(String draft_idx) {
+			return approvalDAO.getLogoFile(draft_idx);
 		}
 
 }

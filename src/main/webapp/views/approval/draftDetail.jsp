@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>기안문 수정</title>
+<title>기안문 상세페이지</title>
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -65,6 +65,10 @@
     .draftDetail .form-group {
 	    margin-bottom: 0;
 	}
+    .draftDetail .form-control {
+    	background: none;
+    	color: #333;
+    }
 	.draftDetail select {
 		border: none;
 	}
@@ -175,6 +179,12 @@
 		width: calc(100% - 120px);
 	}
 	
+	.draftDetail .editor-area {
+		border : 1px solid #ddd;
+		margin: 40px 0 20px;
+		padding: 14px;
+	}
+	
 	.editor-area .note-editor {
 		width: 100% !important;
 		margin-top: 20px;
@@ -183,8 +193,7 @@
 	.attached-file {
 		background: #eaeaea;
 		border-radius: 6px;
-	    min-height: 4.75em;
-	    padding: 18px;
+   		padding: 26px 18px;
 	    color: #4f4f4f;
 	}
 	.attached-file ul {
@@ -253,12 +262,11 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>기안 수정페이지</h5>
+							<h5>기안 상세페이지</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary" onclick="updateDraft()">수정</button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">취소</button>
+							<button class="btn btn-primary" onclick="updateDraft()">수정</button>
+							<button href="#" class="btn btn-outline-primary">목록</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
@@ -387,18 +395,35 @@
 									</div>
 								</div>
 								<div class="editor-area">
-									<textarea name="content" id="summernote" maxlength="10000">${DraftInfo.content}</textarea>
+									${DraftInfo.content}
 								</div>
 								<br/>
 
 								<h5>파일 첨부</h5>
 								<br/>
-								<h6>첨부된 파일</h6>
+								<h6>첨부된 로고 파일</h6>
+								<div class="attached-file">
+									<ul>
+										<c:if test="${logoFile != null}">
+											<li class="file-item">
+												<div>
+													<input type="hidden" name="new_filename" value="${logoFile.new_filename}"/>
+													<input type="hidden" name="pk_idx" value="${logoFile.pk_idx}"/>
+													<p class="file-name">${logoFile.ori_filename}</p>
+												</div>
+											</li>
+										</c:if>
+										<c:if test="${logoFile == null}">
+											<div class="align-c">첨부된 로고 파일이 없습니다.</div>
+										</c:if>
+									</ul>
+								</div>
+								<br/>
+								<h6>첨부된 기타 파일</h6>
 								<div class="attached-file">
 									<ul>
 										<c:forEach items="${attachedFiles}" var="file"> 
 											<li class="file-item">
-											<button class="delete" onclick="deleteFile(this)">x</button>
 											<div>
 												<input type="hidden" name="new_filename" value="${file.new_filename}"/>
 												<input type="hidden" name="pk_idx" value="${file.pk_idx}"/>
@@ -406,13 +431,15 @@
 											</div>
 										</li>
 										</c:forEach>
+										<c:if test="${empty attachedFiles}">
+											<div class="align-c">첨부된 기타 파일이 없습니다.</div>
+										</c:if>
 									</ul>
 								</div>
 								<br/>
-								<h6>추가 첨부</h6>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file">
+								
 													
-								<input type="hidden" name="status"/>
+							<!-- 	<input type="hidden" name="status"/> -->
 							</form>
 
 						</div>
