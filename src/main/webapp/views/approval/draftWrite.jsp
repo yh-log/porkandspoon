@@ -310,7 +310,7 @@
 								<input type="file" class="filepond" data-max-file-size="10MB" multiple="" name="logo" type="file"/>
 
 								<h5>파일 첨부</h5>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+								<input type="file" class="filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
 								
 								<input type="hidden" name="status"/>
 							</form>
@@ -356,7 +356,13 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-
+//FilePond를 모든 파일 입력 요소에 적용
+FilePond.create(document.querySelector('.filepond'));
+FilePond.setOptions({
+    allowMultiple: true,
+    maxFiles: 5,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요'
+});
 
 
 
