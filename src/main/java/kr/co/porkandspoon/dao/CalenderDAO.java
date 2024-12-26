@@ -9,7 +9,7 @@ import kr.co.porkandspoon.dto.CalenderDTO;
 @Mapper
 public interface CalenderDAO {
 
-	List<Map<String, Object>> calenderList(String loginId, String dept);
+	//List<Map<String, Object>> calenderList(List<String> filters, String loginId, String dept);
 
 	int calenderWrite(CalenderDTO calederDto);
 
@@ -20,6 +20,8 @@ public interface CalenderDAO {
 	int calenderDelete(String idx);
 
 	String dept(String loginId);
+
+	List<CalenderDTO> calenderList(Map<String, Object> params);
 
 
 }

@@ -24,11 +24,12 @@
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 <!-- 파일 업로더 -->
-<link rel="stylesheet"
+<!-- <link rel="stylesheet"
 	href="/resources/assets/extensions/filepond/filepond.css">
 <link rel="stylesheet"
 	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-
+ -->
+ 
 <!-- summernote bootstrap-->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 <!-- 부트스트랩 -->
@@ -37,6 +38,11 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+ <!-- FilePond CSS -->
+  <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
+  <!-- FilePond JavaScript -->
+  <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -203,7 +209,7 @@
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
-							<form id="formDraft">
+							<form id="formDraft" enctype="multipart/form-data">
 								<input type="hidden" name="draft_idx" value=""/>
 								<input type="hidden" name="target_type" value="df001"/>
 								<input type="hidden" name="action_type" value="df011"/>
@@ -241,7 +247,7 @@
 										</tr>
 										<tr>
 											<td>
-												<input type="hidden" name="appr_user" value="wjsaus123"/>
+												<input type="hidden" name="appr_user" value="wjsaus123" required/>
 												<p>홍길동</p>
 											</td>
 											<td>
@@ -298,11 +304,13 @@
 								</div>
 								<div class="editor-area">
 									<textarea name="content" id="summernote" maxlength="10000"></textarea>
-									
 								</div>
 								
+								<h5>로고파일 첨부</h5>
+								<input type="file" class="filepond" data-max-file-size="10MB" multiple="" name="logo" type="file"/>
+
 								<h5>파일 첨부</h5>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB">
+								<input type="file" class="filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
 								
 								<input type="hidden" name="status"/>
 							</form>
@@ -324,7 +332,7 @@
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <!-- 파일업로더 -->
-<script
+<!-- <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
 <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
@@ -339,7 +347,7 @@
 <script
 	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
+<script src="/resources/assets/static/js/pages/filepond.js"></script> -->
 
 	
 <script src='/resources/js/common.js'></script>
@@ -348,11 +356,22 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
+//FilePond를 모든 파일 입력 요소에 적용
+FilePond.create(document.querySelector('.filepond'));
+FilePond.setOptions({
+    allowMultiple: true,
+    maxFiles: 5,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요'
+});
+
+
+
 // 기안일
 const today = new Date();   
 const year = today.getFullYear(); 
 const month = today.getMonth() + 1; 
 const date = today.getDate();  
+console.log(year + '-' + month + '-' + date);
 document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
 
 // 기안문 종류에 따른 양식
@@ -470,6 +489,10 @@ function fileAjax(type, url, formData, after){
 // 결재 요청
 function sendApproval(){
 	document.querySelector('input[name="status"]').value = "sd";
+	
+	// file required 속성 해제
+	document.getElementsByClassName('filepond--browser')[0].removeAttribute('required');
+	
 	const form = document.getElementById("formDraft");
     const inputs = form.querySelectorAll("input[required]");
     const selects = form.querySelectorAll("select[required]");
@@ -511,8 +534,8 @@ function saveTemp(){
 	
 }
 
-//1분마다 자동저장
-setInterval(saveTemp, 6000);
+//1분마다 자동 임시저장
+setInterval(saveTemp, 60000);
 
 
 
@@ -521,7 +544,7 @@ function fileSuccess(response, after){
 	console.log("success : "+response.success);
 	console.log("success : "+response.draftIdx);
 	if(after){
-		location.href = "/approval/detail";
+		location.href = "/approval/detail/"+response.draftIdx;
 	}else{
 		$('input[name="draft_idx"]').val(response.draftIdx);
 	}

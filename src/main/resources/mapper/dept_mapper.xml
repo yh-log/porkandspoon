@@ -14,36 +14,65 @@
         'default' AS type,
         NULL AS menuOrder,
         NULL AS position
-    FROM department d
-    UNION ALL
-    SELECT 
+	    FROM department d
+	    UNION ALL
+	    SELECT 
         u.username AS id,
         u.name AS text,   
         u.parent AS parent, 
         'file' AS type,
-        CAST(SUBSTRING(u.position, 3) AS UNSIGNED) AS menuOrder,
+        u.position AS menuOrder,
         NULL AS position
-    FROM user u
-    WHERE u.parent IS NOT NULL
+	    FROM user u
+	    WHERE u.parent IS NOT NULL
 	</select>
 
 	<!-- 노드에서 클릭된 사원 정보 가져오기(부서명도 같이) -->
 	<select id="getUserlist" resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT 
         u.*,
-        d.text AS text
+        d.text AS text,
+        f.new_filename AS new_filename -- 프로필 이미지 파일명 추가
     	FROM 
         user u
     	LEFT JOIN 
         department d
-    	ON 
-        u.parent = d.id
+        ON u.parent = d.id
+    	LEFT JOIN 
+        file f
+        ON f.code_name = 'up100' -- 프로필 이미지 코드
+        AND f.pk_idx = u.username -- 사용자와 파일의 연결
     	WHERE 
         u.username = #{username}
 	</select>
 	
 	<select id="getOrgchart" resultType="kr.co.porkandspoon.dto.DeptDTO">
-		SELECT * FROM department
+		SELECT 
+        d.id, 
+        d.text, 
+        d.parent,
+        'default' AS type,
+        NULL AS menuOrder,
+        NULL AS position
+	    FROM department d
+	    UNION ALL
+	    SELECT 
+        u.username AS id,
+        u.name AS text,   
+        u.parent AS parent, 
+        'file' AS type,
+        u.position AS menuOrder,
+        NULL AS position
+	    FROM user u
+	    WHERE u.parent IS NOT NULL
+	</select>
+	
+	<select id="getDeptdata" resultType="kr.co.porkandspoon.dto.DirectstoreDTO">
+		SELECT ds.*, f.new_filename
+	    FROM direct_store ds
+	    LEFT JOIN file f ON f.pk_idx = ds.name
+	    WHERE ds.parent = #{departmentId}
+      	AND f.code_name = ds.code_name
 	</select>
 	
 </mapper>

@@ -13,14 +13,20 @@ public class ApprovalDTO {
 	// 기안문 테이블
 	public String draft_idx;
 	public String document_number;
-	public String username;
+	public String username; //사번
 	public String target_type;
 	public String action_type;
 	public LocalDate create_date;
 	public String subject;
 	public String name;
-	public String user_name;
 	
+	
+	public String user_name; // 이름
+	public String position; // 직책
+	public String sign; // 서명
+	
+	// 부서이름
+	public String dept_name;
 	
 	public String appr_user1;
 	public String appr_user2;
@@ -40,9 +46,15 @@ public class ApprovalDTO {
 	// 결재라인 테이블
 	public String line_idx;
 	public String order_num;
-	public LocalDateTime approval_date;
+	public String approval_date;
 	public String comment;
 	
+	public FileDTO fileDTO;
+
+	// 부서 이름
+	public String dept_text;
+	
+
 	
     public String getLine_idx() {
 		return line_idx;
@@ -52,7 +64,7 @@ public class ApprovalDTO {
 		return order_num;
 	}
 
-	public LocalDateTime getApproval_date() {
+	public String getApproval_date() {
 		return approval_date;
 	}
 
@@ -68,7 +80,7 @@ public class ApprovalDTO {
 		this.order_num = order_num;
 	}
 
-	public void setApproval_date(LocalDateTime approval_date) {
+	public void setApproval_date(String approval_date) {
 		this.approval_date = approval_date;
 	}
 
@@ -254,6 +266,50 @@ public class ApprovalDTO {
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
+
+
+	public String getDept_name() {
+		return dept_name;
+	}
+
+	public void setDept_name(String dept_name) {
+		this.dept_name = dept_name;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getSign() {
+		return sign;
+	}
+
+	public void setSign(String sign) {
+		this.sign = sign;
+	}
+
+	public FileDTO getFileDTO() {
+		return fileDTO;
+	}
+
+	public void setFileDTO(FileDTO fileDTO) {
+		this.fileDTO = fileDTO;
+	}
+
+	public String getDept_text() {
+		return dept_text;
+	}
+
+	public void setDept_text(String dept_text) {
+		this.dept_text = dept_text;
+	}
+	
+	
+
 
 
 }

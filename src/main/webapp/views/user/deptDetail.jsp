@@ -78,69 +78,56 @@
 						</div>
 						<div class="cont-body"> 
 							<form>
-								<div class="row">
-									<div class="col-6 col-lg-6">
-										<div id="selectBox">
-											활성
-											<select class="form-select selectStyle"> 
-												<option>활성</option>
-												<option>비활성</option>
-											</select>
-											상태
-											<select class="form-select selectStyle">
-												<option>승인</option>
-												<option>반려</option>
-												<option>대기</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-6 col-lg-6">
-										<button class="btn btn-primary">수정</button>
-										<button class="btn btn-outline-secondary">리스트</button>
-									</div>
-								</div>
 								<table>
 									<tr>
-										<td rowspan="2">로고</td>
+										<td rowspan="2" class="filebox">
+											<img src="" id="userProfile"/>
+										</td>
 										<th>문서 제목</th>
-										<td><span id="subject-value"></span>브랜드 확장을 위한 개설 요청의 건</td>
+										<td>${deptInfo.subject}</td>
 										<th>기안자</th>
-										<td><span id="username-value"></span>홍길동</td>
+										<td>${deptInfo.user_name}</td>
 									</tr>
 									<tr>
 										<th>결재 일자</th>
-										<td><span id="approval_date-value"></span>2024. 12. 19.(목)</td>
+										<td>${deptInfo.approval_date}</td>
 										<th>작성 부서</th>
-										<td><span id="department_id-value"></span>홍보2팀</td>
+										<td>${deptInfo.dept_text}</td>
 									</tr>
-									<tr>
+									<tr class="custom-height-row">
 										<th>브랜드 명</th>
-										<td colspan="2"><span id="name-value"></span>애슐리하우스</td>
+										<td colspan="2">${deptInfo.name}</td>
 										<th>브랜드 코드</th>
-										<td><span id="id-value"></span>AD101</td>
+										<td>
+											${deptInfo.id}
+										</td>
+									</tr>
+									<tr class="custom-height-row">
+										<th>소속 직원</th>
+										<td colspan="2"> </td>
+										<th>시행일자</th>
+										<td>{deptInfo.from_date}</td>
 									</tr>
 									<tr>
-										<th>소속 직원</th>
-										<td colspan="2"><span id="-value"></span>김김김 부장, 이이이 차장, 박박박 과장, 홍길동 대리</td>
-										<th>시행일자</th>
-										<td><span id="form_date-value"></span>2025. 1. 1.(수)</td>
+										<th>활성</th>
+										<td colspan="2">
+											<div class="radioLayoutBox">
+												<input type="radio" name="use_yn" value="Y" class="form-check-input" checked/> 활성
+	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
+	 									    </div>
+										</td>
 									</tr>
 									<tr><th colspan="5">설명</th></tr>
 									<tr>
 										<td colspan="5">
-											<!-- 썸머노트 코드 불러와서 넣기 -->
-											<span id=""></span>
-											<img src="/resources/img/logo.jpg" width="130px" /> <br/>
-											애슐리(Ashley)는 대한민국 이랜드이츠가 운영하는 뷔페 패밀리 레스토랑 체인이다. 애슐리는 매 분기마다 새로운 콘셉트의 새 메뉴를 제공하며, 또한 고급화 매장인 애슐리 W, 애슐리 W+, 테이크아웃 전문 매장인 애슐리 투고 등 다양한 서브 브랜드를 운영하고 있다.
-											애슐리는 2003년 3월 25일 2001아울렛 분당점을 시작으로 본격적으로 영업을 시작하였다.[1] 2019년 현재 대한민국 내에서 운영되는 매장은 110여 개로 CJ푸드빌에서 운영하는 빕스의 61개 매장에 대비 50여개 더많다.
-											애슐리(Ashley)는 대한민국 이랜드이츠가 운영하는 뷔페 패밀리 레스토랑 체인이다. 애슐리는 매 분기마다 새로운 콘셉트의 새 메뉴를 제공하며, 또한 고급화 매장인 애슐리 W, 애슐리 W+, 테이크아웃 전문 매장인 애슐리 투고 등 다양한 서브 브랜드를 운영하고 있다.
-											애슐리는 2003년 3월 25일 2001아울렛 분당점을 시작으로 본격적으로 영업을 시작하였다.[1] 2019년 현재 대한민국 내에서 운영되는 매장은 110여 개로 CJ푸드빌에서 운영하는 빕스의 61개 매장에 대비 50여개 더많다.
-											애슐리(Ashley)는 대한민국 이랜드이츠가 운영하는 뷔페 패밀리 레스토랑 체인이다. 애슐리는 매 분기마다 새로운 콘셉트의 새 메뉴를 제공하며, 또한 고급화 매장인 애슐리 W, 애슐리 W+, 테이크아웃 전문 매장인 애슐리 투고 등 다양한 서브 브랜드를 운영하고 있다.
-											애슐리는 2003년 3월 25일 2001아울렛 분당점을 시작으로 본격적으로 영업을 시작하였다.[1] 2019년 현재 대한민국 내에서 운영되는 매장은 110여 개로 CJ푸드빌에서 운영하는 빕스의 61개 매장에 대비 50여개 더많다.										
-										
+											<textarea name="postContent" id="summernote" maxlength="10000"></textarea>
 										</td>
 									</tr>
 								</table>
+								<div class="btn-Layout">
+									<button type="button" class="btn btn-primary">수정</button>
+									<button class="btn btn-outline-primary">목록</button>
+								</div>
 							</form>
 						</div> <!-- cont-body -->
 					</div>

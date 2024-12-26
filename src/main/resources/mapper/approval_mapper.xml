@@ -143,9 +143,20 @@ content = VALUES(content); -->
 		INSERT INTO approval_line (draft_idx, username, order_num) 
 		values
 	    <foreach collection="appr_user" item="appritem" index="index" separator=",">
-	        (#{draftIdx}, #{appritem}, 1)
+	        (#{draftIdx}, #{appritem}, #{index})
 	    </foreach>
 	</insert>
+
+	<insert id="removeApprovalLine">
+		DELETE FROM approval_line WHERE draft_idx = #{draft_idx}
+	</insert>
+	
+	<select id="checkExistingFile" resultType="int">
+		SELECT COUNT(*) FROM file
+			WHERE code_name = 'df000' 
+			AND pk_idx = #{draftIdx}
+			AND ori_filename = #{ori_filename}
+	</select>
 	
 	
 	
@@ -170,15 +181,48 @@ content = VALUES(content); -->
 	
 	
 	<select id="getDraftInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.draft_idx, d.document_number, d.username, d.target_type, d.action_type, d.subject, d.name, d.from_date, d.content, d.address, d.address_detail, d.cooper_dept_id, d.dept_id, d.status, u.name AS user_name 
+		SELECT d.draft_idx, d.document_number, d.create_date, d.username, d.target_type, d.action_type, d.subject, d.name, d.from_date, d.content, d.address, d.address_detail, d.cooper_dept_id, d.dept_id, d.status, u.name AS user_name, de.text AS dept_name
 			FROM draft d LEFT JOIN user u ON d.username = u.username
 			LEFT JOIN department de ON d.dept_id = de.id
 			WHERE draft_idx = #{draft_idx}
 	</select>
 	
 	<select id="getApprLine" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT * FROM approval_line 
-			WHERE draft_idx = #{draft_idx}
+		SELECT a.*, c.name AS position, u.name AS user_name, f.new_filename AS sign, f.code_name FROM approval_line a 
+			JOIN user u ON a.username = u.username 
+			JOIN code c ON u.position = c.name
+			JOIN file f ON a.username = f.pk_idx
+			WHERE draft_idx = #{draft_idx} 
+			AND f.code_name = 'us100'
 	</select>
+	
+	<select id="getAttachedFiles" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
+		SELECT ori_filename, new_filename, pk_idx FROM file 
+			WHERE code_name = 'df000' 
+			AND pk_idx = #{draft_idx}
+	</select>
+	
+	
+	
+	
+	
+	<update id="updateDraft" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+		UPDATE draft SET 
+			 	subject = #{subject}
+				 ,name = #{name}
+				 ,content = #{content}
+				 ,from_date = #{from_date}
+            	,address = #{address}
+            	,address_detail = #{address_detail}
+            	,cooper_dept_id = #{cooper_dept_id}
+        	 WHERE draft_idx = #{draft_idx}
+	</update>
+	
+	<delete id="deleteFiles" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		DELETE FROM file
+			WHERE code_name = 'df000' 
+			AND pk_idx = #{pk_idx} 
+			AND new_filename = #{new_filename}
+	</delete>
 	
 </mapper>

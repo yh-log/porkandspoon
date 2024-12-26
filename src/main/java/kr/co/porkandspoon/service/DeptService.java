@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.DeptDAO;
 import kr.co.porkandspoon.dto.DeptDTO;
+import kr.co.porkandspoon.dto.DirectstoreDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
 @Service
@@ -25,43 +26,43 @@ public class DeptService {
 
 	public UserDTO getUserlist(Map<String, Object> params) {
 		UserDTO user = deptDAO.getUserlist(params);
-
-	    // 직급명 변환
-	    if (user.getPosition() != null) {
-	        switch (user.getPosition()) {
-	            case "po0":
-	                user.setPosition("대표");
-	                break;
-	            case "po1":
-	                user.setPosition("부장");
-	                break;
-	            case "po2":
-	                user.setPosition("차장");
-	                break;
-	            case "po3":
-	                user.setPosition("과장");
-	                break;
-	            case "po4":
-	                user.setPosition("대리");
-	                break;
-	            case "po5":
-	                user.setPosition("주임");
-	                break;
-	            case "po6":
-	                user.setPosition("사원");
-	                break;
-	            case "po7":
-	                user.setPosition("직영점주");
-	                break;
-	            default:
-	                user.setPosition("기타");
-	        }
-	    }
+		user.setPosition(changePosition(user.getPosition()));
 	    return user;
 	}
 
 	public List<DeptDTO> getOrgchart() {
-		return deptDAO.getOrgchart();
+	    return deptDAO.getOrgchart();
+	}
+	
+	// user 테이블에 position의 값마다 직급 변환
+	public String changePosition(String positionCode) {
+	    if (positionCode == null) {
+	        return "기타";
+	    }
+	    switch (positionCode) {
+	        case "po0":
+	            return "대표";
+	        case "po1":
+	            return "부장";
+	        case "po2":
+	            return "차장";
+	        case "po3":
+	            return "과장";
+	        case "po4":
+	            return "대리";
+	        case "po5":
+	            return "주임";
+	        case "po6":
+	            return "사원";
+	        case "po7":
+	            return "직영점주";
+	        default:
+	            return "기타";
+	    }
+	}
+
+	public List<DirectstoreDTO> getDeptdata(Map<String, Object> params) {
+		return deptDAO.getDeptdata(params);
 	}
 
 }

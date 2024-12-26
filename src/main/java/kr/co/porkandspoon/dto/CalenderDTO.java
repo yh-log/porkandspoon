@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public class CalenderDTO {
 	
+	// 일정 테이블
 	private String idx;
 	private String username;
 	private LocalDateTime start_date;
@@ -19,7 +20,37 @@ public class CalenderDTO {
 	private String name;
 	private String parent;
 	
+	//물품등록 테이블
+	private String item_name;
+	private String model_name;
+	private String is_item;
+	private String use_yn;
 	
+	
+	public String getItem_name() {
+		return item_name;
+	}
+	public void setItem_name(String item_name) {
+		this.item_name = item_name;
+	}
+	public String getModel_name() {
+		return model_name;
+	}
+	public void setModel_name(String model_name) {
+		this.model_name = model_name;
+	}
+	public String getIs_item() {
+		return is_item;
+	}
+	public void setIs_item(String is_item) {
+		this.is_item = is_item;
+	}
+	public String getUse_yn() {
+		return use_yn;
+	}
+	public void setUse_yn(String use_yn) {
+		this.use_yn = use_yn;
+	}
 	public String getParent() {
 		return parent;
 	}

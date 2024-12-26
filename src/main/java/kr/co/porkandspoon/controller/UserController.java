@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,8 +40,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.CareerDTO;
 import kr.co.porkandspoon.dto.DeptDTO;
+import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.ResponseDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.UserService;
@@ -68,12 +71,22 @@ public class UserController {
 	 * 직원 리스트 조회
 	 */
 	@GetMapping(value="/ad/user/list")
-	public List<UserDTO> userList() {
-		
-		List<UserDTO> dtoList = userService.userList();
-		
-		return dtoList;
+	public List<UserDTO> userList(
+	        @RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+
+	    logger.info("keyword => " + keyword);
+	    logger.info("option => " + option);
+	    logger.info("page => " + page);
+	    logger.info("cnt => " + cnt);
+
+	    List<UserDTO> dtoList = userService.userList(page, cnt, option, keyword);
+
+	    return dtoList;
 	}
+
 	
 	@GetMapping(value="/ad/user/listView")
 	public ModelAndView userListView() {
@@ -185,11 +198,25 @@ public class UserController {
 	
 	/**
 	 * author yh.kim (24.12.19) 
-	 * 부서 등록 페이지 이동
+	 * 브랜드 생성 페이지 기안문 내용 조회
 	 */
-	@GetMapping(value="/ad/dept/write")
-	public ModelAndView deptWriteView() {
-		return new ModelAndView("/user/deptWrite");
+	@GetMapping(value="/ad/dept/write/{idx}")
+	public ModelAndView deptWriteView(@PathVariable String idx) {
+		
+		if(idx == null || idx.equals("")) {
+			return new ModelAndView();
+		}
+		
+		ModelAndView mav = new ModelAndView();
+		
+		ApprovalDTO apprDto = userService.deptWriteView(idx);
+		
+		logger.info("받아온 브랜드 정보 => " + CommonUtil.toString(apprDto));
+		
+		mav.addObject("deptInfo", apprDto);
+		mav.setViewName("/user/deptWrite");
+		
+		return mav;
 	}
 	
 	/**
@@ -566,9 +593,65 @@ public class UserController {
 				logger.error("JsonProcessingException 예외 발생", e);
 				e.printStackTrace();
 			}
-		    
 			
 		return null;
+	}
+	
+	/**
+	 * author yh.kim (24.12.25)
+	 * 부서 코드 중복체크
+	 */
+	@GetMapping(value="/ad/user/deptCodeOverlay")
+	public DeptDTO deptCodeOverlay(@ModelAttribute DeptDTO dto) {
+		
+		if(dto.getId() == null || dto.getId().isEmpty()) {
+			dto.setStatus(400);
+			dto.setMessage("부서 코드를 입력해주세요.");
+			return dto;
+		}
+		
+		if(userService.deptCodeOverlay(dto)) {
+			dto.setStatus(200);
+			dto.setMessage("사용 가능한 코드입니다.");
+		}else {
+			dto.setStatus(500);
+			dto.setMessage("사용 불가능한 코드입니다.");
+		}
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim (24.12.25)
+	 * 부서 등록 (작성)
+	 */
+	@PostMapping(value="/ad/dept/write")
+	public DeptDTO deptWrite(MultipartFile file, @ModelAttribute DeptDTO dto,
+			@RequestParam("imgsJson") String imgsJson) {
+		
+		// 값 다 들어오는거 확인!! 
+		logger.info(CommonUtil.toString(dto));
+		logger.info(CommonUtil.toString(file));
+		logger.info(CommonUtil.toString(imgsJson));
+		
+		
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		
+		try {
+			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			
+			dto.setImgs(imgs);
+			dto = userService.deptWrite(file, dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		
+		return dto;
 	}
 	
 }

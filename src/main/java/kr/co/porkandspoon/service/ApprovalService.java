@@ -81,7 +81,12 @@ public class ApprovalService {
         }
         
         // 첨부파일 저장
+//        int existingFile = approvalDAO.checkExistingFile(draftIdx);
+//	    if (existingFile == 0) {
+//	        saveFile(files, draftIdx);
+//	    }
         saveFile(files, draftIdx);
+        
         
         return draftIdx;
 	}
@@ -91,28 +96,44 @@ public class ApprovalService {
 		
 		for(MultipartFile file : files) {
 			try {
+				
 				//check!!! 얘도 if문안에 넣어야하는게 아닌가?
 				String ori_filename = file.getOriginalFilename();
 				logger.info("file 비어있나? : "+file.isEmpty()); // true
-				
+				logger.info("ori_filename : "+ ori_filename); 
+
 				if(!file.isEmpty()) {
 					logger.info("파일이 있는 경우만 타야하는데");
 					String ext = ori_filename.substring(ori_filename.lastIndexOf("."));
 					String new_filename = UUID.randomUUID()+ext;
 					
-					byte[] arr = file.getBytes();
-					// check!! 경로바꾸기
-					Path path = Paths.get("C:/upload/"+new_filename);
-					Files.write(path, arr);
+			        int existingFile = approvalDAO.checkExistingFile(draftIdx, ori_filename);
+			        logger.info("existingFile!!!! "+ existingFile);
+				    if (existingFile == 0) {
+						// db에 저장
+						FileDTO fileDto = new FileDTO();
+						fileDto.setOri_filename(ori_filename);
+						fileDto.setNew_filename(new_filename);
+						fileDto.setCode_name("df000");
+						fileDto.setPk_idx(draftIdx);
+						fileDto.setType(file.getContentType());
+						approvalDAO.fileSave(fileDto);
+						logger.info("db에 첨부파일 저장!!!! ");
+				    	
+				    	
+				    	byte[] arr = file.getBytes();
+						// check!! 경로바꾸기
+						Path path = Paths.get(paths+new_filename);
+						Files.write(path, arr);
+						logger.info("c드라이브에 첨부파일 저장!!!! ");
+
+				    }
+
+					// 파일이 이미 존재하는지 확인
+			        //Path filePath = Paths.get(paths, new_filename);
+			        //Files.exists(filePath);
 					
-					// db에 저장
-					FileDTO fileDto = new FileDTO();
-					fileDto.setOri_filename(ori_filename);
-					fileDto.setNew_filename(new_filename);
-					fileDto.setCode_name("df000");
-					fileDto.setPk_idx(draftIdx);
-					fileDto.setType(file.getContentType());
-					approvalDAO.fileSave(fileDto);
+					
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -130,10 +151,14 @@ public class ApprovalService {
         File descDir = new File(paths + img.getNew_filename());
 
         try {
-            // 파일 복사
-            Files.copy(srcFile.toPath(), descDir.toPath());
-            logger.info("복사 되었니?");
-            //approvalDAO.fileWrite(img);
+            Path filePath = Paths.get(paths, img.getNew_filename());
+	        if(Files.exists(filePath)) {
+	        	 // 파일 복사
+	            Files.copy(srcFile.toPath(), descDir.toPath());
+	            logger.info("복사 되었니?");
+	            //approvalDAO.fileWrite(img);
+	        }
+           
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -159,9 +184,69 @@ public class ApprovalService {
 		}
 
 		public List<ApprovalDTO> getApprLine(String draft_idx) {
-			return approvalDAO.getApprLine(draft_idx);
+			List<ApprovalDTO> apprLineList = approvalDAO.getApprLine(draft_idx);
+			for (ApprovalDTO approvalDTO : apprLineList) {
+				String appr_date = approvalDTO.getApproval_date();
+				if(appr_date != null) {
+					appr_date = appr_date.substring(0,10);
+				}
+				approvalDTO.setApproval_date(appr_date);
+			}
+			return apprLineList;
 		}
 
-	
+		public List<FileDTO> getAttachedFiles(String draft_idx) {
+			return approvalDAO.getAttachedFiles(draft_idx);
+		}
+
+		@Transactional
+		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files) {
+			
+			int row = approvalDAO.updateDraft(approvalDTO);
+			
+			String draftIdx = approvalDTO.getDraft_idx();
+			
+		    approvalDAO.removeApprovalLine(draftIdx);
+		    approvalDAO.saveApprovalLine(draftIdx, appr_user);
+		    
+			
+
+			
+		    // 이미지 정보 저장 (이미지가 있을 경우 반복문 사용)
+	        List<FileDTO> imgs = approvalDTO.getFileList();
+	        if (imgs != null && !imgs.isEmpty()) {
+	            for (FileDTO img : imgs) {
+	            	logger.info("img : "+ img);
+	            	logger.info("img.getOri_filename() : "+ img.getOri_filename());
+	                img.setPk_idx(draftIdx);
+	                img.setCode_name("draft");
+	                img.setType("img"); //이게맞나...?check!!!
+	                fileWrite(img); // 게시글 이미지 파일 복사 저장
+	            }
+	        }
+	        
+	        saveFile(files, draftIdx);
+			
+		}
+
+		public void deleteFiles(List<FileDTO> deleteFiles, String draftIdx) {
+			for (FileDTO file : deleteFiles) {
+	            String filePath = file.getNew_filename();
+	            // 파일 삭제 (서버 폴더에서)
+	            try {
+	                File fileToDelete = new File(paths + filePath);
+	                if (fileToDelete.exists()) {
+	                    boolean deleted = fileToDelete.delete();  // 파일 삭제
+	                }
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+
+	            // 데이터베이스에서 파일 정보 삭제
+	            file.setPk_idx(draftIdx);
+	            approvalDAO.deleteFiles(file);
+	        }
+			
+		}
 
 }

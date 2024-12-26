@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -164,89 +165,88 @@
 	
 	<div id="app">
    <jsp:include page="../sidebar.jsp" />
-   <div id="main">
-      <jsp:include page="../header.jsp" />
-      <div class="page-content">
-         <section id="menu">
-            <h4 class="menu-title">자원 관리</h4>
-            <ul>
-               <li class="active">전체보기</li>
-               <li>회의실 리스트</li>
-               <li>물품 리스트</li>
-            </ul>
-         </section>
-         <section class="cont">
-            <div class="col-12 col-lg-12">
-               <div class="tit-area">
-                  <h5>물품 등록</h5>
-               </div>
-               <div class="cont-body"> 
-                  <!-- 여기에 내용 작성 -->
-                  <div class="col-12 col-lg-12">
-	                  <table class="align-l">
-	                  	<tr>
-	                  		<th>등록자</th>
-	                  		<td class="align-l">김진형</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>물품 명</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>물품 유형</th>
-	                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
-	                  			<div class="form-check">
-									<input class="form-check-input" type="radio" name="article" id="flexRadioDefault1" value="" checked="checked">
-									<label class="form-check-label" for="flexRadioDefault1">지급 물품</label>
-								</div>
-								<div class="form-check" style="margin-left: 15px;">
-									<input class="form-check-input" type="radio" name="article" id="flexRadioDefault2" value="">
-									<label class="form-check-label" for="flexRadioDefault2">장기 대여</label>
-								</div>
-								<div class="form-check" style="margin-left: 15px;">
-									<input class="form-check-input" type="radio" name="article" id="flexRadioDefault2" value="">
-									<label class="form-check-label" for="flexRadioDefault2">단기 대여</label>
-								</div>
-	                  		</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>수량</th>
-	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="text" name="count" style="width: 50px;" maxlength="2"/>
-	                  			<p style="margin-left: 10px; margin-bottom: 0px;">개</p>
-	                  		</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content"></textarea></td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>활성 상태</th>
-	                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
-	                  			<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y" checked="checked">
-									<label class="form-check-label" for="flexRadioDefault1">활성화</label>
-								</div>
-								<div class="form-check" style="margin-left: 15px;">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N">
-									<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
-								</div>
-	                  		</td>
-	                  	</tr>
-	                  </table>
-                  </div>
-               	</div>
-               	<div class="col-12 col-lg-12">
-               		<div class="btn-room">
-	           			<div class="btn btn-primary">등록하기</div>
-	                	<div class="btn btn-primary">돌아가기</div>
+	   <div id="main">
+	      <jsp:include page="../header.jsp" />
+	      <div class="page-content">
+	         <section id="menu">
+	            <h4 class="menu-title">자원 관리</h4>
+	            <ul>
+	               <li class="active">전체보기</li>
+	               <li>회의실 리스트</li>
+	               <li>물품 리스트</li>
+	            </ul>
+	         </section>
+	         <section class="cont">
+	            <div class="col-12 col-lg-12">
+	               <div class="tit-area">
+	                  <h5>물품 등록</h5>
+	               </div>
+	               <div class="cont-body"> 
+	                  <!-- 여기에 내용 작성 -->
+	                  <div class="col-12 col-lg-12">
+		                  <table class="align-l">
+		                  	<tr>
+		                  		<th>등록자</th>
+		                  		<td class="align-l" id="writer">${info}</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>물품 명</th>
+		                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>모델명</th>
+		                  		<td class="coutn-dis">
+		                  			<input class="form-control sor-1" type="text" name="model"/>	                  			
+		                  		</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>물품 유형</th>
+		                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
+		                  			<div class="form-check">
+										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault1" value="G" checked="checked">
+										<label class="form-check-label" for="flexRadioDefault1">지급 물품</label>
+									</div>
+									<div class="form-check" style="margin-left: 15px;">
+										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault2" value="L">
+										<label class="form-check-label" for="flexRadioDefault2">장기 대여</label>
+									</div>
+									<div class="form-check" style="margin-left: 15px;">
+										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault3" value="S">
+										<label class="form-check-label" for="flexRadioDefault3">단기 대여</label>
+									</div>
+		                  		</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>내용</th>
+		                  		<td><textarea class="form-control art" name="content"></textarea></td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>활성 상태</th>
+		                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
+		                  			<div class="form-check">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y" checked="checked">
+										<label class="form-check-label" for="flexRadioDefault1">활성화</label>
+									</div>
+									<div class="form-check" style="margin-left: 15px;">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N">
+										<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
+									</div>
+		                  		</td>
+		                  	</tr>
+		                  </table>
+	                  </div>
+	               	</div>
+	               	<div class="col-12 col-lg-12">
+	               		<div class="btn-room">
+		           			<div class="btn btn-primary" onclick="articleWrite()">등록하기</div>
+		                	<div class="btn btn-primary" onclick="back()">돌아가기</div>
+		           		</div>
 	           		</div>
-           		</div>
-           	</div>
-         </section>   
-         
-      </div>
-    </div>
+	           	</div>
+	         </section>   
+	         
+	      </div>
+	    </div>
 	</div>
 	
 	
@@ -254,12 +254,24 @@
 </body>
 
 <!-- 부트스트랩 -->
-<script src="resources/assets/static/js/components/dark.js"></script>
-<script src="resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-<script src="resources/assets/compiled/js/app.js"></script>
+<script src="/resources/assets/static/js/components/dark.js"></script>
+<script src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script src="/resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
 
 <script>
+	
+	function articleWrite() {
+		
+		console.log('제목');		
+	}
+	
+	function back() {
+		console.log('돌아가기');
+	}
+	
+	
+	
 	
 </script>
 </html>

@@ -2,8 +2,12 @@ package kr.co.porkandspoon.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.porkandspoon.dao.UserDAO;
+import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.CareerDTO;
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.FileDTO;
@@ -340,8 +345,91 @@ public class UserService {
 	 * author yh.kim (24.12.24)
 	 * 직원 리스트 조회
 	 */
-	public List<UserDTO> userList() {
-		return userDao.userList();
+	public List<UserDTO> userList(int page, int cnt, String option, String keyword) {
+
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.userList(parmeterMap);
+	}
+
+	/**
+	 * author yh.kim (24.12.25)
+	 * 브랜드 생성 페이지 기안문 내용 조회
+	 */
+	public ApprovalDTO deptWriteView(String idx) {
+		return userDao.deptWriteView(idx);
+	}
+
+	/**
+	 * author yh.kim (24.12.25)
+	 * 부서코드 중복체크
+	 */
+	public boolean deptCodeOverlay(DeptDTO dto) {
+		return userDao.deptCodeOverlay(dto) == 0 ? true : false;
+	}
+
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 부서(브랜드) 등록
+	 */
+	public DeptDTO deptWrite(MultipartFile file, DeptDTO dto) {
+		
+		// 브랜드 등록
+		int deptRow = userDao.deptWrite(dto);
+		
+		logger.info("브랜드 생성 로우 => " + deptRow);
+		
+		List<FileDTO> imgs = dto.getImgs();
+		if(imgs.size() > 0 || imgs != null) {
+			
+			// FileDTO에서 new_filename 값 추출
+		    List<String> fileNames = imgs.stream()
+		                                 .map(FileDTO::getNew_filename) // new_filename 추출
+		                                 .filter(Objects::nonNull)      // null 값 필터링
+		                                 .collect(Collectors.toList()); // List<String>으로 변환
+
+		    // 파일 이동
+		    boolean moveResult = CommonUtil.moveFiles(fileNames);
+		    logger.info("파일 이동 결과: {}", moveResult);
+			
+			for (FileDTO img : imgs) {
+				img.setPk_idx(dto.getId());
+				img.setCode_name("bc100");
+				
+				String type = img.getOri_filename().substring(img.getOri_filename().lastIndexOf("."));
+				img.setType(type);
+				
+				int contentImgRow = userDao.userFileWriet(img);
+				logger.info("이미지 업로드 => ", contentImgRow);
+			}
+		}
+		
+		// 브랜드 로고 업로드 
+		if (file != null && !file.isEmpty()) { // 파일이 null이 아니고 비어있지 않은 경우에만 처리
+	        try {
+	            FileDTO fileDto = CommonUtil.uploadSingleFile(file);
+	            logger.info(CommonUtil.toString(fileDto));
+	            fileDto.setCode_name("bl001"); // 브랜드 로고
+	            fileDto.setPk_idx(dto.getId()); // 브랜드 코드 (id) 로 구분
+
+	            int fileRow = userDao.userFileWriet(fileDto);
+	            logger.info("업로드된 파일 로우 => " + fileRow);
+	        } catch (Exception e) {
+	            logger.error("파일 업로드 중 오류 발생", e);
+	        }
+	    } else {
+	        logger.warn("프로필 이미지 파일이 없습니다.");
+	    }
+		
+		return null;
 	}
 
 
