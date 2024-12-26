@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class DeptDTO extends ResponseDTO{
 
@@ -17,20 +18,35 @@ public class DeptDTO extends ResponseDTO{
    private int menuOrder;
    private String position;
    
-   public String getPosition() {
-	return position;
-}
-public void setPosition(String position) {
-	this.position = position;
-}
-public int getMenuOrder() {
-	return menuOrder;
-}
-public void setMenuOrder(int menuOrder) {
-	this.menuOrder = menuOrder;
-}
-public String getId() {
-      return id;
+   // 시행일
+   private String use_date;
+   // 부서 설명
+   private String content;
+   
+   private List<FileDTO> imgs;
+   
+   
+   
+   public List<FileDTO> getImgs() {
+		return imgs;
+	}
+	public void setImgs(List<FileDTO> imgs) {
+		this.imgs = imgs;
+	}
+public String getPosition() {
+		return position;
+	}
+	public void setPosition(String position) {
+		this.position = position;
+	}
+	public int getMenuOrder() {
+		return menuOrder;
+	}
+	public void setMenuOrder(int menuOrder) {
+		this.menuOrder = menuOrder;
+	}
+	public String getId() {
+	      return id;
    }
    public void setId(String id) {
       this.id = id;
@@ -83,5 +99,19 @@ public String getId() {
    public void setUse_yn(String use_yn) {
       this.use_yn = use_yn;
    }
+	public String getUse_date() {
+		return use_date;
+	}
+	public void setUse_date(String use_date) {
+		this.use_date = use_date;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	   
+   
 
 }

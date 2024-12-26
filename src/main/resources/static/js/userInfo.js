@@ -278,8 +278,6 @@
 		        fileAjax('POST', '/ad/user/write', formData);
 		        username.classList.remove('is-invalid');
 	        }
-	
-            
             
         } else {
             console.log('폼에 잘못된 값이 있습니다.');

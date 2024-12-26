@@ -268,18 +268,19 @@ public class CommonUtil {
        boolean allSuccess = false;
        
        for (String fileName : fileNames) {
-         File srcFile = new File(pathTem + fileName);
-         File destFile = new File(paths + fileName);
+         File srcFile = new File("C:/uploadTemporary/" + fileName);
+         File destFile = new File("C:/upload/" + fileName);
          
          if(srcFile.exists()) {
             try {
-               FileUtils.moveFile(srcFile, destFile); // 복사 후 파일 지우기
+               FileUtils.copyFile(srcFile, destFile);
             } catch (IOException e) {
-               System.out.println("복사 실패: " + srcFile.getName());
+            	System.out.println("복사 실패: " + srcFile.getAbsolutePath());
+               e.printStackTrace();
             }
             allSuccess = true;
          } else {
-            System.out.println("파일 없음: " + srcFile.getName());
+        	 System.out.println("파일 없음: " + srcFile.getAbsolutePath());
          }
       }
        return allSuccess;

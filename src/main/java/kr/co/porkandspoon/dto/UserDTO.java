@@ -51,6 +51,9 @@ public class UserDTO extends ResponseDTO{
    
    private int menuOrder;
    
+   
+   private int totalpage;
+   
    public int getMenuOrder() {
 	   return menuOrder;
 	}
@@ -63,6 +66,14 @@ public class UserDTO extends ResponseDTO{
    
    
    
+	public int getTotalpage() {
+		return totalpage;
+	}
+
+	public void setTotalpage(int totalpage) {
+		this.totalpage = totalpage;
+	}
+
 	public String getDept_name() {
 		return dept_name;
 	}

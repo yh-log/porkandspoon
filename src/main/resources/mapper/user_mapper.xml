@@ -134,8 +134,98 @@
 	</delete>
 	
 	<!-- 전 직원 조회 -->
-	<select id="userList" resultType="kr.co.porkandspoon.dto.UserDTO">
-		SELECT u.name, u.join_date, u.user_yn, u.company_num, u.person_num, u.username, u.title, d.`text` AS dept_name, c.content AS position_content FROM user u left join department d on u.parent = d.id LEFT JOIN code c on u.`position` = c.name 
+	<select id="userList" parameterType="map" resultType="kr.co.porkandspoon.dto.UserDTO">
+	    SELECT 
+	        u.name, 
+	        u.join_date, 
+	        u.user_yn, 
+	        u.company_num, 
+	        u.person_num, 
+	        u.username, 
+	        u.title, 
+	        d.text AS dept_name, 
+	        c.content AS position_content,
+	        CEIL(
+	            (SELECT COUNT(*) 
+	             FROM user u
+	             LEFT JOIN department d ON u.parent = d.id
+	             LEFT JOIN code c ON u.position = c.name
+	             WHERE 1 = 1
+	               <if test="keyword != null and keyword != ''">
+	                   AND (
+	                   <choose>
+	                       <when test="option == 'name'">
+	                           u.name LIKE CONCAT('%', #{keyword}, '%')
+	                       </when>
+	                       <when test="option == 'dept'">
+	                           d.text LIKE CONCAT('%', #{keyword}, '%')
+	                       </when>
+	                       <when test="option == 'position'">
+	                           c.content LIKE CONCAT('%', #{keyword}, '%')
+	                       </when>
+	                   </choose>
+	                   )
+	               </if>
+	            ) / #{limit}
+	        ) AS totalpage
+	    FROM 
+	        user u
+	    LEFT JOIN 
+	        department d ON u.parent = d.id
+	    LEFT JOIN 
+	        code c ON u.position = c.name
+	    WHERE 
+	        1 = 1
+	        <if test="keyword != null and keyword != ''">
+	            AND (
+	            <choose>
+	                <when test="option == 'name'">
+	                    u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'dept'">
+	                    d.text LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'position'">
+	                    c.content LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	            </choose>
+	            )
+	        </if>
+	    ORDER BY 
+	        u.join_date DESC
+	    LIMIT #{offset}, #{limit}
 	</select>
+
+	<!-- 브랜드 등록 페이지 정보(기안문 테이블) -->
+	<select id="deptWriteView" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT d.subject, d.name, d.content, d.from_date, u.name AS user_name, dept.text AS dept_text, al.approval_date
+		FROM 
+		    draft d LEFT JOIN user u ON d.username = u.username
+		LEFT JOIN department dept ON d.dept_id = dept.id
+		LEFT JOIN 
+		    (SELECT 
+		        draft_idx, MAX(`order_num`) AS max_order
+		        FROM approval_line
+		        GROUP BY draft_idx) 
+		    al_max ON d.draft_idx = al_max.draft_idx
+		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+			AND al.`order_num` = al_max.max_order 
+		    AND al.status = 'ap004'
+		WHERE 
+		    d.draft_idx = #{idx}
+		    AND d.target_type = 'df001'
+		    AND d.action_type = 'df011';
+	</select>
+	
+	<!-- 부서 코드 중복 검사 -->
+	<select id="deptCodeOverlay" parameterType="kr.co.porkandspoon.dto.DeptDTO" resultType="int">
+		SELECT COUNT(id) FROM department WHERE id = #{id}
+	</select>
+	
+	<!-- 부서(브랜드) 등록 -->
+	<insert id="deptWrite" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		INSERT INTO department(id, text, type, use_yn, use_date, content) 
+			VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content})
+	</insert>
 	
 </mapper>
