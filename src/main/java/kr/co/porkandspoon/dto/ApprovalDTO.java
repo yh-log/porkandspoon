@@ -43,6 +43,9 @@ public class ApprovalDTO {
 	public LocalDateTime approval_date;
 	public String comment;
 	
+	// 부서 이름
+	public String dept_text;
+	
 	
     public String getLine_idx() {
 		return line_idx;
@@ -254,6 +257,16 @@ public class ApprovalDTO {
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
+
+	public String getDept_text() {
+		return dept_text;
+	}
+
+	public void setDept_text(String dept_text) {
+		this.dept_text = dept_text;
+	}
+	
+	
 
 
 }

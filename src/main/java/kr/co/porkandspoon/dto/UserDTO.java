@@ -50,25 +50,11 @@ public class UserDTO extends ResponseDTO{
    private String position_content;
    
    private int menuOrder;
-   private String text;
-   private String new_filename;
-   public String getNew_filename() {
-	return new_filename;
-}
-
-public void setNew_filename(String new_filename) {
-	this.new_filename = new_filename;
-}
-
-public String getText() {
-	return text;
-}
-
-public void setText(String text) {
-	this.text = text;
-}
-
-public int getMenuOrder() {
+   
+   
+   private int totalpage;
+   
+   public int getMenuOrder() {
 	   return menuOrder;
 	}
 	
@@ -80,6 +66,14 @@ public int getMenuOrder() {
    
    
    
+	public int getTotalpage() {
+		return totalpage;
+	}
+
+	public void setTotalpage(int totalpage) {
+		this.totalpage = totalpage;
+	}
+
 	public String getDept_name() {
 		return dept_name;
 	}

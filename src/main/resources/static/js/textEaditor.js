@@ -75,21 +75,14 @@ function imageUploader(files, el){
             xhr.setRequestHeader(csrfHeader, csrfToken);
         },
         success: function(data){
-            console.log("여기타나?");
-            console.log(data);
         $(el).summernote('insertImage', data.new_filename, function($image) {
             $image.css('width', "100%");
-            console.log("여기타나????");
         });
             
-            console.log("여기타나?2");
         var newFilename = data.new_filename.split('/').pop(); 
         var oriFilename = data.ori_filename;
         
-            console.log("여기타나?3");
         tempImg.push({'new_filename' : newFilename, 'ori_filename' : oriFilename}); // dto와 이름 동일해야 함
-        
-            console.log("여기타나?4");
         
         },error: function(e){
             console.log('에러 => ', e);
@@ -102,6 +95,10 @@ function imageUploader(files, el){
 // 글 전송할 url 파라미터 포함
 // 전송 버튼에 textEaditorWrite(url) 함수 사용
 function textEaditorWrite(url){
+
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
 	var formData = new FormData($('form')[0]); // formData
 	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
 	formData.append('content', content);

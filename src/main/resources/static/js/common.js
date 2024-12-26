@@ -8,7 +8,10 @@
 */
 function getAjax(url, type, data = null) { // data 매개변수 추가, 기본값 null
 
+<<<<<<< HEAD
+=======
     console.log('실행');
+>>>>>>> 4df09969e4125aa7d1b17dd52ef96bd38c569a6b
     $.ajax({
         type: 'GET',
         url: url,
@@ -39,7 +42,7 @@ function getAjax(url, type, data = null) { // data 매개변수 추가, 기본�
 function httpAjax(type, url, params){
 
    var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+   var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
     $.ajax({
         type : type,
