@@ -334,10 +334,13 @@
     	
         let node = data.node;
         
-        var params = {username: node.id};
-		console.log(params);
-        
-        httpAjax('GET', '/getUserlist', params);
+        if (node.type === 'file') {
+            var params = {username: node.id};
+            console.log(params);
+            httpAjax('GET', '/getUserlist', params);
+        } else {
+            console.log('부서 노드 선택됨, 요청 생략');
+        }
     });
     
     /* 결재라인에 사원 등록 */
