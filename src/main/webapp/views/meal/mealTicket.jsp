@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -148,43 +149,26 @@
 							<div class="row">
 							<div class="col-12 col-lg-2">
 								<div class="ticket-container">
-								    <!-- 반복될 항목 -->
-								    <div class="ticket-item">
-								        <img src="resources/img/logo.jpg" alt="Logo">
-								        <h4>식권 1장</h4>
-								        <h5>7,000원</h5>
-								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
-								    </div>
-								    <div class="ticket-item">
-								        <img src="resources/img/logo.jpg" alt="Logo">
-								        <h4>식권 10장</h4>
-								        <h5>65,000원</h5>
-								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
-								    </div>
-								    <div class="ticket-item">
-								        <img src="resources/img/logo.jpg" alt="Logo">
-								        <h4>식권 50장</h4>
-								        <h5>120,000원</h5>
-								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
-								    </div>
-								    <div class="ticket-item">
-								        <img src="resources/img/logo.jpg" alt="Logo">
-								        <h4>식권 100장</h4>
-								        <h5>300,000원</h5>
-								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
-								    </div>
-								    <div class="ticket-item">
-								        <img src="resources/img/logo.jpg" alt="Logo">
-								        <h4>식권 100장</h4>
-								        <h5>300,000원</h5>
-								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
-								    </div>
-								    <div class="ticket-item">
-								        <img src="resources/img/logo.jpg" alt="Logo">
-								        <h4>식권 100장</h4>
-								        <h5>300,000원</h5>
-								        <a href="#" class="btn btn-primary" onclick="layerPopup('해당 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
-								    </div>
+								    <c:forEach var="ticket" items="${list}">
+								    <c:if test="${not empty ticket.name}">
+								        <div class="ticket-item">
+								            <!-- filedto와 new_filename이 null인지 확인하여 기본 이미지 설정 -->
+								            <c:choose>
+								                <c:when test="${not empty ticket.filedto and not empty ticket.filedto.new_filename}">
+								                    <img src="/uploads/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                </c:when>
+								                <c:otherwise>
+								                    <img src="/resources/img/default.jpg" alt="기본 이미지">
+								                </c:otherwise>
+								            </c:choose>
+								            <!-- 티켓 이름과 장수 표시 -->
+								            <h4>${ticket.name} ${ticket.count}장</h4>
+								            <h5>${ticket.cost}</h5>
+								            <a href="#" class="btn btn-primary" 
+								               onclick="layerPopup('${ticket.name} 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								        </div>
+								    </c:if>
+								</c:forEach>
 								</div>
 							</div>
 

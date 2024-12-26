@@ -17,11 +17,13 @@ public class MealDTO extends ResponseDTO {
     private String name;
     private int cost;
     private int count;
-    private int creater;
+    private String creater;
     private LocalDateTime create_date; // 변경된 타입
-    private int updater;
+    private String updater;
     private LocalDateTime update_date; // 변경된 타입
-
+    private String use_yn;
+    
+    private FileDTO filedto;
     
     
     public int getMenu_idx() {
@@ -97,15 +99,17 @@ public class MealDTO extends ResponseDTO {
         this.count = count;
     }
 
-    public int getCreater() {
-        return creater;
-    }
+   
 
-    public void setCreater(int creater) {
-        this.creater = creater;
-    }
+    public String getCreater() {
+		return creater;
+	}
 
-    public LocalDateTime getCreate_date() {
+	public void setCreater(String creater) {
+		this.creater = creater;
+	}
+
+	public LocalDateTime getCreate_date() {
         return create_date;
     }
 
@@ -113,20 +117,38 @@ public class MealDTO extends ResponseDTO {
         this.create_date = create_date;
     }
 
-    public int getUpdater() {
-        return updater;
-    }
+ 
 
-    public void setUpdater(int updater) {
-        this.updater = updater;
-    }
+    public String getUpdater() {
+		return updater;
+	}
 
-    public LocalDateTime getUpdate_date() {
+	public void setUpdater(String updater) {
+		this.updater = updater;
+	}
+
+	public LocalDateTime getUpdate_date() {
         return update_date;
     }
 
     public void setUpdate_date(LocalDateTime update_date) {
         this.update_date = update_date;
     }
+
+	public String getUse_yn() {
+		return use_yn;
+	}
+
+	public void setUse_yn(String use_yn) {
+		this.use_yn = use_yn;
+	}
+
+	public FileDTO getFiledto() {
+		return filedto;
+	}
+
+	public void setFiledto(FileDTO filedto) {
+		this.filedto = filedto;
+	}
 
 }

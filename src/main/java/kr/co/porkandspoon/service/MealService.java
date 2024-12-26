@@ -1,7 +1,10 @@
 package kr.co.porkandspoon.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +38,26 @@ public class MealService {
 		
 	}
 
-	public int setmealTicket(Map<String, String> params) {
-		return mealDAO.setmealTicket(params);
-		
-	}
 	
-	public int setmealTicket(Map<String, String> params, FileDTO dto) {
-		mealDAO.setmealTicket(params);
-		 String idx =CommonUtil.toString(params.get("meal_idx"));
-		dto.setPk_idx(idx);
-		
-		
-		return mealDAO.setmealFile(dto);
-		
-	}
+	 @Transactional
+	    public int setmealTicket(Map<String, String> params, FileDTO dto) {
+	        // 첫 번째 데이터베이스 작업
+	        mealDAO.setmealTicket(params);
+
+	        // pk_idx 설정
+	        String pk_idx = CommonUtil.toString(params.get("meal_idx"));
+	        dto.setPk_idx(pk_idx);
+
+	        // 두 번째 데이터베이스 작업
+	        int result = mealDAO.setmealFile(dto);
+
+	        // 결과가 0이거나 실패할 경우 예외를 던져 트랜잭션을 롤백
+	        if (result == 0) {
+	            throw new RuntimeException("Failed to execute setmealFile");
+	        }
+
+	        return result;
+	    }
 	
 
 	public MealDTO detailmealTicket(int meal_idx) {
@@ -59,6 +68,31 @@ public class MealService {
 	public int editmealTicket(Map<String, String> params) {
 		return mealDAO.editmealTicket(params);
 		
+	}
+
+	public FileDTO getFile(int meal_idx) {
+		
+		return mealDAO.getFile(meal_idx);
+	}
+
+	public List<MealDTO> getmealTicket() {
+		return mealDAO.getmealTicket();
+		
+	}
+
+	public int menuOverlay(LocalDateTime start_date, LocalDateTime end_date) {
+	    Integer menu_Idx = mealDAO.menuOverlay(start_date, end_date);
+	    
+	    logger.info("있니 {}:",menu_Idx);
+	    if (menu_Idx>0) {
+			return menu_Idx;
+		}else {
+			
+			return menu_Idx = 0;
+		}
+	    
+	    
+	    
 	}
 
 	

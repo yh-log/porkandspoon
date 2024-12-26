@@ -50,10 +50,23 @@
     
     <insert id="setmealFile" parameterType="kr.co.porkandspoon.dto.FileDTO">
     	INSERT INTO file(code_name,ori_filename,new_filename,type,pk_idx)
-    		VALUES(#{code_name},#{ori_filename},#{new_filename},#{type},#{idx})
+    		VALUES(#{code_name},#{ori_filename},#{new_filename},#{type},#{pk_idx})
     </insert>
     
+    <select id="getFile" resultType="kr.co.porkandspoon.dto.FileDTO" parameterType="int">
+    	SELECT * FROM file WHERE pk_idx = #{meal_idx} AND code_name = 'MT001'
+    </select>
     
+    <select id="getmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" >
+    	select * from meal
+    </select>
     
-    
+   <select id="menuOverlay" resultType="int">
+    SELECT COALESCE(menu_idx, 0) AS menu_idx
+    FROM meal_menu
+    WHERE start_date = #{start_date}
+      AND end_date = #{end_date}
+    LIMIT 1
+</select>
+
 </mapper>
