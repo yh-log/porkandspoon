@@ -50,7 +50,7 @@
 		    is_item AS is_active,
 		    use_yn
 		FROM 
-		    item WHERE use_yn = 'Y'
+		    item WHERE use_yn = 'Y' order by create_date desc limit #{offset}, #{size}
 	</select>
 	
 	
