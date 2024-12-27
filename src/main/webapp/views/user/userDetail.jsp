@@ -265,7 +265,7 @@ $(document).ready(function(){
     
     // todo - 나중에 동적으로 username 받아서 넘기기 (list, write 에서)
     var username = 'qtgks9';
-    httpAjax('POST', '/ad/user/detail/qtgks9', username);
+    getAjax('/ad/user/detail/qtgks9', username);
     
 });
 

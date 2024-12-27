@@ -30,7 +30,7 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
-	#searchLayout{
+	.searchLayout{
 	    display: flex;
 	    align-items: center; /* 세로 중앙 정렬 */
    		justify-content: end; /* 가로 중앙 정렬 */
@@ -84,65 +84,33 @@
 						<div class="cont-body"> 
 							<div class="row">
 								<div class="col-5 col-lg-5" id="filterLayout">
-									<span>리스트</span>
-									<span>생성요청</span>
-									<span>삭제요청</span>
+									<span onclick="listCall('/ad/dept/getList')">리스트</span>
+									<span onclick="listCall('/ad/dept/createList')">생성요청</span>
+									<span onclick="listCall('/ad/dept/deleteList')">삭제요청</span>
 								</div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>부서</option>
-										<option>이름</option>
+								<div class="searchLayout" class="col-7 col-lg-7">
+									<select class="form-select selectStyle" id="searchOption">
+										<option value="dept">부서</option>
+										<option value="name">이름</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+									<button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button>
 								</div>
 							</div>
 							<div class="col-12 col-lg-12">
 								<table>
-									<thead>
-										<tr>
-											<th>사번</th>
-											<th>부서</th>
-											<th>이름</th>
-											<th>직위</th>
-											<th>사내번호</th>
-											<th>입사일</th>
-											<th>상태</th>
-										</tr>
+									<thead id="listHead">
+										
 									</thead>
-									<tbody id="userList">
-										<tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
+									<tbody id="listBody">
+										
 									</tbody>
 								</table>
+							</div>
+							<div class="">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center" id="pagination"></ul>
+								</nav>
 							</div>
 						</div> <!-- cont-body -->
 					</div>
@@ -171,9 +139,156 @@
 	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script>
 
+var firstPage = 1;
+var paginationInitialized = false;
+var currentUrl = ''; // 현재 URL을 저장하는 전역 변수
+
+$(document).ready(function () {
+    // 초기화 로직 필요 시 추가
+});
+
+// URL 변경 및 페이지 호출
+function listCall(url) {
+    currentUrl = url; // 전역 변수에 URL 저장
+    pageCall(firstPage); // 첫 페이지 호출
+}
+
+// 검색 폼 제출 시 AJAX 호출
+$('#searchBtn').on('click', function(event) {
+    event.preventDefault(); // 기본 동작 중지
+    firstPage = 1;
+    paginationInitialized = false;
+    pageCall(firstPage); // 검색어와 함께 첫 페이지 호출
+});
+
+function pageCall(page = 1) {
+    var option = $('#searchOption').val();
+    var keyword = $('input[name="search"]').val(); // 검색어
+
+    if (!currentUrl) {
+        console.error('URL이 설정되지 않았습니다.');
+        return;
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: currentUrl, // 항상 전역 변수의 URL 사용
+        data: {
+            'page': page || 1, // 페이지 기본값 설정
+            'cnt': 10,         // 한 페이지당 항목 수
+            'option': option,
+            'keyword': keyword // 검색어
+        },
+        datatype: 'JSON',
+        success: function(response) {
+            console.log("응답 데이터:", response);
+
+            // 데이터 처리
+            if (response && response.length > 0) {
+                getSuccess(response); // 검색 결과를 테이블에 렌더링
+            } else {
+                console.log('검색 결과가 없습니다.');
+                getSuccess(response);
+            }
+
+            // 페이지네이션 초기화
+            var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
+            console.log('총 페이지 수:', totalPages);
+
+            if (!paginationInitialized || keyword !== '') {
+                $('#pagination').twbsPagination('destroy');
+                $('#pagination').twbsPagination({
+                    startPage: page,
+                    totalPages: totalPages,
+                    visiblePages: 5,
+                    initiateStartPageClick: false,
+                    onPageClick: function(evt, page) {
+                        console.log('클릭된 페이지:', page);
+                        pageCall(page); // 클릭한 페이지 호출
+                    }
+                });
+                paginationInitialized = true;
+            }
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+}
+
+function getSuccess(response) {
+    console.log(response);
+
+    // 기존 내용 초기화
+    $('#listHead').empty(); // 헤더 초기화
+    $('#listBody').empty(); // 바디 초기화
+
+    if (response && response.length > 0) {
+        var typeCheck = response[0];
+
+        // 브랜드 리스트 출력
+        if (typeCheck.type === "B") {
+            console.log('브랜드리스트');
+
+            // 테이블 헤더 추가
+            var headContent = '<tr><th>부서코드</th><th>브랜드명</th><th>대표직원</th><th>대표번호</th><th>시행일</th><th>활성</th></tr>';
+            $('#listHead').append(headContent);
+
+            var content = '';
+
+            // 테이블 데이터 추가
+            response.forEach(function (item) {
+                content += '<tr>';
+                content += '<td>' + item.id + '</td>';
+                content += '<td>' + item.text + '</td>';
+                content += '<td>' + item.creater + ' ' + item.content + '</td>';
+                content += '<td>' + item.position + '</td>';
+                content += '<td>' + item.use_date + '</td>';
+
+                if (item.use_yn === "Y") {
+                    content += '<td><button class="btn icon btn-success" style="margin:0px 5px;">활성</button></td>';
+                } else {
+                    content += '<td><button class="btn icon btn-light" style="margin:0px 5px;">비활성</button></td>';
+                }
+
+                content += '</tr>';
+            });
+
+            $('#listBody').append(content);
+        }
+        
+        else{
+        	var headContent = '<tr><th>no</th><th colspan="2">문서제목</th><th>브랜드명</th><th>작성자</th><th>결재일</th></tr>';
+            $('#listHead').append(headContent);
+            var content = '';
+
+            // 테이블 데이터 추가
+            response.forEach(function (item) {
+            	content += '<tr>';
+                content += '<td>' + item.draft_idx + '</td>';
+                content += '<td colspan="2">' + item.subject + '</td>';
+                content += '<td>' + item.name + '</td>';
+                content += '<td>' + item.user_name + ' ' + item.content + '</td>';
+                
+                var date = item.approval_date ? item.approval_date.split(' ')[0] : '-';
+                
+                content += '<td>' + date + '</td>';
+                content += '</tr>';
+            });
+            
+            $('#listBody').append(content);
+        }
+        
+        
+        
+    } else {
+        // 검색 결과가 없는 경우
+        var noResultContent = '<tr><td colspan="6" class="text-center">검색 결과가 없습니다.</td></tr>';
+        $('#listBody').append(noResultContent);
+    }
+}
 
 
 

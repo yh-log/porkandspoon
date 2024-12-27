@@ -45,6 +45,15 @@
 	    justify-content: flex-end;
 	    gap: 10px;
 	}
+	
+	#deptLogo{
+		width: 200px;
+    	height: 200px;
+	}
+	
+	#listBtn{
+		float: right;
+	}
 
 </style>
 
@@ -80,54 +89,34 @@
 							<form>
 								<table>
 									<tr>
-										<td rowspan="2" class="filebox">
-											<img src="" id="userProfile"/>
+										<td rowspan="3" class="filebox">
+											<img src="" id="deptLogo"/>
 										</td>
-										<th>문서 제목</th>
-										<td>${deptInfo.subject}</td>
-										<th>기안자</th>
-										<td>${deptInfo.user_name}</td>
-									</tr>
-									<tr>
-										<th>결재 일자</th>
-										<td>${deptInfo.approval_date}</td>
-										<th>작성 부서</th>
-										<td>${deptInfo.dept_text}</td>
-									</tr>
-									<tr class="custom-height-row">
 										<th>브랜드 명</th>
-										<td colspan="2">${deptInfo.name}</td>
+										<td>${deptInfo.text}</td>
 										<th>브랜드 코드</th>
-										<td>
-											${deptInfo.id}
-										</td>
-									</tr>
-									<tr class="custom-height-row">
-										<th>소속 직원</th>
-										<td colspan="2"> </td>
-										<th>시행일자</th>
-										<td>{deptInfo.from_date}</td>
+										<td>${deptInfo.id}</td>
 									</tr>
 									<tr>
 										<th>활성</th>
-										<td colspan="2">
-											<div class="radioLayoutBox">
-												<input type="radio" name="use_yn" value="Y" class="form-check-input" checked/> 활성
-	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
-	 									    </div>
+										<td>
+											<span id="deptUseYN"></span>
 										</td>
+										<th>시행일자</th>
+										<td>${deptInfo.use_date}</td>
+									</tr>
+									<tr class="custom-height-row">
+										<th>소속직원</th>
+										<td colspan="3"></td>
 									</tr>
 									<tr><th colspan="5">설명</th></tr>
 									<tr>
-										<td colspan="5">
-											<textarea name="postContent" id="summernote" maxlength="10000"></textarea>
+										<td colspan="5">${deptInfo.content}
 										</td>
 									</tr>
 								</table>
-								<div class="btn-Layout">
-									<button type="button" class="btn btn-primary">수정</button>
-									<button class="btn btn-outline-primary">목록</button>
-								</div>
+								<button type="button" class="btn btn-primary">수정</button>
+								<button class="btn btn-outline-primary" id="listBtn">목록</button>
 							</form>
 						</div> <!-- cont-body -->
 					</div>
@@ -144,17 +133,28 @@
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script>
 
-
+	$(document).ready(function() {
+	    
+	    var logofile = '${deptInfo.logo}';
+	    
+	    if(logofile){
+	    	document.getElementById('deptLogo').src = '/photo/' + logofile;
+	    }else{
+	    	 document.getElementById('deptLogo').src = '/resource/img/google.png';
+	    }
+	    
+	    var use_yn = '${deptInfo.use_yn}';
+	    
+	    if(use_yn === 'Y'){
+	    	$('#deptUseYN').text('활성');
+	    }else{
+	    	$('#deptUseYN').text('비활성');
+	    }
+	});
 
 
 </script>

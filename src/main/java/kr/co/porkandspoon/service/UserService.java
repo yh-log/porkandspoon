@@ -266,7 +266,7 @@ public class UserService {
 	public UserDTO userDetail(String username) {
 		
 		UserDTO dto = new UserDTO();
-		// 직원 정보 (+프로필) + 이력도????
+		
 		dto = userDao.userDetail(username);
 		
 		logger.info(CommonUtil.toString(dto));
@@ -430,6 +430,134 @@ public class UserService {
 	    }
 		
 		return null;
+	}
+
+	/**
+	 * author yh.kim (24.12.26) 
+	 * 부서 상세 페이지 이동
+	 */
+	public DeptDTO deptDetsil(String id) {
+		
+		return userDao.deptDetail(id);
+	}
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 부서 수정
+	 */
+	public DeptDTO deptUpdate(MultipartFile file, DeptDTO dto) {
+		
+		int deptRow = userDao.deptUpdate(dto);
+		
+		logger.info("브랜드 수정 로우 => " + deptRow);
+		
+		List<FileDTO> imgs = dto.getImgs();
+		if(imgs.size() > 0 || imgs != null) {
+			
+			// FileDTO에서 new_filename 값 추출
+		    List<String> fileNames = imgs.stream()
+		                                 .map(FileDTO::getNew_filename) // new_filename 추출
+		                                 .filter(Objects::nonNull)      // null 값 필터링
+		                                 .collect(Collectors.toList()); // List<String>으로 변환
+
+		    // 파일 이동
+		    boolean moveResult = CommonUtil.moveFiles(fileNames);
+		    logger.info("파일 이동 결과: {}", moveResult);
+			
+			for (FileDTO img : imgs) {
+				img.setPk_idx(dto.getId());
+				img.setCode_name("bc100");
+				
+				String type = img.getOri_filename().substring(img.getOri_filename().lastIndexOf("."));
+				img.setType(type);
+				
+				int contentImgRow = userDao.userFileWriet(img);
+				logger.info("이미지 업로드 => ", contentImgRow);
+			}
+		}
+		
+		// 브랜드 로고 업로드 
+		if (file != null && !file.isEmpty()) { // 파일이 null이 아니고 비어있지 않은 경우에만 처리
+			
+			// new_filename + pk_idx 를 넘거야 함!! 
+			String pk_idx = dto.getId();
+			String code_name = "bl001";
+	    	int fileDeleteRow = userDao.fileDelete(pk_idx, code_name);
+	    	
+	    	logger.info("파일 삭제 로우 => " + fileDeleteRow);
+	    	
+	    	if(fileDeleteRow == 0) {
+	    		logger.warn("삭제할 파일 정보가 없습니다.");
+	    	}
+			
+			    try {
+			        FileDTO fileDto = CommonUtil.uploadSingleFile(file);
+			        logger.info(CommonUtil.toString(fileDto));
+			        fileDto.setCode_name("bl001"); // 브랜드 로고
+			        fileDto.setPk_idx(dto.getId()); // 브랜드 코드 (id) 로 구분
+
+			        int fileRow = userDao.userFileWriet(fileDto);
+			        logger.info("업로드된 파일 로우 => " + fileRow);
+			    } catch (Exception e) {
+			        logger.error("파일 업로드 중 오류 발생", e);
+			    }
+			} else {
+			    logger.warn("로고 이미지 파일이 없습니다.");
+			}
+		
+		
+		return null;
+	}
+
+
+	public List<DeptDTO> deptGetList(int page, int cnt, String option, String keyword) {
+		
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.deptGetList(parmeterMap);
+	}
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 생성 요청 리스트 조회
+	 */
+	public List<ApprovalDTO> deptCreateList(int page, int cnt, String option, String keyword) {
+
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.deptCreateList(parmeterMap);
+		
+	}
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 삭제 요청 리스트 조회
+	 */
+	public List<ApprovalDTO> deptDeleteList(int page, int cnt, String option, String keyword) {
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.deptDeleteList(parmeterMap);
 	}
 
 
