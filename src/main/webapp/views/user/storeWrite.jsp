@@ -57,6 +57,7 @@
 	    gap: 10px;
 	}
 	
+	
 	.btnInputBox{
 		display: flex;
 		align-items: center;
@@ -76,6 +77,53 @@
 	    flex-wrap: nowrap;
 	    white-space: nowrap;
 	    gap: 10px;
+	}
+	
+	.btn-Layout{
+		display: flex;
+		gap: 10px;
+	    justify-content: center;
+	}
+	
+	.radioLayoutBox{
+		display: flex;
+	    gap: 20px;
+    	font-weight: 500;
+	}
+	
+	#overlayMessage{
+	    display: none;
+	    margin-bottom: -15px;
+	    margin-top: -32px;
+	    font-size: 14px;
+	    color : var(--bs-primary);
+	    float: left;
+	}
+	
+	
+	.filebox label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    color: var(--bs-secondary);
+	    vertical-align: middle;
+	    background-color: #fff;
+	    cursor: pointer;
+	    height: 40px;
+	    margin-left: 10px;
+	}
+	
+	.filebox input[type="file"] {
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    border: 0;
+	}
+	
+	.priview{
+		width: 170px;
+		height: 270px;
 	}
 
 </style>
@@ -110,53 +158,36 @@
 						</div>
 						<div class="cont-body"> 
 							<form>
-								<div class="row">
-									<div class="col-6 col-lg-6">
-										<div id="selectBox">
-											활성
-											<select class="form-select selectStyle"> 
-												<option>활성</option>
-												<option>비활성</option>
-											</select>
-											상태
-											<select class="form-select selectStyle">
-												<option>승인</option>
-												<option>반려</option>
-												<option>대기</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-6 col-lg-6">
-										<button type="button" class="btn btn-primary">등록</button>
-										<button type="button" class="btn btn-outline-secondary">취소</button>
-									</div>
-								</div>
 								<table>
 									<tr>
-										<td rowspan="2">로고</td>
+										<td rowspan="3" class="filebox">
+											<img src="" id="userProfile"/>
+										</td>
 										<th>문서 제목</th>
-										<td><input type="text" name="subject" class="form-control" /></td>
+										<td><span id="draft-subject">${deptInfo.subject}</span></td>
 										<th>기안자</th>
-										<td><input type="text" name="username" class="form-control" /></td>
+										<td><span id="draft-username">${deptInfo.user_name}</span></td>
 									</tr>
 									<tr>
 										<th>결재 일자</th>
-										<td><input type="text" name="approval_date" class="form-control" /></td>
+										<td><span id="draft-approvalDate">${deptInfo.approval_date}</span></td>
 										<th>작성 부서</th>
-										<td><input type="text" name="department_id" class="form-control" /></td>
+										<td><span id="draft-deptId">${deptInfo.dept_text}</span></td>
 									</tr>
 									<tr class="custom-height-row">
 										<th>직영점 명</th>
-										<td colspan="2"><input type="text" name="name" class="form-control" /></td>
+										<td><input type="text" name="text"  class="form-control" value="${deptInfo.name}" id="deptCode" data-required="true"/></td>
 										<th>직영점 코드</th>
-										<!-- 부서 테이블 id (department 테이블 pk) -->
-										<td class="btnInputBox">
-											<input type="text" name="id" class="form-control" />
-											<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
+										<td>
+											<div class="inline-layout">
+												<input type="text" name="id" class="form-control" data-required="true"/>
+												<button type="button" onclick="deptOverlay()" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
+											</div>
+											<div id="overlayMessage"></div>
 										</td>
 									</tr>
 									<tr class="custom-height-row">
-										<th>담당 직원</th>
+										<th>직영점주</th>
 										<td colspan="2">
 											<div class="inline-layout">
 												<input type="text" name="" class="form-control .disable" disabled="disabled"/> 
@@ -165,7 +196,7 @@
 										</td>
 										<th>시행일자</th>
 										<td>
-											<input type="date" name="from_date" class="form-control" />
+											<input type="date" name="use_date" class="form-control" value="${deptInfo.from_date}" data-required="true"/>
 										</td>
 									</tr>
 									<tr>
@@ -181,6 +212,15 @@
 											</div>
 										</td>
 									</tr>
+									<tr>
+										<th>활성</th>
+										<td colspan="2">
+											<div class="radioLayoutBox">
+												<input type="radio" name="use_yn" value="Y" class="form-check-input" checked/> 활성
+	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
+	 									    </div>
+										</td>
+									</tr>
 									<tr><th colspan="5">설명</th></tr>
 									<tr>
 										<td colspan="5">
@@ -188,6 +228,10 @@
 										</td>
 									</tr>
 								</table>
+								<div class="btn-Layout">
+									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 등록하시겠습니까?','등록','취소', deptWrire, removeAlert)">등록</button>
+									<button class="btn btn-outline-primary">취소</button>
+								</div>
 							</form>
 						</div> <!-- cont-body -->
 					</div>
@@ -207,7 +251,6 @@
 
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
 

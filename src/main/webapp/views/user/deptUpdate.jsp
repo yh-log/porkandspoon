@@ -57,6 +57,7 @@
 	    gap: 10px;
 	}
 	
+	
 	.btnInputBox{
 		display: flex;
 		align-items: center;
@@ -69,6 +70,72 @@
 	    padding-top: 0;
 	    padding-bottom: 0;
 	}
+	
+	td div.inline-layout{
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+	}
+	
+	.btn-Layout{
+		display: flex;
+		gap: 10px;
+	    justify-content: center;
+	}
+	
+	.radioLayoutBox{
+		display: flex;
+	    gap: 20px;
+    	font-weight: 500;
+	}
+	
+	#overlayMessage{
+	    display: none;
+	    margin-bottom: -15px;
+	    font-size: 14px;
+	    color : var(--bs-primary);
+	    float: left;
+	}
+	
+	
+	.filebox label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    color: var(--bs-secondary);
+	    vertical-align: middle;
+	    background-color: #fff;
+	    cursor: pointer;
+	    height: 40px;
+	    margin-left: 10px;
+	}
+	
+	.filebox input[type="file"] {
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    border: 0;
+	}
+	
+	.priview{
+		width: 170px;
+		height: 270px;
+	}
+	
+	#deptLogo{
+		width: 180px;
+    	height: 200px;
+	}
+	
+	.input-readonly {
+	    pointer-events: none; /* 입력 및 클릭 불가 */
+	    background-color: #f0f0f0; /* 읽기 전용처럼 보이도록 회색 처리 */
+	    color: #888; /* 텍스트 색상 변경 */
+	}
+	
 
 </style>
 
@@ -102,70 +169,54 @@
 						</div>
 						<div class="cont-body"> 
 							<form>
-								<div class="row">
-									<div class="col-6 col-lg-6">
-										<div id="selectBox">
-											활성
-											<select class="form-select selectStyle"> 
-												<option>활성</option>
-												<option>비활성</option>
-											</select>
-											상태
-											<select class="form-select selectStyle">
-												<option>승인</option>
-												<option>반려</option>
-												<option>대기</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-6 col-lg-6">
-										<button class="btn btn-primary">수정</button>
-										<button class="btn btn-outline-secondary">취소</button>
-									</div>
-								</div>
 								<table>
 									<tr>
-										<td rowspan="2">로고</td>
-										<th>문서 제목</th>
-										<td><input type="text" name="subject" class="form-control" /></td>
-										<th>기안자</th>
-										<td><input type="text" name="username" class="form-control" /></td>
+										<td rowspan="3" class="filebox">
+											<div id="imgPreview"></div>
+											<img src="" id="deptLogo"/>
+											<label for="file">+ 로고 수정</label>
+											<input type="file" id="file" name="file" onchange="clearLogo(); preview(this);" id="fileInput"/>
+										</td>
+										<th>브랜드 명</th>
+										<td colspan="2"><input type="text" name="text"  class="form-control" value="${deptInfo.text}" data-required="true"/></td>
+										<th>브랜드 코드</th>
+										<td>
+											<input type="text" name="id" id="deptCode" class="form-control input-readonly" data-required="true" value="${deptInfo.id}"/>
+										</td>
 									</tr>
 									<tr>
-										<th>결재 일자</th>
-										<td><input type="text" name="approval_date" class="form-control" /></td>
-										<th>작성 부서</th>
-										<td><input type="text" name="department_id" class="form-control" /></td>
-									</tr>
-									<tr class="custom-height-row">
-										<th>브랜드 명</th>
-										<td colspan="2"><input type="text" name="name" class="form-control" /></td>
-										<th>브랜드 코드</th>
-										<!-- 부서 테이블 id (department 테이블 pk) -->
-										<td class="btnInputBox">
-											<input type="text" name="id" class="form-control" />
-											<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
+										<th>활성</th>
+										<td colspan="2">
+											<div class="radioLayoutBox">
+												<input type="radio" name="use_yn" value="Y" class="form-check-input"/> 활성
+	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
+	 									    </div>
+										</td>
+										<th>시행일자</th>
+										<td>
+											<input type="date" name="use_date" class="form-control" value="${deptInfo.use_date}" data-required="true"/>
 										</td>
 									</tr>
 									<tr class="custom-height-row">
 										<th>소속 직원</th>
-										<td colspan="2" class="btnInputBox">
-											<!-- 소속 부서를 가져와야 함!! -->
-											<input type="text" name="" class="form-control .disable" disabled="disabled"/> 
-											<button class="btn btn-primary" ><i class="bi bi-diagram-3"></i></button>
-										</td>
-										<th>시행일자</th>
-										<td>
-											<input type="date" name="from_date" class="form-control" />
+										<td colspan="4">
+											<div class="inline-layout">
+												<input type="text" name="" class="form-control .disable" disabled="disabled"/> 
+												<button class="btn btn-primary" ><i class="bi bi-diagram-3"></i></button>
+											</div>
 										</td>
 									</tr>
-									<tr><th colspan="5">설명</th></tr>
+									<tr><th colspan="6">설명</th></tr>
 									<tr>
-										<td colspan="5">
+										<td colspan="6">
 											<textarea name="postContent" id="summernote" maxlength="10000"></textarea>
 										</td>
 									</tr>
 								</table>
+								<div class="btn-Layout">
+									<button type="button" class="btn btn-primary" onclick="layerPopup('브랜드를 수정하시겠습니까?','수정','취소', deptUpdate, removeAlert)">수정</button>
+									<button class="btn btn-outline-primary">취소</button>
+								</div>
 							</form>
 						</div> <!-- cont-body -->
 					</div>
@@ -185,12 +236,45 @@
 
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
+<script src='/resources/js/deptInfo.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
-
-
-
+	
+	$(document).ready(function() {
+	    // Summernote 초기화
+	    $('#summernote').summernote({
+	        height: 300
+	    });
+	    
+	    // 서버에서 전달된 데이터 읽기
+	    var content = '${deptInfo.content}';
+	    
+	    // Summernote에 데이터 삽입
+	    $('#summernote').summernote('code', content);
+	    
+		var logofile = '${deptInfo.logo}';
+	    
+	    if(logofile){
+	    	document.getElementById('deptLogo').src = '/photo/' + logofile;
+	    }else{
+	    	 document.getElementById('deptLogo').src = '/resource/img/google.png';
+	    }
+	    
+		var deptCodeOverlay = true;
+		
+		var use_yn = '${deptInfo.use_yn}';
+		
+		if (use_yn === 'Y') {
+	        document.querySelector('input[name="use_yn"][value="Y"]').checked = true;
+	    } else {
+	        document.querySelector('input[name="use_yn"][value="N"]').checked = true;
+	    }
+	});
+	
+	function clearLogo() {
+        const deptLogo = document.getElementById('deptLogo');
+        deptLogo.style.display = 'none';
+    }
 
 </script>
 

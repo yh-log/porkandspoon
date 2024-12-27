@@ -25,15 +25,24 @@ public class DeptDTO extends ResponseDTO{
    
    private List<FileDTO> imgs;
    
+   // 브랜드 로고
+   private String logo;
    
    
-   public List<FileDTO> getImgs() {
+   
+   public String getLogo() {
+	return logo;
+}
+public void setLogo(String logo) {
+	this.logo = logo;
+}
+public List<FileDTO> getImgs() {
 		return imgs;
 	}
 	public void setImgs(List<FileDTO> imgs) {
 		this.imgs = imgs;
 	}
-public String getPosition() {
+	public String getPosition() {
 		return position;
 	}
 	public void setPosition(String position) {
