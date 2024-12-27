@@ -15,7 +15,7 @@ public class DeptDTO extends ResponseDTO{
    private String updater;
    private LocalDateTime update_date;
    private String use_yn;
-   private int menuOrder;
+   private String menuOrder;
    private String position;
    
    // 시행일
@@ -25,24 +25,33 @@ public class DeptDTO extends ResponseDTO{
    
    private List<FileDTO> imgs;
    
+   // 브랜드 로고
+   private String logo;
    
    
-   public List<FileDTO> getImgs() {
+   
+   public String getLogo() {
+	return logo;
+}
+public void setLogo(String logo) {
+	this.logo = logo;
+}
+public List<FileDTO> getImgs() {
 		return imgs;
 	}
 	public void setImgs(List<FileDTO> imgs) {
 		this.imgs = imgs;
 	}
-public String getPosition() {
+	public String getPosition() {
 		return position;
 	}
 	public void setPosition(String position) {
 		this.position = position;
 	}
-	public int getMenuOrder() {
+	public String getMenuOrder() {
 		return menuOrder;
 	}
-	public void setMenuOrder(int menuOrder) {
+	public void setMenuOrder(String menuOrder) {
 		this.menuOrder = menuOrder;
 	}
 	public String getId() {

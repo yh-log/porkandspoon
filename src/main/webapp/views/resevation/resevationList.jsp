@@ -145,8 +145,8 @@
                   <h5>전체 보기</h5>
                </div>
                <div class="write-btn">
-                  <div class="btn btn-primary" style="margin-left: 23px;">회의실 등록</div>
-                  <div class="btn btn-primary">물품 등록</div>
+                  <div class="btn btn-primary" style="margin-left: 23px;" onclick="room()">회의실 등록</div>
+                  <div class="btn btn-primary" onclick="item()">물품 등록</div>
                </div>
                <div class="cont-body"> 
                	  <!-- 여기에 내용 작성 -->
@@ -154,9 +154,9 @@
 
                   </div>
                   <!-- 로딩 인디케이터 -->
-				  <div id="loading" style="text-align:center; display:none;">로딩 중...</div>
+				  <div id="loading" style="text-align:center; display:none; margin-top: 25px;">로딩 중...</div>
 				  <!-- 더 이상 콘텐츠가 없을 때 표시 -->
-				  <div id="endOfContent" style="text-align:center; display:none;">더 이상 정보가 없습니다.</div>
+				  <div id="endOfContent" style="text-align:center; display:none; margin-top: 25px;">더 이상 정보가 없습니다.</div>
                </div>
             </div>
          </section>   
@@ -230,7 +230,7 @@
 				if(view.category == 'room'){
 		            content += '<div class="list-form">';
 		            content +='<div>';
-					content +='<h4>'+view.name+'</h4>';
+					content +='<h4><a href="/ad/room/detail/"'+view.no+'>'+view.name+'</a></h4>';
 					content +='<p>최대인원 : '+view.count+'</p>';
 					content +='<p>등록자 : '+view.username+'</p>';
 					content +='<button class="btn btn-sm btn-outline-primary">활성화</button>';
@@ -243,7 +243,7 @@
 				}else{
 					content += '<div class="list-form">';
 		            content +='<div>';
-					content +='<h4>'+view.name+'</h4>';
+					content +='<h4><a href="/ad/article/detail/"'+view.no+'>'+view.name+'</a></h4>';
 					content +='<p>모델명 : '+view.model_name+'</p>';
 					content +='<p>등록자 : '+view.username+'</p>';
 					content +='<button class="btn btn-sm btn-outline-primary">활성화</button>';
@@ -255,7 +255,7 @@
 					content +='</div>';
 				}
 			});
-			$('#list').html(content);
+			$('#list').append(content);
 			if (list.length < 6) {
                 hasMore = false;
                 $('#endOfContent').show();
@@ -268,7 +268,14 @@
 			
 		isLoading = false;
 	}
-
+	
+	function room() {
+		location.href="/ad/room/write";	
+	}
+	
+	function item() {
+		location.href="/ad/article/write";
+	}
 
 
 	

@@ -70,9 +70,9 @@
 	<select id="getDeptdata" resultType="kr.co.porkandspoon.dto.DirectstoreDTO">
 		SELECT ds.*, f.new_filename
 	    FROM direct_store ds
-	    LEFT JOIN file f ON f.pk_idx = ds.name
+	    LEFT JOIN file f ON f.pk_idx = ds.parent
 	    WHERE ds.parent = #{departmentId}
-      	AND f.code_name = ds.code_name
+      	AND f.code_name = 'bl001'
 	</select>
 	
 </mapper>

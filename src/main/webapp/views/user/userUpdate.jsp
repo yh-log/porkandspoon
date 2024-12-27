@@ -166,7 +166,7 @@
 											<div id="imgPreview"></div>
 											<img src="" id="userProfile"/>
 											<label for="file">+ 프로필 수정</label>
-											<input type="file" id="file" name="file" onchange="preview(this)" id="fileInput"/>
+											<input type="file" id="file" name="file" onchange="clearLogo(); preview(this);" id="fileInput"/>
 										</td>
 										<th>이름<span class="required-value">*</span></th>
 										<td colspan="2">
@@ -386,6 +386,11 @@ $(document).ready(function(){
     httpAjax('POST', '/ad/user/detail/qtgks9', username);
     
 });
+
+function clearLogo() {
+    const userProfile = document.getElementById('userProfile');
+    userProfile.style.display = 'none';
+}
      
 </script>
 

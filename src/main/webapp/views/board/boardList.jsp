@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +35,8 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}"> 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
@@ -104,17 +106,18 @@
 	                  <h5>전체 게시글</h5>
 	               </div>
 	               <div class="cont-body"> 
+	               <p id="currentUser" style="display:none;"><sec:authentication property="principal.username"/></p>
 	               	  <div class="row">
 	               	  	<div class="col-sm-6"></div>
 	               	  	<div class="col-sm-1">
-	               	  		<select class="form-select" id="basicSelect">
-								<option>제목</option>
-								<option>부서명</option>
-								<option>작성자</option>
+	               	  		<select class="form-select" id="searchOption">
+								<option value="dept">부서</option>
+								<option value="name">이름</option>
+								<option value="subject">제목</option>
 							</select>
 						</div>
-	               	  	<div class="col-sm-4"><input class="form-control" type="text" placeholder="검색"></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-primary"><i class="bi bi-search"></i></button></div>
+	               	  	<div class="col-sm-4"><input name="search" class="form-control" type="text" placeholder="검색"></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button></div>
 	               	  </div>
 	                  <div class="page-heading">
 							<div class="page-title">
@@ -146,8 +149,8 @@
 														<th>삭제</th>
 													</tr>
 												</thead>
-												<tbody>
-													<tr class="td-link">
+												<tbody id="boardList">
+													<!-- <tr class="td-link">
 														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
 														<td>별</td>
 														<td>1</td>
@@ -159,46 +162,7 @@
 														<td>2024.12.19</td>
 														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
 														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
-													<tr onclick="window.location.href='#';" class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>2</td>
-														<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
-													<tr onclick="window.location.href='#';" class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>3</td>
-														<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
-													<tr onclick="window.location.href='#';" class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>4</td>
-														<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
+													</tr> -->
 												</tbody>
 											</table>
 										</div>
@@ -206,61 +170,10 @@
 								</div>
 							</div>
 						</div>
-						<div>
+						<div class="">
 							<nav aria-label="Page navigation">
-								<ul class="pagination justify-content-center" id="pagination">
-									<li class="page-item first disabled">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-double-left"></i>
-										</a>
-									</li>
-									<li class="page-item prev disabled">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-left"></i>
-										</a>
-									</li>
-									<li class="page-item active">
-										<a href="#" class="page-link">1</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">2</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">3</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">4</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">5</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">6</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">7</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">8</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">9</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">10</a>
-									</li>
-									<li class="page-item next">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-right"></i>
-										</a>
-									</li>
-									<li class="page-item last">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-double-right"></i>
-										</a>
-									</li>
-								</ul>
-							</nav>
+					            <ul class="pagination justify-content-center" id="pagination"></ul>
+					        </nav>
 						</div>
 	               </div>
 	            </div>
@@ -278,29 +191,116 @@
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
+<script src='/resources/js/common.js'></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+var firstPage = 1;
+var paginationInitialized = false;
 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
+$(document).ready(function () {
+	pageCall(firstPage);
+});
+
+
+// 검색 폼 제출 시 AJAX 호출
+$('#searchBtn').on('click', function(event) {
+    event.preventDefault();  // 폼 제출 기본 동작 중지
+    firstPage = 1;
+    paginationInitialized = false;
+    pageCall(firstPage);  // 검색어가 추가된 상태에서 호출
+});
+
+
+
+
+function pageCall(page = 1) {
+    var option = $('#searchOption').val();
+    var keyword = $('input[name="search"]').val();  // 검색어
+
+    $.ajax({
+        type: 'GET',
+        url: '/board/list',
+        data: {
+            'page': page || 1, // 페이지 기본값 설정
+            'cnt': 10,         // 한 페이지당 항목 수
+            'option': option,
+            'keyword': keyword  // 검색어
+        },
+        datatype: 'JSON',
+        success: function(response) {
+            console.log("응답 데이터:", response);
+
+            // 데이터 처리
+            if (response && response.length > 0) {
+                getSuccess(response); // 검색 결과를 테이블에 렌더링
+            } else {
+                $('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+            }
+
+            // 페이지네이션 초기화
+            var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
+            console.log('총 페이지 수:', totalPages);
+
+            if (!paginationInitialized || keyword !== '') {
+                $('#pagination').twbsPagination('destroy');
+                $('#pagination').twbsPagination({
+                    startPage: page,
+                    totalPages: totalPages,
+                    visiblePages: 5,
+                    initiateStartPageClick: false,
+                    onPageClick: function (evt, page) {
+                        console.log('클릭된 페이지:', page);
+                        pageCall(page);
+                    }
+                });
+                paginationInitialized = true;
+            }
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+}
+
+	// 로그인 한 사람의 아이디값 가져오기
+	var myId = document.getElementById('currentUser').textContent.trim();
+	
+	function getSuccess(response){
+		console.log(response);
+		
+		$('#boardList').empty();
+		
+		var content = '';
+		response.forEach(function(item) {
+		    content += '<tr class="td-link">';
+		    // Checkbox column - admin 권한만 볼 수 있음
+		    content += '<td><sec:authorize access="hasRole(\'admin\')"><input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="checkboxbtn(' + item.board_idx + ')"></sec:authorize></td>';
+		    // 별 (board_notice 값에 따라 표시)
+		    content += '<td>';
+		    if (item.board_notice === 'Y') {
+		        content += '<i class="bi bi-star-fill" style="color: gold;"></i>'; // 채워진 별
+		    } else {
+		        content += '<i class="bi bi-star" style="color: gray;"></i>'; // 비워진 별
+		    }
+		    content += '</td>';
+		    // 번호
+		    content += '<td>' + item.board_idx + '</td>';
+		    // 제목 (클릭 시 이동)
+		    content += '<td onclick="window.location.href=\'/boarddetail/View?id=' + item.board_idx + '\';" class="align-l elipsis">' + item.subject + '</td>';
+		    // 작성자
+		    content += '<td>' + item.userNick + '</td>';
+		    // 조회수
+		    content += '<td>' + item.count + '</td>';
+		    // 작성일
+		    content += '<td>' + item.recreate_date + '</td>';
+		    if (myId === item.username) {
+			    content += '<td><i class="bi bi-pencil-square btn-popup-update bi-icon" onclick="location.href=\'/board/update/' + item.board_idx + '\'"></i></td>';
+			    content += '<td><i class="bi bi-trash btn-popup bi-icon" onclick="deleteList(' + item.board_idx + ')"></i></td>';
+			}
+		    content += '</tr>';
+		});
+		$('#boardList').append(content);
+	}
+	
 	
 	// 페이지 이동 될 때마다 li 에 class="active" 주입
 	document.addEventListener('DOMContentLoaded', () => {
@@ -320,6 +320,23 @@
             }
         });
     });
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	$('.bi-trash').on(
+			'click',
+			function() {
+				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', secondBtn1Act,
+						secondBtn2Act);
+			});
+	
 	
 	// 게시글 삭제 버튼
 	function secondBtn1Act() {
@@ -332,14 +349,6 @@
 		console.log('게시글 삭제 취소');
 		removeAlert();
 	}
-	
-	// 게시글 삭제 팝업
-	$('.btn-popup').on(
-			'click',
-			function() {
-				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', secondBtn1Act,
-						secondBtn2Act);
-			});
 
 	// 모달창 열기
 	$('.btnModal').on('click', function() {

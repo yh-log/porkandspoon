@@ -306,7 +306,7 @@ function thirdBtn1Act(mealIdx) {
 
     // Ajax를 통한 PUT 요청
     httpAjax('PUT', '/ad/mealMenu/Update', formData);
-
+	
     removeAlert(); // 팝업 닫기
 }
 

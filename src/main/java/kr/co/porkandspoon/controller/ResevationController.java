@@ -95,7 +95,7 @@ public class ResevationController {
 	}
 		
 	// 물품 상세보기 이동
-	@GetMapping(value="/ad/article/detail")
+	@GetMapping(value="/ad/article/detail/{no}")
 	public ModelAndView articleDetailView(@PathVariable String no) {
 		
 		ModelAndView mav = new ModelAndView("/resevation/articleDetail");

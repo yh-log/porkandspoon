@@ -108,7 +108,7 @@
 		SELECT u.username, u.person_num, u.name, u.email, u.birth, u.phone, u.company_num, u.address, u.gender, u.join_date, u.leave_date, u.position, u.parent, u.title, c.content AS position_content, d.`text` AS dept_name, f.new_filename AS profile
 			FROM user u LEFT JOIN code c ON u.position = c.name
 				LEFT JOIN department d ON u.parent = d.id 
-				LEFT JOIN file f ON u.username = f.pk_idx
+				LEFT JOIN file f ON u.username = f.pk_idx AND f.code_name = 'up100'
 			WHERE u.username = #{username}
 	</select>
 	
@@ -227,5 +227,124 @@
 		INSERT INTO department(id, text, type, use_yn, use_date, content) 
 			VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content})
 	</insert>
+	
+	<!-- 브랜드 상세 정보 조회 -->
+	<select id="deptDetail" resultType="kr.co.porkandspoon.dto.DeptDTO" parameterType="String">
+		SELECT d.id, d.text, d.content, d.use_yn, d.use_date, f.new_filename AS logo FROM department d left join file f on d.id = f.pk_idx WHERE id = #{id} AND f.code_name = 'bl001';
+	</select>
+	
+	<!-- 기존 부서 이미지 삭제 -->
+	<delete id="fileDelete" parameterType="String">
+		DELETE FROM file WHERE pk_idx = #{pk_idx} AND code_name = #{code_name}
+	</delete>
+	
+	<!-- 부서 정보 업데이트 -->
+	<update id="deptUpdate" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		UPDATE department SET text = #{text}, use_yn = #{use_yn}, use_date = #{use_date}, content = #{content} WHERE id = #{id} 
+	</update>
+	
+	<!-- 브랜드 리스트 조회 -->
+	<select id="deptGetList" parameterType="map" resultType="kr.co.porkandspoon.dto.DeptDTO">
+	    WITH RankedDepartments AS (
+	        SELECT d.id, d.text, d.use_date, d.use_yn, u.name AS creater, u.position, u.company_num,
+				ROW_NUMBER() OVER ( PARTITION BY d.id ORDER BY CAST(SUBSTRING(u.position, 3) AS UNSIGNED)) AS rn
+	        FROM department d LEFT JOIN user u ON d.id = u.parent
+	        WHERE d.id LIKE 'B%'
+	            <if test="keyword != null and keyword.trim() != ''">
+	                <choose>
+	                    <when test="option == 'dept'">
+	                        AND d.text LIKE CONCAT('%', #{keyword}, '%')
+	                    </when>
+	                    <when test="option == 'name'">
+	                        AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                    </when>
+	                </choose>
+	            </if>
+	    )
+	    SELECT r.id, r.text, r.use_date, r.use_yn, r.creater, r.company_num AS position, c.content 
+	    	FROM RankedDepartments r LEFT JOIN code c ON r.position = c.name
+	   		WHERE r.rn = 1
+	        <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND r.text LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    AND r.creater LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	            </choose>
+	        </if>
+	    ORDER BY r.use_date DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	<!-- 브랜드 생성 요청 리스트 조회  -->
+	<select id="deptCreateList" parameterType="map" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+	    SELECT d.draft_idx, d.subject, d.name, u.name AS user_name, c.content, al_max.approval_date 
+	    FROM draft d LEFT JOIN `user` u ON d.username = u.username
+	    LEFT JOIN (
+	        SELECT draft_idx, MAX(`order_num`) AS max_order,SUBSTRING_INDEX(
+	    		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER BY order_num DESC), ',', 1) AS approval_date 
+		        FROM approval_line
+		        WHERE status = 'ap004' 
+		        GROUP BY draft_idx) al_max 
+	    ON d.draft_idx = al_max.draft_idx
+	    LEFT JOIN code c ON u.`position` = c.name 
+	    LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+	    AND al.`order_num` = al_max.max_order
+	    WHERE d.target_type = 'df001' 
+	        AND d.action_type = 'df011'
+	        AND al.status IS NOT NULL
+	        <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND d.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0 <!-- 기본적으로 조건이 없으면 데이터 반환하지 않음 -->
+	                </otherwise>
+	            </choose>
+	        </if>
+	    ORDER BY al.approval_date DESC
+	</select>
+
+	<!-- 브랜드 삭제 요청 리스트 조회  -->
+	<select id="deptDeleteList" parameterType="map" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+	    SELECT d.draft_idx, d.subject, d.name, u.name AS user_name, c.content, al_max.approval_date 
+	    FROM draft d LEFT JOIN `user` u ON d.username = u.username
+	    LEFT JOIN (
+	        SELECT draft_idx, MAX(`order_num`) AS max_order,SUBSTRING_INDEX(
+   				GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER BY order_num DESC), ',', 1) AS approval_date 
+		        FROM approval_line
+		        WHERE status = 'ap004' 
+	       	 	GROUP BY draft_idx) al_max 
+	    ON d.draft_idx = al_max.draft_idx
+	    LEFT JOIN code c ON u.`position` = c.name 
+	    LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+	    AND al.`order_num` = al_max.max_order
+	    WHERE d.target_type = 'df001' 
+	        AND d.action_type = 'df012'
+	        AND al.status IS NOT NULL
+	        <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND d.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0 
+	                </otherwise>
+	            </choose>
+	        </if>
+	    ORDER BY al.approval_date DESC
+	</select>
+
+
+
 	
 </mapper>
