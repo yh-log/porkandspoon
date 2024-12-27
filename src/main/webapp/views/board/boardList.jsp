@@ -34,7 +34,8 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}"> 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
@@ -147,7 +148,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<tr class="td-link">
+													<!-- <tr class="td-link">
 														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
 														<td>별</td>
 														<td>1</td>
@@ -198,7 +199,7 @@
 														<td>2024.12.19</td>
 														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
 														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
+													</tr> -->
 												</tbody>
 											</table>
 										</div>
@@ -208,59 +209,10 @@
 						</div>
 						<div>
 							<nav aria-label="Page navigation">
-								<ul class="pagination justify-content-center" id="pagination">
-									<li class="page-item first disabled">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-double-left"></i>
-										</a>
-									</li>
-									<li class="page-item prev disabled">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-left"></i>
-										</a>
-									</li>
-									<li class="page-item active">
-										<a href="#" class="page-link">1</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">2</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">3</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">4</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">5</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">6</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">7</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">8</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">9</a>
-									</li>
-									<li class="page-item">
-										<a href="#" class="page-link">10</a>
-									</li>
-									<li class="page-item next">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-right"></i>
-										</a>
-									</li>
-									<li class="page-item last">
-										<a href="#" class="page-link">
-											<i class="bi bi-chevron-double-right"></i>
-										</a>
-									</li>
-								</ul>
-							</nav>
+					            <ul class="pagination justify-content-center" id="pagination">
+					                <!-- 페이지 번호가 여기에 생성됨 -->
+					            </ul>
+					        </nav>
 						</div>
 	               </div>
 	            </div>
@@ -279,17 +231,101 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+$(document).ready(function () {
+    // 페이지네이션 초기화
+    $('#pagination').twbsPagination({
+        startPage: 1,         // 첫 번째 페이지
+        totalPages: 10,       // 전체 페이지 (초기값)
+        visiblePages: 10,     // 한 번에 보이는 페이지 개수
+        onPageClick: function (event, page) {
+            console.log('페이지 클릭: ', page);
+            pageCall(
+                page,          // 현재 페이지
+                10,            // 한 페이지에 보여줄 게시물 수
+                '/board/list', // 요청 URL
+                {
+                    option: $('#basicSelect').val(),        // 필터 옵션 (제목, 작성자, 부서명 등)
+                    search: $('.form-control').val()       // 검색어 (검색이 있을 때만 사용)
+                }
+            );
+        }
+    });
+
+    // 페이지 초기 로드 (검색 없이 전체 게시글 목록만 불러오기)
+    pageCall(
+        1,             // 첫 페이지
+        10,            // 한 페이지에 보여줄 게시물 수
+        '/board/list', // 요청 URL
+        {
+            option: '',  // 필터 옵션 (없음)
+            search: ''   // 검색어 (없음)
+        }
+    );
+});
+
+// 페이지 요청 함수 (검색 처리 및 페이지네이션)
+function pageCall(page, cnt, url, filters) {
+    $.ajax({
+        url: url,
+        type: 'POST',  // POST 방식으로 요청
+        contentType: 'application/json', // 요청의 데이터 형식
+        headers: {
+            // CSRF 토큰을 요청 헤더에 추가
+            [ $("meta[name='_csrf_header']").attr("content") ]: $("meta[name='_csrf']").attr("content")
+        },
+        data: JSON.stringify({
+            page: page,
+            cnt: cnt,
+            option: filters.option,  // 검색 옵션
+            search: filters.search   // 검색어
+        }),
+        success: function(response) {
+            // 서버에서 받은 데이터를 테이블에 업데이트
+            updateTable(response.data);   // 게시물 목록 업데이트
+            updatePagination(response.totalPages, page); // 페이지네이션 업데이트
+        },
+        error: function(xhr, status, error) {
+            console.log("AJAX 요청 실패: ", error);
+        }
+    });
+}
+
+// 게시물 목록을 업데이트하는 함수
+function updateTable(data) {
+    let tbody = $('table tbody');
+    tbody.empty(); // 기존 행을 지운다.
+
+    // 데이터를 기반으로 테이블을 동적으로 생성
+    data.forEach(item => {
+        let row = `
+            <tr class="td-link">
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>${item.board_idx}</td>
+                <td onclick="window.location.href='/boarddetail/View?id=${item.board_idx}';" class="align-l elipsis">${item.subject}</td>
+                <td>${item.username}</td>
+                <td>${item.count}</td>
+                <td>${item.create_date}</td>
+            </tr>
+        `;
+        tbody.append(row);
+    });
+}
+
+// 페이지네이션을 업데이트하는 함수
+function updatePagination(totalPages, currentPage) {
+    $('#pagination').twbsPagination('destroy'); // 기존 페이지네이션 제거
+    $('#pagination').twbsPagination({
+        totalPages: totalPages,    // 전체 페이지 수
+        startPage: currentPage,    // 현재 페이지
+        visiblePages: 10,          // 한 번에 보이는 페이지 개수
+        onPageClick: function (event, page) {
+            pageCall(page, 10, '/board/list', {
+                option: $('#basicSelect').val(),
+                search: $('.form-control').val()  // 검색어
+            });
+        }
+    });
+}
 
 	/* 페이지네이션 prev,next 텍스트 제거 */
 	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
@@ -320,6 +356,17 @@
             }
         });
     });
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	// 게시글 삭제 버튼
 	function secondBtn1Act() {
