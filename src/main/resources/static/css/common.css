@@ -474,6 +474,13 @@ table td {
 	margin-bottom: 10px;	
 }
 
+.underline {
+	border-bottom: 1px solid #4f4f4f;
+}
+.filepond--root .filepond--credits[style] {
+	display: none !important;
+}
+
 /* 버튼 */
 .buttons.align-l .btn:first-child{
 	margin-left: 0;

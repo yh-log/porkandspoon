@@ -230,10 +230,22 @@
 	        filters: filters
 	    };
 	    
-	    console.log("필터 항목",data);
+	    console.log("필터 항목",data);	    	    
+	    console.log('실행');
 	    
-	    var url= "/" + section + "List";
-    	getAjax(url,'JSON',data);
+	    $.ajax({
+	        type: 'GET',
+	        url: '/calenderList',
+	        data: data, // data가 null이 아니면 전송, 아니면 빈 객체
+	        dataType: 'JSON',
+	        traditional: true, // 배열의 직렬화
+	        success: function(response) {
+	            getSuccess(response);
+	        },
+	        error: function(e) {
+	            console.log(e);
+	        }
+	    });
 
 	}
 		
@@ -254,7 +266,7 @@
         // 컨펌박스로 교체	        
 	    // 데이터 유효성 검사
 	    if (!subject || !start_date || !end_date || !content) {
-	        alert("필수 항목을 모두 입력해주세요.");
+	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn2Act);
 	        return;
 	    }
 
@@ -471,6 +483,11 @@
     	httpAjax('DELETE', '/calenderDelete/'+idx);
 	}
     
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
 
 
   	
