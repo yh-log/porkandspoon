@@ -11,48 +11,48 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 public class ApprovalDTO {
 	// 기안문 테이블
-	public String draft_idx;
-	public String document_number;
-	public String username; //사번
-	public String target_type;
-	public String action_type;
-	public LocalDate create_date;
-	public String subject;
-	public String name;
+	private String draft_idx;
+	private String document_number;
+	private String username; //사번
+	private String target_type;
+	private String action_type;
+	private LocalDate create_date;
+	private String subject;
+	private String name;
 	
 	
-	public String user_name; // 이름
-	public String position; // 직책
-	public String sign; // 서명
+	private String user_name; // 이름
+	private String position; // 직책
+	private String sign; // 서명
 	
 	// 부서이름
-	public String dept_name;
+	private String dept_name;
 	
-	public String appr_user1;
-	public String appr_user2;
-	public String appr_user3;
-	public String appr_user4;
+	private String appr_user1;
+	private String appr_user2;
+	private String appr_user3;
+	private String appr_user4;
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	public LocalDate from_date;
-	public String content;
-	public String address;
-	public String address_detail;
-	public String cooper_dept_id;
-	public String status;
-	public String dept_id;
-	public LocalDate update_date;
+	private LocalDate from_date;
+	private String content;
+	private String address;
+	private String address_detail;
+	private String cooper_dept_id;
+	private String status;
+	private String dept_id;
+	private LocalDate update_date;
 	
 	// 결재라인 테이블
-	public String line_idx;
-	public String order_num;
-	public String approval_date;
-	public String comment;
+	private String line_idx;
+	private String order_num;
+	private String approval_date;
+	private String comment;
 	
-	public FileDTO fileDTO;
+	private FileDTO fileDTO;
 
 	// 부서 이름
-	public String dept_text;
+	private String dept_text;
 	
 
 	
@@ -89,7 +89,7 @@ public class ApprovalDTO {
 	}
 
 	// 이미지 리스트
-    private List<FileDTO> fileList;
+    public List<FileDTO> fileList;
 
 	public String getDraft_idx() {
 		return draft_idx;

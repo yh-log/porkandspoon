@@ -231,4 +231,14 @@ content = VALUES(content); -->
 			AND new_filename = #{new_filename}
 	</delete>
 	
+	<insert id="returnDraft" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+		UPDATE approval_line 
+			SET status = 'ap003',
+				comment = #{comment},
+				approval_date = #{approval_date} 
+			WHERE draft_idx = #{draft_idx}
+			AND username = #{username}
+			
+	</insert>
+	
 </mapper>

@@ -252,9 +252,9 @@
 							<h5>기안 수정페이지</h5>
 						</div>
 						<div class="buttons">
-							<button href="#" class="btn btn-primary" onclick="updateDraft()">수정</button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
-							<button href="#" class="btn btn-outline-primary">취소</button>
+							<button class="btn btn-outline-primary" onclick="window.history.back()">돌아가기</button>
+							<button class="btn btn-outline-primary">결재 정보</button>
+							<button class="btn btn-primary" onclick="updateDraft()">수정</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>

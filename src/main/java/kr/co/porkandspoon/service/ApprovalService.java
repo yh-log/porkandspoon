@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -274,6 +277,24 @@ public class ApprovalService {
 
 		public FileDTO getLogoFile(String draft_idx) {
 			return approvalDAO.getLogoFile(draft_idx);
+		}
+
+		public int returnDraft(ApprovalDTO approvalDTO) {
+
+			
+			
+			// 현재 시간을 LocalDateTime으로 가져옴
+	        LocalDateTime now = LocalDateTime.now();
+
+	        // DATETIME 형식으로 포맷
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+	        // 포맷된 현재 시간
+	        String formattedDateTime = now.format(formatter);
+			logger.info("formattedDateTime"+formattedDateTime);
+	        
+			approvalDTO.setApproval_date(formattedDateTime);
+			return approvalDAO.returnDraft(approvalDTO);
 		}
 
 }

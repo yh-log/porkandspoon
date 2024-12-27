@@ -195,6 +195,31 @@
 	</div>
 	
 	
+	<!-- 기안문 반려 모달 -->
+	<div id="draftRefusalModal" class="modal-template">
+        <form id="returnFrom">
+		    <div class="modal-header">
+		        <span class="modal-close" id="closeModal">&times;</span>
+		    </div>
+		    <div class="modal-body">
+		        <h5 class="align-c">반려하기</h5>
+		        	<input type="hidden" name="draft_idx" value=""/>
+			        <div class="input-row">
+			        	<label class="item-tit">반려 일시</label><input class="form-control" type="text" name="today" value="" readonly />
+			        </div>
+			        <div class="input-row">
+			        	<label class="item-tit">반려 의견</label><textarea class="form-control" name="comment" placeholder="반려 결재 의견 입력은 필수입니다." rows="3" required="required"></textarea>
+					</div>
+		        
+		    </div>
+		    <div class="modal-footer">
+		        <button id="returnBtn" type="button" class="btn btn-primary">반려</button>
+		        <button id="cancelModal" class="btn btn-secondary">취소</button>
+		    </div>
+        </form>
+	</div>
+	
+	
 	
 	
 	

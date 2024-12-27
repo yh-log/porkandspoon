@@ -156,20 +156,18 @@ public class ApprovalController {
 	@GetMapping(value="/approval/update/{draft_idx}")
 	public ModelAndView draftUpdateView(@PathVariable String draft_idx) {
 		ModelAndView mav = new ModelAndView("/approval/draftUpdate");  
-		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
-		mav.addObject("DraftInfo", DraftInfo);
-		mav.addObject("ApprLine", approvalService.getApprLine(draft_idx));
-		mav.addObject("logoFile", approvalService.getLogoFile(draft_idx));
-		mav.addObject("attachedFiles", approvalService.getAttachedFiles(draft_idx));
-		mav.addObject("deptList", approvalService.getDeptList());
-		logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());
+		getDetailInfo(draft_idx, mav);
 		return mav;
 	}
-	
 	
 	@GetMapping(value="/approval/detail/{draft_idx}")
 	public ModelAndView draftDetailView(@PathVariable String draft_idx) {
 		ModelAndView mav = new ModelAndView("/approval/draftDetail");  
+		getDetailInfo(draft_idx, mav);
+		return mav;
+	}
+	
+	void getDetailInfo(String draft_idx, ModelAndView mav) {
 		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
 		mav.addObject("DraftInfo", DraftInfo);
 		mav.addObject("ApprLine", approvalService.getApprLine(draft_idx));
@@ -177,7 +175,6 @@ public class ApprovalController {
 		mav.addObject("attachedFiles", approvalService.getAttachedFiles(draft_idx));
 		mav.addObject("deptList", approvalService.getDeptList());
 		logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());
-		return mav;
 	}
 	
 	
@@ -300,7 +297,7 @@ public class ApprovalController {
 	}
 	
 	@GetMapping(value="/approval/list/my")
-	public ModelAndView approvbalMyListView() {
+	public ModelAndView approvalMyListView() {
 		ModelAndView mav = new ModelAndView("/approval/approvalList");  
 		return mav;
 	}
@@ -311,4 +308,20 @@ public class ApprovalController {
 		return mav;
 	}
 	
+	// 기안문 반려
+	@PostMapping(value="/approval/returnDraft") 
+	public Map<String, Object> returnDraft(@ModelAttribute ApprovalDTO approvalDTO, @AuthenticationPrincipal UserDetails userDetails) {
+		boolean success = false;
+		logger.info("approvalDTO.getComment : "+approvalDTO.getComment());
+		approvalDTO.setUsername(userDetails.getUsername());
+		int row = approvalService.returnDraft(approvalDTO);
+		if(row > 0) {
+			success = true;
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("success",success);
+		return result;
+	}
+	
+
 }
