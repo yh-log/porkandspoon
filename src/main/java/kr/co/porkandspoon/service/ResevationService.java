@@ -32,4 +32,17 @@ public class ResevationService {
 		return resDao.list(offset,size);
 	}
 
+	public CalenderDTO articleDetail(String no) {		
+		return resDao.articleDetail(no);
+	}
+
+	public int updateYN(String no, String filter) {
+		return resDao.updateYN(no,filter);
+	}
+
+	public CalenderDTO articleUpdate(Map<String, Object> params) {
+		return resDao.articleUpdate(params);
+	}
+
+
 }

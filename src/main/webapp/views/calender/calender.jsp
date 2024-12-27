@@ -184,8 +184,6 @@
 	
 	var data;
 	
-
-		
 /* 	$(document).ready(function () {
 		//loadCalender(section);
 		var url= "/" + section + "List";
@@ -433,7 +431,7 @@
 
         // 데이터 유효성 검사
         if (!subject || !startDate || !endDate) {
-            alert("필수 항목을 모두 입력해주세요.");
+        	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
             return;
         }
 

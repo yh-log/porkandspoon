@@ -19,6 +19,7 @@ public class CalenderDTO {
 	private String id; // 부서,직영 코드
 	private String name;
 	private String parent;
+	private LocalDateTime create_date;
 	
 	//물품 등록 테이블
 	private String item_name;
@@ -33,8 +34,22 @@ public class CalenderDTO {
 	
 	// 회의실 물품 조회시 쓸 가상컬럼
 	private String category;
+	private String is_active;
 	
 	
+	
+	public String getIs_active() {
+		return is_active;
+	}
+	public void setIs_active(String is_active) {
+		this.is_active = is_active;
+	}
+	public LocalDateTime getCreate_date() {
+		return create_date;
+	}
+	public void setCreate_date(LocalDateTime create_date) {
+		this.create_date = create_date;
+	}
 	public String getCategory() {
 		return category;
 	}
