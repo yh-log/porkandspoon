@@ -24,7 +24,7 @@ public class MealDTO extends ResponseDTO {
     private String use_yn;
     
     private FileDTO filedto;
-    
+    private int idx;
     
     public int getMenu_idx() {
         return menu_idx;
@@ -149,6 +149,14 @@ public class MealDTO extends ResponseDTO {
 
 	public void setFiledto(FileDTO filedto) {
 		this.filedto = filedto;
+	}
+
+	public int getIdx() {
+		return idx;
+	}
+
+	public void setIdx(int idx) {
+		this.idx = idx;
 	}
 
 }

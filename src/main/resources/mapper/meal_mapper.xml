@@ -58,7 +58,7 @@
     </select>
     
     <select id="getmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" >
-    	select * from meal
+    	select * from meal where use_yn = 'Y'
     </select>
     
    <select id="menuOverlay" resultType="int">
