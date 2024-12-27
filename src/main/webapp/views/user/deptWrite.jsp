@@ -241,6 +241,7 @@
 
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/deptInfo.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
 
@@ -257,96 +258,12 @@
 	    $('#summernote').summernote('code', content);
 	    
 	    var date = '${deptInfo.approval_date}';
-	    $('#draft-approvalDate').text(date.split('T')[0]);
+	    $('#draft-approvalDate').text(date.split(' ')[0]);
 	    
+		var deptCodeOverlay = false;
 	});
 	
-	var deptCodeOverlay = false;
 	
-	function deptOverlay(){
-		var deptCode = $('input[name="id"]').val();
-		var regex = /^[A-Z]{2}[0-9]{4}$/;
-		
-		if(regex.test(deptCode)){
-			var dto = {'id' : deptCode};
-			getAjax('/ad/user/deptCodeOverlay', 'JSON', dto);
-			$('#overlayMessage').hide();
-		}else {
-			$('#overlayMessage').show();
-        	$('#overlayMessage').text('대문자 2, 숫자 4 형태로 입력하세요');
-        	$('#overlayMessage').css('color', 'var(--bs-danger)');
-		}
-	}
-
-	function getSuccess(response){
-		if(response.status == 200){
-			deptCodeOverlay = true;
-			$('#overlayMessage').show();
-        	$('#overlayMessage').text(response.message);
-        	$('#overlayMessage').css('color', 'var(--bs-primary)');
-		}else{
-			deptCodeOverlay = false;
-			$('#overlayMessage').show();
-        	$('#overlayMessage').text(response.message);
-        	$('#overlayMessage').css('color', 'var(--bs-danger)');
-		}
-	}
-	
-	function validateForm() {
-	    var requiredFields = document.querySelectorAll('[data-required="true"]');
-	    var isValid = true;
-
-	    requiredFields.forEach(function(field) {
-	        if (!field.value.trim()) { // 값이 없으면
-	            field.classList.add('is-invalid'); // 클래스 추가
-	            isValid = false; // 한 번이라도 유효하지 않으면 false
-	        } else {
-	            field.classList.remove('is-invalid'); // 유효하면 클래스 제거
-	        }
-	    });
-
-	    return isValid; // 최종 결과 반환
-	}
-	
-	function deptWrire(){
-		
-		
-		var isFormValid = validateForm();
-		
-		if (isFormValid) {
-            console.log('폼이 유효합니다.');
-			
-            // todo - 나중에 없애기
-            var form = document.querySelector('form');
-	        var formData = new FormData(form);
-			
-	        for (var pair of formData.entries()) {
-	            console.log(pair[0] + ': ' + pair[1]); // key: value 출력
-	        }
-
-	        var deptCode = document.getElementById("deptCode");
-	        
-	        if(!deptCodeOverlay){
-	        	$('#overlayMessage').show();
-	    		$('#overlayMessage').css('color', 'var(--bs-danger)');
-	    		$('#overlayMessage').text('부서 코드 중복을 확인해주세요');
-	    		
-	    		deptCode.classList.add('is-invalid');
-	    		
-	        }else{
-		       // fileAjax('POST', '/ad/user/write', formData);
-		        deptCode.classList.remove('is-invalid');
-		        
-		        textEaditorWrite('/ad/dept/write');
-		        removeAlert();
-	        }
-            
-		}
-	}
-	
-	function fileSuccess(response){
-		console.log('결과');
-	}
 
 </script>
 

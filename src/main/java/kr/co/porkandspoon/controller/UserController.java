@@ -191,9 +191,23 @@ public class UserController {
 	 * author yh.kim (24.12.19) 
 	 * 부서 상세 페이지 이동
 	 */
-	@GetMapping(value="/ad/dept/detail")
-	public ModelAndView deptDetailView() {
-		return new ModelAndView("/user/deptDetail");
+	@GetMapping(value="/ad/dept/detail/{id}")
+	public ModelAndView deptDetailView(@PathVariable String id) {
+		
+		ModelAndView mav = new ModelAndView();
+		DeptDTO deptDto = new DeptDTO();
+		
+		if(id == null || id.isEmpty()) {
+			deptDto.setStatus(400);
+			deptDto.setMessage("입력된 부서코드가 없습니다.");
+		}
+		
+		deptDto = userService.deptDetsil(id);
+		
+		mav.addObject("deptInfo", deptDto);
+		mav.setViewName("/user/deptDetail");
+		
+		return mav;
 	}
 	
 	/**
@@ -223,9 +237,23 @@ public class UserController {
 	 * author yh.kim (24.12.19) 
 	 * 부서 수정 페이지 이동
 	 */
-	@GetMapping(value="/ad/dept/update")
-	public ModelAndView deptUpdateView() {
-		return new ModelAndView("/user/deptUpdate");
+	@GetMapping(value="/ad/dept/update/{id}")
+	public ModelAndView deptUpdateView(@PathVariable String id) {
+		
+		ModelAndView mav = new ModelAndView();
+		DeptDTO deptDto = new DeptDTO();
+		
+		if(id == null || id.isEmpty()) {
+			deptDto.setStatus(400);
+			deptDto.setMessage("입력된 부서코드가 없습니다.");
+		}
+		
+		deptDto = userService.deptDetsil(id);
+		
+		mav.addObject("deptInfo", deptDto);
+		mav.setViewName("/user/deptUpdate");
+		
+		return mav;
 	}
 	
 	/**
@@ -628,12 +656,6 @@ public class UserController {
 	public DeptDTO deptWrite(MultipartFile file, @ModelAttribute DeptDTO dto,
 			@RequestParam("imgsJson") String imgsJson) {
 		
-		// 값 다 들어오는거 확인!! 
-		logger.info(CommonUtil.toString(dto));
-		logger.info(CommonUtil.toString(file));
-		logger.info(CommonUtil.toString(imgsJson));
-		
-		
 		ObjectMapper obj = new ObjectMapper();
 		List<FileDTO> imgs = null;
 		
@@ -654,4 +676,91 @@ public class UserController {
 		return dto;
 	}
 	
+	/**
+	 * author yh.kim (24.12.26)
+	 * 부서 수정
+	 */
+	@PostMapping(value="/ad/dept/update")
+	public DeptDTO deptUpdate(MultipartFile file, @ModelAttribute DeptDTO dto,
+			@RequestParam("imgsJson") String imgsJson) {
+		
+		logger.info(CommonUtil.toString(dto));
+		logger.info(CommonUtil.toString(file));
+		logger.info(CommonUtil.toString(imgsJson));
+		
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		
+		try {
+			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			
+			dto.setImgs(imgs);
+			dto = userService.deptUpdate(file, dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 리스트 조회
+	 */
+	@GetMapping(value="/ad/dept/getList")
+	public List<DeptDTO> deptGetList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+		
+		logger.info(keyword);
+		logger.info(option);
+		
+		List<DeptDTO> dto = userService.deptGetList(page, cnt, option, keyword);
+		
+		for (DeptDTO deptDTO : dto) {
+			String type = "B";
+			deptDTO.setType(type);
+		}
+		
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 생성 요청 리스트 조회
+	 */
+	@GetMapping(value="/ad/dept/createList")
+	public List<ApprovalDTO> deptCreateList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+		
+		List<ApprovalDTO> dto = userService.deptCreateList(page, cnt, option, keyword);
+		
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 삭제 요청 리스트 조회
+	 */
+	@GetMapping(value="/ad/dept/deleteList")
+	public List<ApprovalDTO> deptDeleteList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+		
+		List<ApprovalDTO> dto = userService.deptDeleteList(page, cnt, option, keyword);
+		
+		return dto;
+	}
 }

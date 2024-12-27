@@ -134,9 +134,47 @@ public interface UserDAO{
 	 */
 	int deptCodeOverlay(DeptDTO dto);
 
-	int deptFileDelete(DeptDTO dto);
-
+	/**
+	 * author yh.kim (24.12.26) 
+	 * 부서(브랜드) 등록
+	 */
 	int deptWrite(DeptDTO dto);
+
+	/**
+	 * author yh.kim (24.12.26) 
+	 * 부서 상세 페이지 이동
+	 */
+	DeptDTO deptDetail(String id);
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 부서 수정
+	 */
+	int deptUpdate(DeptDTO dto);
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 기존 부서 이미지 삭제 
+	 */
+	int fileDelete(String pk_idx, String code_name);
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 부서 리스트 조회
+	 */
+	List<DeptDTO> deptGetList(Map<String, Object> parmeterMap);
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 생성 요청 리스트 조회
+	 */
+	List<ApprovalDTO> deptCreateList(Map<String, Object> parmeterMap);
+
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 삭제 요청 리스트 조회
+	 */
+	List<ApprovalDTO> deptDeleteList(Map<String, Object> parmeterMap);
 
 
 
