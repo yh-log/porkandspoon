@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class BoardDTO {
 
@@ -13,6 +14,26 @@ public class BoardDTO {
 	private String board_state;
 	private String use_yn;
 	private String board_notice;
+	private String userNick;
+	private String recreate_date;
+	public String getRecreate_date() {
+		return recreate_date;
+	}
+	public void setRecreate_date(String recreate_date) {
+		this.recreate_date = recreate_date;
+	}
+	public String getUserNick() {
+		return userNick;
+	}
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
+	}
+	public int getTotalpage() {
+		return totalpage;
+	}
+	public void setTotalpage(int totalpage) {
+		this.totalpage = totalpage;
+	}
 	private String updater;
 	private LocalDateTime update_date;
 	private String department;
@@ -21,6 +42,14 @@ public class BoardDTO {
 	private String option;
 	private String search;
 	private String filtering;
+	private List<FileDTO> imgs;
+	private int totalpage;
+	public List<FileDTO> getImgs() {
+		return imgs;
+	}
+	public void setImgs(List<FileDTO> imgs) {
+		this.imgs = imgs;
+	}
 	public int getBoard_idx() {
 		return board_idx;
 	}
