@@ -161,9 +161,20 @@ $('#searchBtn').on('click', function(event) {
 });
 
 
+$('#secondMenu').on('click', function() {
+	console.log('실행');
+    firstPage = 1;
+    paginationInitialized = false;
+
+    // 특정 옵션과 키워드를 설정하여 pageCall 호출
+    pageCall(firstPage, {
+        option: 'user_yn', // 추가 옵션
+        keyword: 'Y'       // 추가 키워드
+    });
+});
 
 
-function pageCall(page = 1) {
+function pageCall(page = 1,  extraData = {}) {
     var option = $('#searchOption').val();
     var keyword = $('input[name="search"]').val();  // 검색어
 
@@ -189,14 +200,13 @@ function pageCall(page = 1) {
 
             // 페이지네이션 초기화
             var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
-            console.log('총 페이지 수:', totalPages);
 
             if (!paginationInitialized || keyword !== '') {
                 $('#pagination').twbsPagination('destroy');
                 $('#pagination').twbsPagination({
                     startPage: page,
                     totalPages: totalPages,
-                    visiblePages: 5,
+                    visiblePages: 10,
                     initiateStartPageClick: false,
                     onPageClick: function (evt, page) {
                         console.log('클릭된 페이지:', page);
@@ -240,6 +250,8 @@ function getSuccess(response){
 	$('#userList').append(content);
 	
 }
+
+
 
 
 </script>

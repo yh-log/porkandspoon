@@ -28,15 +28,53 @@ public class DeptDTO extends ResponseDTO{
    // 브랜드 로고
    private String logo;
    
+   // 직영점 관련
+   private String address;
+   private String address_detail;
+   private String name;
+   private String owner;
+   
+   private String user_name;
    
    
-   public String getLogo() {
-	return logo;
-}
-public void setLogo(String logo) {
-	this.logo = logo;
-}
-public List<FileDTO> getImgs() {
+   
+   public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getAddress_detail() {
+		return address_detail;
+	}
+	public void setAddress_detail(String address_detail) {
+		this.address_detail = address_detail;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getOwner() {
+		return owner;
+	}
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	public String getLogo() {
+		return logo;
+	}
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
+	public List<FileDTO> getImgs() {
 		return imgs;
 	}
 	public void setImgs(List<FileDTO> imgs) {

@@ -307,6 +307,9 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
  */
 if($('#pagination')){
    
+    var firstPage = 1;
+	var paginationInitialized = false;
+   
     function pageCall(page, cnt, url, { option = '', search = '', filtering = '' } = {}){
         
         var requestData = {
@@ -324,18 +327,24 @@ if($('#pagination')){
            data: requestData,
            dataType: 'JSON',
            success: function(response){
-              console.log('성공함');
+           
               // 성공 시 실행 함수
               pringList(response);
               
-            $('#pagination').twbsPagination({ 
-               startPage: 1, 
-                  totalPages: response.totalPages, 
-                  visiblePages: 10,
-                  onPageClick:function(evt, page){
-                     pageCall(page);
-                  }
-            });
+            var totalPages = response[0]?.totalpage || 1; 
+              
+            $('#pagination').twbsPagination('destroy');
+                $('#pagination').twbsPagination({
+                    startPage: page,
+                    totalPages: totalPages,
+                    visiblePages: 10,
+                    initiateStartPageClick: false,
+                    onPageClick: function (evt, page) {
+                        console.log('클릭된 페이지:', page);
+                        pageCall(page);
+                    }
+                });
+                paginationInitialized = true;
 
               
            }, error: function(e){

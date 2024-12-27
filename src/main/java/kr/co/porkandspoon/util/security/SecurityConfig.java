@@ -52,6 +52,7 @@ public class SecurityConfig {
         .loginPage("/") // 메인 페이지를 로그인 페이지로 설정
         .loginProcessingUrl("/login") // 로그인 요청 처리 URL
         .successHandler(new CustomAuthenticationSuccessHandler())
+    //    .failureHandler(new CustomAuthenticationSuccessHandler())
         .failureUrl("/?error=true") // 로그인 실패 시 이동할 페이지
         .usernameParameter("username")
         .passwordParameter("password")

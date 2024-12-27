@@ -176,6 +176,30 @@ public interface UserDAO{
 	 */
 	List<ApprovalDTO> deptDeleteList(Map<String, Object> parmeterMap);
 
+	/**
+	 * author yn.kim (24.12.27)
+	 * 직영점 등록 요청 페이지 이동 및 조회
+	 */
+	ApprovalDTO storeWriteView(String idx);
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 등록
+	 */
+	int storeWrite(DeptDTO dto);
+
+	/**
+	 * author yh.kim (24.12.27) 
+	 * 직영점 수정 페이지 이동 및 조회
+	 */
+	DeptDTO storeDetail(String id);
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 수정
+	 */
+	int storeUpdate(DeptDTO dto);
+
 
 
 
