@@ -309,6 +309,7 @@ if($('#pagination')){
    
     var firstPage = 1;
 	var paginationInitialized = false;
+
    
     function pageCall(page, cnt, url, { option = '', search = '', filtering = '' } = {}){
         

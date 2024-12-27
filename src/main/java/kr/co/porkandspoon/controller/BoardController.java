@@ -1,15 +1,19 @@
 package kr.co.porkandspoon.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dto.BoardDTO;
 import kr.co.porkandspoon.dto.FileDTO;
@@ -63,46 +71,50 @@ public class BoardController {
 	}
 	
 	@PostMapping(value="/board/write")
-	public Map<String, Object> setBoardwrite(@RequestParam("filepond") MultipartFile[] files, @RequestParam Map<String, Object> params) {
-		logger.info("파일 params: {}", params);
-		List<FileDTO> results = new ArrayList<>();
-		if (files != null && files.length > 0) {
-		    for (MultipartFile file : files) {
-		        if (!file.isEmpty()) { // 파일 유효성 검사
-		            logger.info("파일 이름: {}", file.getOriginalFilename());
-		            List<FileDTO> dto = CommonUtil.uploadFiles(file);
-		            for (FileDTO fileDTO : dto) {
-		            	fileDTO.setCode_name("fb001"); // 코드번호 하드코딩
-		            	fileDTO.setPk_idx((String) params.get("username"));
-		            	logger.info("업로드된 파일 - 원본 이름: {}, 저장 이름: {}, 파일 타입: {}, 파일 코드 : {}, pk_idx : {}",
-            			fileDTO.getOri_filename(), fileDTO.getNew_filename(), fileDTO.getType(), fileDTO.getCode_name(), fileDTO.getPk_idx());
-				        results.add(fileDTO);
-				    }
-		        } else {
-		            logger.warn("빈 파일이 전송되었습니다.");
-		        }
-		    }
-		} else {
-		    logger.info("파일이 업로드되지 않았습니다.");
+	public BoardDTO setBoardwrite(@RequestParam("filepond") MultipartFile[] files,
+			@ModelAttribute BoardDTO dto,
+			@RequestParam("imgsJson") String content) {
+		logger.info("파일 params: {}", dto);
+		logger.info("content : {}", content);
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		try {
+			imgs = obj.readValue(content, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			
+			dto.setImgs(imgs);
+			dto = boardService.setBoardwrite(files, dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
 		}
-		if (!results.isEmpty()) {
-			boardService.setBoardfiles(results);
-		}
-		boardService.setBoardwrite(params);
-		Map<String, Object> response = new HashMap<>();
-		response.put("status", "success");
-		response.put("URL", "/board/View");
-		return response;
+		return dto;
 	}
 	
-	@PostMapping("/board/list")
-	public Map<String, Object> getBoardList(@RequestBody BoardDTO boardDTO) {
-	    // 페이지 계산
-	    int offset = (boardDTO.getPage() - 1) * boardDTO.getCnt();
-
-	    // 서비스 호출 (서비스에서 검색 옵션과 검색어만 처리)
-	    return boardService.getBoardList(offset, boardDTO.getCnt(), boardDTO.getOption(), boardDTO.getSearch());
+	@GetMapping(value="/board/list")
+	public List<BoardDTO> boardList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+		logger.info("keyword => " + keyword);
+	    logger.info("option => " + option);
+	    logger.info("page => " + page);
+	    logger.info("cnt => " + cnt);
+		List<BoardDTO> dtolist = boardService.boardList(page, cnt, option, keyword);
+		for(BoardDTO dto : dtolist) {
+			if(dto.getCreate_date() != null) {
+				LocalDateTime time = dto.getCreate_date();
+				String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+				dto.setRecreate_date(create_date);
+			}
+		}
+		return dtolist;
 	}
+	
 
 	// 투표 리스트 이동 페이지
 	@GetMapping(value="/vote/list")
