@@ -196,6 +196,12 @@ content = VALUES(content); -->
 			AND f.code_name = 'us100'
 	</select>
 	
+	<select id="getLogoFile" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
+		SELECT ori_filename, new_filename, pk_idx FROM file 
+			WHERE code_name = 'bl001' 
+			AND pk_idx = #{draft_idx}
+	</select>
+
 	<select id="getAttachedFiles" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
 		SELECT ori_filename, new_filename, pk_idx FROM file 
 			WHERE code_name = 'df000' 
@@ -220,7 +226,7 @@ content = VALUES(content); -->
 	
 	<delete id="deleteFiles" parameterType="kr.co.porkandspoon.dto.FileDTO">
 		DELETE FROM file
-			WHERE code_name = 'df000' 
+			WHERE code_name IN ('df000','bl001')
 			AND pk_idx = #{pk_idx} 
 			AND new_filename = #{new_filename}
 	</delete>

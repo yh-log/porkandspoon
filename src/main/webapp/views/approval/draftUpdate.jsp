@@ -180,8 +180,7 @@
 	.attached-file {
 		background: #eaeaea;
 		border-radius: 6px;
-	    min-height: 4.75em;
-	    padding: 18px;
+    	padding: 26px 18px;
 	    color: #4f4f4f;
 	}
 	.attached-file ul {
@@ -396,7 +395,26 @@
 
 								<h5>파일 첨부</h5>
 								<br/>
-								<h6>첨부된 파일</h6>
+								<h6>첨부된 로고 파일</h6>
+								<div class="attached-file">
+									<ul>
+										<c:if test="${logoFile != null}">
+											<li class="file-item">
+												<button class="delete" onclick="deleteFile(this)">x</button>
+												<div>
+													<input type="hidden" name="new_filename" value="${logoFile.new_filename}"/>
+													<input type="hidden" name="pk_idx" value="${logoFile.pk_idx}"/>
+													<p class="file-name">${logoFile.ori_filename}</p>
+												</div>
+											</li>
+										</c:if>
+										<c:if test="${logoFile == null}">
+											<div class="align-c">첨부된 로고 파일이 없습니다.</div>
+										</c:if>
+									</ul>
+								</div>
+								<br/>
+								<h6>첨부된 기타 파일</h6>
 								<div class="attached-file">
 									<ul>
 										<c:forEach items="${attachedFiles}" var="file"> 
@@ -409,9 +427,13 @@
 											</div>
 										</li>
 										</c:forEach>
+										<c:if test="${empty attachedFiles}">
+											<div class="align-c">첨부된 기타 파일이 없습니다.</div>
+										</c:if>
 									</ul>
 								</div>
 								<br/>
+								
 								<h6>추가 첨부</h6>
 								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file">
 													

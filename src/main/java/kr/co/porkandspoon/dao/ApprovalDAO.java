@@ -48,6 +48,8 @@ public interface ApprovalDAO {
 
 	int checkExistingFile(String draftIdx, String ori_filename);
 
+	FileDTO getLogoFile(String draft_idx);
+
 
 
 }

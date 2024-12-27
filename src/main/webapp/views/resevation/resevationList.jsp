@@ -115,10 +115,8 @@
 	}
 	
 	.update{
-		display: flex;
-    	flex-direction: column;
-    	justify-content: space-between;
-    	align-items: flex-end;
+	    display: flex;
+	    align-items: flex-end;
 	}
 	
 
@@ -151,126 +149,14 @@
                   <div class="btn btn-primary">물품 등록</div>
                </div>
                <div class="cont-body"> 
-                  <!-- 여기에 내용 작성 -->
-                  <div class="row list-row">
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4>203A 회의실</h4>
-	                  			<p>최대인원 : </p>
-	                  			<p>등록자 : </p>
-	                  			<button class="btn btn-sm btn-outline-primary">활성화</button>
-	                  			<button class="btn btn-sm btn-outline-primary">비활성화</button>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash"></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
+               	  <!-- 여기에 내용 작성 -->
+                  <div class="row list-row" id="list">
+
                   </div>
+                  <!-- 로딩 인디케이터 -->
+				  <div id="loading" style="text-align:center; display:none;">로딩 중...</div>
+				  <!-- 더 이상 콘텐츠가 없을 때 표시 -->
+				  <div id="endOfContent" style="text-align:center; display:none;">더 이상 정보가 없습니다.</div>
                </div>
             </div>
          </section>   
@@ -290,6 +176,101 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
+
+    
+	$(document).ready(function () {
+		
+		var page = 1;
+		var isLoading = false; // 로딩 상태
+	    var hasMore = true; // 추가 데이터 존재 여부
+	    
+	    listCall(page);
+	    		
+		$(window).scroll(function() {
+            if (isLoading || !hasMore) return;
+
+            // 문서 높이와 스크롤 위치 계산
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                page++;
+                listCall(page);
+            }
+        });
+			
+	});
+	
+    function listCall(page) {
+    	isLoading = true;
+        $('#loading').show();
+        
+        $.ajax({
+            type: 'GET',
+            url: '/resevationList',
+            data:{
+            	page: page,
+            	size: 6
+            }, 
+            dataType: 'JSON',
+            success: function(response) {
+            	$('#loading').hide();
+                getSuccess(response);
+            },
+            error: function(e) {
+                console.log(e);
+            }
+        });
+  
+	}
+    
+	function getSuccess(response) {
+		var list = response.list;
+		console.log("list",list);
+		var content = '';
+		if (Array.isArray(list) && list.length > 0) {
+			list.forEach(function(view,idx){
+				if(view.category == 'room'){
+		            content += '<div class="list-form">';
+		            content +='<div>';
+					content +='<h4>'+view.name+'</h4>';
+					content +='<p>최대인원 : '+view.count+'</p>';
+					content +='<p>등록자 : '+view.username+'</p>';
+					content +='<button class="btn btn-sm btn-outline-primary">활성화</button>';
+					content +='<button class="btn btn-sm btn-outline-primary">비활성화</button>';
+					content +='</div>';
+					content +='<div class="update">';
+					content +='<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>';
+					content +='</div>';
+					content +='</div>';				
+				}else{
+					content += '<div class="list-form">';
+		            content +='<div>';
+					content +='<h4>'+view.name+'</h4>';
+					content +='<p>모델명 : '+view.model_name+'</p>';
+					content +='<p>등록자 : '+view.username+'</p>';
+					content +='<button class="btn btn-sm btn-outline-primary">활성화</button>';
+					content +='<button class="btn btn-sm btn-outline-primary">비활성화</button>';
+					content +='</div>';
+					content +='<div class="update">';
+					content +='<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>';
+					content +='</div>';
+					content +='</div>';
+				}
+			});
+			$('#list').html(content);
+			if (list.length < 6) {
+                hasMore = false;
+                $('#endOfContent').show();
+            }
+			
+		}else {
+            hasMore = false;
+            $('#endOfContent').show();
+        }
+			
+		isLoading = false;
+	}
+
+
+
 	
 </script>
 </html>

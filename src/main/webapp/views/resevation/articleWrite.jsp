@@ -203,7 +203,7 @@
 		                  		<th>물품 유형</th>
 		                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
 		                  			<div class="form-check">
-										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault1" value="G" checked="checked">
+										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault1" value="G">
 										<label class="form-check-label" for="flexRadioDefault1">지급 물품</label>
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
@@ -224,7 +224,7 @@
 		                  		<th>활성 상태</th>
 		                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
 		                  			<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y" checked="checked">
+										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y">
 										<label class="form-check-label" for="flexRadioDefault1">활성화</label>
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
@@ -261,15 +261,49 @@
 
 <script>
 	
+	// 물품 등록
 	function articleWrite() {
+		var subject = $('input[name="subject"]').val();
+		var model = $('input[name="model"]').val();
+		var article = $('input[name="article"]:checked').val();
+		var content = $('textarea[name="content"]').val();
+		var is_item = $('input[name="flexRadioDefault"]:checked').val();
+		console.log('제목',subject);
 		
-		console.log('제목');		
+	    if (!subject || !model || !article || !content || !is_item) {
+	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
+	        return;
+	    }
+		
+		var data = {
+				username: '${pageContext.request.userPrincipal.name}',
+				item_name: subject,
+				model_name: model,
+				type: article,
+				content: content,
+				is_item: is_item
+		}
+		
+		console.log('데이터',data);
+		
+		httpAjax('POST','/articleWrite',data);
+
+	}
+	
+	function httpSuccess(response) {
+		console.log('성공',response.no);
+		//location.href="/ad/resevation/list"
 	}
 	
 	function back() {
 		console.log('돌아가기');
 	}
 	
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
 	
 	
 	

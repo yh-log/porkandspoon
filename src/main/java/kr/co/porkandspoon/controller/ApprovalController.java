@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,6 +47,7 @@ public class ApprovalController {
 	
 	@Autowired ApprovalService approvalService;
 	
+	@Value("${upload.path}") String paths;
 	
 	//  기안문 작성페이지
 	@GetMapping(value="/approval/write")
@@ -71,38 +75,12 @@ public class ApprovalController {
 	
 	// 기안문 저장
 	@PostMapping(value="/draftWrite/{status}")
-	public Map<String, Object> draftWrite(MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status) {
+	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status) {
+		logger.info("logoFile: " + logoFile);
+	//	logger.info("Files: " + Arrays.toString(files));
+		//logger.info("OriginalFilename : " + logo.getOriginalFilename());
 		
-		
-		
-		for(MultipartFile file : files) {
-			try {
-				
-				//check!!! 얘도 if문안에 넣어야하는게 아닌가?
-				String ori_filename = file.getOriginalFilename();
-				logger.info("file 비어있나? : "+file.isEmpty()); // true
-				logger.info("ori_filename : "+ ori_filename); 
-
-				if(!file.isEmpty()) {
-					logger.info("파일이 있는 경우만 타야하는데");
-					//String ext = ori_filename.substring(ori_filename.lastIndexOf("."));
-					//String new_filename = UUID.randomUUID()+ext;
-					
-			       // int existingFile = approvalDAO.checkExistingFile(draftIdx, ori_filename);
-			       // logger.info("existingFile!!!! "+ existingFile);
-				
-
-					// 파일이 이미 존재하는지 확인
-			        //Path filePath = Paths.get(paths, new_filename);
-			        //Files.exists(filePath);
-					
-					
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		
+	
 		
 		
 		
@@ -141,7 +119,28 @@ public class ApprovalController {
        // logger.info("체크 getUsername!! : " + approvalDTO.getUsername());
         
         // 이거 살려 check!!!
-        String draftIdx = approvalService.saveDraft(appr_user, approvalDTO, files, status);
+        String draftIdx = approvalService.saveDraft(appr_user, approvalDTO, files, logoFile, status);
+        
+		/*
+		 * if(!logoFile.isEmpty()) { logger.info("로고파일 있음"); }
+		 */
+
+//        // 로고 파일 저장 처리
+//        if (logoFile != null && !logoFile.isEmpty()) {
+//            logger.info("로고 파일 있음: " + logoFile.getOriginalFilename());
+//            String oriLogoFilename = logoFile.getOriginalFilename();
+//            String logoExt = oriLogoFilename.substring(oriLogoFilename.lastIndexOf("."));
+//            String newLogoFilename = UUID.randomUUID() + logoExt;
+//
+//            try {
+//                byte[] logoBytes = logoFile.getBytes();
+//                Path logoPath = Paths.get(paths + newLogoFilename);
+//                Files.write(logoPath, logoBytes);
+//                logger.info("로고 파일 저장 완료: " + newLogoFilename);
+//            } catch (IOException e) {
+//                logger.error("로고 파일 저장 오류", e);
+//            }
+//        }
 
         
 
@@ -154,12 +153,27 @@ public class ApprovalController {
 		return result;
 	}
 	
+	@GetMapping(value="/approval/update/{draft_idx}")
+	public ModelAndView draftUpdateView(@PathVariable String draft_idx) {
+		ModelAndView mav = new ModelAndView("/approval/draftUpdate");  
+		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
+		mav.addObject("DraftInfo", DraftInfo);
+		mav.addObject("ApprLine", approvalService.getApprLine(draft_idx));
+		mav.addObject("logoFile", approvalService.getLogoFile(draft_idx));
+		mav.addObject("attachedFiles", approvalService.getAttachedFiles(draft_idx));
+		mav.addObject("deptList", approvalService.getDeptList());
+		logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());
+		return mav;
+	}
+	
+	
 	@GetMapping(value="/approval/detail/{draft_idx}")
 	public ModelAndView draftDetailView(@PathVariable String draft_idx) {
 		ModelAndView mav = new ModelAndView("/approval/draftDetail");  
 		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
 		mav.addObject("DraftInfo", DraftInfo);
 		mav.addObject("ApprLine", approvalService.getApprLine(draft_idx));
+		mav.addObject("logoFile", approvalService.getLogoFile(draft_idx));
 		mav.addObject("attachedFiles", approvalService.getAttachedFiles(draft_idx));
 		mav.addObject("deptList", approvalService.getDeptList());
 		logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());

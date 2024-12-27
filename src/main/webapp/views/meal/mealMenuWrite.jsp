@@ -238,16 +238,79 @@ function btn2Act() {
 	removeAlert(); // 팝업닫기
 }
 
+
+
 function secondBtn1Act() {
-	// 두번째팝업 1번버튼 클릭시 수행할 내용
-	console.log('두번째팝업 1번 버튼 동작');
-	getAjax();
-	
-	$('#mealForm').submit(); // 폼 제출
+    console.log("두번째팝업 1번 버튼 동작");
+    var url = "/ad/mealMenu/Overlay";
+    var start_date = $("#start").val();
+    var end_date = $("#end").val();
+    console.log("start_date:", start_date);
+    console.log("end_date:", end_date);
+
+    var data = { start: start_date, end: end_date };
+
+    $.ajax({
+        url: url,
+        type: "GET",
+        data: data,
+        success: function (response) {
+            console.log("서버 응답:", response);
+
+            if (response.menu_idx > 0) {
+                var mealIdx = response.menu_idx; // 메뉴 ID
+                console.log("중복된 메뉴 ID:", mealIdx);
+                removeAlert(); // 팝업닫기
+                layerPopup("같은 날짜에 이미 등록한 메뉴가 있습니다. 이 메뉴로 덮어씌우시겠습니까?",  "확인","취소",  
+                		function () {
+                	console.log(mealIdx);
+                    console.log("확인 버튼 클릭!"); // 디버깅 로그
+                    thirdBtn1Act(mealIdx); // 덮어쓰기 처리
+                },thirdBtn2Act);
+            } else {
+                console.log("중복 없음, 폼 제출 시작");
+                $("#mealForm").submit();
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("AJAX 요청 실패:", error);
+        },
+    });
+}
+
+
+
+
+
+
+function secondBtn2Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 2번 버튼 동작');
 	removeAlert(); // 팝업닫기
 }
 
-function secondBtn2Act() {
+
+
+function thirdBtn1Act(mealIdx) {
+    console.log("덮어쓰기 확인 버튼 클릭");
+    console.log("mealIdx in thirdBtn1Act:", mealIdx);
+
+    // 폼 데이터 수집
+    const formData = {
+        menu_idx: mealIdx,
+        start_date: $('#start').val(),
+        end_date: $('#end').val(),
+        content: $('#content').val(),
+        is_time: $('#basicSelect').val()
+    };
+
+    // Ajax를 통한 PUT 요청
+    httpAjax('PUT', '/ad/mealMenu/Update', formData);
+
+    removeAlert(); // 팝업 닫기
+}
+
+function thirdBtn2Act() {
 	// 두번째팝업 2번버튼 클릭시 수행할 내용
 	console.log('두번째팝업 2번 버튼 동작');
 	removeAlert(); // 팝업닫기
@@ -261,7 +324,6 @@ $('.btn-popup').on(
 					secondBtn2Act);
 		});
 
-	
 </script>
 
 </html>
