@@ -54,7 +54,8 @@ public class ApprovalDTO {
 	// 부서 이름
 	private String dept_text;
 	
-
+	// 부서 로고
+	private String logo_file;
 	
     public String getLine_idx() {
 		return line_idx;
@@ -306,6 +307,14 @@ public class ApprovalDTO {
 
 	public void setDept_text(String dept_text) {
 		this.dept_text = dept_text;
+	}
+
+	public String getLogo_file() {
+		return logo_file;
+	}
+
+	public void setLogo_file(String logo_file) {
+		this.logo_file = logo_file;
 	}
 	
 	

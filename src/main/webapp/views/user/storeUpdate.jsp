@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>직영점 등록</title>
+<title>직영점 수정</title>
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -37,6 +37,11 @@
 <!-- summernote -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
+<!-- 다음 주소 검색 api 사용 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/resources/js/daumApi.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
@@ -48,6 +53,11 @@
 		margin-top: 15px;
 	}
 	
+	table td {
+	    padding: 10px 16px;
+	    text-align: center;
+	}
+		
 	.form-select{
 	 	width: 20%;
 	}
@@ -56,6 +66,7 @@
 	    justify-content: flex-end;
 	    gap: 10px;
 	}
+	
 	
 	.btnInputBox{
 		display: flex;
@@ -77,7 +88,60 @@
 	    white-space: nowrap;
 	    gap: 10px;
 	}
-
+	
+	.btn-Layout{
+		display: flex;
+		gap: 10px;
+	    justify-content: center;
+	}
+	
+	.radioLayoutBox{
+		display: flex;
+	    gap: 20px;
+    	font-weight: 500;
+	}
+	
+	#overlayMessage{
+	    display: none;
+	    margin-bottom: -15px;
+	    margin-top: -32px;
+	    font-size: 14px;
+	    color : var(--bs-primary);
+	    float: left;
+	}
+	
+	
+	.filebox label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    color: var(--bs-secondary);
+	    vertical-align: middle;
+	    background-color: #fff;
+	    cursor: pointer;
+	    height: 40px;
+	    margin-left: 10px;
+	}
+	
+	.filebox input[type="file"] {
+	    position: absolute;
+	    width: 0;
+	    height: 0;
+	    padding: 0;
+	    overflow: hidden;
+	    border: 0;
+	}
+	
+	
+	#dept-logo{
+		width: 150px;
+    	height: 150px;
+	}
+	
+	input.form-control.input-readonly {
+	    pointer-events: none !important; /* 입력 및 클릭 불가 */
+	    background-color: #f0f0f0 !important; /* 읽기 전용 스타일 */
+	    color: #888 !important; /* 텍스트 색상 */
+	}
 </style>
 
 </head>
@@ -110,75 +174,62 @@
 						</div>
 						<div class="cont-body"> 
 							<form>
-								<div class="row">
-									<div class="col-6 col-lg-6">
-										<div id="selectBox">
-											활성
-											<select class="form-select selectStyle"> 
-												<option>활성</option>
-												<option>비활성</option>
-											</select>
-											상태
-											<select class="form-select selectStyle">
-												<option>승인</option>
-												<option>반려</option>
-												<option>대기</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-6 col-lg-6">
-										<button type="button" class="btn btn-primary">수정</button>
-										<button type="button" class="btn btn-outline-secondary">취소</button>
-									</div>
-								</div>
 								<table>
 									<tr>
-										<td rowspan="2">로고</td>
-										<th>문서 제목</th>
-										<td><input type="text" name="subject" class="form-control" /></td>
-										<th>기안자</th>
-										<td><input type="text" name="username" class="form-control" /></td>
-									</tr>
-									<tr>
-										<th>결재 일자</th>
-										<td><input type="text" name="approval_date" class="form-control" /></td>
-										<th>작성 부서</th>
-										<td><input type="text" name="department_id" class="form-control" /></td>
-									</tr>
-									<tr class="custom-height-row">
+										<td rowspan="2" class="filebox">
+											<img src="" id="dept-logo"/>
+										</td>
 										<th>직영점 명</th>
-										<td colspan="2"><input type="text" name="name" class="form-control" /></td>
+										<td>
+											<div class="inline-layout">
+												${storeInfo.text}<input type="text" name="name"  class="form-control" value="${storeInfo.name}" id="deptCode" data-required="true"/>
+											</div>
+										</td>
 										<th>직영점 코드</th>
-										<!-- 부서 테이블 id (department 테이블 pk) -->
-										<td class="btnInputBox">
-											<input type="text" name="id" class="form-control" />
-											<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
+										<td>
+											<div class="inline-layout">
+												<input type="hidden" name="parent" value="${storeInfo.parent}"/>
+												<input type="text" name="id" class="form-control input-readonly" value="${storeInfo.id}" />
+											</div>
+											<div id="overlayMessage"></div>
 										</td>
 									</tr>
-									<tr class="custom-height-row">
-										<th>담당 직원</th>
-										<td colspan="2">
+									<tr>
+										<th>직영점주</th>
+										<td>
 											<div class="inline-layout">
-												<input type="text" name="" class="form-control .disable" disabled="disabled"/> 
+											<!-- todo - 나중에 조직도 모달 붙이기 -->
+												<input type="hidden" name="owner" value="${storeInfo.owner}"/>
+												<input type="text" name="user_name" class="form-control input-readonly" value="${storeInfo.owner}" /> 
 												<button class="btn btn-primary" ><i class="bi bi-diagram-3"></i></button>
 											</div>
 										</td>
 										<th>시행일자</th>
 										<td>
-											<input type="date" name="from_date" class="form-control" />
+											<input type="date" name="use_date" class="form-control" value="${storeInfo.use_date}" data-required="true"/>
 										</td>
 									</tr>
 									<tr>
 										<th>주소</th>
 										<td colspan="2">
 											<div class="inline-layout">
-												도로명 <input type="text" name="address" class="form-control .disable"/>
+												도로명 <input type="text" name="address" class="form-control input-readonly" id="roadAddress" value="${storeInfo.address}"/>
 											</div>
 										</td>
 										<td colspan="2">
 											<div class="inline-layout">
-												상세주소 <input type="text" name="address_detail" class="form-control .disable"/>
+												상세주소 <input type="text" name="address_detail" class="form-control" id="address_detail" value="${storeInfo.address_detail}" data-required="true"/>
+												<button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch(); addressUpload();"><i class="bi bi-geo-alt-fill"></i></button>
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>활성</th>
+										<td colspan="2">
+											<div class="radioLayoutBox">
+												<input type="radio" name="use_yn" value="Y" class="form-check-input" /> 활성
+	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
+	 									    </div>
 										</td>
 									</tr>
 									<tr><th colspan="5">설명</th></tr>
@@ -187,7 +238,14 @@
 											<textarea name="postContent" id="summernote" maxlength="10000"></textarea>
 										</td>
 									</tr>
+									<c:set var="username" value="${pageContext.request.userPrincipal.name}" />
+
+									<input type="hidden" name="creater" value="${username}" />
 								</table>
+								<div class="btn-Layout">
+									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 수정하시겠습니까?','수정','취소', storeUpdate, removeAlert)">수정</button>
+									<button type="button" class="btn btn-outline-primary">취소</button>
+								</div>
 							</form>
 						</div> <!-- cont-body -->
 					</div>
@@ -207,13 +265,47 @@
 
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
+<script src='/resources/js/deptInfo.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
 
+$(document).ready(function() {
+    // Summernote 초기화
+    $('#summernote').summernote({
+        height: 300
+    });
+    
+    // 서버에서 전달된 데이터 읽기
+    var content = '${storeInfo.content}';
+    
+    // Summernote에 데이터 삽입
+    $('#summernote').summernote('code', content);
+    
 
+	var logo_file = '${storeInfo.logo}';
+	if(logo_file){
+		document.getElementById('dept-logo').src = '/photo/' + logo_file;
+	}else {
+        document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
+    }
+	
+	var use_yn = '${storeInfo.use_yn}';
+	
+	if (use_yn === 'Y') {
+        document.querySelector('input[name="use_yn"][value="Y"]').checked = true;
+    } else {
+        document.querySelector('input[name="use_yn"][value="N"]').checked = true;
+    }
+	
+});
 
+function addressUpload() {
+	
+	$('#address_detail').val('');
 
+    console.log('도로명 주소 변경 감지:', roadAddress.value);
+
+}
 </script>
 
 </html>
