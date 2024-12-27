@@ -155,7 +155,7 @@
 								            <!-- filedto와 new_filename이 null인지 확인하여 기본 이미지 설정 -->
 								            <c:choose>
 								                <c:when test="${not empty ticket.filedto and not empty ticket.filedto.new_filename}">
-								                    <img src="/uploads/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                    <img src="path/${ticket.filedto.new_filename}" alt="상품 이미지">
 								                </c:when>
 								                <c:otherwise>
 								                    <img src="/resources/img/default.jpg" alt="기본 이미지">
@@ -163,8 +163,8 @@
 								            </c:choose>
 								            <h4>${ticket.name} ${ticket.count}장</h4>
 								            <h5>${ticket.cost}</h5>
-								            <a href="#" class="btn btn-primary" 
-								               onclick="layerPopup('${ticket.name} 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								            <a href="/ad/mealTicket/Update/${ticket.meal_idx}" class="btn btn-primary" 
+								              >수정</a>
 								        </div>
 								    </c:if>
 								</c:forEach>

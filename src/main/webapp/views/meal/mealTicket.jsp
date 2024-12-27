@@ -155,7 +155,7 @@
 								            <!-- filedto와 new_filename이 null인지 확인하여 기본 이미지 설정 -->
 								            <c:choose>
 								                <c:when test="${not empty ticket.filedto and not empty ticket.filedto.new_filename}">
-								                    <img src="/uploads/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                    <img src="${uploadPath}/${ticket.filedto.new_filename}" alt="상품 이미지">
 								                </c:when>
 								                <c:otherwise>
 								                    <img src="/resources/img/default.jpg" alt="기본 이미지">
@@ -164,7 +164,7 @@
 								            <!-- 티켓 이름과 장수 표시 -->
 								            <h4>${ticket.name} ${ticket.count}장</h4>
 								            <h5>${ticket.cost}</h5>
-								            <a href="#" class="btn btn-primary" 
+								            <a href="#" class="btn btn-primary btn-pay-ready" 
 								               onclick="layerPopup('${ticket.name} 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
 								        </div>
 								    </c:if>
@@ -217,7 +217,26 @@
 
 
 <script>
-	
+
+$(function() {
+    $(".btn-pay-ready").click(function(e) {
+        // 아래 데이터 외에도 필요한 데이터를 원하는 대로 담고, Controller에서 @RequestBody로 받으면 됨
+        let data = {
+            name: '상품명',    // 카카오페이에 보낼 대표 상품명
+            totalPrice: 20000 // 총 결제금액
+        };
+      
+        $.ajax({
+            type: 'POST',
+            url: '/order/pay/ready',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function(response) {
+                location.href = response.next_redirect_pc_url;
+            }
+        });
+    });
+});
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();

@@ -135,7 +135,7 @@
 	top: 40px;
 	transform: translateX(-50%);
     width: 700px;
-    height: 800px;
+    height: 380px;
     padding: 30px;
     background: #fff;
     border: none;
@@ -145,7 +145,37 @@
    	background: #fff;
    	border-radius: 10px;
    }
+   
+   .fc-time { 
+    display: none; /* 시간을 숨김 */
+}
  
+ /* 흰 긴 줄 제거 */
+.fc-toolbar-chunk:first-child {
+    display: none;
+}
+
+/* 셀렉트 박스 나란히 배치 */
+.select {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px; /* 간격 조정 */
+}
+
+/* 버튼 중앙 정렬 */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* 버튼 간격 */
+}
+
+/* 모달 안 버튼 크기 및 위치 조정 */
+.modal-footer .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+}
 </style>
 </head>
 <body>
@@ -182,33 +212,50 @@
                   </div>
                </div>
                
-                <div id="modalBox" class="modal" style="display: none;">
-			     <div class="modal-content">
+                <div id="modalBox" class="modal modal-template" style="display: none;">
+                 <input type="hidden" id="calendar_event_id">
+                 <div class="modal-header">
+			        <span class="modal-close" id="closeModal">&times;</span>
+			    </div>
+			     <div class="modal-content ">
                     <h3>식단 수정</h3>
                     <form action="/ad/mealMenu/Update" method="post">
                     	<input type="hidden" name="_method" value="put"> 
                     
                      	<input type="hidden" name="_csrf" value="${_csrf.token}" />
-                        <label for="title">제목:</label>
-                        <input type="text" id="title" name="content" required />
-                        <input type="text" id="idx" name="menu_idx"  hidden=""/>
+                        <div class="modal-body">
+                        
+                        <div class="form-group">           
+	                        <label for="title" class="form-label">제목:</label>
+	                        <input type="text" class="form-input" id="title" name="content" required />
+	                        <input type="text" id="idx" name="menu_idx"  hidden=""/>
+                        </div>
+						
+						<div class="form-group">
+	                        <label for="start" class="form-label">시작 날짜:</label>
+	                        <input type="datetime-local" class="form-input" id="start" name="start_date" required />
+						</div>	
+						<div class="form-group">
+	                        <label for="end" class="form-label">종료 날짜:</label>
+	                        <input type="datetime-local" class="form-input" id="end" name="end_date" />						
+						</div>
+						
+						<div class="form-group">
+	                        <label for="mealType" class="form-label">식단 종류:</label>
+	                        <select class="form-select short form-input1" id="mealType" name="is_time">
+	                           <option value="B">아침</option>
+	                           <option value="L">점심</option>
+	                           <option value="D">저녁</option>
+	                        </select>
+						</div>
+						
+                        </div>
+                        
+                        
 
-                        <label for="start">시작 날짜:</label>
-                        <input type="datetime-local" id="start" name="start_date" required />
-
-                        <label for="end">종료 날짜:</label>
-                        <input type="datetime-local" id="end" name="end_date" />
-
-                        <label for="mealType">식단 종류:</label>
-                        <select class="form-select short" id="mealType" name="is_time">
-                           <option value="B">아침</option>
-                           <option value="L">점심</option>
-                           <option value="D">저녁</option>
-                        </select>
-
-                        <div class="modal-actions">
-                            <button type="submit" id="saveModal">저장</button>
-                            <button type="button" id="cancelModal">취소</button>
+                        <div class="modal-footer">
+                            <button type="submit" id="saveModal" class="btn btn-primary">저장</button>
+                            <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
                         </div>
                     </form>
                  </div>
