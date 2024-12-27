@@ -175,28 +175,28 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5> 상세정보</h5>
+                  <h5>${info.item_name} 상세정보</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
-                  	  <input type="hidden" value=""/>
+                  	  <input type="hidden" value="${info.no}"/>
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>물품 명</th>
-	                  		<td class="align-l"></td>
+	                  		<td class="align-l">${info.item_name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l"></td>
+	                  		<td class="align-l">${info.name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록일</th>
-	                  		<td class="align-l"></td>
+	                  		<td class="align-l">${info.create_date}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>모델 명</th>
-	                  		<td class="align-l"></td>
+	                  		<td class="align-l">${info.model_name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>물품 유형</th>
@@ -207,7 +207,7 @@
 	                  	<tr>
 	                  		<th>내용</th>
 	                  		<td class="align-l">
-
+								${info.content}
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
@@ -221,8 +221,8 @@
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-	           			<div class="btn btn-primary">수정하기</div>
-	                	<div class="btn btn-primary">돌아가기</div>
+	           			<div class="btn btn-primary"><a href="/ad/article/update/${info.no}">수정하기</a></div>
+	                	<div class="btn btn-primary" onclick="back()">돌아가기</div>
 	           		</div>
            		</div>
            	</div>
@@ -231,9 +231,6 @@
       </div>
     </div>
 	</div>
-	
-	
-	
 </body>
 
 <!-- 부트스트랩 -->
@@ -243,6 +240,16 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
+
+
+	function back() {
+		console.log('back')
+		location.href="/ad/resevation/list";
+	}
+
+
+
+
 	
 </script>
 </html>

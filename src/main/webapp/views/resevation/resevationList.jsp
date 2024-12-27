@@ -119,7 +119,46 @@
 	    align-items: flex-end;
 	}
 	
+	a {
+    	color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
+	}
+	/* 이 밑으로 라디오 변형 */
+	/* 라디오 버튼 그룹 정렬 */
+.radio-button-group {
+    display: flex;
+    gap: 10px;
+}
 
+/* 실제 라디오 버튼 숨기기 */
+.radio-button-group input[type="radio"] {
+    display: none;
+}
+
+/* 라벨을 버튼처럼 스타일링 */
+.radio-label {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 2px solid #007BFF;
+    border-radius: 5px;
+    background-color: #FFFFFF;
+    color: #007BFF;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    user-select: none;
+    font-size: 16px;
+}
+
+/* 마우스를 올렸을 때 스타일 */
+.radio-label:hover {
+    background-color: #e6f0ff;
+}
+
+/* 선택된 라디오 버튼의 라벨 스타일 변경 */
+.radio-button-group input[type="radio"]:checked + .btn.btn-sm.btn-outline-primary {
+    background-color: var(--bs-btn-hover-bg);
+    color: var(--bs-btn-hover-color);
+    border-color: var(--bs-btn-hover-border-color);
+}
 </style>
 </head>
 <body>
@@ -221,6 +260,7 @@
   
 	}
     
+    // 리스트 호출
 	function getSuccess(response) {
 		var list = response.list;
 		console.log("list",list);
@@ -228,29 +268,57 @@
 		if (Array.isArray(list) && list.length > 0) {
 			list.forEach(function(view,idx){
 				if(view.category == 'room'){
+					console.log('숫자 받아와?',view.no);
 		            content += '<div class="list-form">';
 		            content +='<div>';
-					content +='<h4><a href="/ad/room/detail/"'+view.no+'>'+view.name+'</a></h4>';
+					content +='<h4><a href="/ad/room/detail/'+view.no+'">'+view.subject+'</a></h4>';
 					content +='<p>최대인원 : '+view.count+'</p>';
-					content +='<p>등록자 : '+view.username+'</p>';
-					content +='<button class="btn btn-sm btn-outline-primary">활성화</button>';
-					content +='<button class="btn btn-sm btn-outline-primary">비활성화</button>';
+					content +='<p>등록자 : '+view.name+'</p>';
+					if(view.is_active == 'Y'){
+						content +='<div class="radio-button-group">'
+						content +='<input type="radio" id="option1'+view.no+'" name="options'+view.no+'" checked>'
+						content +='<label for="option1'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomY\')">활성화</label>'
+						content +='<input type="radio" id="option2'+view.no+'" name="options'+view.no+'">'
+						content +='<label for="option2'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomN\')">비활성화</label>'
+						content +='</div>'
+					}else{
+						content +='<div class="radio-button-group">'
+						content +='<input type="radio" id="option1'+view.no+'" name="options'+view.no+'">'
+						content +='<label for="option1'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomY\')">활성화</label>'
+						content +='<input type="radio" id="option2'+view.no+'" name="options'+view.no+'" checked>'
+						content +='<label for="option2'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomN\')">비활성화</label>'
+						content +='</div>'
+					}
 					content +='</div>';
 					content +='<div class="update">';
-					content +='<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>';
+					content +='<a href="/ad/room/update/'+view.no+'" class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</a>';
 					content +='</div>';
 					content +='</div>';				
-				}else{
+				}else{				
+					console.log('숫자 받아와?',view.no);
 					content += '<div class="list-form">';
 		            content +='<div>';
-					content +='<h4><a href="/ad/article/detail/"'+view.no+'>'+view.name+'</a></h4>';
+					content +='<h4><a href="/ad/article/detail/'+view.no+'">'+view.subject+'</a></h4>';
 					content +='<p>모델명 : '+view.model_name+'</p>';
-					content +='<p>등록자 : '+view.username+'</p>';
-					content +='<button class="btn btn-sm btn-outline-primary">활성화</button>';
-					content +='<button class="btn btn-sm btn-outline-primary">비활성화</button>';
+					content +='<p>등록자 : '+view.name+'</p>';
+					if(view.is_active == 'Y'){
+						content +='<div class="radio-button-group">'
+						content +='<input type="radio" id="option1/'+view.no+'" name="options/'+view.no+'" checked>'
+						content +='<label for="option1/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleY\')">활성화</label>'
+						content +='<input type="radio" id="option2/'+view.no+'" name="options/'+view.no+'">'
+						content +='<label for="option2/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleN\')">비활성화</label>'
+						content +='</div>'
+					}else{
+						content +='<div class="radio-button-group">'
+						content +='<input type="radio" id="option1/'+view.no+'" name="options/'+view.no+'">'
+						content +='<label for="option1/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleY\')">활성화</label>'
+						content +='<input type="radio" id="option2/'+view.no+'" name="options/'+view.no+'" checked>'
+						content +='<label for="option2/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleN\')">비활성화</label>'
+						content +='</div>'
+					}
 					content +='</div>';
 					content +='<div class="update">';
-					content +='<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>';
+					content +='<a href="/ad/article/update/'+view.no+'" class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</a>';
 					content +='</div>';
 					content +='</div>';
 				}
@@ -269,14 +337,53 @@
 		isLoading = false;
 	}
 	
+    // 회의실 등록버튼
 	function room() {
 		location.href="/ad/room/write";	
 	}
-	
+	// 물품 등록 버튼
 	function item() {
 		location.href="/ad/article/write";
 	}
-
+	// 상태변경 버튼
+	function useYN(no,type) {
+		console.log('해당 ',no,type);
+		layerPopup("상태를 변경 하시겠습니까?", "변경", "취소", function(){updateYN(no,type)}, secondBtn2Act);
+	}
+	
+	function updateYN(no,type) {
+		console.log('변경중 ',no,type);
+		
+		if(type == 'articleY'){
+			console.log('물품 활성');
+		}else if(type == 'articleN'){
+			console.log('물품 비활성');
+		}else if(type == 'roomY'){
+			console.log('회의실 활성');
+		}else if(type == 'roomN'){
+			console.log('회의실 비활성');
+		}
+		
+		var params = {
+				no: no,
+				filter:type
+		}
+		
+		httpAjax('PUT','/updateYN',params);
+	}
+		
+	function secondBtn2Act() {
+		//취소 클릭시 수행할 내용
+		console.log('취소 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function httpSuccess(response){
+		console.log('변경 완료');
+		removeAlert(); // 팝업닫기
+	}
+	
+	
 
 	
 </script>

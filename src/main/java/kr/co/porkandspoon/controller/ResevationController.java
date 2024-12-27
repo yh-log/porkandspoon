@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -99,17 +100,52 @@ public class ResevationController {
 	public ModelAndView articleDetailView(@PathVariable String no) {
 		
 		ModelAndView mav = new ModelAndView("/resevation/articleDetail");
-		
-		
+		CalenderDTO dto = resService.articleDetail(no);
+		mav.addObject("info",dto);
 		
 		return mav;
 	}
 		
 	// 물품 수정 이동
-	@GetMapping(value="/ad/article/update")
-	public ModelAndView articleUpdateView() {
-		return new ModelAndView("/resevation/articleUpdate");
+	@GetMapping(value="/ad/article/update/{no}")
+	public ModelAndView articleUpdateView(@PathVariable String no) {
+		
+		ModelAndView mav = new ModelAndView("/resevation/articleUpdate");
+		CalenderDTO dto = resService.articleDetail(no);
+		mav.addObject("info",dto);
+		
+		return mav;
 	}
+	
+	// 물품 수정 ajax
+	@PutMapping(value="/articleUpdate")
+	public Map<String,Object> articleUpdate(@RequestParam Map<String,Object> params){
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		CalenderDTO dto = resService.articleUpdate(params);
+		
+		result.put("response",dto);
+		
+		return result;
+	}
+	
+	// 활성 비화설
+	@PutMapping(value="/updateYN")
+	public Map<String,Object> updateYN(@RequestParam String no,@RequestParam String filter){
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.put("update",resService.updateYN(no,filter));
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 }
