@@ -308,7 +308,8 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
 if($('#pagination')){
    
     var firstPage = 1;
-   var paginationInitialized = false;
+	var paginationInitialized = false;
+
    
     function pageCall(page, cnt, url, { option = '', search = '', filtering = '' } = {}){
         

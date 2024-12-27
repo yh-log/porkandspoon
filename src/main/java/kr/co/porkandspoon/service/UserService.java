@@ -561,4 +561,100 @@ public class UserService {
 	}
 
 
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 등록 요청 페이지 이동 및 조회
+	 */
+	public ApprovalDTO storeWriteView(String idx) {
+		return userDao.storeWriteView(idx);
+	}
+
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 등록
+	 */
+	public DeptDTO storeWrite(DeptDTO dto) {
+		
+		int storeRow = userDao.storeWrite(dto);
+		
+		logger.info("브랜드 수정 로우 => " + storeRow);
+		
+		List<FileDTO> imgs = dto.getImgs();
+		if(imgs.size() > 0 || imgs != null) {
+			
+			// FileDTO에서 new_filename 값 추출
+		    List<String> fileNames = imgs.stream()
+		                                 .map(FileDTO::getNew_filename) // new_filename 추출
+		                                 .filter(Objects::nonNull)      // null 값 필터링
+		                                 .collect(Collectors.toList()); // List<String>으로 변환
+
+		    // 파일 이동
+		    boolean moveResult = CommonUtil.moveFiles(fileNames);
+		    logger.info("파일 이동 결과: {}", moveResult);
+			
+			for (FileDTO img : imgs) {
+				img.setPk_idx(dto.getId());
+				img.setCode_name("bc100");
+				
+				String type = img.getOri_filename().substring(img.getOri_filename().lastIndexOf("."));
+				img.setType(type);
+				
+				int contentImgRow = userDao.userFileWriet(img);
+				logger.info("이미지 업로드 => ", contentImgRow);
+			}
+		}
+		
+		return null;
+	}
+
+
+	/**
+	 * author yh.kim (24.12.27) 
+	 * 직영점 수정 페이지 이동 및 조회
+	 */
+	public DeptDTO storeDetsil(String id) {
+		return userDao.storeDetail(id);
+	}
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 수정
+	 */
+	public DeptDTO storeUpdate(DeptDTO dto) {
+			
+		int storeRow = userDao.storeUpdate(dto);
+		
+		logger.info("브랜드 수정 로우 => " + storeRow);
+		
+		List<FileDTO> imgs = dto.getImgs();
+		if(imgs.size() > 0 || imgs != null) {
+			
+			// FileDTO에서 new_filename 값 추출
+		    List<String> fileNames = imgs.stream()
+		                                 .map(FileDTO::getNew_filename) // new_filename 추출
+		                                 .filter(Objects::nonNull)      // null 값 필터링
+		                                 .collect(Collectors.toList()); // List<String>으로 변환
+
+		    // 파일 이동
+		    boolean moveResult = CommonUtil.moveFiles(fileNames);
+		    logger.info("파일 이동 결과: {}", moveResult);
+			
+			for (FileDTO img : imgs) {
+				img.setPk_idx(dto.getId());
+				img.setCode_name("bc100");
+				
+				String type = img.getOri_filename().substring(img.getOri_filename().lastIndexOf("."));
+				img.setType(type);
+				
+				int contentImgRow = userDao.userFileWriet(img);
+				logger.info("이미지 업로드 => ", contentImgRow);
+			}
+		}
+		
+		return null;
+	}
+
+
+
 }

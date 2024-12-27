@@ -125,7 +125,11 @@
 		width: 170px;
 		height: 270px;
 	}
-
+	
+	#dept-logo{
+		width: 150px;
+    	height: 150px;
+	}
 </style>
 
 </head>
@@ -161,54 +165,57 @@
 								<table>
 									<tr>
 										<td rowspan="3" class="filebox">
-											<img src="" id="userProfile"/>
+											<img src="" id="dept-logo"/>
 										</td>
 										<th>문서 제목</th>
-										<td><span id="draft-subject">${deptInfo.subject}</span></td>
+										<td><span id="draft-subject">${storeInfo.subject}</span></td>
 										<th>기안자</th>
-										<td><span id="draft-username">${deptInfo.user_name}</span></td>
+										<td><span id="draft-username">${storeInfo.user_name}</span></td>
 									</tr>
 									<tr>
 										<th>결재 일자</th>
-										<td><span id="draft-approvalDate">${deptInfo.approval_date}</span></td>
-										<th>작성 부서</th>
-										<td><span id="draft-deptId">${deptInfo.dept_text}</span></td>
+										<td><span id="draft-approvalDate">${storeInfo.approval_date}</span></td>
+										<th>작성 부서(브랜드)</th>
+										<td><span id="draft-deptId">${storeInfo.dept_text}</span></td>
 									</tr>
 									<tr class="custom-height-row">
 										<th>직영점 명</th>
-										<td><input type="text" name="text"  class="form-control" value="${deptInfo.name}" id="deptCode" data-required="true"/></td>
+										<td><input type="text" name="name"  class="form-control" value="${storeInfo.name}" id="deptCode" data-required="true"/></td>
 										<th>직영점 코드</th>
 										<td>
 											<div class="inline-layout">
+												<input type="hidden" name="parent" value="${storeInfo.dept_id}"/>
 												<input type="text" name="id" class="form-control" data-required="true"/>
 												<button type="button" onclick="deptOverlay()" class="btn btn-sm btn-outline-primary"><i class="bi bi-check-lg"></i></button>
 											</div>
 											<div id="overlayMessage"></div>
 										</td>
 									</tr>
+									
 									<tr class="custom-height-row">
 										<th>직영점주</th>
 										<td colspan="2">
 											<div class="inline-layout">
-												<input type="text" name="" class="form-control .disable" disabled="disabled"/> 
+											<!-- todo - 나중에 조직도 모달 붙이기 -->
+												<input type="text" name="owner" class="form-control .disable" value="qtgks9"/> 
 												<button class="btn btn-primary" ><i class="bi bi-diagram-3"></i></button>
 											</div>
 										</td>
 										<th>시행일자</th>
 										<td>
-											<input type="date" name="use_date" class="form-control" value="${deptInfo.from_date}" data-required="true"/>
+											<input type="date" name="use_date" class="form-control" value="${storeInfo.from_date}" data-required="true"/>
 										</td>
 									</tr>
 									<tr>
 										<th>주소</th>
 										<td colspan="2">
 											<div class="inline-layout">
-												도로명 <input type="text" name="address" class="form-control .disable"/>
+												도로명 <input type="text" name="address" class="form-control .disable" value="${storeInfo.address}"/>
 											</div>
 										</td>
 										<td colspan="2">
 											<div class="inline-layout">
-												상세주소 <input type="text" name="address_detail" class="form-control .disable"/>
+												상세주소 <input type="text" name="address_detail" class="form-control .disable" value="${storeInfo.address_detail}"/>
 											</div>
 										</td>
 									</tr>
@@ -229,7 +236,7 @@
 									</tr>
 								</table>
 								<div class="btn-Layout">
-									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 등록하시겠습니까?','등록','취소', deptWrire, removeAlert)">등록</button>
+									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 등록하시겠습니까?','등록','취소', storeWrire, removeAlert)">등록</button>
 									<button class="btn btn-outline-primary">취소</button>
 								</div>
 							</form>
@@ -251,11 +258,35 @@
 
 	
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/deptInfo.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
 
+$(document).ready(function() {
+    // Summernote 초기화
+    $('#summernote').summernote({
+        height: 300
+    });
+    
+    // 서버에서 전달된 데이터 읽기
+    var content = '${storeInfo.content}';
+    
+    // Summernote에 데이터 삽입
+    $('#summernote').summernote('code', content);
+    
+    var date = '${storeInfo.approval_date}';
+    $('#draft-approvalDate').text(date.split(' ')[0]);
+    
+	var deptCodeOverlay = false;
 
-
+	var logo_file = '${storeInfo.logo_file}';
+	if(logo_file){
+		document.getElementById('dept-logo').src = '/photo/' + logo_file;
+	}else {
+        document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
+    }
+	
+});
 
 </script>
 

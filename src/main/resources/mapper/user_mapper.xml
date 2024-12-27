@@ -163,6 +163,9 @@
 	                       <when test="option == 'position'">
 	                           c.content LIKE CONCAT('%', #{keyword}, '%')
 	                       </when>
+	                       <when test="option == 'user_yn'">
+	                           u.user_yn = 'Y'
+	                       </when>
 	                   </choose>
 	                   )
 	               </if>
@@ -198,23 +201,24 @@
 
 	<!-- 브랜드 등록 페이지 정보(기안문 테이블) -->
 	<select id="deptWriteView" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.subject, d.name, d.content, d.from_date, u.name AS user_name, dept.text AS dept_text, al.approval_date
-		FROM 
-		    draft d LEFT JOIN user u ON d.username = u.username
-		LEFT JOIN department dept ON d.dept_id = dept.id
-		LEFT JOIN 
-		    (SELECT 
-		        draft_idx, MAX(`order_num`) AS max_order
-		        FROM approval_line
-		        GROUP BY draft_idx) 
-		    al_max ON d.draft_idx = al_max.draft_idx
-		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
-			AND al.`order_num` = al_max.max_order 
-		    AND al.status = 'ap004'
-		WHERE 
-		    d.draft_idx = #{idx}
-		    AND d.target_type = 'df001'
-		    AND d.action_type = 'df011';
+		SELECT d.subject, d.name, d.content, d.from_date, f.new_filename AS logo_file, u.name AS user_name, dept.text AS dept_text, al.approval_date
+			FROM 
+			    draft d LEFT JOIN user u ON d.username = u.username
+			LEFT JOIN department dept ON d.dept_id = dept.id
+			LEFT JOIN 
+			    (SELECT 
+			        draft_idx, MAX(`order_num`) AS max_order
+			        FROM approval_line
+			        GROUP BY draft_idx) 
+			    al_max ON d.draft_idx = al_max.draft_idx
+			LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+				AND al.`order_num` = al_max.max_order 
+			    AND al.status = 'ap004'
+			LEFT JOIN file f ON d.draft_idx = f.pk_idx AND f.code_name = 'bl001'
+			WHERE 
+			    d.draft_idx = #{idx}
+			    AND d.target_type = 'df001'
+			    AND d.action_type = 'df011';
 	</select>
 	
 	<!-- 부서 코드 중복 검사 -->
@@ -344,7 +348,45 @@
 	    ORDER BY al.approval_date DESC
 	</select>
 
-
-
+	<!-- 직영점 등록 요청 페이지 이동 및 조회 -->
+	<select id="storeWriteView" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT d.subject, d.name, d.content, d.from_date, d.address, dept.id AS dept_id, d.address_detail, f.new_filename AS file_name, u.name AS user_name, dept.text AS dept_text, al.approval_date
+		FROM 
+		    draft d LEFT JOIN user u ON d.username = u.username
+		LEFT JOIN department dept ON d.dept_id = dept.id
+		LEFT JOIN 
+		    (SELECT 
+		        draft_idx, MAX(`order_num`) AS max_order
+		        FROM approval_line
+		        GROUP BY draft_idx) 
+		    al_max ON d.draft_idx = al_max.draft_idx
+		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+			AND al.`order_num` = al_max.max_order 
+		    AND al.status = 'ap004'
+		LEFT JOIN file f ON f.pk_idx = dept.id AND f.code_name = 'bl001'
+		WHERE 
+		    d.draft_idx = #{idx}
+		    AND d.target_type = 'df002'
+		    AND d.action_type = 'df011'
+	</select>
+	
+	<!-- 직영점 등록 -->
+	<insert id="storeWrite" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		INSERT INTO direct_store(id, parent, name, owner, use_yn, address, address_detail, creater, use_date, content) 
+			VALUES(#{id}, #{parent}, #{name}, #{owner}, #{use_yn}, #{address}, #{address_detail}, 'admin', #{use_date}, #{content})
+	</insert>
+	
+	<!-- 직영점 상세 조회 -->
+	<select id="storeDetail" parameterType="String" resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT ds.id, ds.parent, ds.name, ds.use_yn, ds.address, ds.content, ds.owner, ds.address_detail, ds.use_date, d.`text`, u.name AS user_name, f.new_filename AS logo
+			FROM direct_store ds LEFT JOIN department d ON ds.parent = d.id LEFT JOIN `user` u ON ds.owner = u.username
+			LEFT JOIN file f ON d.id = f.pk_idx AND f.code_name = 'bl001'
+			WHERE ds.id = #{id}
+	</select>
+	
+	<!-- 직영점 수정 -->
+	<update id="storeUpdate" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		UPDATE direct_store SET name = #{name}, use_yn = #{use_yn}, address = #{address}, address_detail = #{address_detail}, owner = #{owner}, content = #{content}, use_date = #{use_date}, creater = #{creater} WHERE id = #{id}
+	</update>
 	
 </mapper>

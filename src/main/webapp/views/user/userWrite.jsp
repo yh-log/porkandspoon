@@ -103,23 +103,29 @@
 	}
 	
 	
-.gender-th {
-    width: 80px; 
-    text-align: center; 
-}
+	.gender-th {
+	    width: 80px; 
+	    text-align: center; 
+	}
+	
+	#overlayMessage{
+	    display: none;
+	    margin-bottom: -15px;
+	    margin-top: -32px;
+	    font-size: 14px;
+	    color : var(--bs-primary);
+	    float: left;
+	}
+	
+	.required-value{
+		color: var(--bs-danger);
+	}
 
-#overlayMessage{
-    display: none;
-    margin-bottom: -15px;
-    margin-top: -32px;
-    font-size: 14px;
-    color : var(--bs-primary);
-    float: left;
-}
-
-.required-value{
-	color: var(--bs-danger);
-}
+	.input-readonly {
+	    pointer-events: none; /* 입력 및 클릭 불가 */
+	    background-color: #f0f0f0; /* 읽기 전용처럼 보이도록 회색 처리 */
+	    color: #888; /* 텍스트 색상 변경 */
+	}
 </style>
 
 

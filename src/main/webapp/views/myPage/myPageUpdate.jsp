@@ -29,6 +29,11 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+
+<!-- 다음 주소 검색 api 사용 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/resources/js/daumApi.js"></script>
+
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
 
@@ -222,10 +227,10 @@
 									<tr><th colspan="6">기타정보</th></tr>
 									<tr>
 										<th>생년월일 / 성별</th>
-										<td colspan="2">
+										<td colspan="">
 											<span id="birth-value"></span>
 										</td>
-										<td> 
+										<td colspan="2"> 
 											<div class="inline-layout">/ <span style="font-weight: 500;">성별</span>
 											<span id="gender-value"></span>
 											</div>
@@ -442,14 +447,14 @@ function getSuccess(response){
 } 
 
 function clearLogo() {
-    const userProfile = document.getElementById('userProfile');
+    var userProfile = document.getElementById('userProfile');
     userProfile.style.display = 'none';
 }
      
      
 document.addEventListener('DOMContentLoaded', function () {
-    const emailSelect = document.getElementById('emailAddr');
-    const customEmailInput = document.getElementById('customEmail');
+    var emailSelect = document.getElementById('emailAddr');
+    var customEmailInput = document.getElementById('customEmail');
 
     emailSelect.addEventListener('change', function () {
         if (emailSelect.value === 'ect') {
@@ -490,8 +495,37 @@ function myPageUpdate(){
 		
 		var form = document.querySelector('form');
 		var formData = new FormData(form);
+		
+		formData.append('username', $('input[name="username"]').val());
+		
+		var emailSelect = document.getElementById('emailAddr');
+		
+		if (emailSelect.value === 'ect'){
+			var email = $('input[name="emailInfo"]').val() + '@' + $('input[name="customEmail"]').val()
+			formData.append('email', email);
+			
+		}
+		
+		var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
+        formData.append('email', email);
+		
+        formData.append('address', $('input[name="address"]').val());
+		
+        fileAjax('PUT', '/myPage/update', formData);
+        
+	}else{
+		console.log('폼에 잘못된 값이 있습니다.');
 	}
 	
+}
+
+function fileSuccess(response){
+	if(response.status == 200){
+		removeAlert();
+		location.href='/myPageView/' + $('input[name="username"]').val();
+	}else{
+		alert(repnase.message);
+	}
 }
 </script>
 

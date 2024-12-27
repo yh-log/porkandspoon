@@ -125,6 +125,11 @@
 		width: 170px;
 		height: 270px;
 	}
+	
+	#dept-logo{
+		width: 150px;
+    	height: 150px;
+	}
 
 </style>
 
@@ -162,9 +167,9 @@
 									<tr>
 										<td rowspan="2" class="filebox">
 											<div id="imgPreview"></div>
-											<img src="" id="userProfile"/>
+											<img src="" id="dept-logo"/>
 											<label for="file">+ 로고 수정</label>
-											<input type="file" id="file" name="file" onchange="preview(this)" id="fileInput"/>
+											<input type="file" id="file" name="file" onchange="clearLogo(); preview(this);" id="fileInput"/>
 										</td>
 										<th>문서 제목</th>
 										<td><span id="draft-subject">${deptInfo.subject}</span></td>
@@ -261,9 +266,20 @@
 	    $('#draft-approvalDate').text(date.split(' ')[0]);
 	    
 		var deptCodeOverlay = false;
+
+		var logo_file = '${deptInfo.logo_file}';
+		if(logo_file){
+			document.getElementById('dept-logo').src = '/photo/' + logo_file;
+		}else {
+            document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
+        }
+		
 	});
 	
-	
+	function clearLogo() {
+        const deptLogo = document.getElementById('deptLogo');
+        deptLogo.style.display = 'none';
+    }
 
 </script>
 
