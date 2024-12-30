@@ -229,7 +229,7 @@ border-bottom: none;
                     <h3>식단 수정</h3>
                     <form action="/ad/mealMenu/Update" method="post">
                     	<input type="hidden" name="_method" value="put"> 
-                    
+                    		
                      	<input type="hidden" name="_csrf" value="${_csrf.token}" />
                         <div class="modal-body">
                         

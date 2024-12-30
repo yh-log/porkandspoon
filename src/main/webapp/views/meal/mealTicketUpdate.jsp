@@ -114,7 +114,7 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-			         <form action="/ad/mealTicket/Update" method="post" enctype="multipart/form-data">
+			         <form action="/ad/mealTicket/Update/${info.meal_idx}" method="post" enctype="multipart/form-data">
 	                     <input type="hidden" name="_csrf" value="${_csrf.token}" />
 	                     <table>
 	                        <tr>
@@ -132,28 +132,21 @@
 	                        </tr>
 	                        
 	                        <tr>
-	                           <th class="align-l">파일첨부</th>
-	                          <td ><div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
-								<input class="filepond--browser" type="file" id="filepond--browser-rd9ou40mc" name="filepond" aria-controls="filepond--assistant-rd9ou40mc" aria-labelledby="filepond--drop-label-rd9ou40mc" accept="">
-									<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
-										<label for="filepond--browser-rd9ou40mc" id="filepond--drop-label-rd9ou40mc" aria-hidden="true">Drag &amp; Drop your files or 
-											<span class="filepond--label-action" tabindex="0">Browse</span>
-										</label>
-									</div>
-									<div class="filepond--list-scroller" style="transform: translate3d(0px, 0px, 0px);">
-										<ul class="filepond--list" role="list"></ul>
-									</div>
-									<div class="filepond--panel filepond--panel-root" data-scalable="true">
-										<div class="filepond--panel-top filepond--panel-root"></div>
-										<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
-										<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
-									</div>
-										<span class="filepond--assistant" id="filepond--assistant-rd9ou40mc" role="status" aria-live="polite" aria-relevant="additions"></span>
-											<fieldset class="filepond--data"></fieldset>
-											<div class="filepond--drip"></div>
-								</div>
-							</td>
-	                        </tr>
+    <th class="align-l">파일첨부</th>
+    <td>
+        <!-- FilePond File Uploader -->
+        <input class="filepond" type="file" name="filepond" />
+
+        <!-- Hidden image preview (fallback for non-FilePond users) -->
+        <c:if test="${not empty fileUrl}">
+            <div>
+                
+            </div>
+        </c:if>
+    </td>
+</tr>
+	                        
+	                        
 	                     <tr>
 						   <th class="align-l">활성여부</th>
 						   <td>
@@ -239,30 +232,33 @@
 
 
 <script>
+
+
 document.addEventListener('DOMContentLoaded', function () {
-    // FilePond 인스턴스 가져오기
-    const fileInput = document.querySelector('.filepond--browser');
+    const fileInput = document.querySelector('.filepond');
 
     // FilePond 초기화
-    FilePond.create(fileInput);
+    const pond = FilePond.create(fileInput, {
+        allowImagePreview: true, // 이미지 미리보기 활성화
+        imagePreviewMaxHeight: 150,
+        acceptedFileTypes: ['image/*'], // 이미지 파일만 허용
+    });
 
-    // 서버에서 가져온 파일 URL과 이름 설정
-    var fileUrl = '${fileUrl}';
-    var fileName = '${fileName}';
-	console.log(fileUrl);
-	console.log(fileName);
-    
-    
+    // 서버에서 제공된 기존 파일 설정
+    const fileUrl = '${fileUrl}'; // 서버에서 제공된 파일 URL
+    const fileName = '${fileName}'; // 서버에서 제공된 파일 이름
+
     if (fileUrl && fileName) {
-        // FilePond에 기존 파일 설정
-        FilePond.find(fileInput).setOptions({
+        pond.setOptions({
             files: [
                 {
-                    source: fileUrl, // 서버에서 제공된 파일 URL
+                    source: fileUrl, // 기존 이미지의 URL
                     options: {
-                        type: 'local',
+                        type: 'local', // 로컬 파일로 간주
                         file: {
-                            name: fileName, // 파일 이름
+                            name: fileName, // 기존 파일 이름
+                            size: 300000, // 파일 크기 (선택)
+                            type: 'image/jpeg', // MIME 타입
                         },
                     },
                 },
@@ -270,15 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
 	/* 알림 팝업 */
 	function btn1Act() {
 		// 1번버튼 클릭시 수행할 내용

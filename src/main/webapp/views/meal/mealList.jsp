@@ -152,7 +152,7 @@
 								            <!-- filedto와 new_filename이 null인지 확인하여 기본 이미지 설정 -->
 								            <c:choose>
 								                <c:when test="${not empty ticket.filedto and not empty ticket.filedto.new_filename}">
-								                    <img src="path/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                    <img src=" /photo/${ticket.filedto.new_filename}" alt="상품 이미지">
 								                </c:when>
 								                <c:otherwise>
 								                    <img src="/resources/img/default.jpg" alt="기본 이미지">
