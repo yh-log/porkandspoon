@@ -7,6 +7,13 @@ public class BoardDTO {
 
 	private int board_idx;
 	private String username;
+	private String newname;
+	public String getNewname() {
+		return newname;
+	}
+	public void setNewname(String newname) {
+		this.newname = newname;
+	}
 	private String subject;
 	private String content;
 	private int count;
@@ -16,6 +23,34 @@ public class BoardDTO {
 	private String board_notice;
 	private String userNick;
 	private String recreate_date;
+	private String new_filename;
+	private String status;
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	private int listrow;
+	private int reviewrow;
+	public int getReviewrow() {
+		return reviewrow;
+	}
+	public void setReviewrow(int reviewrow) {
+		this.reviewrow = reviewrow;
+	}
+	public int getListrow() {
+		return listrow;
+	}
+	public void setListrow(int listrow) {
+		this.listrow = listrow;
+	}
+	public String getNew_filename() {
+		return new_filename;
+	}
+	public void setNew_filename(String new_filename) {
+		this.new_filename = new_filename;
+	}
 	public String getRecreate_date() {
 		return recreate_date;
 	}
@@ -44,6 +79,20 @@ public class BoardDTO {
 	private String filtering;
 	private List<FileDTO> imgs;
 	private int totalpage;
+	private String parent;
+	private String text;
+	public String getParent() {
+		return parent;
+	}
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
 	public List<FileDTO> getImgs() {
 		return imgs;
 	}
@@ -152,5 +201,6 @@ public class BoardDTO {
 	public void setFiltering(String filtering) {
 		this.filtering = filtering;
 	}
+	
 	
 }

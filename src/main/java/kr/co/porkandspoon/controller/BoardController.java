@@ -1,19 +1,26 @@
 package kr.co.porkandspoon.controller;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dto.BoardDTO;
+import kr.co.porkandspoon.dto.BoardReviewDTO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.BoardService;
@@ -37,6 +45,13 @@ public class BoardController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired BoardService boardService;
+	private final TaskScheduler taskScheduler;
+	private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+
+    public BoardController(BoardService boardService, TaskScheduler taskScheduler) {
+        this.boardService = boardService;
+        this.taskScheduler = taskScheduler;
+    }
 	
 	// 공지사항 게시판 이동
 	@GetMapping(value="/board/View")
@@ -52,24 +67,156 @@ public class BoardController {
 		return new ModelAndView("/board/boardList");
 	}
 	
-	// 공지사항 등록 이동
+	// 글쓰기 페이지 이동
 	@GetMapping(value="/boardwrite/View")
 	public ModelAndView boardwriteView() {
 		return new ModelAndView("/board/boardWrite");
 	}
 	
-	// 공지사항 수정 이동
-	@GetMapping(value="/boardupdate/View")
-	public ModelAndView boardupdateView() {
-		return new ModelAndView("/board/boardUpdate");
+	// 공지사항 수정페이지 이동
+	@GetMapping(value="/boardupdate/View/{board_idx}")
+	public ModelAndView boardUpdate(@PathVariable String board_idx) {
+		BoardDTO boarddto = new BoardDTO();
+		ModelAndView mav = new ModelAndView();
+		List<FileDTO> file = boardService.getBoardFile(board_idx);
+		boarddto = boardService.boardDetail(board_idx);
+		mav.addObject("fileInfo", file);
+		mav.addObject("boardInfo", boarddto);
+		mav.setViewName("/board/boardUpdate");
+		return mav;
 	}
 	
-	// 공지사항 상세보기 이동
-	@GetMapping(value="/boarddetail/View")
-	public ModelAndView boarddetailView() {
-		return new ModelAndView("/board/boardDetail");
+	// 공자사항 상세보기
+	@GetMapping(value="/boarddetail/View/{board_idx}")
+	public ModelAndView boardDetail(@PathVariable String board_idx) {
+		BoardDTO boarddto = new BoardDTO();
+		ModelAndView mav = new ModelAndView();
+		List<BoardReviewDTO> reviewdto = boardService.getReview(board_idx);
+		for(BoardReviewDTO dto : reviewdto) {
+			if(dto.getReview_date() != null) {
+				LocalDateTime time = dto.getReview_date();
+				String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+				dto.setRereview_date(create_date);
+			}
+		}
+		List<FileDTO> file = boardService.getBoardFile(board_idx);
+		FileDTO photo = boardService.getBoardphoto(board_idx);
+		boarddto = boardService.boardDetail(board_idx);
+		
+		String username = boarddto.getUsername();
+		if(boarddto != null) {
+			int boardidx = Integer.parseInt(board_idx);
+			// 조회수 + 1 메서드
+			boardService.boardUpCount(boardidx);
+			boardService.boardListCheck(boardidx, username);
+			
+		}
+		mav.addObject("reviewInfo", reviewdto);
+		mav.addObject("photoInfo", photo);
+		mav.addObject("fileInfo", file);
+		mav.addObject("boardInfo", boarddto);
+		mav.setViewName("/board/boardDetail");
+		return mav;
 	}
 	
+	// 공지사항 수정하기
+	@PostMapping(value="/board/update")
+	public BoardDTO setBoardUpdate(@RequestParam("filepond") MultipartFile[] files,
+			@ModelAttribute BoardDTO dto,
+			@RequestParam("imgsJson") String content) {
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		try {
+			imgs = obj.readValue(content, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			dto.setImgs(imgs);
+			dto = boardService.setBoardupdate(files, dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
+	
+	// 공지사항 설정
+    @PostMapping("/set/notice")
+    public Map<String, Object> setNotice(@RequestParam("board_idx") String board_idx,
+                            @RequestParam("notice1") String notice1,
+                            @RequestParam("notice2") String notice2) {
+    	Map<String, Object> response = new HashMap<>();
+        LocalDateTime startAt = LocalDateTime.parse(notice1 + "T00:00:00");
+        LocalDateTime endAt = LocalDateTime.parse(notice2 + "T00:00:00");
+
+        LocalDateTime now = LocalDateTime.now();
+        
+        // 시작일 작업 등록
+        if (!startAt.isAfter(now)) {
+            logger.info("공지 즉시 설정 " + board_idx);
+            boardService.setNotice(board_idx, "Y");
+        } else {
+            scheduleTask(
+                "start-" + board_idx,
+                startAt,
+                () -> {
+                    logger.info("공지 시작일 " + board_idx);
+                    boardService.setNotice(board_idx, "Y");
+                }
+            );
+        }
+
+        // 종료일 작업 등록
+        scheduleTask(
+            "end-" + board_idx,
+            endAt,
+            () -> {
+            	logger.info("공지 종료일 " + board_idx);
+                boardService.setNotice(board_idx, "N");
+            }
+        );
+        return null;
+    }
+	
+    // 스케줄러 확인 로직
+    private void scheduleTask(String taskId, LocalDateTime executeAt, Runnable task) {
+        if (scheduledTasks.containsKey(taskId)) {
+            cancelTask(taskId); // 기존 작업 제거
+        }
+        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(task, 
+            Date.from(executeAt.atZone(ZoneId.systemDefault()).toInstant()));
+        scheduledTasks.put(taskId, scheduledTask);
+        logger.info("작업 추가됨: " + taskId + " 실행 시점: " + executeAt);
+    }
+    
+    // 중복 스케줄러 제거 로직
+    private void cancelTask(String taskId) {
+        ScheduledFuture<?> scheduledTask = scheduledTasks.get(taskId);
+        if (scheduledTask != null) {
+            scheduledTask.cancel(false);
+            scheduledTasks.remove(taskId);
+            logger.info("중복 작업 취소됨: " + taskId);
+        }
+    }
+    
+	// 게시글 삭제
+	@PostMapping(value="/board/delete")
+	public ModelAndView boardDelete(@RequestParam Map<String, Object> params) {
+		logger.info("삭제할 idx : {}", params);
+		int board_idx = Integer.parseInt(params.get("board_idx").toString());
+		ModelAndView mav = new ModelAndView();
+		if(boardService.boardDelete(board_idx) > 0) {
+			mav.addObject("success", "success");
+			mav.setViewName("/board/boardList");
+		}else {
+			mav.setViewName("/board/boardList");
+		}
+		return mav;
+	}
+	
+	// 게시판 글 쓰기
 	@PostMapping(value="/board/write")
 	public BoardDTO setBoardwrite(@RequestParam("filepond") MultipartFile[] files,
 			@ModelAttribute BoardDTO dto,
@@ -94,6 +241,7 @@ public class BoardController {
 		return dto;
 	}
 	
+	// 게시판 리스트
 	@GetMapping(value="/board/list")
 	public List<BoardDTO> boardList(
 			@RequestParam(value = "page", defaultValue = "1") int page, 
@@ -113,6 +261,73 @@ public class BoardController {
 			}
 		}
 		return dtolist;
+	}
+	
+	// 댓글 삭제
+	@PostMapping(value="/review/delete")
+	public Map<String, Object> setReviewDelele(@RequestParam Map<String, Object> params) {
+		logger.info("댓글 idx : {} ", params);
+		Map<String, Object> response = new HashMap<>();
+		boardService.setReviewDelete(params);
+		response.put("sucess", true);
+		response.put("status", "delete");
+		return response;
+	}
+	
+	// 댓글 수정
+	@PostMapping(value="/review/update")
+	public Map<String, Object> setReviewUpdate(@RequestParam Map<String, Object> params) {
+		logger.info("댓글 내용 : {}", params);
+		boardService.setReviewUpdate(params);
+		Map<String, Object> response = new HashMap<>();
+		response.put("sucess", true);
+		response.put("status", "update");
+		return response;
+	}
+	
+	// 비공개 게시글 부서 찾아오기
+	@GetMapping(value="checkDept")
+	public Map<String, Object> getCheckDept(@RequestParam Map<String, Object> params) {
+		Map<String, Object> response = new HashMap<>();
+		response.put("status", false);
+		response.put("msg", "권한이 없습니다.");
+		if(boardService.getCheckDept(params) > 0) {
+			response.put("status", true);
+		}else {
+			response.put("status", false);
+			response.put("msg", "권한이 없습니다.");
+		}
+		
+		return response;
+	}
+	
+	// 댓글 쓰기
+	@PostMapping(value="/board/review/write")
+	public Map<String, Object> setReviewWrite(@RequestParam Map<String, Object> params) {
+		boardService.setReviewWrite(params);
+		Map<String, Object> response = new HashMap<>();
+		response.put("success", true);
+		response.put("status", "write");
+		return response;
+	}
+	
+	// 대댓글 쓰기
+	@PostMapping(value="/reReview/write")
+	public Map<String, Object> setRereviewWrite(@RequestParam Map<String, Object> params) {
+		logger.info("댓글 내용 : {}", params);
+		boardService.setRereviewWrite(params);
+		Map<String, Object> response = new HashMap<>();
+		response.put("success", true);
+		response.put("status", "rewrite");
+		return response;
+	}
+	
+	// 읽음 리스트 가져오기
+	@GetMapping(value="/check/list")
+	public List<BoardDTO> getCheckList(@RequestParam Map<String, Object> params) {
+		logger.info("반응체크: {}", params);
+		List<BoardDTO> dto = boardService.getCheckList(params);
+		return dto;
 	}
 	
 

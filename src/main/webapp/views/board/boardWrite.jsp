@@ -125,16 +125,16 @@
 								<tr>
 									<td>
 										<div class="editor-area">
-											<textarea name="content" id="summernote" maxlength="10000"></textarea>
+											<textarea name="contentss" id="summernote" maxlength="10000"></textarea>
 										</div>
 									</td>
 								</tr>
 								<tr class="table-sun">
 								    <th class="table-text table-text-text">공개 설정</th>
 								    <td class="table-text">
-								        <input class="form-check-input" type="radio" name="use_yn" id="flexRadioDefault1" value="Y" checked> 공개
+								        <input class="form-check-input" type="radio" name="board_state" id="flexRadioDefault1" value="Y" checked> 공개
 								        &nbsp;
-								        <input class="form-check-input" type="radio" name="use_yn" id="flexRadioDefault2" value="N"> 비공개
+								        <input class="form-check-input" type="radio" name="board_state" id="flexRadioDefault2" value="N"> 비공개
 								    </td>
 								</tr>
 								<tr class="table-sun" id="departmentRow" style="display: none;">
@@ -143,7 +143,7 @@
 								        <select class="form-select" name="department" id="basicSelect" style="width: 200px;">
 								            <option value="AH0101">인사팀</option>
 								            <option value="AA0104">총무팀</option>
-								            <option value="5">브랜드팀</option>
+								            <option value="AG0102">법무팀</option>
 								        </select>
 								    </td>
 								</tr>
@@ -167,35 +167,8 @@
 </body>
 <script src='/resources/js/textEaditor.js'></script>
 <script src='/resources/js/common.js'></script>
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
 	
 <script>
-	/* $(document).ready(function() {
-	    var params = {username: username};
-	    httpAjax('GET', '/getUserlist', params);
-	}); */
-	
-/* 	function httpSuccess(response) {
-		console.log('가져온 유저 데이터 : ', response);
-	     $('#user-name-insert td.table-text').text(response.name);
-	     $('#user-name-insert').append('<input type="hidden" name="username" value="' + response.username + '">');
-	} */
 	var username = $('#currentUser').text().trim();
 	$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
     console.log('로그인 한 사용자 ID : ', username);
