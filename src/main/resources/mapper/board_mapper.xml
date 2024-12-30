@@ -16,16 +16,27 @@
 	        username,   
 	        subject,  
 	        content,
-	        use_yn
+	        board_state,
+	        department
 	    )
 	    VALUES (
 	       	#{username},
 	        #{subject}, 
 	        #{content}, 
-	        #{use_yn}
+	        #{board_state},
+	        #{department}
 	    )
 	</insert>
 	
+	<!-- 게시글 수정 -->
+	<update id="setBoardUpdate" parameterType="kr.co.porkandspoon.dto.BoardDTO">
+		UPDATE free_board SET
+			subject = #{subject},
+			content = #{content},
+			board_state = #{board_state},
+			department = #{department}
+		WHERE board_idx = #{board_idx}
+	</update>
 	
 	<!-- 파일 저장하는 쿼리 -->
 	<insert id="setBoardfiles" parameterType="kr.co.porkandspoon.dto.FileDTO">
@@ -46,6 +57,7 @@
 	        )
 	</insert>
 	
+	
 	<!-- 게시판 리스트 및 검색 -->
 	<select id="boardList" parameterType="map" resultType="kr.co.porkandspoon.dto.BoardDTO">
     	SELECT 
@@ -60,10 +72,10 @@
         f.use_yn,
         f.board_notice,
         (SELECT CEIL(COUNT(*) / #{limit}) 
-         FROM free_board f
-         LEFT JOIN user u ON f.username = u.username
-         LEFT JOIN department d ON u.parent = d.id
-         WHERE 1 = 1
+        FROM free_board f
+        LEFT JOIN user u ON f.username = u.username
+        LEFT JOIN department d ON u.parent = d.id
+        WHERE f.use_yn = 'Y' <!-- board_state 조건 추가 -->
          <if test="keyword != null and keyword != ''">
              AND (
              <choose>
@@ -80,12 +92,12 @@
              )
          </if>
         ) AS totalpage
-    FROM 
+    	FROM 
         free_board f
         LEFT JOIN user u ON f.username = u.username
         LEFT JOIN department d ON u.parent = d.id
-    WHERE 
-        1 = 1
+    	WHERE 
+        f.use_yn = 'Y' <!-- board_state 조건 추가 -->
         <if test="keyword != null and keyword != ''">
             AND (
             <choose>
@@ -101,9 +113,174 @@
             </choose>
             )
         </if>
-    ORDER BY 
+    	ORDER BY 
         f.board_idx DESC
-    LIMIT #{offset}, #{limit}
-</select>
+    	LIMIT #{offset}, #{limit}
+	</select>
+	
+	<!-- 해당 게시글의 정보 가져오기 -->
+	<select id="boardDetail" resultType="kr.co.porkandspoon.dto.BoardDTO" parameterType="String">
+	    SELECT 
+	        fb.board_idx,
+	        fb.*,           
+	        u.name AS newname,  
+	        u.parent,       
+	        d.text AS text,   
+	        (SELECT COUNT(*) 
+	         FROM checklist c 
+	         WHERE c.board_idx = fb.board_idx) AS listrow,
+	        (SELECT COUNT(*) 
+	         FROM board_review br 
+	         WHERE br.board_idx = fb.board_idx) AS reviewrow
+	    FROM 
+	        free_board fb
+	    LEFT JOIN 
+	        user u
+	        ON fb.username = u.username
+	    LEFT JOIN 
+	        department d
+	        ON u.parent = d.id
+	    WHERE 
+	        fb.board_idx = #{board_idx};
+	</select>
 
+	
+	<!-- 해당 게시글의 파일 정보 가져오기 -->
+	<select id="getBoardFile" resultType="kr.co.porkandspoon.dto.FileDTO">
+		SELECT * FROM file WHERE pk_idx = #{board_idx} AND code_name = 'fb002';
+	</select>
+	
+	<!-- 게시글 삭제 -->
+	<update id="boardDelete" parameterType="int">
+	    UPDATE free_board
+	    SET use_yn = 'N'
+	    WHERE board_idx = #{board_idx};
+	</update>
+	
+	<!-- 게시글 작성자 사진 가져오기 -->
+	<select id="getBoardphoto" resultType="kr.co.porkandspoon.dto.FileDTO">
+    	SELECT f.new_filename FROM file f 
+    	INNER JOIN free_board fb ON f.pk_idx = fb.username 
+    	WHERE 
+        fb.board_idx = #{board_idx}
+        AND f.code_name = 'up100';
+	</select>
+	
+	<!-- 조회수 증가 쿼리 -->
+	<update id="boardUpCount" parameterType="int">
+		UPDATE free_board SET count = count + 1 WHERE board_idx = #{board_idx}
+	</update>
+	
+	<!-- 읽음 리스트에서 읽었나 조회 쿼리 -->
+	<select id="boardListCheck" resultType="int" parameterType="map">
+		SELECT COUNT(*) FROM checklist WHERE board_idx = #{board_idx} AND username = #{username}
+	</select>
+	
+	<!-- 읽음 리스트에 추가 쿼리 -->
+	<insert id="boardCheckInsert" parameterType="map">
+		INSERT INTO checklist (board_idx, username) VALUES(#{board_idx}, #{username});
+	</insert>
+	
+	<!-- 읽음 리스트 사원 가져오기 -->
+	<select id="getCheckList" resultType="kr.co.porkandspoon.dto.BoardDTO">
+    	SELECT 
+        c.board_idx,
+        c.username,
+        u.name AS newname, 
+        f.new_filename,  
+        d.text AS text 
+    	FROM 
+        checklist c
+    	LEFT JOIN 
+        file f
+        ON c.username = f.pk_idx
+        AND f.code_name = 'up100'
+    	LEFT JOIN 
+        user u
+        ON c.username = u.username
+    	LEFT JOIN 
+        department d
+        ON u.parent = d.id
+    	WHERE 
+        c.board_idx = #{board_idx};
+	</select>
+	
+	<select id="getCheckDept" parameterType="map" resultType="int">
+        SELECT 
+           CASE 
+               WHEN (SELECT department FROM free_board WHERE board_idx = #{board_idx}) = 
+                    (SELECT parent FROM user WHERE username = #{username}) 
+               THEN '1'
+               ELSE '0'
+           END AS result
+    </select>
+	
+	
+	<!-- 공지사항 댓글쓰기 -->
+	<insert id="setReviewWrite" parameterType="map">
+		INSERT INTO board_review (board_idx, username, review_content) VALUES(#{board_idx}, #{username}, #{review_content})
+	</insert>
+		
+	<!-- 공지사항 댓글 가져오기 -->
+	<select id="getReview" resultType="kr.co.porkandspoon.dto.BoardReviewDTO">
+	    SELECT 
+	        br.*,                
+	        f.new_filename,      
+	        d.text,             
+	        u.name   
+	    FROM 
+	        board_review br
+	    LEFT JOIN 
+	        file f
+	        ON br.username = f.pk_idx
+	        AND f.code_name = 'up100'
+	    LEFT JOIN 
+	        user u
+	        ON br.username = u.username
+	    LEFT JOIN 
+	        department d
+	        ON u.parent = d.id
+	    WHERE 
+	        br.board_idx = #{board_idx};
+	</select>
+
+	<!-- 게시글 댓글 삭제하기 -->
+	<update id="setReviewDelete" parameterType="map">
+		UPDATE board_review SET use_yn = 'N' WHERE review_idx = #{review_idx}
+	</update>
+	
+	<!-- 게시글 댓글 수정하기 -->
+	<update id="setReviewUpdate" parameterType="map">
+		UPDATE board_review SET review_content = #{review_content} WHERE review_idx = #{review_idx}
+	</update>
+	
+	<!-- 게시글 대댓글 작성하기 -->
+	<insert id="setRereviewWrite" parameterType="map">
+		INSERT INTO board_review (board_idx, username, review_content, parent) VALUES(#{board_idx}, #{username}, #{review_content}, #{parent})
+	</insert>
+	
+	<update id="setNotice" parameterType="map">
+    	UPDATE free_board SET board_notice = #{board_notice} WHERE board_idx = #{board_idx};
+	</update>
+	
+	<update id="setOldNotice">
+	    UPDATE free_board
+	    SET board_notice = 'N'
+	    WHERE board_idx = (
+	        SELECT board_idx
+	        FROM (
+	            SELECT board_idx
+	            FROM free_board
+	            WHERE board_notice = 'Y'
+	            ORDER BY recreate_date ASC
+	            LIMIT 1
+	        ) AS temp
+	    )
+	    AND (
+	        SELECT COUNT(*)
+	        FROM free_board
+	        WHERE board_notice = 'Y'
+	    ) > 5;
+	</update>
+	
 </mapper>
