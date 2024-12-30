@@ -77,6 +77,11 @@
 	    white-space: nowrap;
 	    gap: 10px;
 	}
+	
+	#listBtn{
+		float: right;
+	}
+
 
 </style>
 
@@ -110,80 +115,55 @@
 						</div>
 						<div class="cont-body"> 
 							<form>
-								<div class="row">
-									<div class="col-6 col-lg-6">
-										<div id="selectBox">
-											활성
-											<select class="form-select selectStyle"> 
-												<option>활성</option>
-												<option>비활성</option>
-											</select>
-											상태
-											<select class="form-select selectStyle">
-												<option>승인</option>
-												<option>반려</option>
-												<option>대기</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-6 col-lg-6">
-										<button type="button" class="btn btn-primary">수정</button>
-										<button type="button" class="btn btn-outline-secondary">리스트</button>
-									</div>
-								</div>
 								<table>
 									<tr>
-										<td rowspan="2">로고</td>
-										<th>문서 제목</th>
-										<td><span id="subject-value"></span></td>
-										<th>기안자</th>
-										<td><span id="username-value"></span></td>
-									</tr>
-									<tr>
-										<th>결재 일자</th>
-										<td><span id="approval_date-value"></span></td>
-										<th>작성 부서</th>
-										<td><span id="department_id-value"></span></td>
-									</tr>
-									<tr>
+										<td rowspan="2" class="filebox">
+											<img src="" id="dept-logo"/>
+										</td>
 										<th>직영점 명</th>
-										<td colspan="2"><span id="name-value"></span></td>
+										<td>${storeInfo.text} ${storeInfo.name}</td>
 										<th>직영점 코드</th>
-										<!-- 부서 테이블 id (department 테이블 pk) -->
-										<td>
-											<span id="id-value"></span>
+										<td>${storeInfo.parent}
 										</td>
 									</tr>
 									<tr>
-										<th>담당 직원</th>
-										<td colspan="2">
-											<span id="-value"></span>
+										<th>직영점주</th>
+										<td>${storeInfo.owner}
 										</td>
 										<th>시행일자</th>
-										<td>
-											<span id="from_date-value"></span>
+										<td>${storeInfo.use_date}
 										</td>
 									</tr>
 									<tr>
 										<th>주소</th>
 										<td colspan="2">
 											<div class="inline-layout">
-												도로명 <span id="address-value"></span>
+												도로명 ${storeInfo.address}
 											</div>
 										</td>
 										<td colspan="2">
 											<div class="inline-layout">
-												상세주소 <span id="address_detail"></span>
+												상세주소 ${storeInfo.address_detail}
 											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>활성</th>
+										<td>
+											<span id="use_yn"></span>
 										</td>
 									</tr>
 									<tr><th colspan="5">설명</th></tr>
 									<tr>
 										<td colspan="5">
-											<textarea name="postContent" id="summernote" maxlength="10000"></textarea>
+											 ${storeInfo.content}
 										</td>
 									</tr>
 								</table>
+								<div class="btn-Layout">
+									<button type="button" class="btn btn-primary" onclick="">수정</button>
+									<button class="btn btn-outline-primary" id="listBtn">목록</button>
+								</div>
 							</form>
 						</div> <!-- cont-body -->
 					</div>
@@ -203,13 +183,35 @@
 
 	
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 <script>
 
+$(document).ready(function() {
+  
+	var logo_file = '${storeInfo.logo}';
+	if(logo_file){
+		document.getElementById('dept-logo').src = '/photo/' + logo_file;
+	}else {
+        document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
+    }
+	
+	var use_yn = '${storeInfo.use_yn}';
+	
+	if (use_yn === 'Y') {
+		$('#use_yn').text('활성');
+    } else {
+    	$('#use_yn').text('비활성');
+    }
+	
+});
 
+function addressUpload() {
+	
+	$('#address_detail').val('');
 
+    console.log('도로명 주소 변경 감지:', roadAddress.value);
 
+}
 </script>
 
 </html>

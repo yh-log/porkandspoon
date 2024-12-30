@@ -108,7 +108,7 @@
 							<tbody>
 								<tr class="table-sun" id="user-name-insert">
 									<th class="table-text table-text-text">작성자</th>
-									<td class="table-text"><input type="hidden" name="username" value=""></td>
+									<td class="table-text"><sec:authentication property="principal.username"/></td>
 								</tr>
 								<tr class="table-sun">
 									<th class="table-text table-text-text">제목</th>
@@ -186,19 +186,19 @@
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 	
 <script>
-	$(document).ready(function() {
-	    var username = $('#currentUser').text().trim();
-	    console.log('로그인 한 사용자 ID : ', username);
+	/* $(document).ready(function() {
 	    var params = {username: username};
 	    httpAjax('GET', '/getUserlist', params);
-	});
+	}); */
 	
-	function httpSuccess(response) {
+/* 	function httpSuccess(response) {
 		console.log('가져온 유저 데이터 : ', response);
 	     $('#user-name-insert td.table-text').text(response.name);
 	     $('#user-name-insert').append('<input type="hidden" name="username" value="' + response.username + '">');
-	}
-
+	} */
+	var username = $('#currentUser').text().trim();
+	$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
+    console.log('로그인 한 사용자 ID : ', username);
 	$('.btn-write').on('click', function () {
         layerPopup(
             '게시글을 등록하시겠습니까?',
@@ -213,17 +213,15 @@
     function reviewupdateY() {
         console.log('게시글 등록 하기');
         removeAlert(); // 팝업 닫기
-
-        // FormData 생성 및 AJAX 호출
-        var formData = new FormData($('#writeData')[0]);
-        fileAjax('POST', '/board/write', formData);
+        url = '/board/write';
+        textEaditorWrite(url);
     }
 
     // AJAX 성공 콜백
     function fileSuccess(response) {
         console.log('파일 업로드 성공:', response);
-        if (response.status == "success") {
-        	window.location.href = response.URL;
+        if (response != null) {
+        	window.location.href = '/board/View';
         }
     }
     

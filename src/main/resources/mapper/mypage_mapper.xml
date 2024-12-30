@@ -19,6 +19,7 @@
 		SELECT username, type, subject, content, start_date, end_date FROM career WHERE username = #{username}
 	</select>
 	
+
 	
 	<select id="count" resultType="int" parameterType="">
       SELECT CEIL(count(meal_idx)/#{param1}) AS pages FROM meal_ticket
@@ -52,4 +53,20 @@
          ORDER BY create_date DESC LIMIT #{limit} OFFSET #{offset}
 	</select>
 	
+
+	<!-- 직원 정보 수정 -->
+	<update id="myPageUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET email = #{email}, phone = #{phone}, address = #{address} WHERE username = #{username}
+	</update>
+	
+	<!-- 직원 프로필 삭제 -->
+	<delete id="fileDelete" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		DELETE FROM file WHERE code_name = #{code_name} AND pk_idx = #{pk_idx}
+	</delete>
+	
+	<!-- 직원 프로필 업데이트 -->
+	<insert id="fileUpdate" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		INSERT INTO file(code_name, ori_filename, new_filename, type, pk_idx) VALUES(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
+	</insert>
+
 </mapper>

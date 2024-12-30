@@ -111,9 +111,24 @@
 		margin-bottom: 0.5rem;
 	}
 	.draftDetail table.appr_line .sign-area {
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
 		height: 40px;
 	    margin-top: 0.7rem;
 	}
+	.draftDetail table.appr_line .sign-area .status {
+		padding: 2px 10px;
+		border: 2px solid;
+		font-weight: 500;
+		border-color: var(--bs-secondary);
+		color: var(--bs-secondary);
+	} 
+	.draftDetail table.appr_line .sign-area .status.return {
+		border-color: var(--bs-danger);
+		color: var(--bs-danger);
+	}
+
 	.draftDetail table.appr_line .sign{
 		width: 40px;
 	}
@@ -229,9 +244,111 @@
 		margin-right: 10px;
 		color: #eee;
 	}
-	.attached-file .file-name {
-	
+
+
+	/* 모달 */
+	/* 기본 모달 스타일 */
+	.modal {
+	    display: none;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5);
+	    z-index: 1100;
 	}
+	
+	/* 모달 내부 콘텐츠 */
+	.modal-content {
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    background: #fff;
+	    padding: 20px;
+	    border-radius: 8px;
+	    width: 400px;
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	/* 모달 헤더 */
+	.modal-header {
+	    display: flex;
+	    justify-content: end;
+	    align-items: center;
+	    border-bottom: 1px none #ddd;
+	    margin-bottom: 15px;
+	}
+
+	/* 닫기(x) 버튼 */
+	.modal-close {
+	    font-size: 20px;
+	    cursor: pointer;
+	}
+	
+	/* 모달 바디 */
+	.modal-body .form-group {
+	    margin-bottom: 15px;
+	}
+	
+	.form-label {
+	    display: block;
+	    font-size: 14px;
+	    margin-bottom: 5px;
+	}
+	
+	.form-input {
+	    width: 100%;
+	    padding: 8px;
+	    font-size: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 4px;
+	}
+	
+	/* 모달 푸터 */
+	.modal-footer {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	}
+	#modalBox .modal-close {
+    	font-size: 30px;
+    }
+	#modalBox h5 {
+		padding-bottom: 16px;
+	}
+	#modalBox .form-control {
+		display: inline-block;
+	}
+	#modalBox .input-row {
+	    display: flex;
+		margin: 6px 0;
+	}
+	#modalBox .item-tit {
+		width: 68px;
+		margin-top: 4px;
+	}
+	#modalBox input {
+		padding-left: 10px;
+		border: none;
+	    box-shadow: none;
+	    background: none;
+	}
+	#modalBox input:focus {
+		box-shadow: none;
+	}
+	#modalBox input,#modalBox textarea {
+		width: calc(100% - 70px);
+	}	
+ 	#modalBox textarea {
+ 		resize: none;
+		padding-left: 8px;
+ 	} 
+ 	#modalBox .btn{ 
+	 	margin: 16px 5px 0;
+	}
+	
 </style>
 
 </head>
@@ -246,7 +363,7 @@
 
 		<div id="main">
 			<!-- 헤더 -->
-			<jsp:include page="../header.jsp" />
+			<jsp:include page="../header.jsp"/>
 
 			<div class="page-content draftDetail">
 				<section id="menu">
@@ -265,8 +382,12 @@
 							<h5>기안 상세페이지</h5>
 						</div>
 						<div class="buttons">
+							<button class="btn btn-outline-primary" onclick="window.history.back()">돌아가기</button>
+							<!-- 내가 기안자이면서, sv인 경우 -->
 							<button class="btn btn-primary" onclick="updateDraft()">수정</button>
-							<button href="#" class="btn btn-outline-primary">목록</button>
+							<!-- 내가 결재자이면서 결재하지 않은 경우 -->
+							<button class="btn btn-primary" onclick="layerPopup('결재하시겠습니까?','확인','취소'">결재</button>
+							<button class="btn btn-outline-primary" onclick="loadModal('draft','Refusal')">반려</button>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
@@ -320,24 +441,25 @@
 											<td>부장</td>
 											<td>대표</td>
 										</tr>
-										<tr>
+										<tr class="status-area">
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[0].username}"/>
 												<div class="sign-area">
-													<c:if test="${ApprLine[0].approval_date != null}">
+													<c:if test="${ApprLine[0].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[0].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${ApprLine[0].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${ApprLine[0].status == 'ap002'}"><span class="status return">결재중</span></c:if>
+													<c:if test="${ApprLine[0].status == 'ap001'}"><span class="status return">미확인</span></c:if>																	
 												</div>
 												<p>${ApprLine[0].user_name}</p>
 											</td>
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[1].username}"/>
 												<div class="sign-area">
-													<c:if test="${ApprLine[1].approval_date != null}">
-														<img class="sign" src="/photo/${ApprLine[1].sign}" alt="서명"/>
-													</c:if>
+													
 												</div>
-												<p>${ApprLine[1].user_name}</p>
+												<p></p>
 											</td>
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[2].username}"/>
@@ -448,6 +570,11 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- 모달 -->
+	<div id="modalBox" class="modal" style="display: none;">
+        <div class="modal-content"></div>
+    </div>
 </body>
 
 <!-- 부트스트랩 -->
@@ -482,6 +609,25 @@
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+
+//.appr_line .status-area
+console.log('dd','${ApprLine}');
+var apprLineList = '${ApprLine}';
+/* apprLineList.forEach(function(line,index){
+	console.log(line);
+}); */
+
+/* <c:if test="${ApprLine[0].status == 'ap004'}">
+<img class="sign" src="/photo/${ApprLine[0].sign}" alt="서명"/>
+</c:if>
+<c:if test="${ApprLine[0].status == 'ap003'}"><span class="status return">반려</span></c:if>
+<c:if test="${ApprLine[0].status == 'ap002'}"><span class="status return">결재중</span></c:if>
+<c:if test="${ApprLine[0].status == 'ap001'}"><span class="status return">미확인</span></c:if>
+
+
+ */
+
+
 
 
 
@@ -546,140 +692,70 @@ function setForm(type1, type2, element){
 
 
 
-//기존 첨부파일 삭제
-var deleteFiles = [];
-function deleteFile(elem){
-	console.log("new_filename : ", $(elem).parent().find('input[name="new_filename"]').val());
-	console.log("pk_idx : ", $(elem).parent().find('input[name="pk_idx"]').val());
-	var deleteFile = {
-		"new_filename": $(elem).parent().find('input[name="new_filename"]').val(),
-		"pk_idx": $(elem).parent().find('input[name="pk_idx"]').val()
-	}
-	console.log("deleteFile", deleteFile);
-	deleteFiles.push(deleteFile);
-	$(elem).parent().remove();
-	console.log("deleteFiles",  deleteFiles);
+// 반려 모달데이터
+function setModalData(){
+	// 현재날짜
+	const today = new Date();   
+	const year = today.getFullYear(); 
+	const month = today.getMonth() + 1; 
+	const date = today.getDate();  
+	$('input[name="today"]').val(year + '-' + month + '-' + date);
+	$('input[name="draft_idx"]').val('${DraftInfo.draft_idx}');
+	//$("#draftRefusalModal form").attr("action", "/appoval/returnDraft/${DraftInfo.draft_idx}");
+	console.log();
 }
 
 
-//저장 성공 후 상세페이지 이동
-function fileSuccess(response){
-	//location.href = "/approval/detail/${DraftInfo.draft_idx}";
-	
-	
-} 
-
-// 알림 팝업(유효성 검사)
-/* function btn1Act() {
-	removeAlert(); // 기존팝업닫기
-}
-function btn2Act() {
-	removeAlert(); // 기존팝업닫기
-}
- */
-
-
-//최종 글 작성
-//글 전송할 url 파라미터 포함
-//전송 버튼에 textEaditorWrite(url) 함수 사용
-function textEaditorWrite(url){
-	var formData = new FormData($('form')[0]); // formData
-	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
-	formData.append('content', content);
-	formData.append('deleteFiles', JSON.stringify(deleteFiles));
-	
-	var tempDom = $('<div>').html(content);
-var imgsInEditor = []; // 최종 파일을 담을 배열
-
-tempDom.find('img').each(function () {
-       var src = $(this).attr('src');
-       if (src && src.includes('/photoTem/')) {  // 경로 검증
-           var filename = src.split('/').pop();  // 파일명 추출
-           imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
-       }
+document.addEventListener('click', function(event){
+    // 일정 등록 버튼 클릭
+    if(event.target.id === 'returnBtn'){
+    	returnDraft();
+    }
+    
 });
 
-// new_filename과 일치하는 항목만 필터링
-var finalImgs = tempImg.filter(function (temp) {
-   return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
-});
-
-formData.append('imgsJson', JSON.stringify(finalImgs));
-
-fileAjax('POST', url, formData);
-console.log("fileAjax()실행");
-}
-
-
-//에디터 이미지 저장
-function fileAjax(type, url, formData){
+function returnDraft() {
 
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-  var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-  $.ajax({
-      type : type,
-      url : url,
-      data : formData,
-      contentType : false,
-      processData : false,
-      enctype : 'multipart/form-data',
-      beforeSend: function(xhr) {
-          xhr.setRequestHeader(csrfHeader, csrfToken);
-      },
-      success : function(response){
-          fileSuccess(response);
-      },error : function(e){
-          console.log(e);
-      }
-  });
-}
-
-
-
-//결재 요청
-function updateDraft(){
-	console.log('updateDraft() 실행');
-	// file required 속성 해제
-	/* document.getElementsByClassName('filepond--browser')[0].removeAttribute('required');
+	$.ajax({
+	    type: 'POST',
+	    url: '/approval/returnDraft',
+	    data: new FormData($('#returnFrom')[0]), 
+	    dataType: 'json', 
+	    contentType: false,  
+	    processData: false,
+	    beforeSend: function(xhr) {
+	        xhr.setRequestHeader(csrfHeader, csrfToken);
+	    },
+	    success: function(response) {
+	        if(response.success){
+        	 	document.getElementById('modalBox').style.display = "none";
+        	 	layerPopup('반려 처리되었습니다.', '확인', false, btn1Act, btn1Act);
+	        }
+	    },
+	    error: function(e) {
+	        console.log(e);
+	    }
+	});
 	
-	//document.querySelector('input[name="status"]').value = "sd";
-	const form = document.getElementById("formDraft");
-    const inputs = form.querySelectorAll("input[required]");
-    const selects = form.querySelectorAll("select[required]");
+	// 반려 확인 팝업
+	function btn1Act() {
+		location.reload();
+		removeAlert(); 
+	}
 
-    let isValid = true;
-
-  // input 필드 유효성 검사
-  inputs.forEach(input => {
-      if (!input.value.trim()) {
-          isValid = false;
-          var txtEl = input.parentNode;
-          console.log("t0:::"+txtEl);
-          var titleEl = txtEl.previousSibling;
-          console.log("t1:::"+titleEl.innerText);
-          return; 
-      }
-  });
-
-  // select 필드 유효성 검사
-  selects.forEach(select => {
-      if (!select.value) {
-          isValid = false;
-          //alert(select.name + " is required.");
-          return;
-      }
-  });
-  
-  if (isValid) {
-	  	console.log("textEaditorWrite() 실행");
-		textEaditorWrite('/draftUpdate');	
-  }else {
-  	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
-  } */
-	textEaditorWrite('/draftUpdate');	
-  
-}
+	
+	function httpSuccess(response){
+		console.log('전송성공');
+	}
+	
+	
+	
+	
+	//document.getElementById('modalBox').style.display = "none";
+} 
 
 
 </script>

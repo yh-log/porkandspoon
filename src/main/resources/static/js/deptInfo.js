@@ -15,6 +15,7 @@
 		}
 	}
 
+
 	function getSuccess(response){
 		if(response.status == 200){
 			deptCodeOverlay = true;
@@ -91,12 +92,53 @@
 	    		
 	        }else{
 		        deptCode.classList.remove('is-invalid');
-		        
 		       
 		        removeAlert();
 	        }
             
 		}
+	}
+	
+	function storeWrire(){
+		var isFormValid = validateForm();
+		removeAlert();
+		
+		if (isFormValid) {
+            console.log('폼이 유효합니다.');
+			textEaditorWrite('/ad/store/write');
+	        var deptCode = document.getElementById("deptCode");
+	        
+	        if(!deptCodeOverlay){
+	        	$('#overlayMessage').show();
+	    		$('#overlayMessage').css('color', 'var(--bs-danger)');
+	    		$('#overlayMessage').text('부서 코드 중복을 확인해주세요');
+	    		
+	    		deptCode.classList.add('is-invalid');
+	    		removeAlert();
+	    		
+	        }else{
+		        deptCode.classList.remove('is-invalid');
+		       
+		        removeAlert();
+	        }
+            
+		}
+	}
+	
+	function storeUpdate(){
+		var isFormValid = validateForm();
+		removeAlert();
+		
+		if (isFormValid) {
+            console.log('폼이 유효합니다.');
+			textEaditorWrite('/ad/store/update');
+    		removeAlert();
+	    		
+	        }else{
+		       console.log('폼이 유효하지 않습니다.');
+		        removeAlert();
+	        }
+		
 	}
 	
 	// 값을 변경하면 중복 확인 상태를 초기화

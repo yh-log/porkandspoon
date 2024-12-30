@@ -16,4 +16,10 @@ public interface ResevationDAO {
 
 	List<CalenderDTO> list(int offset, int size);
 
+	CalenderDTO articleDetail(String no);
+
+	int updateYN(String no, String filter);
+
+	CalenderDTO articleUpdate(Map<String, Object> params);
+
 }

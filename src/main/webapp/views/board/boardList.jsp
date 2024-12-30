@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -105,17 +106,18 @@
 	                  <h5>전체 게시글</h5>
 	               </div>
 	               <div class="cont-body"> 
+	               <p id="currentUser" style="display:none;"><sec:authentication property="principal.username"/></p>
 	               	  <div class="row">
 	               	  	<div class="col-sm-6"></div>
 	               	  	<div class="col-sm-1">
-	               	  		<select class="form-select" id="basicSelect">
-								<option>제목</option>
-								<option>부서명</option>
-								<option>작성자</option>
+	               	  		<select class="form-select" id="searchOption">
+								<option value="dept">부서</option>
+								<option value="name">이름</option>
+								<option value="subject">제목</option>
 							</select>
 						</div>
-	               	  	<div class="col-sm-4"><input class="form-control" type="text" placeholder="검색"></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-primary"><i class="bi bi-search"></i></button></div>
+	               	  	<div class="col-sm-4"><input name="search" class="form-control" type="text" placeholder="검색"></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button></div>
 	               	  </div>
 	                  <div class="page-heading">
 							<div class="page-title">
@@ -147,51 +149,12 @@
 														<th>삭제</th>
 													</tr>
 												</thead>
-												<tbody>
+												<tbody id="boardList">
 													<!-- <tr class="td-link">
 														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
 														<td>별</td>
 														<td>1</td>
 														<td onclick="window.location.href='/boarddetail/View';" class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
-													<tr onclick="window.location.href='#';" class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>2</td>
-														<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
-													<tr onclick="window.location.href='#';" class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>3</td>
-														<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr>
-													<tr onclick="window.location.href='#';" class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>4</td>
-														<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
 															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
 															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
 														<td>김순무</td>
@@ -207,11 +170,9 @@
 								</div>
 							</div>
 						</div>
-						<div>
+						<div class="">
 							<nav aria-label="Page navigation">
-					            <ul class="pagination justify-content-center" id="pagination">
-					                <!-- 페이지 번호가 여기에 생성됨 -->
-					            </ul>
+					            <ul class="pagination justify-content-center" id="pagination"></ul>
 					        </nav>
 						</div>
 	               </div>
@@ -230,113 +191,116 @@
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
+<script src='/resources/js/common.js'></script>
 <script>
-$(document).ready(function () {
-    // 페이지네이션 초기화
-    $('#pagination').twbsPagination({
-        startPage: 1,         // 첫 번째 페이지
-        totalPages: 10,       // 전체 페이지 (초기값)
-        visiblePages: 10,     // 한 번에 보이는 페이지 개수
-        onPageClick: function (event, page) {
-            console.log('페이지 클릭: ', page);
-            pageCall(
-                page,          // 현재 페이지
-                10,            // 한 페이지에 보여줄 게시물 수
-                '/board/list', // 요청 URL
-                {
-                    option: $('#basicSelect').val(),        // 필터 옵션 (제목, 작성자, 부서명 등)
-                    search: $('.form-control').val()       // 검색어 (검색이 있을 때만 사용)
-                }
-            );
-        }
-    });
+var firstPage = 1;
+var paginationInitialized = false;
 
-    // 페이지 초기 로드 (검색 없이 전체 게시글 목록만 불러오기)
-    pageCall(
-        1,             // 첫 페이지
-        10,            // 한 페이지에 보여줄 게시물 수
-        '/board/list', // 요청 URL
-        {
-            option: '',  // 필터 옵션 (없음)
-            search: ''   // 검색어 (없음)
-        }
-    );
+$(document).ready(function () {
+	pageCall(firstPage);
 });
 
-// 페이지 요청 함수 (검색 처리 및 페이지네이션)
-function pageCall(page, cnt, url, filters) {
+
+// 검색 폼 제출 시 AJAX 호출
+$('#searchBtn').on('click', function(event) {
+    event.preventDefault();  // 폼 제출 기본 동작 중지
+    firstPage = 1;
+    paginationInitialized = false;
+    pageCall(firstPage);  // 검색어가 추가된 상태에서 호출
+});
+
+
+
+
+function pageCall(page = 1) {
+    var option = $('#searchOption').val();
+    var keyword = $('input[name="search"]').val();  // 검색어
+
     $.ajax({
-        url: url,
-        type: 'POST',  // POST 방식으로 요청
-        contentType: 'application/json', // 요청의 데이터 형식
-        headers: {
-            // CSRF 토큰을 요청 헤더에 추가
-            [ $("meta[name='_csrf_header']").attr("content") ]: $("meta[name='_csrf']").attr("content")
+        type: 'GET',
+        url: '/board/list',
+        data: {
+            'page': page || 1, // 페이지 기본값 설정
+            'cnt': 10,         // 한 페이지당 항목 수
+            'option': option,
+            'keyword': keyword  // 검색어
         },
-        data: JSON.stringify({
-            page: page,
-            cnt: cnt,
-            option: filters.option,  // 검색 옵션
-            search: filters.search   // 검색어
-        }),
+        datatype: 'JSON',
         success: function(response) {
-            // 서버에서 받은 데이터를 테이블에 업데이트
-            updateTable(response.data);   // 게시물 목록 업데이트
-            updatePagination(response.totalPages, page); // 페이지네이션 업데이트
+            console.log("응답 데이터:", response);
+
+            // 데이터 처리
+            if (response && response.length > 0) {
+                getSuccess(response); // 검색 결과를 테이블에 렌더링
+            } else {
+                $('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+            }
+
+            // 페이지네이션 초기화
+            var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
+            console.log('총 페이지 수:', totalPages);
+
+            if (!paginationInitialized || keyword !== '') {
+                $('#pagination').twbsPagination('destroy');
+                $('#pagination').twbsPagination({
+                    startPage: page,
+                    totalPages: totalPages,
+                    visiblePages: 5,
+                    initiateStartPageClick: false,
+                    onPageClick: function (evt, page) {
+                        console.log('클릭된 페이지:', page);
+                        pageCall(page);
+                    }
+                });
+                paginationInitialized = true;
+            }
         },
-        error: function(xhr, status, error) {
-            console.log("AJAX 요청 실패: ", error);
+        error: function(e) {
+            console.log(e);
         }
     });
 }
 
-// 게시물 목록을 업데이트하는 함수
-function updateTable(data) {
-    let tbody = $('table tbody');
-    tbody.empty(); // 기존 행을 지운다.
-
-    // 데이터를 기반으로 테이블을 동적으로 생성
-    data.forEach(item => {
-        let row = `
-            <tr class="td-link">
-                <td><input type="checkbox" class="form-check-input"></td>
-                <td>${item.board_idx}</td>
-                <td onclick="window.location.href='/boarddetail/View?id=${item.board_idx}';" class="align-l elipsis">${item.subject}</td>
-                <td>${item.username}</td>
-                <td>${item.count}</td>
-                <td>${item.create_date}</td>
-            </tr>
-        `;
-        tbody.append(row);
-    });
-}
-
-// 페이지네이션을 업데이트하는 함수
-function updatePagination(totalPages, currentPage) {
-    $('#pagination').twbsPagination('destroy'); // 기존 페이지네이션 제거
-    $('#pagination').twbsPagination({
-        totalPages: totalPages,    // 전체 페이지 수
-        startPage: currentPage,    // 현재 페이지
-        visiblePages: 10,          // 한 번에 보이는 페이지 개수
-        onPageClick: function (event, page) {
-            pageCall(page, 10, '/board/list', {
-                option: $('#basicSelect').val(),
-                search: $('.form-control').val()  // 검색어
-            });
-        }
-    });
-}
-
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
+	// 로그인 한 사람의 아이디값 가져오기
+	var myId = document.getElementById('currentUser').textContent.trim();
+	
+	function getSuccess(response){
+		console.log(response);
+		
+		$('#boardList').empty();
+		
+		var content = '';
+		response.forEach(function(item) {
+		    content += '<tr class="td-link">';
+		    // Checkbox column - admin 권한만 볼 수 있음
+		    content += '<td><sec:authorize access="hasRole(\'admin\')"><input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="checkboxbtn(' + item.board_idx + ')"></sec:authorize></td>';
+		    // 별 (board_notice 값에 따라 표시)
+		    content += '<td>';
+		    if (item.board_notice === 'Y') {
+		        content += '<i class="bi bi-star-fill" style="color: gold;"></i>'; // 채워진 별
+		    } else {
+		        content += '<i class="bi bi-star" style="color: gray;"></i>'; // 비워진 별
+		    }
+		    content += '</td>';
+		    // 번호
+		    content += '<td>' + item.board_idx + '</td>';
+		    // 제목 (클릭 시 이동)
+		    content += '<td onclick="window.location.href=\'/boarddetail/View?id=' + item.board_idx + '\';" class="align-l elipsis">' + item.subject + '</td>';
+		    // 작성자
+		    content += '<td>' + item.userNick + '</td>';
+		    // 조회수
+		    content += '<td>' + item.count + '</td>';
+		    // 작성일
+		    content += '<td>' + item.recreate_date + '</td>';
+		    if (myId === item.username) {
+			    content += '<td><i class="bi bi-pencil-square btn-popup-update bi-icon" onclick="location.href=\'/board/update/' + item.board_idx + '\'"></i></td>';
+			    content += '<td><i class="bi bi-trash btn-popup bi-icon" onclick="deleteList(' + item.board_idx + ')"></i></td>';
+			}
+		    content += '</tr>';
+		});
+		$('#boardList').append(content);
+	}
+	
 	
 	// 페이지 이동 될 때마다 li 에 class="active" 주입
 	document.addEventListener('DOMContentLoaded', () => {
@@ -366,6 +330,12 @@ function updatePagination(totalPages, currentPage) {
 	
 	
 	
+	$('.bi-trash').on(
+			'click',
+			function() {
+				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', secondBtn1Act,
+						secondBtn2Act);
+			});
 	
 	
 	// 게시글 삭제 버튼
@@ -379,14 +349,6 @@ function updatePagination(totalPages, currentPage) {
 		console.log('게시글 삭제 취소');
 		removeAlert();
 	}
-	
-	// 게시글 삭제 팝업
-	$('.btn-popup').on(
-			'click',
-			function() {
-				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', secondBtn1Act,
-						secondBtn2Act);
-			});
 
 	// 모달창 열기
 	$('.btnModal').on('click', function() {

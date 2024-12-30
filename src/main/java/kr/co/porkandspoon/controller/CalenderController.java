@@ -36,21 +36,6 @@ public class CalenderController {
 		return new ModelAndView("/calender/calender");
 	}
 	
-//	// 일정 리스트 호출 ajax
-//	@GetMapping(value="/calenderList")
-//	public Map<String, Object> calenderList(@AuthenticationPrincipal UserDetails userDetails){
-//		
-//		String loginId = userDetails.getUsername(); // 로그인 한 유저의 아이디
-//		String dept = calenderService.dept(loginId); // 로그인 한 유저의 부서
-//		logger.info("부서 정보"+CommonUtil.toString(dept));
-//		logger.info("일정 불러오기 실행");
-//		Map<String, Object> resultMap = new HashMap<String, Object>();
-//		resultMap.put("result", calenderService.calenderList(loginId,dept));
-//		System.out.println(CommonUtil.toString(calenderService.calenderList(loginId,dept)));
-//		
-//		return resultMap;
-//	}
-	
     // 일정 리스트 호출 ajax
     @GetMapping(value="/calenderList")
     public Map<String, Object> calenderList(

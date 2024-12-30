@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.CareerDTO;
+import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MealDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
@@ -23,10 +24,30 @@ public interface MyPageDAO {
 	 */
 	List<CareerDTO> myPageCareerDetail(String username);
 
+
 	int count(int cnt_, String opt, String keyword);
 
 	List<MealDTO> buyList(String opt, String keyword, int limit, int offset);
 	
 	
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 마이페이지 정보 수정
+	 */
+	int myPageUpdate(UserDTO dto);
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 기존 파일 삭제 
+	 */
+	int fileDelete(FileDTO fileDto);
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 파일 업데이트
+	 */
+	int fileUpdate(FileDTO fileDto);
+
 
 }

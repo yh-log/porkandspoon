@@ -643,3 +643,18 @@ input[type="text"], input[type="password"], input[type="number"], input[type="da
    	background: #fff;
    	border-radius: 10px;
    }
+   
+   
+   
+   /*모달*/
+   .modal .modal-header {
+    	padding: 0;
+    	margin-bottom: 0;
+    	justify-content: flex-end;
+   }
+   .modal-close {
+    	font-size: 30px;
+    }
+    .modal-body {
+    	padding-top: 0;
+    }

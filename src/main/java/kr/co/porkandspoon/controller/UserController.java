@@ -218,7 +218,7 @@ public class UserController {
 	public ModelAndView deptWriteView(@PathVariable String idx) {
 		
 		if(idx == null || idx.equals("")) {
-			return new ModelAndView();
+			return new ModelAndView("/user/deptList");
 		}
 		
 		ModelAndView mav = new ModelAndView();
@@ -258,29 +258,68 @@ public class UserController {
 	
 	/**
 	 * author yh.kim (24.12.19) 
-	 * 직영점 작성 페이지 이동
+	 * 직영점 등록 요청 페이지 이동 및 조회
 	 */
-	@GetMapping(value="/ad/store/write")
-	public ModelAndView storeWriteView() {
-		return new ModelAndView("/user/storeWrite");
+	@GetMapping(value="/ad/store/write/{idx}")
+	public ModelAndView storeWriteView(@PathVariable String idx) {
+		
+		if(idx == null || idx.equals("")) {
+			return new ModelAndView("/user/storeList");
+		}
+		
+		ModelAndView mav = new ModelAndView();
+		
+		ApprovalDTO apprDto = userService.storeWriteView(idx);
+		
+		logger.info("받아온 브랜드 정보 => " + CommonUtil.toString(apprDto));
+		
+		mav.addObject("storeInfo", apprDto);
+		mav.setViewName("/user/storeWrite");
+		
+		return mav;
 	}
 	
 	/**
 	 * author yh.kim (24.12.19) 
-	 * 직영점 수정 페이지 이동
+	 * 직영점 수정 페이지 이동 및 조회
 	 */
-	@GetMapping(value="/ad/store/update")
-	public ModelAndView storeUpdateView() {
-		return new ModelAndView("/user/storeUpdate");
+	@GetMapping(value="/ad/store/update/{id}")
+	public ModelAndView storeUpdateView(@PathVariable String id) {
+		
+		ModelAndView mav = new ModelAndView();
+		DeptDTO storeDto = new DeptDTO();
+		
+		if(id == null || id.isEmpty()) {
+			return new ModelAndView("/user/storeList");
+		}
+		
+		storeDto = userService.storeDetsil(id);
+		
+		mav.addObject("storeInfo", storeDto);
+		mav.setViewName("/user/storeUpdate");
+		
+		return mav;
 	}
 	
 	/**
 	 * author yh.kim (24.12.19) 
 	 * 직영점 상세 페이지 이동
 	 */
-	@GetMapping(value="/ad/store/detail")
-	public ModelAndView storeDetailView() {
-		return new ModelAndView("/user/storeDetail");
+	@GetMapping(value="/ad/store/detail/{id}")
+	public ModelAndView storeDetailView(@PathVariable String id) {
+		ModelAndView mav = new ModelAndView();
+		DeptDTO storeDto = new DeptDTO();
+		
+		if(id == null || id.isEmpty()) {
+			return new ModelAndView("/user/storeList");
+		}
+		
+		storeDto = userService.storeDetsil(id);
+		
+		mav.addObject("storeInfo", storeDto);
+		mav.setViewName("/user/storeDetail");
+		
+		return mav;
 	}
 	
 
@@ -763,4 +802,67 @@ public class UserController {
 		
 		return dto;
 	}
+	
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 등록
+	 */
+	@PostMapping(value="/ad/store/write")
+	public DeptDTO storeWrite(@ModelAttribute DeptDTO dto,
+			@RequestParam("imgsJson") String imgsJson) {
+		
+		logger.info(CommonUtil.toString(dto));
+		logger.info(CommonUtil.toString(imgsJson));
+		
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		
+		try {
+			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			
+			dto.setImgs(imgs);
+			dto = userService.storeWrite(dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		
+		return dto;
+		
+	}
+	
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 수정
+	 */
+	@PostMapping(value="/ad/store/update")
+	public DeptDTO storeUpdate(@ModelAttribute DeptDTO dto,
+			@RequestParam("imgsJson") String imgsJson) {
+		logger.info(CommonUtil.toString(dto));
+		logger.info(CommonUtil.toString(imgsJson));
+		
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		
+		try {
+			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			
+			dto.setImgs(imgs);
+			dto = userService.storeUpdate(dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		
+		return dto;
+	}
+	
 }

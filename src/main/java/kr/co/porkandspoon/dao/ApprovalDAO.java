@@ -50,6 +50,8 @@ public interface ApprovalDAO {
 
 	FileDTO getLogoFile(String draft_idx);
 
+	int returnDraft(ApprovalDTO approvalDTO);
+
 
 
 }

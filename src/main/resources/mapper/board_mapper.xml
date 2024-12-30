@@ -5,24 +5,30 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.BoardDAO">
 	
-	<insert id="setBoardwrite" parameterType="map">
+	<!-- 게시판 글 등록 -->
+	<insert
+		useGeneratedKeys="true"
+	   	keyColumn="board_idx"
+	   	keyProperty="board_idx"
+	 	id="setBoardwrite"
+	 	parameterType="kr.co.porkandspoon.dto.BoardDTO">
 	    INSERT INTO free_board (
 	        username,   
 	        subject,  
 	        content,
-	        use_yn,
-	        department
+	        use_yn
 	    )
 	    VALUES (
-	        #{username},
+	       	#{username},
 	        #{subject}, 
 	        #{content}, 
-	        #{use_yn},  
-	        #{department}
+	        #{use_yn}
 	    )
 	</insert>
 	
-	<insert id="setBoardfiles" parameterType="list">
+	
+	<!-- 파일 저장하는 쿼리 -->
+	<insert id="setBoardfiles" parameterType="kr.co.porkandspoon.dto.FileDTO">
 	    INSERT INTO file (
 	        code_name,
 	        ori_filename,
@@ -31,71 +37,73 @@
 	        pk_idx
 	    )
 	    VALUES
-	    <foreach collection="list" item="file" separator=",">
 	        (
-	            #{file.code_name},
-	            #{file.ori_filename},
-	            #{file.new_filename},
-	            #{file.type},
-	            #{file.pk_idx}
+	            #{code_name},
+	            #{ori_filename},
+	            #{new_filename},
+	            #{type},
+	            #{pk_idx}
 	        )
-	    </foreach>
 	</insert>
-<select id="getBoardList" resultType="map">
-    SELECT 
-        board_idx,
-        username,
-        subject,
-        content,
-        count,
-        create_date,
-        board_state,
-        use_yn,
-        board_notice,
-        updater,
-        update_date,  -- 예약어 처리
-        department
+	
+	<!-- 게시판 리스트 및 검색 -->
+	<select id="boardList" parameterType="map" resultType="kr.co.porkandspoon.dto.BoardDTO">
+    	SELECT 
+        f.board_idx,
+        f.username,
+        u.name AS userNick,
+        f.subject,
+        f.content,
+        f.count,
+        f.create_date,
+        f.board_state,
+        f.use_yn,
+        f.board_notice,
+        (SELECT CEIL(COUNT(*) / #{limit}) 
+         FROM free_board f
+         LEFT JOIN user u ON f.username = u.username
+         LEFT JOIN department d ON u.parent = d.id
+         WHERE 1 = 1
+         <if test="keyword != null and keyword != ''">
+             AND (
+             <choose>
+                 <when test="option == 'dept'">
+                     d.text LIKE CONCAT('%', #{keyword}, '%')
+                 </when>
+                 <when test="option == 'name'">
+                     f.username LIKE CONCAT('%', #{keyword}, '%')
+                 </when>
+                 <when test="option == 'subject'">
+                     f.subject LIKE CONCAT('%', #{keyword}, '%')
+                 </when>
+             </choose>
+             )
+         </if>
+        ) AS totalpage
     FROM 
-        free_board
-    WHERE
-        <choose>
-            <when test="option == 'title'">
-                subject LIKE CONCAT('%', #{search}, '%')
-            </when>
-            <when test="option == 'username'">
-                username LIKE CONCAT('%', #{search}, '%')
-            </when>
-            <when test="option == 'department'">
-                department LIKE CONCAT('%', #{search}, '%')
-            </when>
-            <otherwise>
-                1=1  <!-- 기본적으로 다른 컬럼을 검색하지 않도록 처리 -->
-            </otherwise>
-        </choose>
-    ORDER BY create_date DESC
-    LIMIT #{offset}, #{cnt}
+        free_board f
+        LEFT JOIN user u ON f.username = u.username
+        LEFT JOIN department d ON u.parent = d.id
+    WHERE 
+        1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND (
+            <choose>
+                <when test="option == 'dept'">
+                    d.text LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="option == 'name'">
+                    f.username LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+                <when test="option == 'subject'">
+                    f.subject LIKE CONCAT('%', #{keyword}, '%')
+                </when>
+            </choose>
+            )
+        </if>
+    ORDER BY 
+        f.board_idx DESC
+    LIMIT #{offset}, #{limit}
 </select>
 
-<select id="getBoardCount" resultType="int">
-    SELECT
-        COUNT(*)
-    FROM
-        free_board
-    WHERE
-        <choose>
-            <when test="option == 'title'">
-                subject LIKE CONCAT('%', #{search}, '%')
-            </when>
-            <when test="option == 'username'">
-                username LIKE CONCAT('%', #{search}, '%')
-            </when>
-            <when test="option == 'department'">
-                department LIKE CONCAT('%', #{search}, '%')
-            </when>
-            <otherwise>
-                1=1  <!-- 기본적으로 다른 컬럼을 검색하지 않도록 처리 -->
-            </otherwise>
-        </choose>
-</select>
-	
 </mapper>

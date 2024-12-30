@@ -7,14 +7,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.MyPageService;
+import kr.co.porkandspoon.util.CommonUtil;
 
 @RestController
 public class MyPageController {
@@ -73,6 +78,35 @@ public class MyPageController {
 	@GetMapping(value="/myPage/update")
 	public ModelAndView myPageUpdateView() {
 		return new ModelAndView("/myPage/myPageUpdate");
+	}
+	
+	
+	/**
+	 * author yh.kim (24.12.27)
+	 * 마이페이지 정보 수정
+	 */
+	@PutMapping(value="/myPage/update")
+	public UserDTO myPageUpdate(
+			@RequestPart(value = "file", required = false) MultipartFile file, 
+			@ModelAttribute UserDTO dto) {
+		
+		logger.info(file.getOriginalFilename());
+		logger.info(CommonUtil.toString(dto));
+		try {
+			if(myPageService.myPageUpdate(file, dto)) {
+				dto.setStatus(200);
+				dto.setMessage("마이페이지 수정이 완료되었습니다.");
+			}else {
+				dto.setStatus(500);
+				dto.setMessage("마이페이지 수정에 실패했습니다.");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			logger.error("마이페이지 수정 중 에러 => ", e);
+			dto.setStatus(500);
+			dto.setMessage("마이페이지 수정 중 오류가 발생했습니다.");
+		}
+		return dto;
 	}
 	
 	@GetMapping(value="/ad/myPageSign")
