@@ -95,6 +95,17 @@ public class MealService {
 	    
 	}
 
+	public int setmealbuy(Map<String, Object> params) {
+		return mealDAO.setmealbuy(params);
+	}
+
+	public int getTicketCount(String username) {
+		
+		return mealDAO.getTicketCount(username);
+	}
+
+	
+
 	
 	
 	

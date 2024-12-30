@@ -8,7 +8,9 @@ public class MealDTO extends ResponseDTO {
     // menu 테이블
     private int menu_idx;
     private String is_time;
-    private String content;
+    private String is_buy;
+
+	private String content;
     private LocalDateTime start_date;  // 변경된 타입
     private LocalDateTime end_date;    // 변경된 타입
 
@@ -25,8 +27,27 @@ public class MealDTO extends ResponseDTO {
     
     private FileDTO filedto;
     private int idx;
+    private String username;
     
-    public int getMenu_idx() {
+   
+    
+    public String getIs_buy() {
+    	return is_buy;
+    }
+    
+    public void setIs_buy(String is_buy) {
+    	this.is_buy = is_buy;
+    }
+    
+    public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public int getMenu_idx() {
         return menu_idx;
     }
 
@@ -158,5 +179,8 @@ public class MealDTO extends ResponseDTO {
 	public void setIdx(int idx) {
 		this.idx = idx;
 	}
-
+	
+	
+	
+	
 }
