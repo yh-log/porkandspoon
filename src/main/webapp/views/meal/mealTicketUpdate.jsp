@@ -108,18 +108,19 @@
 				<section class="cont">
 					 <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>식단등록</h5>
+							<h5>식권 수정</h5>
 						</div>
 						<div class="cont-body">
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-			         <form action="/ad/mealTicket/Write" method="post">
+			         <form action="/ad/mealTicket/Update" method="post" enctype="multipart/form-data">
 	                     <input type="hidden" name="_csrf" value="${_csrf.token}" />
 	                     <table>
 	                        <tr>
 	                           <th class="align-l">상품명</th>
 	                           <td ><input class="form-control sor-1 "  name="name" value="${info.name}" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
+	                           <td ><input class="form-control sor-1 "  name="name" value="${info.meal_idx}" type="text" placeholder="상품명을 입력해주세요." required="required" hidden=""/></td>
 	                        </tr>
 	                        <tr>
 	                           <th class="align-l">상품가격</th>
@@ -185,7 +186,7 @@
 		                     </table>
 								<div id="btn-gap">							
 									<button   type="submit" class="btn btn-primary">수정</button>
-									<button class="btn btn-outline-primary">취소</button>
+									<button  type="button" class="btn btn-outline-primary" onclick="location.href='/ad/meal/List'">취소</button>
 								</div>
 				         </form>
 	                     

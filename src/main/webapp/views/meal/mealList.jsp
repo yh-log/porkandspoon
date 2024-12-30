@@ -140,10 +140,7 @@
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 					<div class="tit-area justify-end">
 					    <h5>식권구매</h5>
-					    <div class="align-right">
-					        <h5 class="count">식권 보유량 : </h5> <!-- 로그인한 id에서 식권 보유량 찾아서 가져오기 -->
-					        <a href="#" class="btn btn-primary count">사용/구매 내역 보러가기</a>
-					    </div>
+					   
 					</div>
 						<div class="cont-body">
 							<div class="row">

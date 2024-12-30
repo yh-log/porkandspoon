@@ -135,7 +135,7 @@
 	top: 40px;
 	transform: translateX(-50%);
     width: 700px;
-    height: 380px;
+    height: 425px;
     padding: 30px;
     background: #fff;
     border: none;
@@ -153,6 +153,9 @@
  /* 흰 긴 줄 제거 */
 .fc-toolbar-chunk:first-child {
     display: none;
+}
+.modal-header{
+border-bottom: none;
 }
 
 /* 셀렉트 박스 나란히 배치 */
@@ -175,6 +178,11 @@
 .modal-footer .btn {
     padding: 10px 20px;
     font-size: 16px;
+}
+
+.select{
+	display: flex;
+
 }
 </style>
 </head>
@@ -226,11 +234,19 @@
                         <div class="modal-body">
                         
                         <div class="form-group">           
-	                        <label for="title" class="form-label">제목:</label>
+	                        <label for="title" class="form-label">내용:</label>
 	                        <input type="text" class="form-input" id="title" name="content" required />
 	                        <input type="text" id="idx" name="menu_idx"  hidden=""/>
                         </div>
 						
+						<div class="form-group select">
+	                        <label for="mealType" class="form-label">식단 종류:</label>
+	                        <select class="form-select short form-input1" id="mealType" name="is_time">
+	                           <option value="B">아침</option>
+	                           <option value="L">점심</option>
+	                           <option value="D">저녁</option>
+	                        </select>
+						</div>
 						<div class="form-group">
 	                        <label for="start" class="form-label">시작 날짜:</label>
 	                        <input type="datetime-local" class="form-input" id="start" name="start_date" required />
@@ -240,14 +256,6 @@
 	                        <input type="datetime-local" class="form-input" id="end" name="end_date" />						
 						</div>
 						
-						<div class="form-group">
-	                        <label for="mealType" class="form-label">식단 종류:</label>
-	                        <select class="form-select short form-input1" id="mealType" name="is_time">
-	                           <option value="B">아침</option>
-	                           <option value="L">점심</option>
-	                           <option value="D">저녁</option>
-	                        </select>
-						</div>
 						
                         </div>
                         

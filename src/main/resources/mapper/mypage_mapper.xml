@@ -19,6 +19,41 @@
 		SELECT username, type, subject, content, start_date, end_date FROM career WHERE username = #{username}
 	</select>
 	
+
+	
+	<select id="count" resultType="int" parameterType="">
+      SELECT CEIL(count(meal_idx)/#{param1}) AS pages FROM meal_ticket
+       <where>
+       	 <if test="username != null and !username.equals('')">
+            username = #{username}
+        </if>
+       
+	    <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+	        name LIKE CONCAT('%', #{keyword}, '%')
+	    </if>
+	    <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
+	        create_date LIKE CONCAT('%', #{keyword}, '%')
+	    </if>
+	</where>
+   </select>
+	
+	<select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterMap="String">
+	 select * from meal_ticket 
+      <where>
+      <if test="username != null and !username.equals('')">
+            username = #{username}
+        </if>
+    <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+        name LIKE CONCAT('%', #{keyword}, '%')
+    </if>
+    <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
+        create_date LIKE CONCAT('%', #{keyword}, '%')
+    </if>
+	</where>
+         ORDER BY create_date DESC LIMIT #{limit} OFFSET #{offset}
+	</select>
+	
+
 	<!-- 직원 정보 수정 -->
 	<update id="myPageUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
 		UPDATE user SET email = #{email}, phone = #{phone}, address = #{address} WHERE username = #{username}
@@ -33,4 +68,5 @@
 	<insert id="fileUpdate" parameterType="kr.co.porkandspoon.dto.FileDTO">
 		INSERT INTO file(code_name, ori_filename, new_filename, type, pk_idx) VALUES(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
 	</insert>
+
 </mapper>

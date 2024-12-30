@@ -112,6 +112,7 @@
 			         <div class="col-12 col-lg-12">
 		               <form id="mealForm" action="/ad/mealMenu/Write" method="post">
 						    <input type="hidden" name="_csrf" value="${_csrf.token}" />
+						    
 						    <table>
 						        <tr>
 						            <th class="align-l">상태</th>

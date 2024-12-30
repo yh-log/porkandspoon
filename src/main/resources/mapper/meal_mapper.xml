@@ -35,7 +35,7 @@
     </insert>
     
     <select id="detailmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="int">
-    	SELECT name,cost,count,use_yn FROM meal WHERE meal_idx = #{meal_idx}
+    	SELECT meal_idx,name,cost,count,use_yn FROM meal WHERE meal_idx = #{meal_idx}
     </select>
     
     <update id="editmealTicket" parameterType="Map">
@@ -68,5 +68,24 @@
       AND end_date = #{end_date}
     LIMIT 1
 </select>
+
+<insert id="setmealbuy" parameterType="map">
+	INSERT INTO meal_ticket(meal_idx,username,is_buy,count)
+    		VALUES(#{meal_idx},#{username},#{is_buy},#{count})
+
+</insert>
+
+<select id="getTicketCount" parameterType="String" resultType="int">
+SELECT 
+    SUM(CASE WHEN is_buy = 'B' THEN count ELSE 0 END) - 
+    SUM(CASE WHEN is_buy = 'U' THEN count ELSE 0 END) AS total_balance
+FROM 
+    meal_ticket
+ WHERE    
+    username = #{username}
+GROUP BY  
+    username;
+</select>
+
 
 </mapper>
