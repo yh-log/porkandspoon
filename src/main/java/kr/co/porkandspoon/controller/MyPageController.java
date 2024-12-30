@@ -1,5 +1,8 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +82,30 @@ public class MyPageController {
 	
 	@GetMapping(value="/ad/myPageBuy/List")
 	public ModelAndView myPageBuyListView() {
+		return new ModelAndView("/myPage/myPageBuyList");
+	}
+	
+	@GetMapping(value="/ad/myPageBuy/List/{username}")
+	public ModelAndView getBuyListView(@PathVariable String username ,String page, String cnt,String opt,String keyword ) {
+		 int page_ = Integer.parseInt(page);
+         int cnt_ = Integer.parseInt(cnt);
+         int limit = cnt_;
+         int offset = (page_ - 1) * cnt_;
+         
+         logger.info("opt: {}", opt);
+         logger.info("keyword: {}", keyword);
+
+         // 검색 조건을 반영하여 페이지 수를 계산
+         int totalPages = myPageService.count(cnt_, opt, keyword);
+
+         Map<String, Object> result = new HashMap<>();
+         logger.info("총갯수"+totalPages);
+         logger.info(page);
+         result.put("totalPages", totalPages);
+         result.put("currpage", page);
+         result.put("list", myPageService.buyList(opt, keyword,limit, offset));
+		
+		
 		return new ModelAndView("/myPage/myPageBuyList");
 	}
 	

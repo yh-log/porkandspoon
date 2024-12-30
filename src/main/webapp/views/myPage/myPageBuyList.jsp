@@ -97,17 +97,17 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>아르바이트 관리</h5>
+							<h5>구매/사용 기록</h5>
 						</div>
 						<div class="cont-body">
 							<div class="row">
 								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>구매일</option>
-										<option>상품명</option>
+								<div id="searchLayout"  class="col-7 col-lg-7">
+									<select id="searchOption" class="form-select selectStyle">
+										<option value="create_date">구매일</option>
+										<option value="name">상품명</option>
 									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
+									<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
 									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
 								</div>
 							</div>
@@ -125,22 +125,20 @@
 									<tr>
 										<th>상품명</th>
 										<th >가격</th>
-										<th>사용갯수</th>
-										<th>남은 갯수</th>
+										<th>구매/사용</th>
+										<th>갯수</th>
 										<th>구매일</th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>식권10장</td>
-										<td>6,5000</td>
-										<td>7</td>
-										<td>3</td>
-										<td>2024.12.15</td>
-									</tr>
+								<tbody id="list">
+									
 								</tbody>
 							</table>
-							
+							<div class="">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center" id="pagination"><li class="page-item first"><a href="#" class="page-link">First</a></li><li class="page-item prev"><a href="#" class="page-link">Previous</a></li><li class="page-item"><a href="#" class="page-link">1</a></li><li class="page-item"><a href="#" class="page-link">2</a></li><li class="page-item"><a href="#" class="page-link">3</a></li><li class="page-item"><a href="#" class="page-link">4</a></li><li class="page-item active"><a href="#" class="page-link">5</a></li><li class="page-item"><a href="#" class="page-link">6</a></li><li class="page-item"><a href="#" class="page-link">7</a></li><li class="page-item"><a href="#" class="page-link">8</a></li><li class="page-item"><a href="#" class="page-link">9</a></li><li class="page-item"><a href="#" class="page-link">10</a></li><li class="page-item next"><a href="#" class="page-link">Next</a></li><li class="page-item last"><a href="#" class="page-link">Last</a></li></ul>
+								</nav>
+							</div>
 							</div>
 							</div>
 						</div> 
@@ -162,36 +160,13 @@
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
@@ -202,13 +177,42 @@
 		startPage : 1,
 		totalPages : 10,
 		visiblePages : 10,
-	/* onPageClick:function(evt,page){
+	 onPageClick:function(evt,page){
 		console.log('evt',evt); 
 		console.log('page',page); 
 		pageCall(page);
-	} */
+	} 
 	});
+	
+	
 
+	 var keyword = $('#searchKeyword').val();
+	 var opt = $('#searchOption').val();
+	 var requestData = {
+	           page: page,
+	           cnt: cnt,
+	           option: option,
+	           search: search
+	          
+	       };
+	 
+	pageCall(requestData);
+	
+	pringList(response){
+		var content = '';
+		 for (var view of list) {
+		content += '<tr>';
+        content += '<td>' + view.name + '</td>';
+        content += '<td>' + view.cost + '</td>';
+        content += '<td style="color: ' + (view.is_buy == 'B' ? 'blue' : 'black') + ';">' 
+        + (view.is_buy == 'B' ? '구매' : '사용') + '</td>';
+        content += '<td>' + view.count + '</td>';
+        content += '<td>' + view.create_date + '</td>';
+        content += '</tr>';
+		 }
+		 $('#list').html(content);
+		 
+	}
 	// 공통으로 옮기고, 
 	/* 페이지네이션 prev,next 텍스트 제거 */
 	if($('#pagination')){		
@@ -222,6 +226,12 @@
 				'<i class="bi bi-chevron-double-right"></i>');
 	}
 	
+	
+	pageCall(page, cnt, url, { option = '', search = '', filtering = '' } = {})
+	
+	
+	
+	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
 	});
@@ -230,46 +240,7 @@
 		$('#modal').hide();
 	});
 	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
-
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
 	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
-
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 
 
 </script>

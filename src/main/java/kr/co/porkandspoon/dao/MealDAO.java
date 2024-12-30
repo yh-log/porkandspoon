@@ -37,6 +37,12 @@ public interface MealDAO {
 
 	
 
+	int setmealbuy(Map<String, Object> params);
+
+	int getTicketCount(String username);
+
+	
+
 	
 	
 }
