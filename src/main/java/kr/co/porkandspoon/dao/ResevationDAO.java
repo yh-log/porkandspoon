@@ -14,12 +14,20 @@ public interface ResevationDAO {
 
 	int articleWrite(Map<String, Object> params);
 
-	List<CalenderDTO> list(int offset, int size);
+	List<CalenderDTO> list(int offset, int size, String category);
 
 	CalenderDTO articleDetail(String no);
 
 	int updateYN(String no, String filter);
 
-	CalenderDTO articleUpdate(Map<String, Object> params);
+	int articleUpdate(Map<String, Object> params);
+
+	int roomWrite(Map<String, Object> params);
+
+	CalenderDTO roomDetail(String no);
+
+	int roomUpdate(Map<String, Object> params);
+
+	int allDelete(String no, String filter);
 
 }
