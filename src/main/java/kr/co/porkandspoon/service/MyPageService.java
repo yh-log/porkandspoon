@@ -45,14 +45,14 @@ public class MyPageService {
 	}
 
 
-	public int count(int cnt_, String opt, String keyword) {
-		String username = "";
-		return myPageDao.count(cnt_,opt,keyword);
+	public int count(String username, int cnt_, String opt, String keyword) {
+		
+		return myPageDao.count(username,cnt_,opt,keyword);
 	}
 
-	public List<MealDTO> buyList(String opt, String keyword, int limit, int offset) {
+	public List<MealDTO> buyList(String username,String opt, String keyword, int limit, int offset) {
 		
-		return myPageDao.buyList(opt,keyword,limit,offset);
+		return myPageDao.buyList(username,opt,keyword,limit,offset);
 
 	}
 	/**
@@ -93,5 +93,21 @@ public class MyPageService {
 		return true;
 
 	}
+
+
+	public int signSave(FileDTO dto) {
+		
+		return myPageDao.fileUpdate(dto);
+
+	}
+
+
+	public FileDTO signExist(String pk_idx, String code_name) {
+		return myPageDao.signExist(pk_idx,code_name);
+		
+	}
+	
+	
+	
 	
 }

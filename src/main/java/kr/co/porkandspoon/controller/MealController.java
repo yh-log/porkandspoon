@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,9 +35,6 @@ import kr.co.porkandspoon.util.CommonUtil;
 @RestController
 public class MealController {
 
-	
-	 
-	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MealService mealService;
@@ -51,19 +50,28 @@ public class MealController {
 	    logger.info("Request data: {}", requestData);
 
 	    String name = (String) requestData.get("name");
-	    Number costNumber = (Number) requestData.get("cost");
-	    int count =  (int) requestData.get("count");
-	    int meal_idx = (int)requestData.get("meal_idx");
+	    String costString = (String) requestData.get("cost"); // cost를 문자열로 받음
+	    int count = Integer.parseInt(requestData.get("count").toString());
+	    int meal_idx = Integer.parseInt(requestData.get("meal_idx").toString());
+
+	    // 문자열 cost를 숫자로 변환
+	    int cost;
+	    try {
+	        cost = Integer.parseInt(costString.replaceAll(",", "")); // 쉼표 제거 후 정수로 변환
+	    } catch (NumberFormatException e) {
+	        throw new IllegalArgumentException("Invalid cost value: " + costString, e);
+	    }
+	    
 	    
 	    session.setAttribute("name", name);
-	    session.setAttribute("cost", costNumber);
+	    session.setAttribute("cost", cost);
 	    session.setAttribute("count", count);
 	    session.setAttribute("is_buy", "B");
-	    session.setAttribute("username", "admin");
+	    
 	    session.setAttribute("meal_idx", meal_idx);
 	    
 	    
-	    int cost = costNumber.intValue();
+	    
 
 	    logger.info("name: {}", name);
 	    logger.info("cost: {}", cost);
@@ -88,7 +96,7 @@ public class MealController {
 	    body.put("total_amount", cost);
 	    body.put("tax_free_amount", 0);
 
-	    String domain = "http://localhost:5000"; // 등록된 도메인
+	    String domain = "http://localhost:8080"; // 등록된 도메인
 	    body.put("approval_url", domain + "/ad/mealTicket/paySuccess");
 	    body.put("cancel_url", domain + "/ad/mealTicket/payCancel");
 	    body.put("fail_url", domain + "/ad/mealTicket/payFail");
@@ -112,6 +120,7 @@ public class MealController {
 
 	@GetMapping("/ad/mealTicket/paySuccess")
 	public ModelAndView kakaoPaySuccess(
+			@AuthenticationPrincipal UserDetails userDetails,
 	        @RequestParam("pg_token") String pgToken,
 	        HttpSession session) {
 
@@ -142,8 +151,8 @@ public class MealController {
 	    	
 	    	//String name = (String) session.getAttribute("name");
 	    	//int cost =  (int) session.getAttribute("cost");
+	    	String username  =  userDetails.getUsername();
 	    	int count  =  (int) session.getAttribute("count");
-	    	String username  =  (String) session.getAttribute("username");
 	    	String is_buy  =  (String) session.getAttribute("is_buy");
 	    	int meal_idx  =  (int) session.getAttribute("meal_idx");
 	    	
@@ -156,14 +165,10 @@ public class MealController {
 	    	params.put("meal_idx", meal_idx);
 	    	
 	    	mealService.setmealbuy(params);
-	    	
-	    	
-	       // mealService.setmealbuy(name,cost);
-	    	
+
 	    	Map<String, Object> result = response.getBody();
 	        ModelAndView mav = new ModelAndView("redirect:/ad/mealTicket");
 	        session.setAttribute("successMessage", "결제가 완료되었습니다!"); // 세션에 메시지 저장
-	       
 	        mav.addObject("paymentInfo", result);
 	        
 	        return mav;
@@ -178,6 +183,16 @@ public class MealController {
 	public ModelAndView mealTicketView() {
 		List<MealDTO> list = mealService.getmealTicket();
 	    
+		
+		 for (MealDTO dto : list) {
+		        int rawCost = Integer.parseInt(dto.getCost());
+		        String cost = CommonUtil.addCommaToNumber(rawCost, "#,###");
+				logger.info("cost :{},"+rawCost);
+		        // 콤마 추가
+		        dto.setCost(cost);
+		    }
+		
+		
 	    // 파일 정보를 DTO에 추가
 	    for (MealDTO dto : list) {
 	        FileDTO fileDTO = mealService.getFile(dto.getMeal_idx());
@@ -190,8 +205,6 @@ public class MealController {
 	    
 	    int count = mealService.getTicketCount(username);
 	    
-	    
-	    
 	    // 리스트를 JSP로 전달
 	    ModelAndView mav = new ModelAndView("/meal/mealTicket");
 	    mav.addObject("list", list);
@@ -200,7 +213,91 @@ public class MealController {
 	}
 	
 	
-	
+	//식권 등록 뷰이동
+		@GetMapping(value="/ad/mealTicket/Write")
+		public ModelAndView mealTicketWriteView() {
+
+			return new ModelAndView("/meal/mealTicketWrite");
+		}
+		
+		
+		//식권 등록 
+		@PostMapping(value="/ad/mealTicket/Write")
+		public ModelAndView setmealTicket(
+				@RequestParam("filepond") MultipartFile file,
+				@RequestParam Map<String, String> params) {
+			
+			logger.info("Received params: {}", params);
+			//CommonUtil.file
+			params.put("creater", "admin"); // 생성자 임의로 넣기
+			
+			String sales = params.get("cost");
+			if (sales == null || sales.isEmpty()) {
+			    throw new IllegalArgumentException("cost 값이 비어 있습니다.");
+			}
+			double precost = Double.parseDouble(sales);
+			
+			
+			//가격 표시 매서드에 넣기
+			CommonUtil.addCommaToNumber(precost, "#,###");
+			logger.info("cost :{},"+precost);
+			String cost= CommonUtil.toString(precost);
+			params.put("cost", cost);
+			params.put("code_name", "MT001");
+			FileDTO dto = CommonUtil.uploadSingleFile(file);
+			logger.info("dto : {}",dto);
+			
+			
+				dto.setCode_name("MT001");
+				mealService.setmealTicket(params,dto);
+
+			return new ModelAndView("/meal/mealTicketWrite");
+		}
+		
+		//식권 수정 뷰이동
+		@GetMapping(value="/ad/mealTicket/Update/{meal_idx}")
+		public ModelAndView mealTicketUpdateView(@PathVariable int meal_idx) {
+			 MealDTO dto = mealService.detailmealTicket(meal_idx);
+			    FileDTO fto = mealService.getFile(meal_idx);
+			    dto.setMeal_idx(meal_idx);
+
+			    ModelAndView mav = new ModelAndView("/meal/mealTicketUpdate");
+			    mav.addObject("info", dto);
+			    
+			    // 파일 경로 추가
+			    if (fto != null) {
+			        String fileUrl = "/C:/upload/" + fto.getNew_filename(); // 브라우저가 직접 접근할 수 있는 절대 경로
+			        mav.addObject("fileUrl", fileUrl);
+			        mav.addObject("fileName", fto.getOri_filename());
+			    } else {
+			        mav.addObject("fileUrl", null);
+			        mav.addObject("fileName", null);
+			    }
+
+			    return mav;
+			}
+		
+		//식권 수정 기능
+		@PostMapping(value="/ad/mealTicket/Update/{meal_idx}")
+		public ModelAndView editmealTicket(@RequestParam("filepond") MultipartFile file,@PathVariable String meal_idx,
+				@RequestParam Map<String, String> params) {
+
+			//사진/파일 업데이트 내용 추가 필요
+
+			FileDTO dto = CommonUtil.uploadSingleFile(file);
+			logger.info("dto : {}",dto);
+			dto.setPk_idx(meal_idx);
+			
+				dto.setCode_name("MT001");
+				params.put("meal_idx", meal_idx);
+				mealService.editmealTicket(params,dto);
+			
+			
+			return new ModelAndView("/meal/mealTicketUpdate/"+meal_idx);
+		}
+		
+		
+	//식단표
 	@GetMapping(value = "/ad/mealMenu")
 	public ModelAndView mealMenuView() {
 	    String defaultIsTime = "B"; // 기본값: 아침
@@ -216,7 +313,7 @@ public class MealController {
 	    mav.addObject("defaultIsTime", defaultIsTime); // 기본 is_time 전달
 	    return mav;
 	}
-	
+			
 	
 	@GetMapping(value = "/ad/mealMenu/{is_time}")
 	public ResponseEntity<List<MealDTO>> getMealMenu(@PathVariable String is_time) {
@@ -227,8 +324,7 @@ public class MealController {
 	    if (mealList == null || mealList.isEmpty()) {
 	        return ResponseEntity.noContent().build(); // 데이터가 없으면 204 반환
 	    }
-	    
-	    
+
 	    return ResponseEntity.ok(mealList); // JSON 형태로 반환
 	}
 	 
@@ -293,57 +389,10 @@ public class MealController {
 	
 		
 	
-	//식권 등록 뷰이동
-	@GetMapping(value="/ad/mealTicket/Write")
-	public ModelAndView mealTicketWriteView() {
-
-		return new ModelAndView("/meal/mealTicketWrite");
-	}
-	
-	
-	//식권 등록 
-	@PostMapping(value="/ad/mealTicket/Write")
-	public ModelAndView setmealTicket(
-			@RequestParam("filepond") MultipartFile file,
-			@RequestParam Map<String, String> params) {
-		
-		logger.info("Received params: {}", params);
-		//CommonUtil.file
-		params.put("creater", "admin"); // 생성자 임의로 넣기
-		
-		String sales = params.get("cost");
-		if (sales == null || sales.isEmpty()) {
-		    throw new IllegalArgumentException("cost 값이 비어 있습니다.");
-		}
-		double precost = Double.parseDouble(sales);
-		
-		
-		//가격 표시 매서드에 넣기
-		CommonUtil.addCommaToNumber(precost, "#,###");
-		logger.info("cost :{},"+precost);
-		String cost= CommonUtil.toString(precost);
-		params.put("cost", cost);
-		params.put("code_name", "MT001");
-		FileDTO dto = CommonUtil.uploadSingleFile(file);
-		logger.info("dto : {}",dto);
-		
-		
-			dto.setCode_name("MT001");
-			mealService.setmealTicket(params,dto);
-	
-		
-		
-		
-		
-		
-		return new ModelAndView("/meal/mealTicketWrite");
-	}
-	
 	
 	@GetMapping(value="/ad/meal/List")
 	public ModelAndView mealListView() {
-		
-		
+	
 		List<MealDTO> list = mealService.getmealTicket();
 	    
 		 list.forEach(ticket -> {
@@ -351,7 +400,15 @@ public class MealController {
 		        System.out.println("Ticket Count: " + ticket.getCount());
 		    });
 
-		
+		 for (MealDTO dto : list) {
+		        int rawCost = Integer.parseInt(dto.getCost());
+		        String cost = CommonUtil.addCommaToNumber(rawCost, "#,###");
+				logger.info("cost :{},"+rawCost);
+		        // 콤마 추가
+		        dto.setCost(cost);
+		    }
+		 
+
 	    // 파일 정보를 DTO에 추가
 	    for (MealDTO dto : list) {
 	        FileDTO fileDTO = mealService.getFile(dto.getMeal_idx());
@@ -365,36 +422,7 @@ public class MealController {
 	}
 	
 	
-	@GetMapping(value="/ad/mealTicket/Update/{meal_idx}")
-	public ModelAndView mealTicketUpdateView(@PathVariable int meal_idx) {
-		 MealDTO dto = mealService.detailmealTicket(meal_idx);
-		    FileDTO fto = mealService.getFile(meal_idx);
-
-		    ModelAndView mav = new ModelAndView("/meal/mealTicketUpdate");
-		    mav.addObject("info", dto);
-		    
-		    // 파일 경로 추가
-		    if (fto != null) {
-		        String fileUrl = "/C:/upload/" + fto.getNew_filename(); // 브라우저가 직접 접근할 수 있는 절대 경로
-		        mav.addObject("fileUrl", fileUrl);
-		        mav.addObject("fileName", fto.getOri_filename());
-		    } else {
-		        mav.addObject("fileUrl", null);
-		        mav.addObject("fileName", null);
-		    }
-
-		    return mav;
-		}
 	
-	@PostMapping(value="/ad/mealTicket/Update")
-	public ModelAndView editmealTicket(@RequestParam Map<String, String> params) {
-		mealService.editmealTicket(params);
-		
-		
-		//사진/파일 업데이트 내용 추가 필요
-		String meal_idx = params.get("meal_idx");
-		return new ModelAndView("/meal/mealTicketUpdate/"+meal_idx);
-	}
 }
 	
 	
