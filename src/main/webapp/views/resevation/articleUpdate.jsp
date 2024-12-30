@@ -187,6 +187,19 @@
 	                  <input type="hidden" value="${info.no}" name="no"/>
 		                  <table class="align-l">
 		                  	<tr>
+		                  		<th>카테고리</th>
+		                  		<td class="align-l" id="writer">
+		                  			<select class="form-select selectStyle" id="code" name="opt">                  				
+										<option value="note"
+										<c:if test="${info.selection == 'note'}">selected</c:if>>노트북</option>
+										<option value="project"
+										<c:if test="${info.selection == 'project'}">selected</c:if>>빔 프로젝터</option>
+										<option value="car"
+										<c:if test="${info.selection == 'car'}">selected</c:if>>차량</option>
+									</select>
+		                  		</td>
+		                  	</tr>
+		                  	<tr>
 		                  		<th>등록자</th>
 		                  		<td class="align-l" id="writer">${info.name}</td>
 		                  	</tr>
@@ -274,9 +287,10 @@
 		var content = $('textarea[name="content"]').val();
 		var is_item = $('input[name="flexRadioDefault"]:checked').val();
 		var no = $('input[name="no"]').val();
-		console.log('제목',subject);
+		var selection = $('select[name="opt"]').val();
+		console.log('카테고리',selection);
 		
-	    if (!subject || !model || !article || !content || !is_item) {
+	    if (!selection || !subject || !model || !article || !content || !is_item) {
 	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
 	        return;
 	    }
@@ -288,7 +302,8 @@
 				type: article,
 				content: content,
 				is_item: is_item,
-				no: no
+				no: no,
+				selection: selection
 		}
 		
 		console.log('데이터',data);

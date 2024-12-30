@@ -60,5 +60,21 @@ public class ResevationService {
 		return resDao.allDelete(no,filter);
 	}
 
+	public List<CalenderDTO> note() {
+		return resDao.note();
+	}
+
+	public List<CalenderDTO> project() {
+		return resDao.project();
+	}
+
+	public List<CalenderDTO> car() {
+		return resDao.car();
+	}
+
+	public CalenderDTO itemDetail(String no) {
+		return resDao.itemDetail(no);
+	}
+
 
 }

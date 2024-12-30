@@ -27,6 +27,7 @@ public class CalenderDTO {
 	private String model_name;
 	private String is_item;
 	private String use_yn;
+	private String selection;
 	
 	//회의실 등록 테이블
 	private String room_name;
@@ -39,6 +40,13 @@ public class CalenderDTO {
 	
 	
 	
+	
+	public String getSelection() {
+		return selection;
+	}
+	public void setSelection(String selection) {
+		this.selection = selection;
+	}
 	public String getReCreate_date() {
 		return reCreate_date;
 	}

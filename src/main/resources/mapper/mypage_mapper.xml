@@ -15,13 +15,13 @@
 	</select>
 
 	<!-- 직원 이력 조회 -->
-	<select id="myPageCareerDetail" resultType="kr.co.porkandspoon.dto.CareerDTO" parameterType="String">
+	<select id="myPageCareerDetail" resultType="kr.co.porkandspoon.dto.CareerDTO">
 		SELECT username, type, subject, content, start_date, end_date FROM career WHERE username = #{username}
 	</select>
 	
 
 	
-	<select id="count" resultType="int" parameterType="">
+	<select id="count" resultType="int" parameterType="String">
       SELECT CEIL(count(meal_idx)/#{param1}) AS pages FROM meal_ticket
        <where>
        	 <if test="username != null and !username.equals('')">
@@ -37,7 +37,7 @@
 	</where>
    </select>
 	
-	<select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterMap="String">
+	<select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="String">
 	 select * from meal_ticket 
       <where>
       <if test="username != null and !username.equals('')">
