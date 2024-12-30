@@ -25,9 +25,9 @@ public interface MyPageDAO {
 	List<CareerDTO> myPageCareerDetail(String username);
 
 
-	int count(int cnt_, String opt, String keyword);
+	int count(String username, int cnt_, String opt, String keyword);
 
-	List<MealDTO> buyList(String opt, String keyword, int limit, int offset);
+	List<MealDTO> buyList(String username,String opt, String keyword, int limit, int offset);
 	
 	
 
@@ -48,6 +48,11 @@ public interface MyPageDAO {
 	 * 파일 업데이트
 	 */
 	int fileUpdate(FileDTO fileDto);
+
+	
+	
+	
+	FileDTO signExist(String pk_idx, String code_name);
 
 
 }

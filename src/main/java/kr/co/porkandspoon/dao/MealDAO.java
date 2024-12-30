@@ -41,6 +41,8 @@ public interface MealDAO {
 
 	int getTicketCount(String username);
 
+	int editmealFile(FileDTO dto);
+
 	
 
 	

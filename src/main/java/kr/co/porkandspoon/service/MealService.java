@@ -65,10 +65,23 @@ public class MealService {
 		
 	}
 
-	public int editmealTicket(Map<String, String> params) {
-		return mealDAO.editmealTicket(params);
-		
-	}
+	 @Transactional
+	public int editmealTicket(Map<String, String> params, FileDTO dto) {
+		 mealDAO.editmealTicket(params);
+		 String pk_idx = CommonUtil.toString(params.get("meal_idx"));
+	        dto.setPk_idx(pk_idx);
+
+	        // 두 번째 데이터베이스 작업
+	        int result = mealDAO.editmealFile(dto);
+
+	        // 결과가 0이거나 실패할 경우 예외를 던져 트랜잭션을 롤백
+	        if (result == 0) {
+	            throw new RuntimeException("Failed to execute setmealFile");
+	        }
+
+	        return result;
+	    }
+	
 
 	public FileDTO getFile(int meal_idx) {
 		
@@ -84,7 +97,7 @@ public class MealService {
 	    Integer menu_Idx = mealDAO.menuOverlay(start_date, end_date);
 	    
 	    logger.info("있니 {}:",menu_Idx);
-	    if (menu_Idx>0) {
+	    if (menu_Idx != null) {
 			return menu_Idx;
 		}else {
 			
