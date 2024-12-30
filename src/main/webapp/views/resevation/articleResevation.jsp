@@ -123,6 +123,7 @@
 		margin-top: 20px;
     	margin-left: 70px;
 	}
+	
 </style>
 </head>
 <body>
@@ -136,26 +137,40 @@
       <div class="page-content">
          <section id="menu">
             <h4 class="menu-title">물품 예약</h4>
-            <ul>
-               <li>노트북</li>
-               <li>맥북</li>
-               <li>빔 프로젝트</li>
-               <li>GV80</li>
-            </ul>
-            <div class="btn btn-primary full-size">예약하기</div>
-            <div class="detail-res">
-            	<p class="detail-p">상세정보</p>
-            	<p>회의실 :</p>
-				<p>최대인원 :</p>
-				<p>내용 :</p>
-				<p>등록자 :</p>
-				<p>등록일 :</p>
+			<div>
+				<p style="margin: 10px; cursor: pointer;" class="category-title">노트북</p>
+				<ul class="item-list" style="display: none;">
+					<c:forEach items="${note}" var="item">
+						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+					</c:forEach>
+				</ul>
+			</div>
+			<div>
+				<p style="margin: 10px; cursor: pointer;" class="category-title">빔 프로젝터</p>
+				<ul class="item-list" style="display: none;">
+					<c:forEach items="${project}" var="item">
+						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+					</c:forEach>
+				</ul>
+			</div>
+			<div>
+				<p style="margin: 10px; cursor: pointer;" class="category-title">차량</p>
+				<ul class="item-list" style="display: none;">
+					<c:forEach items="${car}" var="item">
+						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+					</c:forEach>
+				</ul>
+			</div>
+            
+            <div class="detail-res" id="list">
+            	
             </div>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
-               <div class="tit-area">
+               <div class="tit-area" style="display: flex; justify-content: space-between; align-items: center;">
                   <h5>예약</h5>
+                  <div class="btn btn-primary" style="margin: 0;">예약하기</div>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -186,6 +201,39 @@
 <script src='/resources/js/calenderJH.js'></script>
 
 <script>
+
+	$(document).ready(function(){
+	    // 카테고리 제목 클릭 시 슬라이드 토글
+	    $('.category-title').click(function(){
+	        $(this).next('.item-list').slideToggle();
+	    });
+	});
+
+	function detail(no) {
+		console.log("등장",no);
+		var data = {
+				no: no
+		}
+		getAjax('/itemDetail','JSON',data);
+	}
+		
+	function getSuccess(response){
+		console.log(response);
+		var content = '';
+		content +='<p class="detail-p">상세정보</p>';
+		if (response.list.selection == 'note') {
+			content +='<p>분류 : 노트북</p>';
+		}else if(response.list.selection == 'project'){
+			content +='<p>분류 : 빔 프로젝터</p>';
+		}else{
+			content +='<p>분류 : 차량</p>';
+		}	
+		content +='<p>물품 명 : '+response.list.item_name+'</p>';
+		content +='<p>모델 명 : '+response.list.model_name+'</p>';
+		content +='<p>내용 : '+response.list.content+'</p>';
+		content +='<p>등록일 : '+response.list.reCreate_date+'</p>';
+		$('#list').html(content);
+	}
 	
 </script>
 </html>

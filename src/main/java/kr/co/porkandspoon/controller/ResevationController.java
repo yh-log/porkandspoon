@@ -29,16 +29,36 @@ public class ResevationController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired ResevationService resService;
 	
+	// 물품 예약하기(캘린더) 이동
+	@GetMapping(value="/articleResevation")
+	public ModelAndView articleResevation() {
+		
+		ModelAndView mav = new ModelAndView("/resevation/articleResevation");
+		mav.addObject("note", resService.note());
+		mav.addObject("project", resService.project());
+		mav.addObject("car", resService.car());
+		
+		return mav;
+	}
+	
+	// 예약하기 페이지에 물품 상세정보
+	@GetMapping(value="/itemDetail")
+	public Map<String,Object> itemDetail(@RequestParam String no){
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		CalenderDTO dto = resService.itemDetail(no);
+		LocalDateTime time = dto.getCreate_date();
+		String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+		dto.setReCreate_date(create_date);
+		result.put("list",dto);
+		
+		return result;
+	}
+	
 	// 회의실 예약하기(캘린더) 이동
 	@GetMapping(value="/roomResevation")
 	public ModelAndView roomResevationView() {
 		return new ModelAndView("/resevation/roomResevation");
-	}
-	
-	// 물품 예약하기(캘린더) 이동
-	@GetMapping(value="/articleResevation")
-	public ModelAndView articleResevationView() {
-		return new ModelAndView("/resevation/articleResevation");
 	}
 	
 	// 자원리스트(ad권한만) 이동

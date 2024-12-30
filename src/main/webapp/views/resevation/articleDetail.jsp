@@ -183,6 +183,18 @@
                   	  <input type="hidden" value="${info.no}"/>
 	                  <table class="align-l">
 	                  	<tr>
+	                  		<th>분류</th>
+	                  		<c:if test="${info.selection == 'note'}">
+		                  		<td class="align-l">노트북</td>	                  		
+	                  		</c:if>
+	                  		<c:if test="${info.selection == 'project'}">
+		                  		<td class="align-l">빔 프로젝터</td>	                  		
+	                  		</c:if>
+	                  		<c:if test="${info.selection == 'car'}">
+		                  		<td class="align-l">차량</td>	                  		
+	                  		</c:if>
+	                  	</tr>
+	                  	<tr>
 	                  		<th>물품 명</th>
 	                  		<td class="align-l">${info.item_name}</td>
 	                  	</tr>
