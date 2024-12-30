@@ -192,7 +192,7 @@
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록일</th>
-	                  		<td class="align-l">${info.create_date}</td>
+	                  		<td class="align-l">${info.reCreate_date}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>모델 명</th>
@@ -201,7 +201,15 @@
 	                  	<tr>
 	                  		<th>물품 유형</th>
 	                  		<td class="align-l">
-	                  		
+	                  			<c:if test="${info.type == 'L'}">
+	                  				장기 물품
+	                  			</c:if>
+	                  			<c:if test="${info.type == 'S'}">
+	                  				단기 물품
+	                  			</c:if>
+	                  			<c:if test="${info.type == 'G'}">
+	                  				지급 물품
+	                  			</c:if>
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
@@ -211,9 +219,14 @@
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>활성 상태</th>
+	                  		<th>활성 여부</th>
 	                  		<td class="align-l">
-	                  		
+	                  			<c:if test="${info.is_item == 'Y'}">
+	                  				예약 활성
+	                  			</c:if>
+	                  			<c:if test="${info.is_item == 'N'}">
+	                  				예약 비활성
+	                  			</c:if>
 	                  		</td>
 	                  	</tr>
 	                  </table>
@@ -221,8 +234,11 @@
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-	           			<div class="btn btn-primary"><a href="/ad/article/update/${info.no}">수정하기</a></div>
+	           			<div class="btn btn-primary"><a href="/ad/article/update/${info.no}" style="color: #fff;">수정하기</a></div>
 	                	<div class="btn btn-primary" onclick="back()">돌아가기</div>
+	                	<div class="sort1">	                	
+		                	<div class="btn btn-outline-primary" onclick="articleDelete(${info.no},'article')">삭제</div>
+	                	</div>
 	           		</div>
            		</div>
            	</div>
@@ -246,8 +262,36 @@
 		console.log('back')
 		location.href="/ad/resevation/list";
 	}
+	
+	function articleDelete(no,filter) {
+		layerPopup("삭제 하시겠습니까?", "삭제", "취소", function(){articleDel(no,filter)}, secondBtn2Act);
+	}
 
-
+	function articleDel(no,filter) {
+		
+		//var no = '${info.no}';
+		
+		var data = {
+			no: no,
+			filter: filter
+		};
+		
+		console.log('삭제',data);
+		
+		httpAjax('DELETE','/allDelete/',data);
+	}	
+	
+	function secondBtn2Act() {
+		//취소 클릭시 수행할 내용
+		console.log('취소 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function httpSuccess(response){
+		console.log('삭제 완료');
+		removeAlert(); // 팝업닫기
+		location.href="/ad/resevation/list";
+	}
 
 
 	

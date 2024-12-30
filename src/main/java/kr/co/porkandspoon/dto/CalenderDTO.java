@@ -20,6 +20,7 @@ public class CalenderDTO {
 	private String name;
 	private String parent;
 	private LocalDateTime create_date;
+	private String reCreate_date;
 	
 	//물품 등록 테이블
 	private String item_name;
@@ -38,6 +39,12 @@ public class CalenderDTO {
 	
 	
 	
+	public String getReCreate_date() {
+		return reCreate_date;
+	}
+	public void setReCreate_date(String reCreate_date) {
+		this.reCreate_date = reCreate_date;
+	}
 	public String getIs_active() {
 		return is_active;
 	}

@@ -133,24 +133,30 @@
     	align-items: center;
     	margin: 20px;
 	}
+	
 	.write-form2{
 		margin-left: 43px;
 	}
+	
 	.art{
     	height: 270px;
     	resize: none;
 	}
+	
 	.write-form-3{
 		display: flex;
     	margin: 20px;
 	}
+	
 	.btn-room{
 		display: flex;
     	justify-content: center;
 	}
+	
 	th{
 		width: 20%;
 	}
+	
 	.coutn-dis{
 		display: flex;
 		align-items: center;
@@ -178,43 +184,44 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>203A 회의실 수정</h5>
+                  <h5>회의실 등록</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
+                  	  <input type="hidden" value="${info.no}" name="no"/>
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">김진형</td>
+	                  		<td class="align-l">${info.name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>회의실 명</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject" value="203A 회의실"/></td>
+	                  		<td><input class="form-control sor-1" type="text" name="subject" value="${info.room_name}"/></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>수용 인원</th>
 	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="text" name="count" maxlength="2" style="width: 50px;" value="20"/>
+	                  			<input class="form-control sor-1" type="text" name="count" maxlength="2" style="width: 50px;" value="${info.count}"/>
 	                  			<p style="margin-left: 10px; margin-bottom: 0px;">명</p>
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
-	                  		<td>
-	                  			<textarea class="form-control art" name="content">회의실이 안락합니다.</textarea>
-	                  		</td>
+	                  		<td><textarea class="form-control art" name="content">${info.content}</textarea></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>활성 상태</th>
 	                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
 	                  			<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked">
-									<label class="form-check-label" for="flexRadioDefault1">활성화</label>
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y"
+									<c:if test="${info.is_room == 'Y'}">checked</c:if>>
+									<label class="form-check-label" for="flexRadioDefault1">예약 활성화</label>
 								</div>
 								<div class="form-check" style="margin-left: 15px;">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2">
-									<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N"
+									<c:if test="${info.is_room == 'N'}">checked</c:if>>
+									<label class="form-check-label" for="flexRadioDefault2">예약 비활성화</label>
 								</div>
 	                  		</td>
 	                  	</tr>
@@ -223,8 +230,8 @@
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-	           			<div class="btn btn-primary">등록하기</div>
-	                	<div class="btn btn-primary">돌아가기</div>
+		           		<div class="btn btn-primary" onclick="roomUpdate()">수정하기</div>
+		                <div class="btn btn-primary" onclick="back()">돌아가기</div>
 	           		</div>
            		</div>
            	</div>
@@ -245,6 +252,51 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
+
+	//물품 등록
+	function roomUpdate() {
+		var subject = $('input[name="subject"]').val();
+		var count = $('input[name="count"]').val();
+		var content = $('textarea[name="content"]').val();
+		var is_room = $('input[name="flexRadioDefault"]:checked').val();
+		var no = $('input[name="no"]').val();
+		console.log('제목',subject);
+		
+	    if (!subject || !count || !content || !is_room) {
+	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
+	        return;
+	    }
+		
+		var data = {
+				username: '${pageContext.request.userPrincipal.name}',
+				room_name: subject,
+				count: count,
+				content: content,
+				is_room: is_room,
+				no: no
+		}
+		
+		console.log('데이터',data);
+		
+		httpAjax('PUT','/roomUpdate',data);
+	
+	}
+	
+	function httpSuccess(response) {
+		console.log('성공',response);
+		location.href="/ad/room/detail/${info.no}";
+	}
+	
+	function back() {
+		console.log('돌아가기');
+		window.history.back();
+	}
+	
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
 	
 </script>
 </html>
