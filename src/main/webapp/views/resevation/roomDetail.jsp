@@ -174,47 +174,56 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>203A 회의실 상세정보</h5>
+                  <h5>${info.room_name} 상세정보</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
+                  	  <input type="hidden" value="${info.no}"/>
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>회의실 명</th>
-	                  		<td class="align-l">203A 회의실</td>
+	                  		<td class="align-l">${info.room_name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">김진형</td>
+	                  		<td class="align-l">${info.name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>등록일</th>
-	                  		<td class="align-l">2024. 12. 19</td>
+	                  		<td class="align-l">${info.reCreate_date}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>수용 인원</th>
-	                  		<td class="align-l">20명</td>
+	                  		<td class="align-l">${info.count}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
 	                  		<td class="align-l">
-	                  			빔프로젝트가 있어 프로젝트 용도로 쓰기 적합한 회의실 입니다.
-	                  			빔프로젝트가 있어 프로젝트 용도로 쓰기 적합한 회의실 입니다.
-	                  			빔프로젝트가 있어 프로젝트 용도로 쓰기 적합한 회의실 입니다.
+	                  			${info.content}
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>활성 상태</th>
-	                  		<td class="align-l">활성</td>
+	                  		<td class="align-l">
+	                  			<c:if test="${info.is_room == 'Y'}">
+	                  				예약 활성
+	                  			</c:if>
+	                  			<c:if test="${info.is_room == 'N'}">
+	                  				예약 비활성
+	                  			</c:if>
+	                  		</td>
 	                  	</tr>
 	                  </table>
                   </div>
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-	           			<div class="btn btn-primary">수정하기</div>
-	                	<div class="btn btn-primary">돌아가기</div>
+	           			<div class="btn btn-primary"><a href="/ad/room/update/${info.no}" style="color: #fff;">수정하기</a></div>
+	                	<div class="btn btn-primary" onclick="back()">돌아가기</div>
+	                	<div class="sort1">	                	
+		                	<div class="btn btn-outline-primary" onclick="roomDelete(${info.no},'room')">삭제</div>
+	                	</div>
 	           		</div>
            		</div>
            	</div>
@@ -235,6 +244,41 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
+
+	function back() {
+		console.log('back')
+		location.href="/ad/resevation/list";
+	}
+	
+	function roomDelete(no,filter) {
+		layerPopup("삭제 하시겠습니까?", "삭제", "취소", function(){roomDel(no,filter)}, secondBtn2Act);
+	}
+
+	function roomDel(no,filter) {
+		
+		//var no = '${info.no}';
+		
+		var data = {
+			no: no,
+			filter: filter
+		};
+		
+		console.log('삭제',data);
+		
+		httpAjax('DELETE','/allDelete/',data);
+	}	
+	
+	function secondBtn2Act() {
+		//취소 클릭시 수행할 내용
+		console.log('취소 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function httpSuccess(response){
+		console.log('삭제 완료');
+		removeAlert(); // 팝업닫기
+		location.href="/ad/resevation/list";
+	}
 	
 </script>
 </html>

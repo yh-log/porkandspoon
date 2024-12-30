@@ -173,9 +173,9 @@
          <section id="menu">
             <h4 class="menu-title">자원 관리</h4>
             <ul>
-               <li class="active">전체보기</li>
-               <li>회의실 리스트</li>
-               <li>물품 리스트</li>
+            	<li class="active" data-category="all" style="cursor: pointer;">전체보기</li>
+      			<li data-category="room" style="cursor: pointer;">회의실 리스트</li>
+      			<li data-category="article" style="cursor: pointer;">물품 리스트</li>
             </ul>
          </section>
          <section class="cont">
@@ -222,8 +222,32 @@
 		var page = 1;
 		var isLoading = false; // 로딩 상태
 	    var hasMore = true; // 추가 데이터 존재 여부
+	    var filter = 'all';
 	    
-	    listCall(page);
+	    listCall(page,filter);
+	    
+	    // 메뉴 클릭 이벤트 핸들러
+        $('#menu ul li').click(function() {
+            // 활성화된 메뉴 항목의 클래스 제거
+            $('#menu ul li').removeClass('active');
+            // 클릭한 메뉴 항목에 active 클래스 추가
+            $(this).addClass('active');
+            
+            // 현재 필터 업데이트
+            filter = $(this).data('category');
+            
+            // 페이지 및 상태 초기화
+            page = 1;
+            isLoading = false;
+            hasMore = true;
+            
+            // 목록 초기화
+            $('#list').empty();
+            $('#endOfContent').hide();
+            
+            // 새로운 필터에 맞는 목록 호출
+            listCall(page, filter);
+        });
 	    		
 		$(window).scroll(function() {
             if (isLoading || !hasMore) return;
@@ -231,13 +255,13 @@
             // 문서 높이와 스크롤 위치 계산
             if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
                 page++;
-                listCall(page);
+                listCall(page,filter);
             }
         });
 			
 	});
 	
-    function listCall(page) {
+    function listCall(page,filter) {
     	isLoading = true;
         $('#loading').show();
         
@@ -246,7 +270,8 @@
             url: '/resevationList',
             data:{
             	page: page,
-            	size: 6
+            	size: 6,
+            	category: filter
             }, 
             dataType: 'JSON',
             success: function(response) {

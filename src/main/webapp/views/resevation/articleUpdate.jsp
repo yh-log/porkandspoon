@@ -184,6 +184,7 @@
 	               <div class="cont-body"> 
 	                  <!-- 여기에 내용 작성 -->
 	                  <div class="col-12 col-lg-12">
+	                  <input type="hidden" value="${info.no}" name="no"/>
 		                  <table class="align-l">
 		                  	<tr>
 		                  		<th>등록자</th>
@@ -229,12 +230,12 @@
 		                  			<div class="form-check">
 										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y"
 										<c:if test="${info.is_item == 'Y'}">checked</c:if>>
-										<label class="form-check-label" for="flexRadioDefault1">활성화</label>
+										<label class="form-check-label" for="flexRadioDefault1">예약 활성화</label>
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
 										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N"
 										<c:if test="${info.is_item == 'N'}">checked</c:if>>
-										<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
+										<label class="form-check-label" for="flexRadioDefault2">예약 비활성화 </label>
 									</div>
 		                  		</td>
 		                  	</tr>
@@ -272,6 +273,7 @@
 		var article = $('input[name="article"]:checked').val();
 		var content = $('textarea[name="content"]').val();
 		var is_item = $('input[name="flexRadioDefault"]:checked').val();
+		var no = $('input[name="no"]').val();
 		console.log('제목',subject);
 		
 	    if (!subject || !model || !article || !content || !is_item) {
@@ -285,7 +287,8 @@
 				model_name: model,
 				type: article,
 				content: content,
-				is_item: is_item
+				is_item: is_item,
+				no: no
 		}
 		
 		console.log('데이터',data);
@@ -295,8 +298,8 @@
 	}
 	
 	function httpSuccess(response) {
-		console.log('성공',response.no);
-		//location.href="/ad/resevation/list"
+		console.log('성공',response);
+		location.href="/ad/article/detail/${info.no}";
 	}
 	
 	function back() {

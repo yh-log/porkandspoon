@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.CareerDTO;
 import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.MealDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
@@ -22,6 +23,13 @@ public interface MyPageDAO {
 	 * 직원 이력 조회
 	 */
 	List<CareerDTO> myPageCareerDetail(String username);
+
+
+	int count(int cnt_, String opt, String keyword);
+
+	List<MealDTO> buyList(String opt, String keyword, int limit, int offset);
+	
+	
 
 	/**
 	 * author yh.kim (24.12.27)
@@ -40,5 +48,6 @@ public interface MyPageDAO {
 	 * 파일 업데이트
 	 */
 	int fileUpdate(FileDTO fileDto);
+
 
 }

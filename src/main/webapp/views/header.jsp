@@ -257,6 +257,9 @@
 	    $('#alarmPopup').hide();
 	});
 	
-
-	
+	/* alert 메세지전달 */
+	if(${param.message} != null){
+    	alert('${param.message}');
+	}
+		
 </script>

@@ -10,7 +10,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.mail.Multipart;
@@ -47,8 +49,8 @@ public class ApprovalService {
 	}
 
 	@Transactional
-	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile, String status) {
-		approvalDTO.setDocument_number(generateDocumentNumber());
+	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile, String status, String[] new_filename) {
+		approvalDTO.setDocument_number(generateDocumentNumber(approvalDTO.getTarget_type()));
 		logger.info("docNumber : "+ approvalDTO.getDocument_number());
 		logger.info("getUsername : "+ approvalDTO.getUsername());
 		
@@ -109,6 +111,12 @@ public class ApprovalService {
         
         saveFile(files, draftIdx, false);
         
+        // 재상신의 경우
+        if(new_filename.length > 0) {
+        	for (String filename : new_filename) {
+        		approvalDAO.saveExistingFiles(filename, draftIdx);
+			}
+        }
         
         return draftIdx;
 	}
@@ -119,13 +127,14 @@ public class ApprovalService {
 		for(MultipartFile file : files) {
 			try {
 				
-				//check!!! 얘도 if문안에 넣어야하는게 아닌가?
-				String ori_filename = file.getOriginalFilename();
-				logger.info("file 비어있나? : "+file.isEmpty()); // true
-				logger.info("ori_filename : "+ ori_filename); 
 
 				if(!file.isEmpty()) {
+					//check!!! 얘도 if문안에 넣어야하는게 아닌가?
+					String ori_filename = file.getOriginalFilename();
+					logger.info("file 비어있나? : "+file.isEmpty()); // true
+					logger.info("ori_filename : "+ ori_filename); 
 					logger.info("파일이 있는 경우만 타야하는데");
+					
 					String ext = ori_filename.substring(ori_filename.lastIndexOf("."));
 					String new_filename = UUID.randomUUID()+ext;
 					
@@ -192,14 +201,19 @@ public class ApprovalService {
 	
 		// 문서번호 생성
 		@Transactional
-		public String generateDocumentNumber() {
+		public String generateDocumentNumber(String target_type) {
 		    String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-		    
-		    Integer maxNumber = approvalDAO.getMaxNumberForDate(date);
+		    String prefix = "";
+		    if(target_type.equals("df001")) {
+		    	prefix = "B";
+		    }else if(target_type.equals("df002")) {
+		    	prefix = "P";
+		    }
+		    Integer maxNumber = approvalDAO.getMaxNumberForDate(prefix+date);
 		    
 		    int newNumber = (maxNumber == null) ? 1 : maxNumber + 1;
 		    
-		    return date + "-" + String.format("%06d", newNumber);
+		    return prefix + date + "-" + String.format("%06d", newNumber);
 		}
 	   // String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
 	   //return date + "-" + String.format("%06d", documentId);  // "YYYYMMDD-000001" 형식
@@ -226,7 +240,7 @@ public class ApprovalService {
 		}
 
 		@Transactional
-		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files) {
+		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile) {
 			
 			int row = approvalDAO.updateDraft(approvalDTO);
 			
@@ -251,6 +265,7 @@ public class ApprovalService {
 	            }
 	        }
 	        
+	        saveFile(logoFile, draftIdx, true);
 	        saveFile(files, draftIdx, false);
 			
 		}
@@ -278,11 +293,8 @@ public class ApprovalService {
 		public FileDTO getLogoFile(String draft_idx) {
 			return approvalDAO.getLogoFile(draft_idx);
 		}
-
-		public int returnDraft(ApprovalDTO approvalDTO) {
-
-			
-			
+		
+		String CreateNowDateTime() {
 			// 현재 시간을 LocalDateTime으로 가져옴
 	        LocalDateTime now = LocalDateTime.now();
 
@@ -291,10 +303,79 @@ public class ApprovalService {
 
 	        // 포맷된 현재 시간
 	        String formattedDateTime = now.format(formatter);
-			logger.info("formattedDateTime"+formattedDateTime);
-	        
-			approvalDTO.setApproval_date(formattedDateTime);
-			return approvalDAO.returnDraft(approvalDTO);
+			//logger.info("formattedDateTime"+formattedDateTime);
+			
+			return formattedDateTime;
 		}
+		
+		// 기안문 반려
+		public boolean returnDraft(ApprovalDTO approvalDTO) {
+			approvalDTO.setApproval_date(CreateNowDateTime());
+			int approvalRow = approvalDAO.changeApprovalLineToReturn(approvalDTO);
+			int draftRow = approvalDAO.changeStatusToReturn(approvalDTO);
+			
+			return approvalRow > 0 && draftRow >0 ? true : false;
+		}
+
+		// 기안문 결재
+		public int ApprovalDraft(ApprovalDTO approvalDTO) {
+			approvalDTO.setApproval_date(CreateNowDateTime());
+			return approvalDAO.ApprovalDraft(approvalDTO);
+		}
+		
+		// 로그인유저 부서정보
+		public String getUserDept(String loginId) {
+			return approvalDAO.getUserDept(loginId);
+		}
+		
+		// 열람권한체크
+		public boolean isDraftSender(String draft_idx, String loginId) {
+			return approvalDAO.isDraftSender(draft_idx,loginId) != null ? true : false;
+		}
+		// 열람권한체크
+		public String approverStatus(String draft_idx, String loginId) {
+			return approvalDAO.approverStatus(draft_idx,loginId);
+		}
+		// 열람권한체크
+		public boolean isCooperDept(String draft_idx, String userDept) {
+			return approvalDAO.isCooperDept(draft_idx,userDept) != null ? true : false;
+		}
+		// 열람권한체크
+		public boolean isApproveDept(String draft_idx, String userDept) {
+			return approvalDAO.isApproveDept(draft_idx,userDept) != null ? true : false;
+		}
+
+		public String getDraftStatus(String draft_idx) {
+			return approvalDAO.getDraftStatus(draft_idx);
+		}
+
+		public int changeStatusToRead(String loginId, String draft_idx) {
+			return approvalDAO.changeStatusToRead(loginId, draft_idx);
+		}
+
+		public List<String> otherApproversStatus(String draft_idx, String loginId) {
+			return approvalDAO.otherApproversStatus(draft_idx,loginId);
+		}
+
+		public int approvalRecall(String draft_idx) {
+			return approvalDAO.approvalRecall(draft_idx);
+		}
+
+		public int changeStatusToApproved(String draft_idx) {
+			return approvalDAO.changeStatusToApproved(draft_idx);
+		}
+
+		public int changeStatusToSend(String draft_idx) {
+			return approvalDAO.changeStatusToSend(draft_idx);
+		}
+
+		public int changeStatusToDelete(String draft_idx) {
+			return approvalDAO.changeStatusToDelete(draft_idx);
+		}
+
+		public List<ApprovalDTO> getApprovalMyListData(int limit, int offset, String loginId) {
+			return approvalDAO.getApprovalMyListData(limit,offset,loginId);
+		}
+
 
 }

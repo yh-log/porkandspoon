@@ -24,10 +24,11 @@
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 <!-- 파일 업로더 -->
-<link rel="stylesheet"
+<!-- <link rel="stylesheet"
 	href="/resources/assets/extensions/filepond/filepond.css">
 <link rel="stylesheet"
 	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
+ -->
 
 <!-- summernote bootstrap-->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
@@ -37,6 +38,11 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+<!-- FilePond CSS -->
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+
+<!-- FilePond JavaScript -->
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -254,11 +260,17 @@
 						<div class="buttons">
 							<button class="btn btn-outline-primary" onclick="window.history.back()">돌아가기</button>
 							<button class="btn btn-outline-primary">결재 정보</button>
-							<button class="btn btn-primary" onclick="updateDraft()">수정</button>
+							<c:if test="${!reapproval}">
+								<button class="btn btn-primary" onclick="updateDraft()">수정</button>
+							</c:if>
+							<c:if test="${reapproval}">
+								<button class="btn btn-primary" onclick="sendApproval()">재기안</button>
+							</c:if>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
-							<form id="formDraft">
+							<form id="formDraft" enctype="multipart/form-data">  <!--check!!! 먼훗날 문제가 된다면 여기..?  -->
+								<input type="hidden" name="before_draft_idx" value="${DraftInfo.draft_idx}"/>
 								<input type="hidden" name="draft_idx" value="${DraftInfo.draft_idx}"/>
 								<input type="hidden" name="target_type" value="${DraftInfo.target_type}"/>
 								<input type="hidden" name="action_type" value="${DraftInfo.action_type}"/>
@@ -434,9 +446,12 @@
 								</div>
 								<br/>
 								
-								<h6>추가 첨부</h6>
-								<input type="file" class="with-validation-filepond" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file">
-													
+								<h6>추가 로고 파일 첨부</h6>
+								<input type="file" class="filepond"  data-max-file-size="10MB" name="logoFile" type="file"/>
+
+								<h6>추가 파일 첨부</h6>
+								<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+												
 								<input type="hidden" name="status"/>
 							</form>
 
@@ -457,7 +472,7 @@
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <!-- 파일업로더 -->
-<script
+<!-- <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
 <script
 	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
@@ -473,13 +488,31 @@
 	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
-
+ -->
 	
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src='/resources/js/approval.js'></script>
 <script>
+//첫 번째 FilePond에 설정 적용
+const logoFilePond = FilePond.create(document.querySelector('input.filepond'), {
+	allowMultiple: false,
+	maxFiles: 1,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (1개)',
+    instantUpload: false
+});
+
+// 두 번째 FilePond에 다른 설정 적용
+const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
+    allowMultiple: true,
+    maxFiles: 3,
+    allowImagePreview: false,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
+    instantUpload: false
+});
+
 
 // 기안일
 const today = new Date();   
@@ -567,11 +600,11 @@ function deleteFile(elem){
 
 
 //저장 성공 후 상세페이지 이동
-function fileSuccess(response){
+/* function fileSuccess(response){
 	//location.href = "/approval/detail/${DraftInfo.draft_idx}";
 	
 	
-} 
+}  */
 
 // 알림 팝업(유효성 검사)
 /* function btn1Act() {
@@ -583,65 +616,11 @@ function btn2Act() {
  */
 
 
-//최종 글 작성
-//글 전송할 url 파라미터 포함
-//전송 버튼에 textEaditorWrite(url) 함수 사용
-function textEaditorWrite(url){
-	var formData = new FormData($('form')[0]); // formData
-	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
-	formData.append('content', content);
-	formData.append('deleteFiles', JSON.stringify(deleteFiles));
-	
-	var tempDom = $('<div>').html(content);
-var imgsInEditor = []; // 최종 파일을 담을 배열
-
-tempDom.find('img').each(function () {
-       var src = $(this).attr('src');
-       if (src && src.includes('/photoTem/')) {  // 경로 검증
-           var filename = src.split('/').pop();  // 파일명 추출
-           imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
-       }
-});
-
-// new_filename과 일치하는 항목만 필터링
-var finalImgs = tempImg.filter(function (temp) {
-   return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
-});
-
-formData.append('imgsJson', JSON.stringify(finalImgs));
-
-fileAjax('POST', url, formData);
-console.log("fileAjax()실행");
-}
-
-
-//에디터 이미지 저장
-function fileAjax(type, url, formData){
-
-	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-  var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-  $.ajax({
-      type : type,
-      url : url,
-      data : formData,
-      contentType : false,
-      processData : false,
-      enctype : 'multipart/form-data',
-      beforeSend: function(xhr) {
-          xhr.setRequestHeader(csrfHeader, csrfToken);
-      },
-      success : function(response){
-          fileSuccess(response);
-      },error : function(e){
-          console.log(e);
-      }
-  });
-}
 
 
 
-//결재 요청
+
+//수정 요청
 function updateDraft(){
 	console.log('updateDraft() 실행');
 	// file required 속성 해제
@@ -683,6 +662,79 @@ function updateDraft(){
   } */
 	textEaditorWrite('/draftUpdate');	
   
+  
+	//최종 글 작성
+	//글 전송할 url 파라미터 포함
+	//전송 버튼에 textEaditorWrite(url) 함수 사용
+	function textEaditorWrite(url){
+		var formData = new FormData($('form')[0]); // formData
+		var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
+		formData.append('content', content);
+		formData.append('deleteFiles', JSON.stringify(deleteFiles));
+		
+		  // 로고 파일 추가
+	    const logoFile = logoFilePond.getFiles();
+	    if (logoFile.length > 0) {
+	    	formData.append('logoFile', logoFile[0].file);  // 첫 번째 파일을 formData에 추가
+	    
+	    	console.log("logoFile!!! : ", logoFile);
+	    }
+	    
+	    //첨부 파일 추가
+	    const attachedFiles = attachedFilesPond.getFiles();
+	    if (attachedFiles.length > 0) {
+	    	attachedFiles.forEach(function(file, index) {
+	    	    formData.append('files', file.file); 
+	    	});
+	    }
+		
+		var tempDom = $('<div>').html(content);
+		var imgsInEditor = []; // 최종 파일을 담을 배열
+	
+		tempDom.find('img').each(function () {
+	       var src = $(this).attr('src');
+	       if (src && src.includes('/photoTem/')) {  // 경로 검증
+	           var filename = src.split('/').pop();  // 파일명 추출
+	           imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
+	       }
+	});
+
+	// new_filename과 일치하는 항목만 필터링
+	var finalImgs = tempImg.filter(function (temp) {
+	   return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
+	});
+
+	formData.append('imgsJson', JSON.stringify(finalImgs));
+
+	fileAjax('POST', url, formData);
+	console.log("fileAjax()실행");
+	}
+
+
+	//에디터 이미지 저장
+	function fileAjax(type, url, formData){
+
+		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	  var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	  $.ajax({
+	      type : type,
+	      url : url,
+	      data : formData,
+	      contentType : false,
+	      processData : false,
+	      enctype : 'multipart/form-data',
+	      beforeSend: function(xhr) {
+	          xhr.setRequestHeader(csrfHeader, csrfToken);
+	      },
+	      success : function(response){
+	          fileSuccess(response, true);
+	      },error : function(e){
+	          console.log(e);
+	      }
+	  });
+	}
+	
 }
 
 

@@ -185,6 +185,16 @@
 	                  <!-- 여기에 내용 작성 -->
 	                  <div class="col-12 col-lg-12">
 		                  <table class="align-l">
+		                 	<tr>
+		                  		<th>카테고리</th>
+		                  		<td class="align-l" id="writer">
+		                  			<select class="form-select selectStyle" id="code">
+										<option value="dept">노트북</option>
+										<option value="name">빔 프로젝터</option>
+										<option value="position">차량</option>
+									</select>
+		                  		</td>
+		                  	</tr>
 		                  	<tr>
 		                  		<th>등록자</th>
 		                  		<td class="align-l" id="writer">${info}</td>
@@ -225,11 +235,11 @@
 		                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
 		                  			<div class="form-check">
 										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y">
-										<label class="form-check-label" for="flexRadioDefault1">활성화</label>
+										<label class="form-check-label" for="flexRadioDefault1">예약 활성화</label>
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
 										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N">
-										<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
+										<label class="form-check-label" for="flexRadioDefault2">예약 비활성화</label>
 									</div>
 		                  		</td>
 		                  	</tr>
@@ -291,12 +301,13 @@
 	}
 	
 	function httpSuccess(response) {
-		console.log('성공',response.no);
-		//location.href="/ad/resevation/list"
+		console.log('성공',response);
+		location.href="/ad/resevation/list"
 	}
 	
 	function back() {
 		console.log('돌아가기');
+		location.href="/ad/resevation/list";
 	}
 	
 	function secondBtn1Act() {
