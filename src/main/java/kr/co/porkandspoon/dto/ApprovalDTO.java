@@ -57,6 +57,12 @@ public class ApprovalDTO {
 	// 부서 로고
 	private String logo_file;
 	
+	// 상태명
+	private String status_name;
+	
+	// 글 개수 카운트
+	private int total_count;
+	
     public String getLine_idx() {
 		return line_idx;
 	}
@@ -315,6 +321,22 @@ public class ApprovalDTO {
 
 	public void setLogo_file(String logo_file) {
 		this.logo_file = logo_file;
+	}
+
+	public String getStatus_name() {
+		return status_name;
+	}
+
+	public void setStatus_name(String status_name) {
+		this.status_name = status_name;
+	}
+
+	public int getTotal_count() {
+		return total_count;
+	}
+
+	public void setTotal_count(int total_count) {
+		this.total_count = total_count;
 	}
 	
 	

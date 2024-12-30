@@ -102,18 +102,16 @@
 
 			<div class="page-content draftWrite">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
+					<h4 class="menu-title">나의문서함</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li class="active"><a href="#">기안문서함</a></li>
+						<li><a href="#">결재할 문서</a></li>
+						<li><a href="#">결재한 문서</a></li>
+						<li><a href="#">임시저장 문서</a></li>
+						<li><a href="#">나의 결재라인</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>
 				<section class="cont">
-
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<h5>나의 문서함</h5>
@@ -145,14 +143,11 @@
 							<table>
 								<colgroup>
 									<col>
-									<col>
 									<col width="40%">
 									<col>
 									<col>
 								</colgroup>
 								<thead>
-									<tr>
-										<th>게시글번호</th>
 										<th>문서번호</th>
 										<th class="align-l">제목</th>
 										<th>기안자</th>
@@ -163,7 +158,6 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td>20</td>
 										<td>B20241234</td>
 										<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은
 											왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
@@ -189,37 +183,71 @@
 
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
-
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
 <script src='/resources/js/common.js'></script>
 
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
+	var show = 1;
+	pageCall(show);
+	
+	function pageCall(page) {
+		
+		$.ajax({
+			type:'GET',
+			url:'/approval/list/my',
+			data:{
+				'page':page,
+				'cnt':15,
+				'status': 'all'
+			},
+			datatype:'JSON',
+			success:function(data){
+				console.log(data);
+				drawList(data.approvalList);
+				
+				var totalCount = data.approvalList[0].total_count;  // 총 게시글 수
+	            var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
+	            var totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+				console.log("totalCount",totalCount,"totalPage",totalPage);
+	            
+	            
+	            
+				/* 페이지네이션 */       
+				$('#pagination').twbsPagination({
+					startPage:1, 
+	           		totalPages: totalPage, 
+	           		visiblePages:10,
+	           		onPageClick:function(evt,page){
+	           			console.log('evt',evt); 
+	           			console.log('page',page); 
+	           			pageCall(page);
+	           		}
+				});
+			},
+			error:function(e){
+				console.log(e);
+			}
+		});
+	}
+
+	function drawList(list) {
+		var content ='';
+		 for (var view of list) {
+			content +='<tr>';
+            content += '<td>'+view.document_number+'</td>';
+            content += '<td>'+view.subject+'</td>';
+            content += '<td>'+view.create_date+'</td>';
+			content +='<td>'+view.name+'</td>';
+			content +='</tr>';
+			console.log("view.draft_idx",view.draft_idx);
+		  }
+	     // $('#list').html(content);
+	   }
+	
+	
+	
+	
+
 </script>
 
 </html>

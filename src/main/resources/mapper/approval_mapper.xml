@@ -140,10 +140,17 @@ content = VALUES(content); -->
 	</select>
 	
 	<insert id="saveApprovalLine">
-		INSERT INTO approval_line (draft_idx, username, order_num) 
+		INSERT INTO approval_line (draft_idx, username, order_num, status, approval_date) 
 		values
 	    <foreach collection="appr_user" item="appritem" index="index" separator=",">
-	        (#{draftIdx}, #{appritem}, #{index})
+	        <choose>
+	            <when test="index == 0">
+	                (#{draftIdx}, #{appritem}, #{index}, 'ap004', NOW())
+	            </when>
+	            <otherwise>
+	                (#{draftIdx}, #{appritem}, #{index}, 'ap001', null)
+	            </otherwise>
+	        </choose>
 	    </foreach>
 	</insert>
 
@@ -162,9 +169,9 @@ content = VALUES(content); -->
 	
 	
 	<select id="getMaxNumberForDate" resultType="Integer">
-	    SELECT MAX(SUBSTRING(document_number, 10, 6))
+	    SELECT MAX(SUBSTRING(document_number, 11, 6))
 	    FROM draft
-	    WHERE document_number LIKE CONCAT(#{date}, '%')
+	    WHERE document_number LIKE CONCAT(#{prefixDate}, '%')
 	    FOR UPDATE
 	</select>
 	
@@ -179,11 +186,19 @@ content = VALUES(content); -->
 			values (#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
 	</insert>
 	
+	<insert id="saveExistingFiles">
+		INSERT INTO file (code_name, ori_filename, new_filename, type, pk_idx)
+			SELECT code_name, ori_filename, new_filename, type, #{draftIdx}
+				FROM file
+				WHERE new_filename = #{filename};
+	</insert>
+	
 	
 	<select id="getDraftInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.draft_idx, d.document_number, d.create_date, d.username, d.target_type, d.action_type, d.subject, d.name, d.from_date, d.content, d.address, d.address_detail, d.cooper_dept_id, d.dept_id, d.status, u.name AS user_name, de.text AS dept_name
+		SELECT d.draft_idx, d.document_number, d.create_date, d.username, d.target_type, d.action_type, d.subject, d.name, d.from_date, d.content, d.address, d.address_detail, d.cooper_dept_id, d.dept_id, d.status, u.name AS user_name, de.text AS dept_name, c.content AS status_name
 			FROM draft d LEFT JOIN user u ON d.username = u.username
 			LEFT JOIN department de ON d.dept_id = de.id
+			LEFT JOIN code c ON d.status = c.name
 			WHERE draft_idx = #{draft_idx}
 	</select>
 	
@@ -231,14 +246,129 @@ content = VALUES(content); -->
 			AND new_filename = #{new_filename}
 	</delete>
 	
-	<insert id="returnDraft" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+	<update id="changeApprovalLineToReturn" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
 		UPDATE approval_line 
 			SET status = 'ap003',
 				comment = #{comment},
 				approval_date = #{approval_date} 
 			WHERE draft_idx = #{draft_idx}
 			AND username = #{username}
-			
-	</insert>
+	</update>
+
+	<update id="changeStatusToReturn" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+		UPDATE draft
+			SET status = 're'
+			WHERE draft_idx = #{draft_idx}
+	</update>
 	
+	
+	
+	<update id="ApprovalDraft" parameterType="kr.co.porkandspoon.dto.ApprovalDTO">
+		UPDATE approval_line 
+			SET status = 'ap004',
+				approval_date = #{approval_date} 
+			WHERE draft_idx = #{draft_idx}
+			AND username = #{username}
+	</update>
+	
+	<!-- 유저의 부서 조회 -->
+	<select id="getUserDept" parameterType="String" resultType="String">
+		SELECT parent FROM user WHERE username = #{loginId} 
+	</select>
+	
+	<!-- 기안문 열람권한 체크 (기안자)  -->		
+	<select id="isDraftSender" parameterType="String" resultType="String">
+	    SELECT 1
+		    FROM draft
+		    WHERE draft_idx = #{draft_idx}
+		    AND username = #{loginId}
+	</select>
+	<select id="approverStatus" parameterType="String" resultType="String">
+	    SELECT status
+		    FROM approval_line 
+		    WHERE draft_idx = #{draft_idx}
+		    AND username = #{loginId}
+	</select>
+	<select id="otherApproversStatus" parameterType="String" resultType="String">
+	    <![CDATA[
+	    SELECT status
+		    FROM approval_line 
+		    WHERE draft_idx = #{draft_idx}
+		    AND order_num < 
+		    (SELECT order_num 
+		    	FROM approval_line 
+		    	WHERE draft_idx = #{draft_idx} 
+		    	AND username = #{loginId})
+		  ]]>
+	</select>
+
+	<select id="isCooperDept" parameterType="String" resultType="String">
+	    SELECT 1
+		    FROM draft d
+		    JOIN department dept ON dept.id = d.cooper_dept_id
+		    WHERE d.draft_idx = #{draft_idx}
+		    AND dept.id = #{userDept}
+	</select>
+	<select id="isApproveDept" parameterType="String" resultType="String">
+	    SELECT 1
+		    FROM draft d
+		    JOIN department dept ON dept.id = d.dept_id
+		    WHERE d.draft_idx = #{draft_idx}
+		    AND dept.id = #{userDept}
+	</select>
+	<select id="getDraftStatus" parameterType="String" resultType="String">
+		SELECT status FROM draft WHERE draft_idx = #{draft_idx}
+	</select>
+	<update id="changeStatusToRead" parameterType="String">
+		UPDATE approval_line 
+			SET status = 'ap002' 
+			WHERE draft_idx = #{draft_idx}
+			AND username = #{loginId}
+	</update>
+	<update id="changeStatusToApproved" parameterType="String">
+		UPDATE draft 
+			SET status = 'co' 
+			WHERE draft_idx = #{draft_idx}
+	</update>
+	
+	<update id="approvalRecall" parameterType="String">
+		UPDATE draft SET status = 'ca' 
+			WHERE draft_idx = #{draft_idx}	
+	</update>
+
+	<update id="changeStatusToSend" parameterType="String">
+		UPDATE draft SET status = 'sd' 
+			WHERE draft_idx = #{draft_idx}	
+	</update>
+
+	<update id="changeStatusToDelete" parameterType="String">
+		UPDATE draft SET status = 'de' 
+			WHERE draft_idx = #{draft_idx}	
+	</update>
+
+	<!-- 기안리스트 -->
+	<select id="getApprovalMyListData" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT 
+			d.draft_idx 
+			,d.document_number
+			,d.subject 
+			,d.create_date
+			,u.name
+			,de.text 
+			,(SELECT approval_date 
+				FROM approval_line 
+				WHERE draft_idx = d.draft_idx 
+				ORDER BY approval_date DESC LIMIT 1)
+				AS approval_date
+			,d.status 
+			,COUNT(*) OVER() AS total_count
+			FROM draft d 
+			LEFT JOIN user u ON d.username = u.username 
+			LEFT JOIN department de ON d.dept_id = de.id
+			WHERE u.username = #{loginId}
+			AND status NOT IN('sv', 'de')
+			ORDER BY d.create_date DESC 
+			LIMIT #{limit} 
+			OFFSET #{offset}			
+	</select>
 </mapper>

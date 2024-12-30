@@ -219,6 +219,49 @@
         </form>
 	</div>
 	
+	<!-- 기안문 반려내역 확인 모달 -->
+	<div id="draftCkRefusalModal" class="modal-template">
+        <form id="returnCkFrom">
+		    <div class="modal-header">
+		        <span class="modal-close" id="closeModal">&times;</span>
+		    </div>
+		    <div class="modal-body">
+		        <h5 class="align-c">반려내역</h5>
+		        	<input type="hidden" name="draft_idx" value=""/>
+			        <div class="input-row">
+			        	<label class="item-tit">반려 일시: </label><p class="date"/></p>
+			        </div>
+			        <div class="input-row">
+			        	<label class="item-tit">반려 의견: </label><p class="comment"></p>
+					</div>
+		        
+		    </div>
+		    <div class="modal-footer">
+		        <button id="cancelModal" class="btn btn-primary">확인</button>
+		    </div>
+        </form>
+	</div>
+	
+	<!-- 기안문 결재 모달 -->
+	<div id="draftApprovalModal" class="modal-template">
+        <form id="approvalFrom">
+		    <div class="modal-header">
+		        <span class="modal-close" id="closeModal">&times;</span>
+		    </div>
+		    <div class="modal-body">
+		        <h5 class="align-c">결재하기</h5>
+		        	<input type="hidden" name="draft_idx" value=""/>
+			        <div class="input-row">
+			        	<label class="item-tit">결재문서명</label><p class="draft_title"/></p>
+			        </div>
+		    </div>
+		    <div class="modal-footer">
+		        <button id="ApprovalBtn" type="button" class="btn btn-primary">결재</button>
+		        <button id="cancelModal" class="btn btn-secondary">취소</button>
+		    </div>
+        </form>
+	</div>
+	
 	
 	
 	

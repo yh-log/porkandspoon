@@ -1,3 +1,5 @@
+<%@page import="kr.co.porkandspoon.dto.ApprovalDTO"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -118,7 +120,7 @@
 	    margin-top: 0.7rem;
 	}
 	.draftDetail table.appr_line .sign-area .status {
-		padding: 2px 10px;
+		padding: 0px 8px;
 		border: 2px solid;
 		font-weight: 500;
 		border-color: var(--bs-secondary);
@@ -127,6 +129,10 @@
 	.draftDetail table.appr_line .sign-area .status.return {
 		border-color: var(--bs-danger);
 		color: var(--bs-danger);
+	}
+	.draftDetail table.appr_line .sign-area .status.ing {
+		border-color: var(--bs-primary);
+		color: var(--bs-primary);
 	}
 
 	.draftDetail table.appr_line .sign{
@@ -137,6 +143,13 @@
 	}
 	.draftDetail table.appr_line .date > td {
 		height: 28px;
+		vertical-align: baseline;
+	}
+	.draftDetail table.appr_line .date .return {
+		margin-bottom: 0;
+		text-decoration: underline;
+		color: var(--bs-danger);
+		cursor: pointer;
 	}
 	.draftDetail .buttons {
 	    border-bottom: 1px solid #ddd;
@@ -326,7 +339,8 @@
 		margin: 6px 0;
 	}
 	#modalBox .item-tit {
-		width: 68px;
+		width: 78px;
+	    flex-shrink: 0;
 		margin-top: 4px;
 	}
 	#modalBox input {
@@ -347,6 +361,9 @@
  	} 
  	#modalBox .btn{ 
 	 	margin: 16px 5px 0;
+	}
+	#returnCkFrom .input-row p, #approvalFrom .input-row p{
+	    margin: 4px 0 0 4px;
 	}
 	
 </style>
@@ -383,11 +400,32 @@
 						</div>
 						<div class="buttons">
 							<button class="btn btn-outline-primary" onclick="window.history.back()">돌아가기</button>
-							<!-- 내가 기안자이면서, sv인 경우 -->
-							<button class="btn btn-primary" onclick="updateDraft()">수정</button>
-							<!-- 내가 결재자이면서 결재하지 않은 경우 -->
-							<button class="btn btn-primary" onclick="layerPopup('결재하시겠습니까?','확인','취소'">결재</button>
-							<button class="btn btn-outline-primary" onclick="loadModal('draft','Refusal')">반려</button>
+							<!-- 수정/상신: 기안자이면서, 임시저장인 경우 -->
+							<c:if test="${isDraftSender and DraftInfo.status == 'sv'}">
+								<button class="btn btn-primary" onclick="location.href='/approval/update/${DraftInfo.draft_idx}/false'">수정</button>
+								<button class="btn btn-primary" onclick="layerPopup('기안문을 상신하시겠습니까?', '확인', '취소', changeStatusToSend, btnCloseAct);">상신</button>
+							</c:if>
+							<!-- 회수: 기안자이면서, 결재가 진행중인(완료x) 경우 -->
+							<c:if test="${isDraftSender and DraftInfo.status == 'sd'}">
+								<button class="btn btn-outline-primary" onclick="layerPopup('기안문을 회수하시겠습니까?', '확인', '취소', recallAct, btnCloseAct);">문서 회수</button>
+							</c:if>
+							<!-- 재기안: 기안자이면서, 회수 상태이거나 반려 상태인 경우 -->
+							<c:if test="${isDraftSender and (DraftInfo.status == 'ca' || DraftInfo.status == 're')}">
+								<button class="btn btn-primary" onclick="location.href='/approval/update/${DraftInfo.draft_idx}/true'">재기안</button>
+							</c:if>
+							<!-- 반려내용: 반려 상태인 경우 -->
+							<c:if test="${DraftInfo.status == 're'}">
+								<button class="btn btn-outline-primary" onclick="loadModal('draft','CkRefusal',this)">반려내용</button>
+							</c:if>
+							<!-- 결재/반려: 내가 결재자이면서 결재하지 않은 경우 이면서 이전결재자들이 결재완료한경우 -->
+							<c:if test="${(approverStatus == 'ap001' or approverStatus == 'ap002') and approverTurn}">
+								<button class="btn btn-primary"  onclick="loadModal('draft','Approval')">결재</button>
+								<button class="btn btn-outline-primary" onclick="loadModal('draft','Refusal')">반려</button>
+							</c:if>
+							<!-- 삭제: 기안자이면서 임시저장 혹은 회수상태인 경우-->
+							<c:if test="${isDraftSender  and (DraftInfo.status == 'sv' || DraftInfo.status == 'ca')}">
+								<button class="btn btn-outline-secondary" onclick="layerPopup('기안문을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btnCloseAct);">삭제</button>
+							</c:if>
 						</div>
 						<div class="cont-body">  
 							<h4 class="doc-subject">업무 기안 (<span class="change-tit">브랜드 등록</span>)</h4>
@@ -397,6 +435,12 @@
 								<input type="hidden" name="action_type" value="${DraftInfo.action_type}"/>
 								<div class="top-area">
 									<table class="user_info">
+										<tr>
+											<th>문서상태</th>
+											<td>
+												<input type="text" name="draft_status" value="${DraftInfo.status_name}" readonly/>
+											</td>
+										</tr>
 										<tr>
 											<th>기안자</th>
 											<td>
@@ -445,47 +489,69 @@
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[0].username}"/>
 												<div class="sign-area">
-													<c:if test="${ApprLine[0].status == 'ap004'}">
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[0].sign}" alt="서명"/>
 													</c:if>
-													<c:if test="${ApprLine[0].status == 'ap003'}"><span class="status return">반려</span></c:if>
-													<c:if test="${ApprLine[0].status == 'ap002'}"><span class="status return">결재중</span></c:if>
-													<c:if test="${ApprLine[0].status == 'ap001'}"><span class="status return">미확인</span></c:if>																	
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>																	
 												</div>
 												<p>${ApprLine[0].user_name}</p>
 											</td>
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[1].username}"/>
 												<div class="sign-area">
-													
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap004'}">
+														<img class="sign" src="/photo/${ApprLine[1].sign}" alt="서명"/>
+													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>		
 												</div>
-												<p></p>
+												<p>${ApprLine[1].user_name}</p>
 											</td>
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[2].username}"/>
 												<div class="sign-area">
-	 												<c:if test="${ApprLine[2].approval_date != null}">
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[2].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>		
 												</div>
 												<p>${ApprLine[2].user_name}</p>
 											</td>
 											<td>
 												<div class="sign-area">
-													<c:if test="${ApprLine[3].approval_date != null}">
+													<c:if test="${ApprLine[3].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[3].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>		
 												</div>
-												<input type="hidden" name="appr_user" value="${ApprLine[3].username}"/>
 												<p>${ApprLine[3].user_name}</p>
 											</td>
 										</tr>
 										
 										<tr class="date">
-											<td>${ApprLine[0].approval_date}</td>
-											<td>${ApprLine[1].approval_date}</td>
-											<td>${ApprLine[2].approval_date}</td>
-											<td>${ApprLine[3].approval_date}</td>
+											<td>
+												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[0].approval_date} </c:if>
+												<c:if test="${ApprLine[0].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal')">반려</p></c:if>			
+											</td>
+											<td>
+												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[1].approval_date} </c:if>
+												<c:if test="${ApprLine[1].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal',this)">반려</p></c:if>			
+											</td>
+											<td>
+												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[2].approval_date} </c:if>
+												<c:if test="${ApprLine[2].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal')">반려</p></c:if>			
+											</td>
+											<td>
+												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[3].approval_date} </c:if>
+												<c:if test="${ApprLine[3].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal')">반려</p></c:if>			
+											</td>
 										</tr>
 										
 									</table>
@@ -570,7 +636,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 모달 -->
 	<div id="modalBox" class="modal" style="display: none;">
         <div class="modal-content"></div>
@@ -610,22 +676,44 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
+
+
 //.appr_line .status-area
 console.log('dd','${ApprLine}');
-var apprLineList = '${ApprLine}';
-/* apprLineList.forEach(function(line,index){
-	console.log(line);
+/* var apprLineList = JSON.parse('${ApprLine}');
+apprLineList.forEach(function(line,index){
+	console.log('${line}');
 }); */
+
+	console.log('${approverStatus}');
+	console.log('${approverTurn}');
+
+if(('${approverStatus}' == 'ap001' || '${approverStatus}' == 'ap002') && '${approverTurn}'){
+	console.log('만조오오ㅗㅇ!!!!!!!!!!!!!11');
+}
+
 
 /* <c:if test="${ApprLine[0].status == 'ap004'}">
 <img class="sign" src="/photo/${ApprLine[0].sign}" alt="서명"/>
 </c:if>
 <c:if test="${ApprLine[0].status == 'ap003'}"><span class="status return">반려</span></c:if>
 <c:if test="${ApprLine[0].status == 'ap002'}"><span class="status return">결재중</span></c:if>
-<c:if test="${ApprLine[0].status == 'ap001'}"><span class="status return">미확인</span></c:if>
+<c:if test="${ApprLine[0].status == 'ap001'}"><span class="status return">미확인</span></c:if> */
 
 
- */
+//결재라인 상태변경(결재중으로)
+if('${approverStatus}'== 'ap001'){
+	console.log("status : ","${approverStatus}");
+	console.log("draft_idx11 : ","${DraftInfo.draft_idx}");
+	/* var params = {
+			'draft_idx' : '${DraftInfo.draft_idx}'
+		};  */
+	
+	httpAjax('PUT', '/approval/changeStatusToRead/${DraftInfo.draft_idx}');
+	function httpSuccess(response){
+		location.href= '/approval/detail/${DraftInfo.draft_idx}';
+	}
+}
 
 
 
@@ -689,20 +777,45 @@ function setForm(type1, type2, element){
 }
 
 
-
-
-
 // 반려 모달데이터
-function setModalData(){
-	// 현재날짜
+function setModalData(type, data){
+	console.log("data:::",data);
+	console.log("data:index::",$(data).parent().index());
+    
+	
+	 // 현재날짜
 	const today = new Date();   
 	const year = today.getFullYear(); 
 	const month = today.getMonth() + 1; 
 	const date = today.getDate();  
-	$('input[name="today"]').val(year + '-' + month + '-' + date);
+	// 반려사유 작성 모달
+	$('#returnFrom input[name="today"]').val(year + '-' + month + '-' + date);
+
+	// 반려사유 작성, 반려내역, 결재 모달 공통
 	$('input[name="draft_idx"]').val('${DraftInfo.draft_idx}');
-	//$("#draftRefusalModal form").attr("action", "/appoval/returnDraft/${DraftInfo.draft_idx}");
-	console.log();
+	
+	// 반려내역 모달
+	if(document.getElementById('returnCkFrom')){
+		var lineIndex = $(data).parent().index();
+
+	    var ApprLine = [];
+	    <c:forEach var="item" items="${ApprLine}" varStatus="status">
+	        ApprLine.push({
+	            "comment": "${item.comment}",
+	            "approval_date": "${item.approval_date}"
+	        });
+	    </c:forEach>
+	    console.log('Comment at lineIndex ' + lineIndex + ': ', ApprLine[lineIndex].comment);
+		$('p.comment').text(ApprLine[lineIndex].comment);
+		$('p.date').text(ApprLine[lineIndex].approval_date);
+	}
+
+	// 결재 모달
+	if(document.getElementById('approvalFrom')){
+		$('p.draft_title').text('${DraftInfo.subject}');
+	}
+
+	//$("#draftCkRefusalModal form").attr("action", "/appoval/returnDraft/${DraftInfo.draft_idx}");
 }
 
 
@@ -711,16 +824,20 @@ document.addEventListener('click', function(event){
     if(event.target.id === 'returnBtn'){
     	returnDraft();
     }
+    if(event.target.id === 'ApprovalBtn'){
+    	ApprovalDraft();
+    }
     
 });
 
+var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+// 기안문 반려
 function returnDraft() {
 
-	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
 	$.ajax({
-	    type: 'POST',
+	    type: 'PUT',
 	    url: '/approval/returnDraft',
 	    data: new FormData($('#returnFrom')[0]), 
 	    dataType: 'json', 
@@ -740,22 +857,136 @@ function returnDraft() {
 	    }
 	});
 	
-	// 반려 확인 팝업
-	function btn1Act() {
-		location.reload();
-		removeAlert(); 
-	}
-
-	
-	function httpSuccess(response){
-		console.log('전송성공');
-	}
-	
-	
-	
 	
 	//document.getElementById('modalBox').style.display = "none";
 } 
+
+// 기안문 승인
+function ApprovalDraft(){
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	$.ajax({
+	    type: 'POST',
+	    url: '/approval/ApprovalDraft',
+	    data: new FormData($('#approvalFrom')[0]), 
+	    dataType: 'json', 
+	    contentType: false,  
+	    processData: false,
+	    beforeSend: function(xhr) {
+	        xhr.setRequestHeader(csrfHeader, csrfToken);
+	    },
+	    success: function(response) {
+	        if(response.success){
+        	 	document.getElementById('modalBox').style.display = "none";
+        	 	layerPopup('결재 처리되었습니다.', '확인', false, btn1Act, btn1Act);
+	        }else{
+        	 	layerPopup('결재 처리에 실패하였습니다.', '재시도', '취소', removeAlert, btn1Act);
+	        }
+	    },
+	    error: function(e) {
+	        console.log(e);
+	    }
+	});
+	
+}
+
+
+//기안문 회수버튼
+function recallAct(){
+	$.ajax({
+        type : 'PUT',
+        url : '/approval/recall/${DraftInfo.draft_idx}',
+        data : {},
+        dataType : 'JSON',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+        	 if(response.success){
+     		 	removeAlert(); 
+      			layerPopup('회수 처리되었습니다.', '확인', false, btn1Act, btn1Act);
+     		 }else{
+     		 	removeAlert(); 
+      			layerPopup('회수 처리에 실패하였습니다.', '재시도', '취소', recallAct, btn1Act);
+     		 }
+        },error: function(e){
+            console.log(e);
+        }
+    });
+	//httpAjax('PUT', '/approval/recall/${DraftInfo.draft_idx}');
+	// console.log("httpAjax!");
+	 /* function httpSuccess(response){
+		 if(response.success){
+		 	removeAlert(); 
+ 			layerPopup('회수 처리되었습니다.', '확인', false, btn1Act, btn1Act);
+		 }else{
+		 	removeAlert(); 
+ 			layerPopup('회수 처리에 실패하였습니다.', '재시도', '취소', recallAct, btn1Act);
+		 }
+	 } */
+}
+
+// 임시저장 -> 상신 
+function changeStatusToSend(){
+	$.ajax({
+        type : 'PUT',
+        url : '/approval/changeStatusToSend/${DraftInfo.draft_idx}',
+        data : {},
+        dataType : 'JSON',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+        	 if(response.success){
+     		 	removeAlert(); 
+      			layerPopup('상신 완료되었습니다.', '확인', false, btn1Act, btn1Act);
+     		 }else{
+     		 	removeAlert(); 
+      			layerPopup('상신 처리에 실패하였습니다.', '재시도', '취소', changeStatusToSend, btn1Act);
+     		 }
+        },error: function(e){
+            console.log(e);
+        }
+    });
+}
+
+// 기안문 삭제
+function deleteAct() {
+	$.ajax({
+        type : 'PUT',
+        url : '/approval/changeStatusToDelete/${DraftInfo.draft_idx}',
+        data : {},
+        dataType : 'JSON',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+        	 if(response.success){
+     		 	removeAlert(); 
+      			layerPopup('삭제 완료되었습니다.', '확인', false, btn1Act, btn1Act);
+     		 }else{
+     		 	removeAlert(); 
+      			layerPopup('삭제 실패하였습니다.', '재시도', '취소', deleteAct, btn1Act);
+     		 }
+        },error: function(e){
+            console.log(e);
+        }
+    });
+}
+
+
+// 반려, 결재 팝업
+function btn1Act() {
+	location.reload();
+	removeAlert(); 
+}
+
+// 팝업 취소 버튼 공통
+function btnCloseAct(){
+	removeAlert(); 
+}
+
 
 
 </script>
