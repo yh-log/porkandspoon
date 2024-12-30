@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,48 +35,55 @@
 	type="text/javascript"></script>
 
 <style>
-.draftWrite table tr:hover {
+.draftList table tr:hover {
 	background: #f7f7f7;
 }
-.draftWrite input {
+.draftList input {
 	width: 100%;
 	height: 100%;
 	border: none;
 }
 
-.draftWrite .search-area {
+.draftList .search-area {
 	display: flex;
 	gap: 4px;
 }
 
-.draftWrite input[name="search-data"] {
+.draftList input[name="search-data"] {
 	width: 300px;
 	height: 38px;
 	margin: 14px 0;
 	border: 1px solid #DFE3E7;
 }
 
-.draftWrite .search-area select {
+.draftList .search-area select {
 	margin: 14px 0;
 }
 
 
-.draftWrite .buttons {
+.draftList .buttons {
 	display: flex;
 	justify-content: space-between;
 	padding: 4px 40px;
 }
 
-.draftWrite .buttons .btn {
+.draftList .buttons .btn {
 	margin: 14px 0;
 }
-
-.draftWrite h4.doc-subject {
+.draftList .buttons .btn.selected {
+    background: var(--bs-primary);
+    border-color: var(--bs-primary);
+	color: #fff;
+}
+    
+    
+    
+.draftList h4.doc-subject {
 	margin: 20px 0 50px;
 	text-align: center;
 }
 
-.draftWrite .btm-area {
+.draftList .btm-area {
 	display: flex;
 	flex-wrap: wrap;
 	border-left: 1px solid #ddd;
@@ -83,6 +91,18 @@
 	margin-top: 40px;
 }
 
+.draftList table {
+	table-layout: unset;
+}
+.draftList table tr {
+	cursor: pointer;
+}
+.draftList table td.status.sd{
+	color: var(--bs-success);
+}
+.draftList table td.status.re{
+	color: var(--bs-success);
+}
 
 </style>
 
@@ -100,7 +120,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftWrite">
+			<div class="page-content draftList">
 				<section id="menu">
 					<h4 class="menu-title">나의문서함</h4>
 					<ul>
@@ -114,22 +134,22 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>나의 문서함</h5>
+							<h5>기안문서함</h5>
 						</div>
-						<div class="buttons">
+						<div class="buttons filter-btns">
 							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" class="btn btn-primary">전체</button>
-								<button type="button" class="btn">진행</button>
-								<button type="button" class="btn">완료</button>
-								<button type="button" class="btn">반려</button>
-								<button type="button" class="btn">회수</button>
+								<button type="button" data-filter="all" class="btn selected">전체</button>
+								<button type="button" data-filter="sd" class="btn">진행</button>
+								<button type="button" data-filter="co" class="btn">완료</button>
+								<button type="button" data-filter="re" class="btn">반려</button>
+								<button type="button" data-filter="ca" class="btn">회수</button>
 							</div>
 							<div class="search-area">
-								<select name="seach-title" class="form-select" id="basicSelect">
+								<select name="search" class="form-select">
 									<option value="subject">제목</option>
 								</select> <input type="text" name="search-data" class="form-control"
 									placeholder="검색내용을 입력하세요" width="80%" />
-								<button class="btn btn-primary">
+								<button id="searchBtn" class="btn btn-primary">
 									<i class="bi bi-search"></i>
 								</button>
 							</div>
@@ -139,34 +159,48 @@
 							<button href="#" class="btn btn-outline-primary">취소</button> -->
 						</div>
 						<div class="cont-body">
-
-							<table>
+							<table class="list">
 								<colgroup>
 									<col>
 									<col width="40%">
 									<col>
 									<col>
+									<col>
+									<col>
 								</colgroup>
 								<thead>
-										<th>문서번호</th>
-										<th class="align-l">제목</th>
-										<th>기안자</th>
-										<th>부서</th>
-										<th>결재일자</th>
-										<th>결재상태</th>
+									<tr>
+										<!-- 임시저장 -->
+										<c:if test="${listType == 'sv'}">
+											<th>저장일시</th>
+											<th class="align-l">제목</th>
+											<th>결재양식</th>
+											<th>삭제</th>
+										</c:if>		
+										<!-- 임시저장 외 나머지 기본항목 -->
+										<c:if test="${listType != 'sv'}">
+											<th>문서번호</th>
+											<th class="align-l">제목</th>
+											<th>기안자</th>
+											<th>부서</th>
+										</c:if>
+										<!-- 결재한 문서 -->
+										<c:if test="${listType == 'did'}">
+											<th>결재일자</th>
+										</c:if>
+										<!-- 기안문서 -->
+										<c:if test="${listType == 'my'}">
+											<th>결재일자</th>
+											<th>결재상태</th>
+										</c:if>
+										<!-- 결재할 문서 -->
+										<c:if test="${listType == 'tobe'}">
+											<th>기안일자</th>
+										</c:if>
+									
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>B20241234</td>
-										<td class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은
-											왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-											제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-										<td>이진형</td>
-										<td>브랜드</td>
-										<td>-</td>
-										<td>진행</td>
-									</tr>
 								</tbody>
 							</table>
 
@@ -186,24 +220,39 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
-
+	var listType = '${listType}';
+	console.log("listType : ",listType);
 	var show = 1;
-	pageCall(show);
+	var paginationInitialized = false;
+	var option = '';
+	var search = '';
+	var filter = '';
 	
-	function pageCall(page) {
+	pageCall(show, listType);
+	
+	function pageCall(page, listType) {
+		option = document.querySelector('select[name="search"]').value;
+		search = document.querySelector('input[name="search-data"]').value;
+		filter = document.querySelector('.filter-btns .btn.selected').getAttribute('data-filter');
+		console.log("option",option);
+		console.log("search",search);
+		console.log("filter!!!! ",filter );
 		
 		$.ajax({
 			type:'GET',
-			url:'/approval/list/my',
+			url:'/approval/list/'+listType,
 			data:{
 				'page':page,
 				'cnt':15,
-				'status': 'all'
+				'search' : search,
+				'option' : option,
+				'filter': filter,
+				'listType': listType
 			},
 			datatype:'JSON',
 			success:function(data){
 				console.log(data);
-				drawList(data.approvalList);
+				drawList(data.approvalList, listType);
 				
 				var totalCount = data.approvalList[0].total_count;  // 총 게시글 수
 	            var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
@@ -211,18 +260,21 @@
 				console.log("totalCount",totalCount,"totalPage",totalPage);
 	            
 	            
-	            
-				/* 페이지네이션 */       
-				$('#pagination').twbsPagination({
-					startPage:1, 
-	           		totalPages: totalPage, 
-	           		visiblePages:10,
-	           		onPageClick:function(evt,page){
-	           			console.log('evt',evt); 
-	           			console.log('page',page); 
-	           			pageCall(page);
-	           		}
-				});
+				 /* 페이지네이션 */       
+				 if(!paginationInitialized){
+						$('#pagination').twbsPagination('destroy');
+						$('#pagination').twbsPagination({
+							startPage:1, 
+			           		totalPages: totalPage, 
+			           		visiblePages:10,
+			           		onPageClick:function(evt,page){
+			           			console.log('evt',evt); 
+			           			console.log('page',page); 
+			           			pageCall(page, listType);
+			           		}
+						});
+						paginationInitialized = true;
+		            }
 			},
 			error:function(e){
 				console.log(e);
@@ -230,23 +282,63 @@
 		});
 	}
 
-	function drawList(list) {
+	function drawList(list, listType) {
 		var content ='';
-		 for (var view of list) {
-			content +='<tr>';
-            content += '<td>'+view.document_number+'</td>';
-            content += '<td>'+view.subject+'</td>';
-            content += '<td>'+view.create_date+'</td>';
-			content +='<td>'+view.name+'</td>';
+		var approvalDate = '';
+		var type1='';
+		var type2='';
+		for (var view of list) {
+			approvalDate = view.approval_date.split(' ')[0];
+			content +='<tr onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">';
+			if(listType == 'sv'){
+				type1 = view.target_type == 'df001' ? '브랜드' : '직영점';
+				type2 = view.action_type == 'df011' ? '오픈' : '폐점';
+				
+				content += '<td>'+view.create_date+'</td>';
+	            content += '<td class="align-l elipsis">'+view.subject+'</td>';
+	            content += '<td>'+type1+' '+type2+'</td>';
+	            content += '<td onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">삭제</td>';
+			}
+			if(listType != 'sv'){
+	            content += '<td>'+view.document_number+'</td>';
+	            content += '<td class="align-l elipsis">'+view.subject+'</td>';
+				content +='<td>'+view.name+'</td>';
+				content +='<td>'+view.dept_text+'</td>';
+			}
+			if(listType == 'did'){
+				content +='<td>'+approvalDate+'</td>';
+			}
+			if(listType == 'my'){
+				content +='<td>'+approvalDate+'</td>';
+				content +='<td class="status '+view.status+'">'+view.status_name+'</td>';
+			}
+			if(listType == 'tobe'){
+				 content += '<td>'+view.create_date+'</td>';
+			}
 			content +='</tr>';
 			console.log("view.draft_idx",view.draft_idx);
 		  }
-	     // $('#list').html(content);
+	     $('.list tbody').html(content);
 	   }
 	
 	
+		// 검색이벤트
+		$('#searchBtn').on('click', function() {
+		    show = 1;
+		    paginationInitialized = false;
+		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
+		});
 	
+		// 필터링
+		$('.filter-btns .btn').on('click', function() {
+			$(this).siblings().removeClass('selected');
+			$(this).addClass('selected');
+			show = 1;
+		    paginationInitialized = false;
+		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
+		});
 	
+	// 필터링 하던중  pageCall(show, filter);에 filter 전체 추가!!! 
 
 </script>
 

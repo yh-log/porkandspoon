@@ -112,7 +112,8 @@ public class ApprovalService {
         saveFile(files, draftIdx, false);
         
         // 재상신의 경우
-        if(new_filename.length > 0) {
+        logger.info("new_filename: "+new_filename);
+        if(new_filename != null) {
         	for (String filename : new_filename) {
         		approvalDAO.saveExistingFiles(filename, draftIdx);
 			}
@@ -202,7 +203,7 @@ public class ApprovalService {
 		// 문서번호 생성
 		@Transactional
 		public String generateDocumentNumber(String target_type) {
-		    String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+		    String date = new SimpleDateFormat("yyyy").format(new Date());
 		    String prefix = "";
 		    if(target_type.equals("df001")) {
 		    	prefix = "B";
@@ -213,7 +214,7 @@ public class ApprovalService {
 		    
 		    int newNumber = (maxNumber == null) ? 1 : maxNumber + 1;
 		    
-		    return prefix + date + "-" + String.format("%06d", newNumber);
+		    return prefix + date + String.format("%04d", newNumber);
 		}
 	   // String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
 	   //return date + "-" + String.format("%06d", documentId);  // "YYYYMMDD-000001" 형식
@@ -373,8 +374,16 @@ public class ApprovalService {
 			return approvalDAO.changeStatusToDelete(draft_idx);
 		}
 
-		public List<ApprovalDTO> getApprovalMyListData(int limit, int offset, String loginId) {
-			return approvalDAO.getApprovalMyListData(limit,offset,loginId);
+
+		public Object getApprovalMyListData(Map<String, Object> params) {
+			int page_ = Integer.parseInt((String)params.get("page"));
+	        int cnt_ = Integer.parseInt((String)params.get("cnt"));
+	        int limit = cnt_;
+	        int offset = (page_ - 1) * cnt_;
+	        params.put("limit", limit);
+	        params.put("offset", offset);
+	       
+	        return approvalDAO.getApprovalMyListData(params);
 		}
 
 

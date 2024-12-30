@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -87,6 +88,6 @@ public interface ApprovalDAO {
 
 	int changeStatusToDelete(String draft_idx);
 
-	List<ApprovalDTO> getApprovalMyListData(int limit, int offset, String loginId);
+	List<ApprovalDTO> getApprovalMyListData(Map<String, Object> params);
 
 }

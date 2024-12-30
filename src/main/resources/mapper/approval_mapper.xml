@@ -169,7 +169,7 @@ content = VALUES(content); -->
 	
 	
 	<select id="getMaxNumberForDate" resultType="Integer">
-	    SELECT MAX(SUBSTRING(document_number, 11, 6))
+	    SELECT MAX(SUBSTRING(document_number, 6, 4))
 	    FROM draft
 	    WHERE document_number LIKE CONCAT(#{prefixDate}, '%')
 	    FOR UPDATE
@@ -347,28 +347,66 @@ content = VALUES(content); -->
 	</update>
 
 	<!-- 기안리스트 -->
-	<select id="getApprovalMyListData" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+	<select id="getApprovalMyListData" resultType="kr.co.porkandspoon.dto.ApprovalDTO" parameterType="map">
 		SELECT 
 			d.draft_idx 
 			,d.document_number
 			,d.subject 
 			,d.create_date
+			,d.target_type
+			,d.action_type
+			,d.status
 			,u.name
-			,de.text 
 			,(SELECT approval_date 
 				FROM approval_line 
 				WHERE draft_idx = d.draft_idx 
-				ORDER BY approval_date DESC LIMIT 1)
-				AS approval_date
-			,d.status 
+				ORDER BY approval_date DESC 
+				LIMIT 1
+			) AS approval_date
+			,de.text AS dept_text
+			,c.content AS status_name 
 			,COUNT(*) OVER() AS total_count
 			FROM draft d 
 			LEFT JOIN user u ON d.username = u.username 
 			LEFT JOIN department de ON d.dept_id = de.id
-			WHERE u.username = #{loginId}
-			AND status NOT IN('sv', 'de')
+			LEFT JOIN code c ON d.status = c.name
+			<choose>
+				<when test="listType == 'did'">
+					LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+					WHERE al.username = #{loginId}
+					AND al.status = 'ap004'
+				</when>
+				<when test="listType == 'my'">
+					WHERE d.username = #{loginId}
+					<choose>
+						<when test="filter == 'all'">
+							AND status NOT IN('sv', 'de')
+						</when>
+						<otherwise>
+							AND status = #{filter}
+						</otherwise>
+					</choose>
+				</when>
+				<when test="listType == 'tobe'">
+					LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx 
+					WHERE al.username = #{loginId}
+					AND al.status IN ('ap001','ap002')
+					AND 
+						(SELECT status FROM approval_line al2 
+							WHERE draft_idx = d.draft_idx 
+							AND order_num = al.order_num-1) = 'ap004'
+				</when>
+				<when test="listType == 'sv'">
+					WHERE d.username = #{loginId}
+					AND d.status = 'sv'
+				</when>
+			</choose>
+			<if test="search != null and !search.equals('') and option == 'subject'"> 
+				AND d.subject LIKE CONCAT('%',#{search},'%')		
+			</if>
 			ORDER BY d.create_date DESC 
 			LIMIT #{limit} 
 			OFFSET #{offset}			
 	</select>
+	
 </mapper>

@@ -21,7 +21,7 @@
 	
 
 	
-	<select id="count" resultType="int" parameterType="">
+	<select id="count" resultType="int">
       SELECT CEIL(count(meal_idx)/#{param1}) AS pages FROM meal_ticket
        <where>
        	 <if test="username != null and !username.equals('')">
@@ -37,7 +37,7 @@
 	</where>
    </select>
 	
-	<select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterMap="String">
+	<select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="String">
 	 select * from meal_ticket 
       <where>
       <if test="username != null and !username.equals('')">

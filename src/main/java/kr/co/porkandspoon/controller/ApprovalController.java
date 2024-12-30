@@ -80,7 +80,7 @@ public class ApprovalController {
 //	}
 	
 	// 기안문 저장
-	@PostMapping(value="/draftWrite/{status}")
+	@PostMapping(value="/draftWrite/{status}") //check!! 이거 status 사용안하고 있는듯??
 	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status, String[] new_filename) {
 //		해당부서에 속한사람만 직영점등록이 가능하도록하는 로직
 //		if(approvalDTO.getTarget_type().equals("df002")) {
@@ -417,27 +417,24 @@ public class ApprovalController {
 		return result;
 	}
 	
-	@GetMapping(value="/approval/mylistView")
-	public ModelAndView approvalMyListView() {
+	@GetMapping(value="/approval/listView/{listType}")
+	public ModelAndView approvalMyListView(@PathVariable String listType) {
 		ModelAndView mav = new ModelAndView("/approval/approvalList");  
+		mav.addObject("listType", listType);
 		return mav;
 	}
 
-	@GetMapping(value="/approval/list/my")
-	public Map<String,Object> getApprovalMyListData(String status, String page, String cnt, @AuthenticationPrincipal UserDetails userDetails) {
+	@GetMapping(value="/approval/list/{listType}")
+	public Map<String,Object> getApprovalMyListData(@PathVariable String listType, @RequestParam Map<String, Object> params, @AuthenticationPrincipal UserDetails userDetails) {
 		//ModelAndView mav = new ModelAndView("/approval/approvalList");  
-		int page_ = Integer.parseInt(page);
-        int cnt_ = Integer.parseInt(cnt);
-        int limit = cnt_;
-        int offset = (page_ - 1) * cnt_;
-        String loginId = userDetails.getUsername();
-        
-        Map<String,Object> result = new HashMap<String, Object>();
-        
-		if(status.equals("all")) {
-			result.put("approvalList", approvalService.getApprovalMyListData(limit,offset,loginId));
+		logger.info("filter!!@@@@@@ : "+params.get("filter") );
+		logger.info("filter!!@@@@@@ : "+params.get("listType") );
+		String loginId = userDetails.getUsername();
+		Map<String,Object> result = new HashMap<String, Object>();
+        params.put("loginId", loginId);
+        params.put("listType", listType);
+		result.put("approvalList", approvalService.getApprovalMyListData(params));
 			
-		}
 		return result;
 	}
 
