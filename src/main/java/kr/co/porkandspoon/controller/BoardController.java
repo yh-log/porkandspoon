@@ -86,6 +86,19 @@ public class BoardController {
 		return mav;
 	}
 	
+	// 라이브러리 수정페이지 이동
+	@GetMapping(value="/lbboardupdate/View/{board_idx}")
+	public ModelAndView lbboardUpdate(@PathVariable String board_idx) {
+		BoardDTO boarddto = new BoardDTO();
+		ModelAndView mav = new ModelAndView();
+		List<FileDTO> file = boardService.getlbBoardFile(board_idx);
+		boarddto = boardService.lbboardDetail(board_idx);
+		mav.addObject("fileInfo", file);
+		mav.addObject("boardInfo", boarddto);
+		mav.setViewName("/board/lbboardUpdate");
+		return mav;
+	}
+	
 	// 공자사항 상세보기
 	@GetMapping(value="/boarddetail/View/{board_idx}")
 	public ModelAndView boardDetail(@PathVariable String board_idx) {
@@ -119,6 +132,15 @@ public class BoardController {
 		return mav;
 	}
 	
+	// 글쓰기에 이름 가져오기
+	@GetMapping(value="/getUsername")
+	public BoardDTO getUsername(@RequestParam Map<String, Object> params) {
+		BoardDTO dto = new BoardDTO();
+		dto = boardService.getUsername(params);
+		dto.setStatus("username");
+		return dto;
+	}
+	
 	// 공지사항 수정하기
 	@PostMapping(value="/board/update")
 	public BoardDTO setBoardUpdate(@RequestParam("filepond") MultipartFile[] files,
@@ -141,6 +163,28 @@ public class BoardController {
 		return dto;
 	}
 	
+	// 라이브러리 수정하기
+	@PostMapping(value="/lbboard/update")
+	public BoardDTO setlbBoardUpdate(@RequestParam("filepond") MultipartFile[] files,
+			@ModelAttribute BoardDTO dto,
+			@RequestParam("imgsJson") String content) {
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		try {
+			imgs = obj.readValue(content, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			dto.setImgs(imgs);
+			dto = boardService.setlbBoardupdate(files, dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
 	
 	// 공지사항 설정
     @PostMapping("/set/notice")
@@ -150,20 +194,21 @@ public class BoardController {
     	Map<String, Object> response = new HashMap<>();
         LocalDateTime startAt = LocalDateTime.parse(notice1 + "T00:00:00");
         LocalDateTime endAt = LocalDateTime.parse(notice2 + "T00:00:00");
-
+        response.put("success", true);
+        response.put("status", "notice");
         LocalDateTime now = LocalDateTime.now();
-        
+        String currentDateTime = now.toString(); // 현재 날짜와 시간
         // 시작일 작업 등록
         if (!startAt.isAfter(now)) {
             logger.info("공지 즉시 설정 " + board_idx);
-            boardService.setNotice(board_idx, "Y");
+            boardService.setNotice(board_idx, "Y", currentDateTime);
         } else {
             scheduleTask(
                 "start-" + board_idx,
                 startAt,
                 () -> {
                     logger.info("공지 시작일 " + board_idx);
-                    boardService.setNotice(board_idx, "Y");
+                    boardService.setNotice(board_idx, "Y", startAt.toString());
                 }
             );
         }
@@ -174,10 +219,10 @@ public class BoardController {
             endAt,
             () -> {
             	logger.info("공지 종료일 " + board_idx);
-                boardService.setNotice(board_idx, "N");
+                boardService.setNotice(board_idx, "N", startAt.toString());
             }
         );
-        return null;
+        return response;
     }
 	
     // 스케줄러 확인 로직
@@ -201,22 +246,35 @@ public class BoardController {
         }
     }
     
-	// 게시글 삭제
+	// 공지사항 게시글 삭제
 	@PostMapping(value="/board/delete")
-	public ModelAndView boardDelete(@RequestParam Map<String, Object> params) {
+	public Map<String, Object> boardDelete(@RequestParam Map<String, Object> params) {
 		logger.info("삭제할 idx : {}", params);
 		int board_idx = Integer.parseInt(params.get("board_idx").toString());
-		ModelAndView mav = new ModelAndView();
+		Map<String, Object> response = new HashMap<String, Object>();
 		if(boardService.boardDelete(board_idx) > 0) {
-			mav.addObject("success", "success");
-			mav.setViewName("/board/boardList");
+			response.put("status", "deleteboard");
 		}else {
-			mav.setViewName("/board/boardList");
+			response.put("status", "deleteboard");
 		}
-		return mav;
+		return response;
 	}
 	
-	// 게시판 글 쓰기
+	// 라이브러리 게시글 삭제
+	@PostMapping(value="/lbboard/delete")
+	public Map<String, Object> lbboardDelete(@RequestParam Map<String, Object> params) {
+		logger.info("삭제할 idx : {}", params);
+		int board_idx = Integer.parseInt(params.get("board_idx").toString());
+		Map<String, Object> response = new HashMap<String, Object>();
+		if(boardService.lbboardDelete(board_idx) > 0) {
+			response.put("status", "deleteboard");
+		}else {
+			response.put("status", "deleteboard");
+		}
+		return response;
+	}
+	
+	// 공지사항 게시판 글 쓰기
 	@PostMapping(value="/board/write")
 	public BoardDTO setBoardwrite(@RequestParam("filepond") MultipartFile[] files,
 			@ModelAttribute BoardDTO dto,
@@ -241,7 +299,32 @@ public class BoardController {
 		return dto;
 	}
 	
-	// 게시판 리스트
+	// 라이브러리 게시판 글 쓰기
+	@PostMapping(value="/lbboard/write")
+	public BoardDTO setLbBoardwrite(@RequestParam("filepond") MultipartFile[] files,
+			@ModelAttribute BoardDTO dto,
+			@RequestParam("imgsJson") String content) {
+		logger.info("파일 params: {}", dto);
+		logger.info("content : {}", content);
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+		try {
+			imgs = obj.readValue(content, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			
+			dto.setImgs(imgs);
+			dto = boardService.setLbBoardwrite(files, dto);
+			
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		return dto;
+	}
+	
+	// 공지사항 게시판 리스트
 	@GetMapping(value="/board/list")
 	public List<BoardDTO> boardList(
 			@RequestParam(value = "page", defaultValue = "1") int page, 
@@ -253,6 +336,28 @@ public class BoardController {
 	    logger.info("page => " + page);
 	    logger.info("cnt => " + cnt);
 		List<BoardDTO> dtolist = boardService.boardList(page, cnt, option, keyword);
+		for(BoardDTO dto : dtolist) {
+			if(dto.getCreate_date() != null) {
+				LocalDateTime time = dto.getCreate_date();
+				String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+				dto.setRecreate_date(create_date);
+			}
+		}
+		return dtolist;
+	}
+	
+	// 라이브러리 게시판 리스트
+	@GetMapping(value="/lbboard/list")
+	public List<BoardDTO> lbboardList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+		logger.info("keyword => " + keyword);
+	    logger.info("option => " + option);
+	    logger.info("page => " + page);
+	    logger.info("cnt => " + cnt);
+		List<BoardDTO> dtolist = boardService.lbboardList(page, cnt, option, keyword);
 		for(BoardDTO dto : dtolist) {
 			if(dto.getCreate_date() != null) {
 				LocalDateTime time = dto.getCreate_date();
@@ -304,6 +409,7 @@ public class BoardController {
 	// 댓글 쓰기
 	@PostMapping(value="/board/review/write")
 	public Map<String, Object> setReviewWrite(@RequestParam Map<String, Object> params) {
+		logger.info("댓글 밧 : {} ", params);
 		boardService.setReviewWrite(params);
 		Map<String, Object> response = new HashMap<>();
 		response.put("success", true);
