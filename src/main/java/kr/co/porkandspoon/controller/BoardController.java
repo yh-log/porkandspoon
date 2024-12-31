@@ -455,6 +455,7 @@ public class BoardController {
 		return new ModelAndView("/board/voteWrite");
 	}
 	
+	
 	// 투표 수정 이동 페이지
 	@GetMapping(value="/vote/update")
 	public ModelAndView voteUpdateView() {

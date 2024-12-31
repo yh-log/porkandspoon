@@ -51,6 +51,16 @@
     	gap: 10px; /* 요소 간 간격 */
 	}
 	
+	div.inline-layout{
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+		margin-top: 15px;
+	    margin-left: 12px;
+	}
+	
 </style>
 
 
@@ -73,7 +83,7 @@
 					<h4 class="menu-title">인사이동</h4>
 					<ul>
 						
-						<li class="active" id="firstMenu"><a href="#">인사이동</a></li>
+						<li class="active" id="firstMenu"><span onclick="listCall('/ad/employeeTransferList')">인사이동</span></li>
 						<li id="secondMenu"><a href="#">직영점 이동</a></li>
 						<li id="thirdMenu"><a href="#">미발령 직원</a></li>
 					</ul>
@@ -88,17 +98,14 @@
 						</div>
 						<div class="cont-body"> 
 							<div class="row">
-								<div class="col-5 col-lg-5">날짜 데이터</div>
-								<div class="col-3 col-lg-3" id="filterBox">
-									<span>유형</span>
-									<select class="form-select selectStyle">
-										<option>전체</option>
-										<option>인사이동</option>
-										<option>퇴사</option>
-									</select>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+								<div class="col-6 col-lg-6">
+									<div class="inline-layout">
+										<input type="date" name="start_date" class="form-control" /> ~ <input type="date" name="end_date" class="form-control" />
+										<input type="checkbox" name="all" id="dateAll" class="form-check-input form-check-primary form-check-glow"> 
+									</div>
 								</div>
-								<div id="searchLayout" class="col-4 col-lg-4">
+								<div class="col-1 col-lg-1"></div>
+								<div id="searchLayout" class="col-5 col-lg-5">
 									<select class="form-select selectStyle" >
 										<option>부서</option>
 										<option>이름</option>
@@ -121,37 +128,8 @@
 											<th>상태</th>
 										</tr>
 									</thead>
-									<tbody id="userList">
-										<tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
-									    <tr>
-									        <td>1001</td><td>인사팀</td><td>홍길동</td><td>사원</td><td>1234</td><td>2022-01-01</td><td>재직</td>
-									    </tr>
+									<tbody id="employeeTransferLIst">
+										
 									</tbody>
 								</table>
 							</div>
@@ -185,7 +163,37 @@
 <script src='/resources/js/menu.js'></script>
 <script>
 
+$(document).ready(function () {
+    // 로딩 시 체크박스를 체크 상태로 설정
+    $('#dateAll').prop('checked', true);
 
+    // 체크박스 상태에 따라 동작 처리
+    handleDateAllState();
+});
+
+// 체크박스 상태를 기반으로 입력 필드 처리 함수
+function handleDateAllState() {
+    const dateAllCheckbox = document.getElementById('dateAll');
+    const startDateInput = document.querySelector('input[name="start_date"]');
+    const endDateInput = document.querySelector('input[name="end_date"]');
+
+    if (dateAllCheckbox.checked) {
+        // 체크되었을 때
+        startDateInput.value = '2015-01-01'; // 시작 날짜
+        endDateInput.value = '2025-12-31';   // 종료 날짜
+        startDateInput.disabled = true;      // 입력 비활성화
+        endDateInput.disabled = true;        // 입력 비활성화
+    } else {
+        // 체크 해제되었을 때
+        startDateInput.value = '';           // 값 초기화
+        endDateInput.value = '';             // 값 초기화
+        startDateInput.disabled = false;     // 입력 활성화
+        endDateInput.disabled = false;       // 입력 활성화
+    }
+}
+
+// 체크박스 변경 이벤트
+document.getElementById('dateAll').addEventListener('change', handleDateAllState);
 
 
 </script>
