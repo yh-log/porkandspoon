@@ -133,7 +133,7 @@ public class MyPageController {
 		return new ModelAndView("/myPage/myPageSign");
 	}
 	
-	@PostMapping("/save")
+	@PostMapping("/ad/myPagesign/save")
     @ResponseBody
     public ResponseEntity<String> saveSignature( @RequestParam("file") MultipartFile file,
     		@AuthenticationPrincipal UserDetails userDetails) {
@@ -159,45 +159,57 @@ public class MyPageController {
     /**
      * 저장된 서명 불러오기
      */
-    @GetMapping("/get")
-    @ResponseBody
-    public ResponseEntity<Map<String, String>> getSignature(@AuthenticationPrincipal UserDetails userDetails
-    		
-    		) {
-        String savedFileName = "signature_user123.png"; // 사용자별 고유 파일명 지정
-        Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
-        
-        String pk_idx =userDetails.getUsername();
-        String code_name ="SG001";
-        FileDTO dto = myPageService.signExist(pk_idx,code_name);
-        
-        
+	@GetMapping("/ad/myPagesign/get")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> getSignature(@AuthenticationPrincipal UserDetails userDetails) {
+	    String pk_idx = userDetails.getUsername();
+	    String code_name = "SG001";
+	    FileDTO dto = myPageService.signExist(pk_idx, code_name);
 
-        if (dto != null) {
-            try {
-                // 파일을 Base64로 변환
-                byte[] fileContent = Files.readAllBytes(filePath);
-                String base64Image = Base64.getEncoder().encodeToString(fileContent);
+	    logger.info("dto : {}", dto);
 
-                // Base64와 파일 이름 반환
-                Map<String, String> response = new HashMap<>();
-                response.put("base64Image", base64Image);
-                response.put("fileName", savedFileName);
+	    if (dto != null) {
+	        try {
+	            // dto에서 저장된 파일 이름 가져오기
+	            String savedFileName = dto.getNew_filename();
+	            Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
+	            logger.info("saveFileName :{}",savedFileName);
+	            logger.info("filePath :{}",filePath);
+	         
+	            // 파일 존재 여부 확인
+	            if (!Files.exists(filePath)) {
+	                logger.warn("파일이 존재하지 않습니다: {}", filePath.toString());
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+	                                     .body(Collections.singletonMap("error", "파일이 존재하지 않습니다."));
+	            }
 
-                return ResponseEntity.ok(response);
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                     .body(Collections.singletonMap("error", "파일 로드 중 오류 발생"));
-            }
-        } else {
-            return ResponseEntity.ok(Collections.singletonMap("base64Image", "")); // 저장된 서명 없음
-        }
-    }
+	            // 파일을 Base64로 변환
+	            byte[] fileContent = Files.readAllBytes(filePath);
+	            String base64Image = Base64.getEncoder().encodeToString(fileContent);
+	            
+	            logger.info("fileContent :{}",fileContent);
+	            logger.info("base64Image :{}",base64Image);
+	            
+	            // Base64와 파일 이름 반환
+	            Map<String, String> response = new HashMap<>();
+	            response.put("base64Image", base64Image);
+	            logger.info("response : {}",response);
 
+	            return ResponseEntity.ok(response);
+	        } catch (IOException e) {
+	            logger.error("파일 로드 중 오류 발생", e);
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                                 .body(Collections.singletonMap("error", "파일 로드 중 오류 발생"));
+	        }
+	    } else {
+	        logger.info("저장된 서명이 없습니다.");
+	        return ResponseEntity.ok(Collections.singletonMap("base64Image", "")); // 저장된 서명 없음
+	    }
+	}
     /**
      * 저장된 서명 삭제
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("/ad/myPagesign/delete")
     @ResponseBody
     public ResponseEntity<String> deleteSignature() {
         String savedFileName = "signature_user123.png"; // 사용자별 고유 파일명 지정
