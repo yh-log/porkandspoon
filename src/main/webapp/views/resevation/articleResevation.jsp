@@ -227,7 +227,15 @@
 			content +='<p>분류 : 빔 프로젝터</p>';
 		}else{
 			content +='<p>분류 : 차량</p>';
-		}	
+		}
+		
+		if (response.list.type == 'G') {
+			content +='<p>유형 : 지급 물품</p>';
+		}else if(response.list.type == 'S'){
+			content +='<p>유형 : 단기 대여</p>';
+		}else{
+			content +='<p>유형 : 장기 대여</p>';
+		}
 		content +='<p>물품 명 : '+response.list.item_name+'</p>';
 		content +='<p>모델 명 : '+response.list.model_name+'</p>';
 		content +='<p>내용 : '+response.list.content+'</p>';
