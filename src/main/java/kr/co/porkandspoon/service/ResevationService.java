@@ -27,9 +27,9 @@ public class ResevationService {
 		return resDao.articleWrite(params);
 	}
 
-	public List<CalenderDTO> list(int page, int size) {
+	public List<CalenderDTO> list(int page, int size, String category) {
 		int offset = (page - 1) * size;
-		return resDao.list(offset,size);
+		return resDao.list(offset,size,category);
 	}
 
 	public CalenderDTO articleDetail(String no) {		
@@ -40,8 +40,40 @@ public class ResevationService {
 		return resDao.updateYN(no,filter);
 	}
 
-	public CalenderDTO articleUpdate(Map<String, Object> params) {
+	public int articleUpdate(Map<String, Object> params) {
 		return resDao.articleUpdate(params);
+	}
+
+	public int roomWrite(Map<String, Object> params) {
+		return resDao.roomWrite(params);
+	}
+
+	public CalenderDTO roomDetail(String no) {		
+		return resDao.roomDetail(no);
+	}
+
+	public int roomUpdate(Map<String, Object> params) {		
+		return resDao.roomUpdate(params);
+	}
+
+	public int allDelete(String no, String filter) {
+		return resDao.allDelete(no,filter);
+	}
+
+	public List<CalenderDTO> note() {
+		return resDao.note();
+	}
+
+	public List<CalenderDTO> project() {
+		return resDao.project();
+	}
+
+	public List<CalenderDTO> car() {
+		return resDao.car();
+	}
+
+	public CalenderDTO itemDetail(String no) {
+		return resDao.itemDetail(no);
 	}
 
 

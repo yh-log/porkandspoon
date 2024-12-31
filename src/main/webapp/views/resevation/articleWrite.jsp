@@ -185,6 +185,16 @@
 	                  <!-- 여기에 내용 작성 -->
 	                  <div class="col-12 col-lg-12">
 		                  <table class="align-l">
+		                 	<tr>
+		                  		<th>카테고리</th>
+		                  		<td class="align-l" id="writer">
+		                  			<select class="form-select selectStyle" id="code" name="opt">                  				
+										<option value="note">노트북</option>
+										<option value="project">빔 프로젝터</option>
+										<option value="car">차량</option>
+									</select>
+		                  		</td>
+		                  	</tr>
 		                  	<tr>
 		                  		<th>등록자</th>
 		                  		<td class="align-l" id="writer">${info}</td>
@@ -225,11 +235,11 @@
 		                  		<td class="align-l" style="display: flex; justify-content: flex-start;">
 		                  			<div class="form-check">
 										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="Y">
-										<label class="form-check-label" for="flexRadioDefault1">활성화</label>
+										<label class="form-check-label" for="flexRadioDefault1">예약 활성화</label>
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
 										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="N">
-										<label class="form-check-label" for="flexRadioDefault2">비활성화 </label>
+										<label class="form-check-label" for="flexRadioDefault2">예약 비활성화</label>
 									</div>
 		                  		</td>
 		                  	</tr>
@@ -268,9 +278,10 @@
 		var article = $('input[name="article"]:checked').val();
 		var content = $('textarea[name="content"]').val();
 		var is_item = $('input[name="flexRadioDefault"]:checked').val();
-		console.log('제목',subject);
+		var selection = $('select[name="opt"]').val();
+		console.log('카테고리',selection);
 		
-	    if (!subject || !model || !article || !content || !is_item) {
+	    if (!selection || !subject || !model || !article || !content || !is_item) {
 	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
 	        return;
 	    }
@@ -281,7 +292,8 @@
 				model_name: model,
 				type: article,
 				content: content,
-				is_item: is_item
+				is_item: is_item,
+				selection: selection
 		}
 		
 		console.log('데이터',data);
@@ -291,12 +303,13 @@
 	}
 	
 	function httpSuccess(response) {
-		console.log('성공',response.no);
-		//location.href="/ad/resevation/list"
+		console.log('성공',response);
+		location.href="/ad/resevation/list"
 	}
 	
 	function back() {
 		console.log('돌아가기');
+		location.href="/ad/resevation/list";
 	}
 	
 	function secondBtn1Act() {

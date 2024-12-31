@@ -101,49 +101,16 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>구매/사용 기록</h5>
+							<h5>서명관리</h5>
 						</div>
 						<div class="cont-body">
-							<div class="row">
-								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout"  class="col-7 col-lg-7">
-									<select id="searchOption" class="form-select selectStyle">
-										<option value="create_date">구매일</option>
-										<option value="name">상품명</option>
-									</select>
-									<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
-								</div>
-							</div>
-							<div class="row">
 							<div class="col-12 col-lg-12">
-							<table>
-								<colgroup>
-									<col>
-									<col >
-									<col>
-									<col>
-									<col>
-								</colgroup>
-								<thead>
-									<tr>
-										<th>상품명</th>
-										<th >가격</th>
-										<th>구매/사용</th>
-										<th>갯수</th>
-										<th>구매일</th>
-									</tr>
-								</thead>
-								<tbody id="list">
-									
-								</tbody>
-								
-						             
-							</table>
-						                <nav aria-label="Page navigation">
-						                 <ul class="pagination" id="pagination"></ul>
-						                </nav>
-							
+							<div id="signaturePadContainer">
+							    <canvas id="signaturePad" style="border: 1px solid black; width: 100%; height: 300px;"></canvas>
+							    <div style="margin-top: 10px;">
+							        <button id="clearSignature" class="btn btn-warning">지우기</button>
+							        <button id="saveSignature" class="btn btn-primary">저장</button>
+							    </div>
 							</div>
 							</div>
 						</div> 
@@ -176,85 +143,83 @@
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
+
+<!-- 사인패드 -->	
+<script src="https://cdn.jsdelivr.net/npm/signature_pad"></script>
 <script>
-var show = 1;
-var cnt = 10; // 한 페이지당 항목 수
-var url = '/ad/myPageBuy/List'; // 서버 요청 URL
-var paginationInitialized = false;
+document.addEventListener("DOMContentLoaded", function () {
+    const canvas = document.getElementById("signaturePad");
+    const signaturePad = new SignaturePad(canvas);
 
-$(document).ready(function () {
-    pageCall(show);
-});
-
-function pageCall(page) {
-    var keyword = $('#searchKeyword').val(); // 검색어
-    var opt = $('#searchOption').val(); // 검색 옵션
-
-    var requestData = {
-        page: page,
-        cnt: cnt,
-        opt: opt,
-        keyword: keyword
-    };
-
-    $.ajax({
-        type: 'GET',
-        url: url,
-        data: requestData,
-        dataType: 'JSON',
-        success: function (data) {
-            console.log(data);
-            renderList(data.list);
-
-            if (paginationInitialized) {
-                $('#pagination').twbsPagination('destroy'); // 기존 페이지네이션 제거
-            }
-
-            if (data.totalPages > 0) {
-                $('#pagination').twbsPagination({
-                    totalPages: data.totalPages,
-                    visiblePages: 10,
-                    startPage: page,
-                    initiateStartPageClick: false,
-                    onPageClick: function (evt, page) {
-                        pageCall(page);
-                    }
-                });
-                paginationInitialized = true;
+    // 서버에서 서명 불러오기
+    fetch("/signature/get")
+        .then(response => response.json())
+        .then(data => {
+            if (data.base64Image) {
+                const image = new Image();
+                image.src = `data:image/png;base64,${data.base64Image}`;
+                image.onload = function () {
+                    const ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, canvas.width, canvas.height); // 기존 캔버스 초기화
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // 서명 이미지 표시
+                };
             } else {
-                paginationInitialized = false;
+                console.log("저장된 서명이 없습니다.");
             }
-        },
-        error: function (e) {
-            console.error(e);
+        })
+        .catch(error => console.error("서명 불러오기 오류:", error));
+
+    // 서명 저장
+    document.getElementById("saveSignature").addEventListener("click", function () {
+        if (signaturePad.isEmpty()) {
+            alert("서명이 비어 있습니다.");
+            return;
         }
+
+        const dataURL = signaturePad.toDataURL("image/png");
+        const blob = dataURLtoBlob(dataURL);
+
+        const formData = new FormData();
+        formData.append("file", blob, "signature.png");
+
+        fetch("/signature/save", {
+            method: "POST",
+            body: formData,
+        })
+            .then(response => response.text())
+            .then(result => {
+                alert(result); // 서버로부터 성공 메시지 표시
+            })
+            .catch(error => console.error("서명 저장 오류:", error));
     });
-}
 
-function renderList(list) {
-    var content = '';
-    if (list.length === 0) {
-        content = '<tr><td colspan="5" style="text-align: center;">데이터가 없습니다.</td></tr>';
-    } else {
-        for (var view of list) {
-            var formattedDate = view.create_date
-                ? view.create_date.replace('T', ' ').split('.')[0]
-                : '-';
+    // 서명 지우기
+    document.getElementById("clearSignature").addEventListener("click", function () {
+        signaturePad.clear();
 
-            content += '<tr>';
-            content += '<td>' + view.meal_name + '</td>';
-            content += '<td>' + (view.total_cost || '-') + '</td>';
-            content += '<td style="color: ' + (view.is_buy === 'B' ? 'blue' : 'black') + ';">'
-                + (view.is_buy === 'B' ? '구매' : '사용') + '</td>';
-            content += '<td>' + (view.count || '0') + '</td>';
-            content += '<td>' + formattedDate + '</td>';
-            content += '</tr>';
+        fetch("/signature/delete", { method: "DELETE" })
+            .then(response => response.text())
+            .then(result => {
+                alert(result); // 서버로부터 성공 메시지 표시
+            })
+            .catch(error => console.error("서명 삭제 오류:", error));
+    });
+
+    // Base64 데이터를 Blob으로 변환
+    function dataURLtoBlob(dataURL) {
+        const [header, base64Data] = dataURL.split(",");
+        const byteString = atob(base64Data);
+        const mimeString = header.split(":")[1].split(";")[0];
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uintArray = new Uint8Array(arrayBuffer);
+
+        for (let i = 0; i < byteString.length; i++) {
+            uintArray[i] = byteString.charCodeAt(i);
         }
+
+        return new Blob([arrayBuffer], { type: mimeString });
     }
-    $('#list').html(content);
-}
-
-
+});
 </script>
 
 </html>

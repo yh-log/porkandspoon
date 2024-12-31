@@ -305,6 +305,7 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
  * search : 검색어 (DB에서 like 사용)
  * filtering : 필터링 값
  */
+ /*
 if($('#pagination')){
    
     var firstPage = 1;
@@ -355,7 +356,7 @@ if($('#pagination')){
         });
     }
 
-}
 
+}
 
 

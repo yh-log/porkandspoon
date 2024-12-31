@@ -1,5 +1,7 @@
 package kr.co.porkandspoon.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.porkandspoon.dao.MyPageDAO;
 import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.MealDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -41,6 +44,17 @@ public class MyPageService {
 		return dto;
 	}
 
+
+	public int count(String username, int cnt_, String opt, String keyword) {
+		
+		return myPageDao.count(username,cnt_,opt,keyword);
+	}
+
+	public List<MealDTO> buyList(String username,String opt, String keyword, int limit, int offset) {
+		
+		return myPageDao.buyList(username,opt,keyword,limit,offset);
+
+	}
 	/**
 	 * author yh.kim (24.12.27)
 	 * 마이페이지 정보 수정
@@ -77,6 +91,23 @@ public class MyPageService {
 		}
 		
 		return true;
+
 	}
+
+
+	public int signSave(FileDTO dto) {
+		
+		return myPageDao.fileUpdate(dto);
+
+	}
+
+
+	public FileDTO signExist(String pk_idx, String code_name) {
+		return myPageDao.signExist(pk_idx,code_name);
+		
+	}
+	
+	
+	
 	
 }

@@ -5,32 +5,68 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.MyPageDAO">
 
-	<!-- 마이페이지 정보 조회 -->
-	<select id="myPageDetail" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
-		SELECT u.username, u.person_num, u.name, u.email, u.birth, u.phone, u.company_num, u.address, u.gender, u.join_date, u.leave_date, u.position, u.parent, u.title, c.content AS position_content, d.`text` AS dept_name, f.new_filename AS profile
-			FROM user u LEFT JOIN code c ON u.position = c.name
-				LEFT JOIN department d ON u.parent = d.id 
-				LEFT JOIN file f ON u.username = f.pk_idx AND f.code_name = 'up100'
-			WHERE u.username = #{username}
-	</select>
+   <!-- 마이페이지 정보 조회 -->
+   <select id="myPageDetail" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
+      SELECT u.username, u.person_num, u.name, u.email, u.birth, u.phone, u.company_num, u.address, u.gender, u.join_date, u.leave_date, u.position, u.parent, u.title, c.content AS position_content, d.`text` AS dept_name, f.new_filename AS profile
+         FROM user u LEFT JOIN code c ON u.position = c.name
+            LEFT JOIN department d ON u.parent = d.id 
+            LEFT JOIN file f ON u.username = f.pk_idx AND f.code_name = 'up100'
+         WHERE u.username = #{username}
+   </select>
 
-	<!-- 직원 이력 조회 -->
-	<select id="myPageCareerDetail" resultType="kr.co.porkandspoon.dto.CareerDTO" parameterType="String">
-		SELECT username, type, subject, content, start_date, end_date FROM career WHERE username = #{username}
-	</select>
-	
-	<!-- 직원 정보 수정 -->
-	<update id="myPageUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
-		UPDATE user SET email = #{email}, phone = #{phone}, address = #{address} WHERE username = #{username}
-	</update>
-	
-	<!-- 직원 프로필 삭제 -->
-	<delete id="fileDelete" parameterType="kr.co.porkandspoon.dto.FileDTO">
-		DELETE FROM file WHERE code_name = #{code_name} AND pk_idx = #{pk_idx}
-	</delete>
-	
-	<!-- 직원 프로필 업데이트 -->
-	<insert id="fileUpdate" parameterType="kr.co.porkandspoon.dto.FileDTO">
-		INSERT INTO file(code_name, ori_filename, new_filename, type, pk_idx) VALUES(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
-	</insert>
+   <!-- 직원 이력 조회 -->
+   <select id="myPageCareerDetail" resultType="kr.co.porkandspoon.dto.CareerDTO" parameterType="String">
+      SELECT username, type, subject, content, start_date, end_date FROM career WHERE username = #{username}
+   </select>
+   
+
+   
+   <select id="count" resultType="int" >
+      SELECT CEIL(count(meal_idx)/#{cnt_}) AS pages FROM meal_ticket
+       <where>
+          username = #{username} <!-- username은 필수 -->
+       <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+           name LIKE CONCAT('%', #{keyword}, '%')
+       </if>
+       <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
+           create_date LIKE CONCAT('%', #{keyword}, '%')
+       </if>
+   </where>
+   </select>
+   
+   <select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="String">
+       SELECT mt.meal_idx,mt.username,mt.is_buy,mt.count,mt.create_date,m.name AS meal_name,
+           CASE WHEN mt.is_buy = 'U' THEN NULL  ELSE m.cost END AS total_cost
+          FROM meal_ticket mt LEFT JOIN meal m ON mt.meal_idx = m.meal_idx
+          <where>
+              mt.username = #{username} <!-- username은 필수 -->
+              <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+                  AND m.name LIKE CONCAT('%', #{keyword}, '%')
+              </if>
+              <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
+                  AND mt.create_date LIKE CONCAT('%', #{keyword}, '%')
+              </if>
+          </where>
+          ORDER BY mt.create_date DESC LIMIT #{limit} OFFSET #{offset}
+</select>
+
+   <!-- 직원 정보 수정 -->
+   <update id="myPageUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+      UPDATE user SET email = #{email}, phone = #{phone}, address = #{address} WHERE username = #{username}
+   </update>
+   
+   <!-- 직원 프로필 삭제 -->
+   <delete id="fileDelete" parameterType="kr.co.porkandspoon.dto.FileDTO">
+      DELETE FROM file WHERE code_name = #{code_name} AND pk_idx = #{pk_idx}
+   </delete>
+   
+   <!-- 직원 프로필 업데이트 -->
+   <insert id="fileUpdate" parameterType="kr.co.porkandspoon.dto.FileDTO">
+      INSERT INTO file(code_name, ori_filename, new_filename, type, pk_idx) VALUES(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
+   </insert>
+   
+   <select id="signExist" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
+      select * from file where pk_idx = #{pk_idx} and code_name = #{code_name}
+   </select>
+
 </mapper>

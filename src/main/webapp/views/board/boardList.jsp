@@ -77,6 +77,10 @@
 	    text-align: center;
 	    margin-top: 30px;
 	 }
+	 
+	 .board-detail {
+	 	cursor: pointer;
+	 }
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -108,7 +112,10 @@
 	               <div class="cont-body"> 
 	               <p id="currentUser" style="display:none;"><sec:authentication property="principal.username"/></p>
 	               	  <div class="row">
-	               	  	<div class="col-sm-6"></div>
+	               	  	<div class="col-sm-2"><input type="date" id="notice_date1" name="notice_date1" class="form-control" style="width: 150px; display: none;"></div>
+	               	  	<div class="col-sm-2"><input type="date" id="notice_date2" name="notice_date2" class="form-control" style="width: 150px; display: none;"></div>
+	               	  	<div class="col-sm-1"><button class="btn btn-primary" id="notice_button" onclick="notice_write()" style="display: none;">공지</button></div>
+	               	  	<div class="col-sm-1"></div>
 	               	  	<div class="col-sm-1">
 	               	  		<select class="form-select" id="searchOption">
 								<option value="dept">부서</option>
@@ -117,7 +124,7 @@
 							</select>
 						</div>
 	               	  	<div class="col-sm-4"><input name="search" class="form-control" type="text" placeholder="검색"></div>
-	               	  	<div class="col-sm-1"><button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button></div>
+	               	  	<div class="col-sm-1">&nbsp;&nbsp;<button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button></div>
 	               	  </div>
 	                  <div class="page-heading">
 							<div class="page-title">
@@ -126,7 +133,6 @@
 										<div class="card">
 											<table>
 												<colgroup>
-													<col width="6%" />
 													<col width="6%" />
 													<col />
 													<col width="30%" />
@@ -139,7 +145,6 @@
 												<thead>
 													<tr>
 														<th>체크</th>
-														<th>별</th>
 														<th>글번호</th>
 														<th>제목</th>
 														<th>작성자</th>
@@ -150,19 +155,6 @@
 													</tr>
 												</thead>
 												<tbody id="boardList">
-													<!-- <tr class="td-link">
-														<td><input type="checkbox" id="checkbox1" class="form-check-input"></td>
-														<td>별</td>
-														<td>1</td>
-														<td onclick="window.location.href='/boarddetail/View';" class="align-l elipsis">긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴
-															제목은 왼쪽정렬 긴 제목은 왼쪽정렬 긴 제목은 왼쪽정렬</td>
-														<td>김순무</td>
-														<td>19</td>
-														<td>2024.12.19</td>
-														<td><i class="bi bi-pencil-square btn-popup-update bi-icon"></i></td>
-														<td><i class="bi bi-trash btn-popup bi-icon"></i></td>
-													</tr> -->
 												</tbody>
 											</table>
 										</div>
@@ -233,7 +225,7 @@ function pageCall(page = 1) {
             if (response && response.length > 0) {
                 getSuccess(response); // 검색 결과를 테이블에 렌더링
             } else {
-                $('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+                $('#boardList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
             }
 
             // 페이지네이션 초기화
@@ -272,20 +264,29 @@ function pageCall(page = 1) {
 		var content = '';
 		response.forEach(function(item) {
 		    content += '<tr class="td-link">';
-		    // Checkbox column - admin 권한만 볼 수 있음
-		    content += '<td><sec:authorize access="hasRole(\'admin\')"><input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="checkboxbtn(' + item.board_idx + ')"></sec:authorize></td>';
-		    // 별 (board_notice 값에 따라 표시)
 		    content += '<td>';
-		    if (item.board_notice === 'Y') {
-		        content += '<i class="bi bi-star-fill" style="color: gold;"></i>'; // 채워진 별
-		    } else {
-		        content += '<i class="bi bi-star" style="color: gray;"></i>'; // 비워진 별
+		    if (item.board_notice !== 'Y') {
+		        content += '<sec:authorize access="hasRole(\'admin\')">'
+		            + '<input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="toggleNoticeFields()">'
+		            + '</sec:authorize>';
+		    }else {
+		    	content += '<i class="bi bi-star-fill" style="color: gold;"></i>';
 		    }
 		    content += '</td>';
 		    // 번호
 		    content += '<td>' + item.board_idx + '</td>';
 		    // 제목 (클릭 시 이동)
-		    content += '<td onclick="window.location.href=\'/boarddetail/View?id=' + item.board_idx + '\';" class="align-l elipsis">' + item.subject + '</td>';
+		    content += '<td class="align-l elipsis" style="cursor: pointer;"';
+			if (item.board_state === 'N') {
+			    content += 'onclick="checkdept(' + item.board_idx + ')"';
+			} else {
+			    content += 'onclick="window.location.href=\'/boarddetail/View/' + item.board_idx + '\'"';
+			}
+			content += '>' + item.subject;
+			
+			if (item.board_state === 'N') {
+			    content += ' <span style="color: gray;">(비공개)</span>';
+			}
 		    // 작성자
 		    content += '<td>' + item.userNick + '</td>';
 		    // 조회수
@@ -293,13 +294,186 @@ function pageCall(page = 1) {
 		    // 작성일
 		    content += '<td>' + item.recreate_date + '</td>';
 		    if (myId === item.username) {
-			    content += '<td><i class="bi bi-pencil-square btn-popup-update bi-icon" onclick="location.href=\'/board/update/' + item.board_idx + '\'"></i></td>';
-			    content += '<td><i class="bi bi-trash btn-popup bi-icon" onclick="deleteList(' + item.board_idx + ')"></i></td>';
+		    	content += '<td><i class="bi bi-pencil-square btn-popup-update bi-icon" onclick="updateboard(' + item.board_idx + ')"></i></td>';
+			    content += '<td><i class="bi bi-trash btn-popup bi-icon" onclick="deleteboard(' + item.board_idx + ')"></i></td>';
 			}
 		    content += '</tr>';
 		});
 		$('#boardList').append(content);
 	}
+	
+	function toggleNoticeFields() {
+		const date1 = document.getElementById('notice_date1');
+	    const date2 = document.getElementById('notice_date2');
+	    const button = document.getElementById('notice_button');	
+	    let blockType = false;
+	    const allCheckboxes = document.querySelectorAll('.form-check-input');
+
+	    // 체크된 체크박스를 확인
+	    let checkedCheckbox = null;
+	    allCheckboxes.forEach(checkbox => {
+	        if (checkbox.checked) {
+	            blockType = true;
+	            checkedCheckbox = checkbox; // 체크된 체크박스를 저장
+	        }
+	    });
+
+	    // 날짜 입력란과 버튼 표시/숨김
+	    date1.style.display = blockType ? 'inline-block' : 'none';
+	    date2.style.display = blockType ? 'inline-block' : 'none';
+	    button.style.display = blockType ? 'inline-block' : 'none';
+
+	    // 다른 체크박스 숨기기 또는 다시 보이게 하기
+	    allCheckboxes.forEach(checkbox => {
+	        if (checkbox !== checkedCheckbox) {
+	            checkbox.style.display = blockType ? 'none' : 'inline-block';
+	        }
+	    });
+	}
+	
+	function notice_write() {
+	    const checkedCheckbox = document.querySelector('.form-check-input:checked');
+	    if (!checkedCheckbox) {
+	        layerPopup(
+	            '체크된 게시글이 없습니다.',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+	    }
+	    const date1 = document.getElementById('notice_date1').value;
+	    const date2 = document.getElementById('notice_date2').value;
+	    if (!date1 || !date2) {
+	        layerPopup(
+	            '날짜를 모두 입력하세요.',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+	    }
+	    
+	    if (date1 === date2) {
+	        layerPopup(
+	            '종료 날짜는 시작 날짜 이후로 설정해야 합니다.',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+	    }
+
+	    // 오늘 날짜 가져오기
+	    const today = new Date();
+	    today.setHours(0, 0, 0, 0); // 오늘 날짜를 자정으로 설정
+
+	    const inputDate1 = new Date(date1);
+	    const inputDate2 = new Date(date2);
+
+	    if (inputDate1 < today || inputDate2 < today) {
+	        layerPopup(
+	            '시작, 종료일 날짜는 오늘 이후로 설정해야 합니다.',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+	    }
+
+	    if (inputDate2 < inputDate1) {
+	        layerPopup(
+	            '종료 날짜는 시작 날짜 이후로 설정해야 합니다.',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+	    }
+	    const board_idx = checkedCheckbox.id.replace('checkbox', '');
+	    console.log('Board Index:', board_idx);
+	    const params = { board_idx: board_idx, notice1: date1, notice2: date2 };
+	    const url = '/set/notice';
+	    httpAjax('POST', url, params);
+	}
+	
+	function httpSuccess(response) {
+		
+		if(response.status === 'notice') {
+			layerPopup(
+                    '공지사항 등록이 완료되었습니다.', // 서버에서 보낸 메시지
+                    '확인',
+                    null,
+                    function () {
+                        removeAlert();
+                    },
+                    function () {}
+                );
+			location.reload();
+		}
+
+		if (response.status === 'deleteboard') {
+			location.reload();
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	function checkdept(board_idx) {
+		const username = document.getElementById("currentUser").textContent.trim();
+		const params = {board_idx: board_idx, username: username};
+		const url = '/checkDept';
+		$.ajax({
+	        type: 'GET', 
+	        url: url, 
+	        data: params, 
+	        dataType: 'json', 
+	        success: function(response) {
+	        	if (response.status) {
+	                // 권한이 있으면 게시글로 이동
+	                window.location.href = '/boarddetail/View/' + board_idx;
+	            } else {
+	                // 권한이 없으면 레이어 팝업 표시
+	                layerPopup(
+	                    response.msg, // 서버에서 보낸 메시지
+	                    '확인',
+	                    null,
+	                    function () {
+	                        removeAlert();
+	                    },
+	                    function () {}
+	                );
+	            }
+	        },
+	        error: function(error) {
+	            console.error('AJAX 호출 실패:', error);
+	        }
+	    });
+	}
+	
 	
 	
 	// 페이지 이동 될 때마다 li 에 class="active" 주입
@@ -323,24 +497,18 @@ function pageCall(page = 1) {
 
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	$('.bi-trash').on(
-			'click',
-			function() {
-				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', secondBtn1Act,
-						secondBtn2Act);
-			});
-	
+	function deleteboard(data) {
+		layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', function() { secondBtn1Act(data); },
+			secondBtn2Act);
+		console.log(data);
+	}
 	
 	// 게시글 삭제 버튼
-	function secondBtn1Act() {
-		console.log('게시글 삭제 하기');
+	function secondBtn1Act(data) {
+		console.log('받아온idx',data);
+		params = {board_idx: data};
+		url = '/board/delete';
+		httpAjax('POST', url, params);
 		removeAlert();
 	}
 
@@ -360,36 +528,36 @@ function pageCall(page = 1) {
 		$('#modal').hide();
 	});
 	
-	// 게시글 수정 버튼
-	function secondBtn1Actupdate() {
-		console.log('게시글 수정 하기');
-		window.location.href='/boardupdate/View';
-		removeAlert();
+	
+	
+	
+	
+	
+	
+	
+	function updateboard(data) {
+	    layerPopup(
+	        '게시글을 수정하시겠습니까?', 
+	        '예', 
+	        '아니오', 
+	        function() { updateboards(data); }, // "예" 버튼 클릭 시 호출
+	        secondBtn2Act // "아니오" 버튼 클릭 시 호출
+	    );
+	    console.log('수정 요청 idx:', data);
 	}
 
-	// 게시글 수정 취소버튼
-	function secondBtn2Actupdate() {
-		console.log('게시글 수정 취소');
-		removeAlert();
+	// 수정 페이지로 리다이렉트
+	function updateboards(data) {
+	    console.log('수정 페이지 이동:', data);
+	    removeAlert(); // 팝업 닫기
+	    location.href = '/boardupdate/View/' + data; // 수정 페이지로 이동
 	}
-	
-	// 게시글 수정 팝업
-	$('.btn-popup-update').on(
-			'click',
-			function() {
-				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', secondBtn1Actupdate,
-						secondBtn2Actupdate);
-			});
-	
-	// 모달창 열기
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
 
-	// 모달창 닫기
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
+	// 취소 버튼
+	function secondBtn2Act() {
+	    console.log('수정 취소');
+	    removeAlert();
+	}
 </script>
 
 </html>

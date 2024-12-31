@@ -35,7 +35,7 @@
     </insert>
     
     <select id="detailmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="int">
-    	SELECT name,cost,count,use_yn FROM meal WHERE meal_idx = #{meal_idx}
+    	SELECT meal_idx,name,cost,count,use_yn FROM meal WHERE meal_idx = #{meal_idx}
     </select>
     
     <update id="editmealTicket" parameterType="Map">
@@ -48,14 +48,26 @@
 	    WHERE meal_idx = #{meal_idx}
     </update>
     
-    <insert id="setmealFile" parameterType="kr.co.porkandspoon.dto.FileDTO">
-    	INSERT INTO file(code_name,ori_filename,new_filename,type,pk_idx)
-    		VALUES(#{code_name},#{ori_filename},#{new_filename},#{type},#{pk_idx})
+    <insert id="editmealFile" parameterType="kr.co.porkandspoon.dto.FileDTO">
+    	UPDATE file
+		    SET 
+		    code_name = #{code_name},
+		    ori_filename = #{ori_filename},
+		    new_filename = #{new_filename},
+		    type = #{type},
+		    pk_idx = #{pk_idx}
+		 WHERE pk_idx = #{pk_idx} and code_name = #{code_name}
     </insert>
     
     <select id="getFile" resultType="kr.co.porkandspoon.dto.FileDTO" parameterType="int">
     	SELECT * FROM file WHERE pk_idx = #{meal_idx} AND code_name = 'MT001'
     </select>
+    
+    <insert id="setmealFile" parameterType="kr.co.porkandspoon.dto.FileDTO">
+    	INSERT INTO file(code_name,ori_filename,new_filename,type,pk_idx)
+    		VALUES(#{code_name},#{ori_filename},#{new_filename},#{type},#{pk_idx})
+    </insert>
+    
     
     <select id="getmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" >
     	select * from meal where use_yn = 'Y'
@@ -68,5 +80,24 @@
       AND end_date = #{end_date}
     LIMIT 1
 </select>
+
+<insert id="setmealbuy" parameterType="map">
+	INSERT INTO meal_ticket(meal_idx,username,is_buy,count)
+    		VALUES(#{meal_idx},#{username},#{is_buy},#{count})
+
+</insert>
+
+<select id="getTicketCount" parameterType="String" resultType="int">
+SELECT 
+    SUM(CASE WHEN is_buy = 'B' THEN count ELSE 0 END) - 
+    SUM(CASE WHEN is_buy = 'U' THEN count ELSE 0 END) AS total_balance
+FROM 
+    meal_ticket
+ WHERE    
+    username = #{username}
+GROUP BY  
+    username;
+</select>
+
 
 </mapper>

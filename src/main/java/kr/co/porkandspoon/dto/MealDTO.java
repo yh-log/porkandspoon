@@ -8,14 +8,19 @@ public class MealDTO extends ResponseDTO {
     // menu 테이블
     private int menu_idx;
     private String is_time;
-    private String content;
+    private String is_buy;
+
+	private String content;
     private LocalDateTime start_date;  // 변경된 타입
     private LocalDateTime end_date;    // 변경된 타입
 
     // meal 테이블
     private int meal_idx;
     private String name;
-    private int cost;
+    private String meal_name;
+    private String total_cost;
+   
+    private String cost;
     private int count;
     private String creater;
     private LocalDateTime create_date; // 변경된 타입
@@ -25,8 +30,27 @@ public class MealDTO extends ResponseDTO {
     
     private FileDTO filedto;
     private int idx;
+    private String username;
     
-    public int getMenu_idx() {
+   
+    
+    public String getIs_buy() {
+    	return is_buy;
+    }
+    
+    public void setIs_buy(String is_buy) {
+    	this.is_buy = is_buy;
+    }
+    
+    public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public int getMenu_idx() {
         return menu_idx;
     }
 
@@ -83,15 +107,17 @@ public class MealDTO extends ResponseDTO {
         this.name = name;
     }
 
-    public int getCost() {
-        return cost;
-    }
+  
 
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
+    public String getCost() {
+		return cost;
+	}
 
-    public int getCount() {
+	public void setCost(String cost) {
+		this.cost = cost;
+	}
+
+	public int getCount() {
         return count;
     }
 
@@ -159,4 +185,23 @@ public class MealDTO extends ResponseDTO {
 		this.idx = idx;
 	}
 
+	public String getMeal_name() {
+		return meal_name;
+	}
+
+	public void setMeal_name(String meal_name) {
+		this.meal_name = meal_name;
+	}
+
+	public String getTotal_cost() {
+		return total_cost;
+	}
+
+	public void setTotal_cost(String total_cost) {
+		this.total_cost = total_cost;
+	}
+	
+	
+	
+	
 }

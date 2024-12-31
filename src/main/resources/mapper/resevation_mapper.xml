@@ -5,65 +5,122 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.ResevationDAO">
 	
-	<!-- 물품 등록 페이지(등록자 정보) -->
+	<!-- 등록 페이지(등록자 정보) -->
 	<select id="info">
 		SELECT name FROM user WHERE username = #{loginId}
 	</select>
 	
 	<!-- 물품 등록 -->
 	<insert id="articleWrite" parameterType="map">
-		INSERT INTO item(username,type,item_name,model_name,content,is_item)
-						values(#{username},#{type},#{item_name},#{model_name},#{content},#{is_item})
+		INSERT INTO item(username,type,item_name,model_name,content,is_item,selection)
+						VALUES(#{username},#{type},#{item_name},#{model_name},#{content},#{is_item},#{selection})
 	</insert>
 	
 	<!-- 자원리스트 조회 -->
-	<select id="list" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT 
-	        r.no,
-	        r.username,
-	        u.name,
-	        'room' AS category,
-	        r.room_name AS subject,
-	        NULL AS type,
-	        NULL AS model_name,
-	        r.count,
-	        r.content,
-	        r.create_date,
-	        r.updater,
-	        r.update_date,
-	        r.is_room AS is_active,
-	        r.use_yn 
-		FROM 
-	        room r
-	    JOIN 
-	        user u ON r.username = u.username
-	    WHERE 
-	        r.use_yn = 'Y' 
-	    UNION ALL   
-	    SELECT 
-	        i.no,
-	        i.username,
-	        u.name,
-	        'item' AS category,
-	        i.item_name AS subject,
-	        i.type,
-	        i.model_name,
-	        NULL AS count,
-	        i.content,
-	        i.create_date,
-	        i.updater,
-	        i.update_date,
-	        i.is_item AS is_active,
-	        i.use_yn
-	    FROM 
-	        item i
-	    JOIN 
-	        user u ON i.username = u.username
-	    WHERE 
-	        i.use_yn = 'Y'
-	    ORDER BY 
-	        create_date DESC limit #{offset},#{size}
-	</select>
+	 <select id="list" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+        <choose>
+            <when test="category == 'room'">
+                SELECT 
+                    r.no,
+                    r.username,
+                    u.name,
+                    'room' AS category,
+                    r.room_name AS subject,
+                    NULL AS type,
+                    NULL AS model_name,
+                    r.count,
+                    r.content,
+                    r.create_date,
+                    r.updater,
+                    r.update_date,
+                    r.is_room AS is_active,
+                    r.use_yn 
+                FROM 
+                    room r
+                JOIN 
+                    user u ON r.username = u.username
+                WHERE 
+                    r.use_yn = 'Y' 
+                ORDER BY 
+                    r.create_date DESC 
+                LIMIT #{offset}, #{size}
+            </when>
+            <when test="category == 'article'">
+                SELECT 
+                    i.no,
+                    i.username,
+                    u.name,
+                    'item' AS category,
+                    i.item_name AS subject,
+                    i.type,
+                    i.model_name,
+                    NULL AS count,
+                    i.content,
+                    i.create_date,
+                    i.updater,
+                    i.update_date,
+                    i.is_item AS is_active,
+                    i.use_yn
+                FROM 
+                    item i
+                JOIN 
+                    user u ON i.username = u.username
+                WHERE 
+                    i.use_yn = 'Y'
+                ORDER BY 
+                    i.create_date DESC 
+                LIMIT #{offset}, #{size}
+            </when>
+            <otherwise>
+                SELECT 
+                    r.no,
+                    r.username,
+                    u.name,
+                    'room' AS category,
+                    r.room_name AS subject,
+                    NULL AS type,
+                    NULL AS model_name,
+                    r.count,
+                    r.content,
+                    r.create_date,
+                    r.updater,
+                    r.update_date,
+                    r.is_room AS is_active,
+                    r.use_yn 
+                FROM 
+                    room r
+                JOIN 
+                    user u ON r.username = u.username
+                WHERE 
+                    r.use_yn = 'Y' 
+                UNION ALL   
+                SELECT 
+                    i.no,
+                    i.username,
+                    u.name,
+                    'item' AS category,
+                    i.item_name AS subject,
+                    i.type,
+                    i.model_name,
+                    NULL AS count,
+                    i.content,
+                    i.create_date,
+                    i.updater,
+                    i.update_date,
+                    i.is_item AS is_active,
+                    i.use_yn
+                FROM 
+                    item i
+                JOIN 
+                    user u ON i.username = u.username
+                WHERE 
+                    i.use_yn = 'Y'
+                ORDER BY 
+                    create_date DESC 
+                LIMIT #{offset}, #{size}
+            </otherwise>
+        </choose>
+    </select>
 	
 	<!-- 물품 상세보기 -->
 	<select id="articleDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">
@@ -79,7 +136,8 @@
 		    i.updater,
 		    i.update_date,
 		    i.is_item,
-			i.use_yn
+			i.use_yn,
+			i.selection
 		FROM
 			item i
 		JOIN
@@ -112,9 +170,75 @@
 			item_name = #{item_name},
 			model_name = #{model_name},
 			content = #{content},
-			is_item = #{is_item}
+			is_item = #{is_item},
+			selection = #{selection}
 		WHERE no = #{no}	
 	</update>
+	
+	<!-- 회의실 등록 -->
+	<insert id="roomWrite" parameterType="map">
+		INSERT INTO room(username,room_name,count,content,is_room)
+						VALUES(#{username},#{room_name},#{count},#{content},#{is_room})
+	</insert>
+	
+	<!-- 회의실 상세보기 -->
+	<select id="roomDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT 
+			r.no,
+		    r.username,
+		    u.name,
+		    r.room_name,
+		    r.count,
+		    r.content,
+		    r.create_date,
+		    r.updater,
+		    r.update_date,
+		    r.is_room,
+			r.use_yn
+		FROM
+			room r
+		JOIN
+			`user` u ON r.username = u.username
+		WHERE no=#{no}
+	</select>
+	
+	<!-- 회의실 수정 -->
+	<update id="roomUpdate" parameterType="map">
+		UPDATE room SET
+			updater = #{username},
+			room_name = #{room_name},
+			count = #{count},
+			content = #{content},
+			is_room = #{is_room}
+		WHERE no = #{no}	
+	</update>
+	
+	<!-- 자원 소프트 삭제 활성 비활성 -->
+	<update id="allDelete">
+		UPDATE 
+		<if test="filter == 'article'">
+			item SET use_yn = 'N' WHERE no = #{no}
+		</if>
+		<if test="filter == 'room'">
+			room SET use_yn = 'N' WHERE no = #{no}
+		</if>
+	</update>
+	
+	<select id="note" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM item WHERE selection = 'note'
+	</select>
+	
+	<select id="project" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM item WHERE selection = 'project'
+	</select>
+	
+	<select id="car" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM item WHERE selection = 'car'
+	</select>
+	
+	<select id="itemDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		select * from item where no = #{no}
+	</select>
 	
 	
 </mapper>

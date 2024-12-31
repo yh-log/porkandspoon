@@ -26,15 +26,12 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
-
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -141,8 +138,8 @@
 					<div class="tit-area justify-end">
 					    <h5>식권구매</h5>
 					    <div class="align-right">
-					        <h5 class="count">식권 보유량 : </h5> <!-- 로그인한 id에서 식권 보유량 찾아서 가져오기 -->
-					        <a href="#" class="btn btn-primary count">사용/구매 내역 보러가기</a>
+					        <h5 class="count"> 나의 식권 보유량 : ${count} 장</h5> <!-- 로그인한 id에서 식권 보유량 찾아서 가져오기 -->
+					        <a href="/ad/myPageBuy/" class="btn btn-primary count">사용/구매 내역 보러가기</a>
 					    </div>
 					</div>
 						<div class="cont-body">
@@ -155,20 +152,45 @@
 								            <!-- filedto와 new_filename이 null인지 확인하여 기본 이미지 설정 -->
 								            <c:choose>
 								                <c:when test="${not empty ticket.filedto and not empty ticket.filedto.new_filename}">
-								                    <img src="${uploadPath}/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                    <img src=" /photo/${ticket.filedto.new_filename}" alt="상품 이미지">
+								                    
 								                </c:when>
 								                <c:otherwise>
 								                    <img src="/resources/img/default.jpg" alt="기본 이미지">
 								                </c:otherwise>
 								            </c:choose>
 								            <!-- 티켓 이름과 장수 표시 -->
-								            <h4>${ticket.name} ${ticket.count}장</h4>
-								            <h5>${ticket.cost}</h5>
-								            <a href="#" class="btn btn-primary btn-pay-ready" 
-								               onclick="layerPopup('${ticket.name} 상품을 구매하시겠습니까?', '구매', '취소')">구매</a>
+								            <h4 id="meal_idx" data-meal_idx="${ticket.meal_idx}" hidden="">${ticket.meal_idx}</h4>
+								            <h4 id="name" data-name="${ticket.name}">${ticket.name}</h4>
+								            <h5 id="count" data-count="${ticket.count}">${ticket.count}장</h5>
+											<h5 id="cost" data-cost="${ticket.cost}">${ticket.cost}</h5>
+											<a href="#" class="btn btn-primary btn-pay-ready" 
+											   data-name="${ticket.name}" data-cost="${ticket.cost}" data-count="${ticket.count}" data-meal_idx="${ticket.meal_idx}"
+											   >구매</a>
+											   <!-- onclick="layerPopup('${ticket.name} ${ticket.count}장을 구매하시겠습니까?', '구매', '취소')" -->
 								        </div>
+								        
+								        
+								        
+								        
 								    </c:if>
 								</c:forEach>
+								<%@ page session="true" %>
+								<%
+								    String successMessage = (String) session.getAttribute("successMessage");
+								    if (successMessage != null) {
+								        session.removeAttribute("successMessage"); // 메시지를 세션에서 제거
+								%>
+								<script>
+								    // 특수 문자를 이스케이프 처리하여 JavaScript에서 안전하게 사용
+								    var successMessage = "<%= successMessage.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n") %>";
+								    layerPopup(successMessage, "확인", "닫기");
+								</script>
+								<%
+								    }
+								%>
+								
+								
 								</div>
 							</div>
 
@@ -218,25 +240,32 @@
 
 <script>
 
-$(function() {
-    $(".btn-pay-ready").click(function(e) {
-        // 아래 데이터 외에도 필요한 데이터를 원하는 대로 담고, Controller에서 @RequestBody로 받으면 됨
-        let data = {
-            name: '상품명',    // 카카오페이에 보낼 대표 상품명
-            totalPrice: 20000 // 총 결제금액
-        };
-      
-        $.ajax({
-            type: 'POST',
-            url: '/order/pay/ready',
-            data: JSON.stringify(data),
-            contentType: 'application/json',
-            success: function(response) {
-                location.href = response.next_redirect_pc_url;
-            }
-        });
+$(document).ready(function () {
+    // 구매 버튼 클릭 이벤트
+    $('.btn-pay-ready').on('click', function (e) {
+        e.preventDefault(); // 기본 동작 방지
+
+        // 클릭된 버튼(this)
+        const clickedButton = $(this);
+
+        // 데이터 가져오기
+        const name = clickedButton.data("name");
+        const cost = clickedButton.data("cost");
+        const meal_idx = clickedButton.data("meal_idx");
+        const count = clickedButton.data("count");
+        console.log(name);
+        console.log(cost);
+        console.log(meal_idx);
+        console.log(count);
+        // 팝업 호출
+        layerPopup('정말로 구매하시겠습니까?', '확인', '취소', function () {
+            btn1Act(name,cost,meal_idx,count); // 확인 버튼 클릭 시 동작
+        }, btn2Act);
     });
 });
+
+
+
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
@@ -247,14 +276,52 @@ $(function() {
 	});
 	
 	/* 알림 팝업 */
-	function btn1Act() {
+	function btn1Act(name,cost,meal_idx,count) {
+		
+		$.ajaxSetup({
+		    beforeSend: function (xhr) {
+		        const token = $('meta[name="_csrf"]').attr('content');
+		        const header = $('meta[name="_csrf_header"]').attr('content');
+		        xhr.setRequestHeader(header, token);
+		    },
+		});
 		// 1번버튼 클릭시 수행할 내용
 		console.log('1번 버튼 동작');
+		//e.preventDefault();
+/* 
+	    const name = $("#name").data("name");
+	    const cost = $("#cost").data("cost");
+	    const meal_idx = $("#meal_idx").data("meal_idx");
+	    const count = $("#count").data("count");
+ */
+	    
+	    
+	    console.log(name);
+	    console.log(cost);
+	    
 
+	    $.ajax({
+	        type: "POST",
+	        url: "/ad/mealTicket/payReady",
+	        contentType: 'application/json', // JSON 형식의 Content-Type
+	        data: JSON.stringify({ // 데이터를 JSON 문자열로 변환
+	        	meal_idx:meal_idx,
+	        	count:count,
+	        	name: name,
+	        	cost: cost,
+	        }),
+	        success: function (response) {
+	            window.location.href = response.next_redirect_pc_url;
+	        },
+	        error: function (xhr, status, error) {
+	            console.error("결제 준비 실패:", error);
+	            alert("결제 준비에 실패했습니다. 다시 시도해주세요.");
+	        },
+	    });
 		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
 		removeAlert(); // 기존팝업닫기
 		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
+		
 	}
 	
 	function btn2Act() {
@@ -263,30 +330,7 @@ $(function() {
 		removeAlert(); // 팝업닫기
 	}
 	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
-
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
 	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-
 
 </script>
 
