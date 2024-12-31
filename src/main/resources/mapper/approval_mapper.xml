@@ -349,9 +349,10 @@ content = VALUES(content); -->
 	<!-- 기안리스트 -->
 	<select id="getApprovalMyListData" resultType="kr.co.porkandspoon.dto.ApprovalDTO" parameterType="map">
 		WITH user_parent AS (
-		    SELECT parent 
-		    FROM user 
-		    WHERE username = 'smpark'
+		    SELECT u.parent, de.text AS dept_text
+		    FROM user u
+		    LEFT JOIN department de ON u.parent = de.id
+		    WHERE u.username = #{loginId}
 		)
 		SELECT 
 			d.draft_idx 
@@ -369,7 +370,8 @@ content = VALUES(content); -->
 				LIMIT 1
 			) AS approval_date
 			,de.text AS dept_text
-			,c.content AS status_name 
+			,c.content AS status_name
+			,(SELECT dept_text FROM user_parent) AS user_dept_text 
 			,COUNT(*) OVER() AS total_count
 			FROM draft d 
 			LEFT JOIN user u ON d.username = u.username 
