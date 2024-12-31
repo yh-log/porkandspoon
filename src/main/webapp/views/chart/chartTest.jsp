@@ -107,7 +107,7 @@
 <!--  	<script src='/resources/js/jstree.js'></script> -->
 
 <script src='/resources/js/common.js'></script>
-<script src='/resources/js/charttest.js'></script>
+<script src='/resources/js/charjstree.js'></script>
 	
 
 <!-- select  -->
