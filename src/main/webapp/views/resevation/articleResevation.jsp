@@ -202,22 +202,38 @@
 
 <script>
 
+	var section= 'article';
+
 	$(document).ready(function(){
 	    // 카테고리 제목 클릭 시 슬라이드 토글
 	    $('.category-title').click(function(){
 	        $(this).next('.item-list').slideToggle();
 	    });
+	    getAjax('/articleList','JSON')
 	});
 
 	function detail(no) {
 		console.log("등장",no);
+		
 		var data = {
 				no: no
 		}
-		getAjax('/itemDetail','JSON',data);
+		
+		$.ajax({
+	        type: 'GET',
+	        url: '/itemDetail',
+	        data: data,
+	        dataType: 'JSON',
+	        success: function(response) {
+	            detailList(response);
+	        },
+	        error: function(e) {
+	            console.log(e);
+	        }
+	    });
 	}
 		
-	function getSuccess(response){
+	function detailList(response){
 		console.log(response);
 		var content = '';
 		content +='<p class="detail-p">상세정보</p>';

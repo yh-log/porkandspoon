@@ -41,7 +41,16 @@ public class ResevationController {
 		return mav;
 	}
 	
-	// 예약하기 페이지에 물품 상세정보
+	// 물품 예약 리스트 조회 ajax
+	@GetMapping(value="/articleList")
+	public List<CalenderDTO> articleList() {
+		
+		List<CalenderDTO> dto = resService.articleList();
+		
+		return dto;
+	}
+	
+	// 예약하기 페이지에 물품 상세정보 ajax
 	@GetMapping(value="/itemDetail")
 	public Map<String,Object> itemDetail(@RequestParam String no){
 		
