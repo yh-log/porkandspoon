@@ -5,7 +5,7 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.BoardDAO">
 	
-	<!-- 게시판 글 등록 -->
+	<!-- 공지사항 게시판 글 등록 -->
 	<insert
 		useGeneratedKeys="true"
 	   	keyColumn="board_idx"
@@ -28,13 +28,40 @@
 	    )
 	</insert>
 	
-	<!-- 게시글 수정 -->
+	<!-- 라이브러리 게시판 글 등록 -->
+	<insert
+		useGeneratedKeys="true"
+	   	keyColumn="board_idx"
+	   	keyProperty="board_idx"
+	 	id="setLbBoardwrite"
+	 	parameterType="kr.co.porkandspoon.dto.BoardDTO">
+	    INSERT INTO library_board (
+	        username,   
+	        subject,  
+	        content
+	    )
+	    VALUES (
+	       	#{username},
+	        #{subject}, 
+	        #{content}
+	    )
+	</insert>
+	
+	<!-- 공지사항 게시글 수정 -->
 	<update id="setBoardUpdate" parameterType="kr.co.porkandspoon.dto.BoardDTO">
 		UPDATE free_board SET
 			subject = #{subject},
 			content = #{content},
 			board_state = #{board_state},
 			department = #{department}
+		WHERE board_idx = #{board_idx}
+	</update>
+	
+	<!-- 라이브러리 게시글 수정 -->
+	<update id="setlbBoardUpdate" parameterType="kr.co.porkandspoon.dto.BoardDTO">
+		UPDATE library_board SET
+			subject = #{subject},
+			content = #{content}
 		WHERE board_idx = #{board_idx}
 	</update>
 	
@@ -57,10 +84,24 @@
 	        )
 	</insert>
 	
+	<!-- 등록 시 아이디 및 부서 가져오기 -->
+	<select id="getUsername" resultType="kr.co.porkandspoon.dto.BoardDTO">
+	    SELECT 
+	        u.name AS name, 
+	        d.text AS text
+	    FROM 
+	        user u
+	    LEFT JOIN 
+	        department d 
+	    ON 
+	        u.parent = d.id
+	    WHERE 
+	        u.username = #{username}
+	</select>
 	
-	<!-- 게시판 리스트 및 검색 -->
+	<!-- 공지사항 게시판 리스트 및 검색 -->
 	<select id="boardList" parameterType="map" resultType="kr.co.porkandspoon.dto.BoardDTO">
-    	SELECT 
+    SELECT 
         f.board_idx,
         f.username,
         u.name AS userNick,
@@ -91,34 +132,95 @@
              </choose>
              )
          </if>
-        ) AS totalpage
-    	FROM 
-        free_board f
-        LEFT JOIN user u ON f.username = u.username
-        LEFT JOIN department d ON u.parent = d.id
-    	WHERE 
-        f.use_yn = 'Y' <!-- board_state 조건 추가 -->
-        <if test="keyword != null and keyword != ''">
-            AND (
-            <choose>
-                <when test="option == 'dept'">
-                    d.text LIKE CONCAT('%', #{keyword}, '%')
-                </when>
-                <when test="option == 'name'">
-                    f.username LIKE CONCAT('%', #{keyword}, '%')
-                </when>
-                <when test="option == 'subject'">
-                    f.subject LIKE CONCAT('%', #{keyword}, '%')
-                </when>
-            </choose>
-            )
-        </if>
-    	ORDER BY 
-        f.board_idx DESC
-    	LIMIT #{offset}, #{limit}
+	        ) AS totalpage
+	    FROM 
+	        free_board f
+	    LEFT JOIN user u ON f.username = u.username
+	    LEFT JOIN department d ON u.parent = d.id
+	    WHERE 
+	        f.use_yn = 'Y' <!-- board_state 조건 추가 -->
+	        <if test="keyword != null and keyword != ''">
+	            AND (
+	            <choose>
+	                <when test="option == 'dept'">
+	                    d.text LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    f.username LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'subject'">
+	                    f.subject LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	            </choose>
+	            )
+	        </if>
+	    ORDER BY 
+	        CASE WHEN f.board_notice = 'Y' THEN 1 ELSE 2 END, 
+	        f.board_idx DESC
+	    LIMIT #{offset}, #{limit}
 	</select>
 	
-	<!-- 해당 게시글의 정보 가져오기 -->
+	<!-- 라이브러리 게시판 리스트 및 검색 -->
+	<select id="lbboardList" parameterType="map" resultType="kr.co.porkandspoon.dto.BoardDTO">
+    SELECT 
+        l.board_idx,
+        l.username,
+        u.name AS userNick,
+        l.subject,
+        l.content,
+        l.count,
+        l.create_date,
+        l.use_yn,
+        d.text AS text, 
+        (SELECT CEIL(COUNT(*) / #{limit}) 
+         FROM library_board l
+         LEFT JOIN user u ON l.username = u.username
+         LEFT JOIN department d ON u.parent = d.id
+         WHERE l.use_yn = 'Y' <!-- board_state 조건 추가 -->
+         <if test="keyword != null and keyword != ''">
+             AND (
+             <choose>
+                 <when test="option == 'dept'">
+                     d.text LIKE CONCAT('%', #{keyword}, '%')
+                 </when>
+                 <when test="option == 'name'">
+                     l.username LIKE CONCAT('%', #{keyword}, '%')
+                 </when>
+                 <when test="option == 'subject'">
+                     l.subject LIKE CONCAT('%', #{keyword}, '%')
+                 </when>
+             </choose>
+             )
+         </if>
+	        ) AS totalpage
+	    FROM 
+	        library_board l
+	    LEFT JOIN user u ON l.username = u.username
+	    LEFT JOIN department d ON u.parent = d.id
+	    WHERE 
+	        l.use_yn = 'Y' <!-- board_state 조건 추가 -->
+	        <if test="keyword != null and keyword != ''">
+	            AND (
+	            <choose>
+	                <when test="option == 'dept'">
+	                    d.text LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    l.username LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'subject'">
+	                    l.subject LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	            </choose>
+	            )
+	        </if>
+	    ORDER BY 
+	        l.board_idx DESC
+	    LIMIT #{offset}, #{limit}
+	</select>
+
+	
+	<!-- 해당 공지사항 게시글의 정보 가져오기 -->
 	<select id="boardDetail" resultType="kr.co.porkandspoon.dto.BoardDTO" parameterType="String">
 	    SELECT 
 	        fb.board_idx,
@@ -143,16 +245,48 @@
 	    WHERE 
 	        fb.board_idx = #{board_idx};
 	</select>
+	
+	<!-- 해당 라이브러리 게시글의 정보 가져오기 -->
+	<select id="lbboardDetail" resultType="kr.co.porkandspoon.dto.BoardDTO" parameterType="String">
+	    SELECT 
+	        lb.board_idx,
+	        lb.*,           
+	        u.name AS newname,  
+	        u.parent,       
+	        d.text AS text   
+	    FROM 
+	        library_board lb
+	    LEFT JOIN 
+	        user u
+	        ON lb.username = u.username
+	    LEFT JOIN 
+	        department d
+	        ON u.parent = d.id
+	    WHERE 
+	        lb.board_idx = #{board_idx};
+	</select>
 
 	
-	<!-- 해당 게시글의 파일 정보 가져오기 -->
+	<!-- 해당 공지사항 게시글의 파일 정보 가져오기 -->
 	<select id="getBoardFile" resultType="kr.co.porkandspoon.dto.FileDTO">
 		SELECT * FROM file WHERE pk_idx = #{board_idx} AND code_name = 'fb002';
 	</select>
 	
-	<!-- 게시글 삭제 -->
+	<!-- 해당 라이브러리 게시글의 파일 정보 가져오기 -->
+	<select id="getlbBoardFile" resultType="kr.co.porkandspoon.dto.FileDTO">
+		SELECT * FROM file WHERE pk_idx = #{board_idx} AND code_name = 'lb002';
+	</select>
+	
+	<!-- 공지사항 게시글 삭제 -->
 	<update id="boardDelete" parameterType="int">
 	    UPDATE free_board
+	    SET use_yn = 'N'
+	    WHERE board_idx = #{board_idx};
+	</update>
+	
+	<!-- 라이브러리 게시글 삭제 -->
+	<update id="lbboardDelete" parameterType="int">
+	    UPDATE library_board
 	    SET use_yn = 'N'
 	    WHERE board_idx = #{board_idx};
 	</update>
@@ -260,7 +394,7 @@
 	</insert>
 	
 	<update id="setNotice" parameterType="map">
-    	UPDATE free_board SET board_notice = #{board_notice} WHERE board_idx = #{board_idx};
+    	UPDATE free_board SET board_notice = #{board_notice}, notice_date = #{notice_date} WHERE board_idx = #{board_idx};
 	</update>
 	
 	<update id="setOldNotice">
@@ -272,7 +406,7 @@
 	            SELECT board_idx
 	            FROM free_board
 	            WHERE board_notice = 'Y'
-	            ORDER BY recreate_date ASC
+	            ORDER BY notice_date ASC
 	            LIMIT 1
 	        ) AS temp
 	    )

@@ -25,6 +25,20 @@ public class BoardDTO {
 	private String recreate_date;
 	private String new_filename;
 	private String status;
+	private int sort_order;
+	private String name;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getSort_order() {
+		return sort_order;
+	}
+	public void setSort_order(int sort_order) {
+		this.sort_order = sort_order;
+	}
 	public String getStatus() {
 		return status;
 	}

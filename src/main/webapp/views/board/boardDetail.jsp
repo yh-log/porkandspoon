@@ -333,8 +333,8 @@
 							<div class="row">
 								<div class="col-sm-2">
 									<c:if test="${boardInfo.username == pageContext.request.userPrincipal.name}">
-									    <button class="btn btn-outline-primary btn-update board-update">수정</button>
-									    <button class="btn btn-outline-secondary btn-delete board-delete">삭제</button>
+									    <button class="btn btn-outline-primary btn-update board-update" onclick="updateboard(${boardInfo.board_idx}, '${boardInfo.username}')">수정</button>
+									    <button class="btn btn-outline-secondary btn-delete board-delete" onclick="deleteboard(${boardInfo.board_idx})">삭제</button>
 									</c:if>
 								</div>
 								<div class="col-sm-9"></div>
@@ -433,7 +433,7 @@
 	        return;
 	    };
 		const board_idx = '${boardInfo.board_idx}';
-		const username = '${boardInfo.username}';
+		const username = document.getElementById("currentUser").textContent.trim();
 		const data = {board_idx: board_idx, username: username, review_content: reviewText};
 		httpAjax('POST', '/board/review/write', data);
 	}
@@ -458,23 +458,28 @@
         console.log('AJAX 호출 성공: ', response);
     	
         // 댓글 삭제
-    	if(response.status == 'delete') {
+    	if(response.status === 'delete') {
 	        location.reload();
     	}
     	
         // 댓글 작성
-    	if(response.status = 'write') {
+    	if(response.status === 'write') {
     		location.reload();
     	}
         
     	// 댓글 수정
-    	if(response.status = 'update') {
+    	if(response.status === 'update') {
     		console.log('수정 완료');
     	}
     	
     	// 대댓글 작성
-    	if(response.status = 'rewrite') {
+    	if(response.status === 'rewrite') {
     		location.reload();
+    	}
+    	
+    	// 게시글 삭제
+    	if(response.status === 'deleteboard') {
+    		window.location.href = '/board/View';
     	}
         
     }
@@ -665,51 +670,56 @@
     
     
     
+	function deleteboard(data) {
+		layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', function() { secondBtn1Act(data); },
+			secondBtn2Act);
+		console.log(data);
+	}
     
-    
-    
-    
-    
-	// 게시글 삭제 팝업
-	$('.board-delete').on(
-			'click',
-			function() {
-				layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', writedeleteY,
-						writedeleteN);
-			});
-	
 	// 게시글 삭제 버튼
-	function writedeleteY() {
-		console.log('게시글 삭제 하기');
+	function secondBtn1Act(data) {
+		console.log('받아온idx',data);
+		params = {board_idx: data};
+		url = '/board/delete';
+		httpAjax('POST', url, params);
 		removeAlert();
 	}
 
 	// 게시글 삭제 취소버튼
-	function writedeleteN() {
+	function secondBtn2Act() {
 		console.log('게시글 삭제 취소');
 		removeAlert();
 	}
-	
-
-	// 게시글 수정 팝업
-	$('.board-update').on(
-			'click',
-			function() {
-				layerPopup('게시글을 수정하시겠습니까?', '예', '아니오', writeupdateY,
-						writeupdateN);
-			});
-	
-	// 게시글 수정 버튼
-	function writeupdateY() {
-		console.log('게시글 수정 하기');
-		removeAlert();
+    
+    
+	function updateboard(data) {
+	    layerPopup(
+	        '게시글을 수정하시겠습니까?', 
+	        '예', 
+	        '아니오', 
+	        function() { updateboards(data); }, // "예" 버튼 클릭 시 호출
+	        secondBtn2Act // "아니오" 버튼 클릭 시 호출
+	    );
+	    console.log('수정 요청 idx:', data);
 	}
 
-	// 게시글 수정 취소버튼
-	function writeupdateN() {
-		console.log('게시글 수정 취소');
-		removeAlert();
+	// 수정 페이지로 리다이렉트
+	function updateboards(data) {
+	    console.log('수정 페이지 이동:', data);
+	    removeAlert(); // 팝업 닫기
+	    location.href = '/boardupdate/View/' + data; // 수정 페이지로 이동
 	}
+
+	// 취소 버튼
+	function secondBtn2Act() {
+	    console.log('수정 취소');
+	    removeAlert();
+	}
+	
+	
+	
+
+	
 	
 	// 모달창 열기
 	$('.btnModal').on('click', function() {

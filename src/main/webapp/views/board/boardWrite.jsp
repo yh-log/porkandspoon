@@ -108,7 +108,7 @@
 							<tbody>
 								<tr class="table-sun" id="user-name-insert">
 									<th class="table-text table-text-text">작성자</th>
-									<td class="table-text"><sec:authentication property="principal.username"/></td>
+									<td class="table-text"></td>
 								</tr>
 								<tr class="table-sun">
 									<th class="table-text table-text-text">제목</th>
@@ -169,9 +169,21 @@
 <script src='/resources/js/common.js'></script>
 	
 <script>
-	var username = $('#currentUser').text().trim();
-	$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
-    console.log('로그인 한 사용자 ID : ', username);
+	$(document).ready(function () {
+		var username = $('#currentUser').text().trim();
+		$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
+		const url = '/getUsername';
+		const params = {username: username};
+		httpAjax('GET', url, params);
+		
+	});
+	
+	function httpSuccess(response) {
+		
+		if(response.status === 'username') {
+			 $('#user-name-insert td').text(response.name);
+		}
+	}
 	$('.btn-write').on('click', function () {
         layerPopup(
             '게시글을 등록하시겠습니까?',
@@ -186,6 +198,22 @@
     function reviewupdateY() {
         console.log('게시글 등록 하기');
         removeAlert(); // 팝업 닫기
+        var subject = $('input[name="subject"]').val().trim(); 
+        var content = $('textarea[name="contentss"]').val().trim(); 
+
+        if (!subject || !content) {
+        	layerPopup(
+    	            '제목과 내용 모두 입력해주세요.',
+    	            '닫기',
+    	            null,
+    	            function () {
+    	                removeAlert();
+    	            },
+    	            function () {}
+    	        );
+    	        return;
+        }
+        
         url = '/board/write';
         textEaditorWrite(url);
     }
