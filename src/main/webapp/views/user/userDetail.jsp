@@ -18,6 +18,8 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
 
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
@@ -97,6 +99,8 @@
 							<h5 id="subMenuSubject">직원정보</h5>
 						</div>
 						<div class="cont-body"> 
+							<input type="hidden" name="username" value="${username}">
+							<button class="btn btn-sm btn-outline-secondary" style="float: right;" type="button" onclick="layerPopup('비밀번호를 초기화하시겠습니까?','확인','취소', passwordReset, removeAlert)">비밀번호 초기화</button>
 							<table>
 								<tr>
 									<td rowspan="4"><img src="" id="userProfile"/></td>
@@ -225,8 +229,8 @@
 								<tr>
 									<td colspan="6">
 										<div id="btn-gap">
-											<button type="button" class="btn btn-primary">수정</button>
-											<button type="button" class="btn btn-outline-secondary">취소</button>
+											<button type="button" class="btn btn-primary" onclick="redirectToUpdate()">수정</button>
+											<button type="button" class="btn btn-outline-secondary" onclick="location.href='/ad/user/listView'">목록</button>
 										</div>
 									</td>
 								</tr>
@@ -263,9 +267,8 @@
 
 $(document).ready(function(){
     
-    // todo - 나중에 동적으로 username 받아서 넘기기 (list, write 에서)
-    var username = 'qtgks9';
-    getAjax('/ad/user/detail/qtgks9', username);
+	var username = $('input[name="username"]').val();
+    httpAjax('POST', '/ad/user/detail/'+username, username);
     
 });
 
@@ -344,7 +347,25 @@ function httpSuccess(response){
                 }
                 if (item.content) {
                     const contentElement = row.querySelector('span[id$="content-value"]');
-                    if (contentElement) contentElement.textContent = item.content;
+                    if (contentElement) {
+                        // content 값에 따라 표시될 텍스트 설정
+                        switch (item.content) {
+                            case 'GR':
+                                contentElement.textContent = '졸업';
+                                break;
+                            case 'EN':
+                                contentElement.textContent = '재학';
+                                break;
+                            case 'LV':
+                                contentElement.textContent = '휴학';
+                                break;
+                            case 'DR':
+                                contentElement.textContent = '중퇴';
+                                break;
+                            default:
+                                contentElement.textContent = '알 수 없음'; // 예외 처리
+                        }
+                    }
                 }
             } else {
                 console.warn(`타입 ${item.type}에 해당하는 행을 찾을 수 없습니다.`);
@@ -354,7 +375,25 @@ function httpSuccess(response){
 	}
 } 
 
+function redirectToUpdate(){
+	var username = $('input[name="username"]').val();
+	location.href = '/ad/user/update/' + username;
+}
 
+function passwordReset(){
+	var username = {'username' : $('input[name="username"]').val()}
+	getAjax('/ad/user/passwordReset', 'JSON', username);
+}
+
+function getSuccess(response){
+	console.log(response === true);
+	removeAlert();
+	if(response){
+		layerPopup("비밀번호 초기화가 안료되었습니다.", "확인", false, removeAlert, removeAlert);
+	}else{
+		layerPopup("비밀번호 초기화에 실패했습니다.", "확인", false, removeAlert, removeAlert);
+	}
+}
 </script>
 
 </html>

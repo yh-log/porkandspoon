@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,6 @@ import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +43,6 @@ import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.CareerDTO;
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.ResponseDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.UserService;
 import kr.co.porkandspoon.util.CommonUtil;
@@ -75,14 +73,15 @@ public class UserController {
 	        @RequestParam(value = "page", defaultValue = "1") int page, 
 	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
 	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+	        @RequestParam(defaultValue = "", value="keyword") String keyword, 
+	        @RequestParam(defaultValue = "", value = "userYn") String userYn) {
 
 	    logger.info("keyword => " + keyword);
 	    logger.info("option => " + option);
 	    logger.info("page => " + page);
 	    logger.info("cnt => " + cnt);
 
-	    List<UserDTO> dtoList = userService.userList(page, cnt, option, keyword);
+	    List<UserDTO> dtoList = userService.userList(page, cnt, option, keyword, userYn);
 
 	    return dtoList;
 	}
@@ -97,7 +96,7 @@ public class UserController {
 	 * author yh.kim (24.12.18) 
 	 * 부서 리스트 이동
 	 */
-	@GetMapping(value="/ad/dept/list")
+	@GetMapping(value="/ad/dept/listView")
 	public ModelAndView deptListView() {
 		return new ModelAndView("/user/deptList");
 	}
@@ -115,7 +114,7 @@ public class UserController {
 	 * author yh.kim (24.12.18) 
 	 * 직원 등록 페이지 이동
 	 */
-	@GetMapping(value="/ad/user/write")
+	@GetMapping(value="/ad/user/writeView")
 	public ModelAndView userWriteView() {
 		return new ModelAndView("/user/userWrite");
 	}
@@ -124,18 +123,30 @@ public class UserController {
 	 * author yh.kim (24.12.18) 
 	 * 직원 상세 페이지 이동
 	 */
-	@GetMapping(value="/ad/user/detail")
-	public ModelAndView userDetailView() {
-		return new ModelAndView("/user/userDetail");
+	@GetMapping(value="/ad/user/detailView/{username}")
+	public ModelAndView userDetailView(@PathVariable String username) {
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("username", username);
+		mav.setViewName("/user/userDetail");
+		
+		return mav;
+		
 	}
 	
 	/**
 	 * author yh.kim (24.12.19) 
 	 * 직원 수정 페이지 이동
 	 */
-	@GetMapping(value="/ad/user/update")
-	public ModelAndView userUpdateView() {
-		return new ModelAndView("/user/userUpdate");
+	@GetMapping(value="/ad/user/update/{username}")
+	public ModelAndView userUpdateView(@PathVariable String username) {
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("username", username);
+		mav.setViewName("/user/userUpdate");
+		
+		return mav;
+		
 	}
 	
 	/**
@@ -535,7 +546,7 @@ public class UserController {
 	 * author yh.kim (24.12.23)
 	 * 부서 리스트 조회
 	 */
-	@GetMapping(value="/dept/list")
+	@GetMapping(value="/ad/dept/list")
 	public List<DeptDTO> deptList() {
 		
 		List<DeptDTO> deptList = userService.deptList();
@@ -554,6 +565,8 @@ public class UserController {
 		logger.info(CommonUtil.toString(dto));
 		logger.info(CommonUtil.toString(careerStr));
 		logger.info(file.getOriginalFilename());
+		
+		 UserDTO result = new UserDTO();
 		
 		try {
 		    ObjectMapper objectMapper = new ObjectMapper();
@@ -583,7 +596,7 @@ public class UserController {
 		    String hash = encoder.encode("1111");
 			dto.setPassword(hash);
 		    
-		    boolean result = userService.userWrite(dto, file);
+		    result = userService.userWrite(dto, file);
 		    logger.info("직원 등록 결과 => " + result);
 		    
 		} catch (JsonMappingException e) {
@@ -594,7 +607,7 @@ public class UserController {
 		    e.printStackTrace();
 		}
 		
-		return null;
+		return result;
 	}
 	
 	/**
@@ -640,6 +653,8 @@ public class UserController {
 			logger.info(CommonUtil.toString(dto));
 			logger.info(CommonUtil.toString(careerStr));
 			logger.info(file.getOriginalFilename());
+			
+			UserDTO result = new UserDTO();
 		
 			try {
 				ObjectMapper obj = new ObjectMapper();
@@ -650,7 +665,7 @@ public class UserController {
 				// DTO에 설정
 				dto.setCareer(careerList);
 				
-				boolean result = userService.userUpdate(dto, file);
+				result = userService.userUpdate(dto, file);
 			    logger.info("직원 업데이트 결과 => " + result);
 			    
 			} catch (JsonMappingException e) {
@@ -661,7 +676,7 @@ public class UserController {
 				e.printStackTrace();
 			}
 			
-		return null;
+		return result;
 	}
 	
 	/**
@@ -864,5 +879,99 @@ public class UserController {
 		
 		return dto;
 	}
+	
+	/**
+	 * author yh.kim (24.12.28)
+	 * 직원 비밀번호 초기화
+	 */
+	@GetMapping(value="/ad/user/passwordReset")
+	public boolean passwordReset(@ModelAttribute UserDTO dto) {
+		
+		logger.info("받아온 값 " + dto);
+		
+		if(dto == null) {
+			return false;
+		}
+		
+		dto.setPassword("1111");
+		boolean result = userService.changePassword(dto);
+		
+		return result;
+	}
+	
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 리스트 페이지 이동
+	 */
+	@GetMapping(value="/ad/store/list")
+	public ModelAndView storeListView() {
+		return new ModelAndView("/user/storeList");
+	}
+	
+	/**
+	 * author yh.kim (24.12.28)
+	 * 직영점 리스트
+	 */
+	@GetMapping(value="/ad/store/getList")
+	public List<DeptDTO> storeList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+		
+		System.out.println("실행됨?");
+		
+		List<DeptDTO> storeList = userService.storeList(page, cnt, option, keyword);
+		
+		System.out.println(CommonUtil.toString(storeList));
+		
+		// Null 체크 및 빈 리스트 반환 방지
+        if (storeList == null) {
+            storeList = new ArrayList<>();
+        }
+		
+     // 리스트의 각 요소 처리
+		
+		 for (DeptDTO deptDTO : storeList) { if (deptDTO != null) { String type = "S";
+		 deptDTO.setType(type); } }
+		 
+		return storeList;
+	}
+	
+	
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 생성 요청 리스트 
+	 */
+	@GetMapping(value="/ad/store/createList")
+	public List<ApprovalDTO> ceateStoreList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+		
+		System.out.println("실행됨? 신청 리스트임!! ");
+		List<ApprovalDTO> storeList = userService.ceateStoreList(page, cnt, option, keyword);
+		
+		return storeList;
+	}
+	
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 폐점 요청 리스트
+	 */
+	@GetMapping(value="/ad/store/deleteList")
+	public List<ApprovalDTO> deleteStoreList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+		
+		System.out.println("실행됨? 신청 리스트임!! ");
+		List<ApprovalDTO> storeList = userService.deleteStoreList(page, cnt, option, keyword);
+		
+		return storeList;
+	}
+	
 	
 }

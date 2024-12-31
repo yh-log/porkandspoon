@@ -159,6 +159,7 @@
 						</div>
 						<div class="cont-body"> 
 							<!-- 등록 폼 작성 -->
+							<input type="hidden" name="username" value="${username}">
 							<form>
 								<table style="width: 100%; table-layout: fixed;">
 									<tr>
@@ -343,9 +344,9 @@
 									<tr>
 										<td colspan="6">
 											<div id="btn-gap">
-												<button type="button" class="btn btn-primary" onclick="userUpdate()">수정</button>
+												<button type="button" class="btn btn-primary" onclick="layerPopup('직원을 수정하시겠습니까?','수정','취소', userUpdate, removeAlert)">수정</button>
 												<!-- todo - 리스트로 이동 -->
-												<button type="button" class="btn btn-outline-secondary">취소</button>
+												<button type="button" class="btn btn-outline-secondary" onclick="redirectToUpdate()">취소</button>
 											</div>
 										</td>
 									</tr>
@@ -382,14 +383,20 @@ $(document).ready(function(){
     getAjax('/dept/list');
     
     // todo - 나중에 동적으로 username 받아서 넘기기 (list, write 에서)
-    var username = 'qtgks9';
-    httpAjax('POST', '/ad/user/detail/qtgks9', username);
+    
+    var username = $('input[type="hidden"][name="username"]').val();
+    httpAjax('POST', '/ad/user/detail/'+username, username);
     
 });
 
 function clearLogo() {
     const userProfile = document.getElementById('userProfile');
     userProfile.style.display = 'none';
+}
+     
+function redirectToUpdate(){
+	var username = $('input[name="username"]').val();
+	location.href = '/ad/user/detailView/' + username;
 }
      
 </script>

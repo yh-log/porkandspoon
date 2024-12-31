@@ -1,3 +1,4 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -5,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>부서 리스트</title>
+<title>직영점 리스트</title>
 
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
@@ -69,28 +70,28 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">부서 리스트</h4>
+					<h4 class="menu-title">직영점 리스트</h4>
 					<ul>
-						<li class="active" id="firstMenu"><a href="#">브랜드 리스트</a></li>
-						<li id="secondMenu"><a href="/ad/store/list">직영점 리스트</a></li>
+						<li id="firstMenu"><a href="#">브랜드 리스트</a></li>
+						<li id="secondMenu" class="active" i><a href="/ad/store/list">직영점 리스트</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject">브랜드</h5>
+							<h5 id="subMenuSubject">직영점</h5>
 						</div>
 						<div class="cont-body"> 
 							<div class="row">
 								<div class="col-5 col-lg-5" id="filterLayout">
-									<span onclick="listCall('/ad/dept/getList')">리스트</span>
-									<span onclick="listCall('/ad/dept/createList')">생성요청</span>
-									<span onclick="listCall('/ad/dept/deleteList')">삭제요청</span>
+									<span onclick="listCall('/ad/store/getList')">리스트</span>
+									<span onclick="listCall('/ad/store/createList')">생성요청</span>
+									<span onclick="listCall('/ad/store/deleteList')">삭제요청</span>
 								</div>
 								<div class="searchLayout" class="col-7 col-lg-7">
 									<select class="form-select selectStyle" id="searchOption">
-										<option value="dept">부서</option>
+										<option value="dept">직영점명</option>
 										<option value="name">이름</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
@@ -148,19 +149,9 @@ var currentOption = 'all';
 
 $(document).ready(function () {
     // 페이지 로드 시 첫 번째 메뉴 클릭 트리거
-    $('#firstMenu').trigger('click');
+	listCall('/ad/store/getList');
 });
 
-// 첫 번째 메뉴 클릭 이벤트
-$('#firstMenu').on('click', function() {
-    $('#firstMenu').addClass('active');
-    $('#secondMenu').removeClass('active');
-    
-    currentOption = 'all';
-    
-    // URL 설정 및 호출
-    listCall('/ad/dept/getList');
-});
 
 // URL 변경 및 페이지 호출
 function listCall(url) {
@@ -250,23 +241,27 @@ function getSuccess(response) {
         var typeCheck = response[0];
 
         // 브랜드 리스트 출력
-        if (typeCheck.type === "B") {
-            console.log('브랜드리스트');
+        if (typeCheck.type === "S") {
+            console.log('직영점리스트');
 
-            // 테이블 헤더 추가
-            var headContent = '<tr><th>부서코드</th><th>브랜드명</th><th>대표직원</th><th>대표번호</th><th>시행일</th><th>활성</th></tr>';
+            var headContent = '<tr><th>직영점코드</th><th>직영점명</th><th>직영점주</th><th>시행일</th><th>휴점</th><th>활성</th></tr>';
             $('#listHead').append(headContent);
-
+            
             var content = '';
 
             // 테이블 데이터 추가
             response.forEach(function (item) {
                 content += '<tr>';
                 content += '<td>' + item.id + '</td>';
-                content += '<td><a href="/ad/dept/detail/'+item.id+'">' + item.text + '</a></td>';
-                content += '<td>' + item.creater + ' ' + item.content + '</td>';
-                content += '<td>' + item.position + '</td>';
+                content += '<td><a href="/ad/store/detail/'+item.id+'"/>' + item.text + ' ' + item.name + '</a></td>';
+                content += '<td>' + item.name + '</td>';
                 content += '<td>' + item.use_date + '</td>';
+                
+                if (item.is_close === "N") {
+                    content += '<td><button class="btn icon btn-success" style="margin:0px 5px;">운영</button></td>';
+                } else {
+                    content += '<td><button class="btn icon btn-light" style="margin:0px 5px;">휴점</button></td>';
+                }
 
                 if (item.use_yn === "Y") {
                     content += '<td><button class="btn icon btn-success" style="margin:0px 5px;">활성</button></td>';
@@ -276,7 +271,6 @@ function getSuccess(response) {
 
                 content += '</tr>';
             });
-
             $('#listBody').append(content);
         } else{
         	var headContent = '<tr><th>no</th><th colspan="2">문서제목</th><th>브랜드명</th><th>작성자</th><th>결재일</th></tr>';
@@ -287,7 +281,7 @@ function getSuccess(response) {
             response.forEach(function (item) {
             	content += '<tr>';
                 content += '<td>' + item.draft_idx + '</td>';
-                content += '<td colspan="2"><a href="/ad/dept/write/'+item.draft_idx+'">' + item.subject + '</td>';
+                content += '<td colspan="2"><a href="/ad/store/write/'+item.draft_idx+'"/>' + item.subject + '</a></td>';
                 content += '<td>' + item.name + '</td>';
                 content += '<td>' + item.user_name + ' ' + item.content + '</td>';
                 

@@ -20,4 +20,10 @@ public interface DeptDAO {
 
 	List<DirectstoreDTO> getDeptdata(Map<String, Object> params);
 
+	/**
+	 * author yh.kim (24.12.29) 
+	 * 조직도 데이터 조회
+	 */
+	List<DeptDTO> getChartData();
+
 }

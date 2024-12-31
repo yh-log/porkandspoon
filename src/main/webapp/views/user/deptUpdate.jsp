@@ -215,7 +215,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('브랜드를 수정하시겠습니까?','수정','취소', deptUpdate, removeAlert)">수정</button>
-									<button class="btn btn-outline-primary">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/dept/detail/${deptInfo.id}'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->

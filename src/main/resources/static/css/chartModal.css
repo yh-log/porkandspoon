@@ -1,0 +1,188 @@
+@charset "UTF-8";
+/* 모달 박스 */
+
+ 
+#chartModalBox {
+    width: 50%;
+    height: 540px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 0px 20px 0px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+ 
+ 	.chart {
+		width: 100%;
+		height: 600px;
+	}
+	
+	/* 조직도 모달 */
+	#modal .modal-cont-chart {
+	    width: 900px;
+	    height: auto;
+	    top: 20%;
+	}
+	
+	/* 조직도, 나의 결재선 버튼 스타일 변경 */
+	.chart-btn-style {
+		width: 100%;
+	    height: 100%;
+	    background-color: white;
+	    border: white;
+	}
+	
+	/* 조직도, 나의 결재선 td 높이 설정 */
+	.chart-td {
+		padding: 4px 16px;
+	}
+	
+	/* 조직도 리스트 스타일 변경 */
+	.chart-scroll {
+		text-align: left;
+		width: 100%;
+		height: auto;
+		overflow: auto;
+	}
+	
+	/* 조직도 리스트 스크롤을 위해 높이 지정 */
+	.chart-list-style {
+		width: 100%;
+	    height: 237px;
+	}
+	
+	/* 검색된 부서 및 사원 색상 변경 */
+	.jstree-default .jstree-search {
+	    font-style: normal;
+	    color: #393939;
+	    background-color: #cde7ff;
+	    font-weight: bold;
+	    border-radius: 6px;
+	}
+	
+	/* 조직도 검색창 스타일 변경 */
+	.chart-search {
+		padding: 3px 16px;
+	}
+	
+	/* 조직도 테이블 왼, 오 선 생성 */
+	.tbody-style {
+		border-left: 1px solid gainsboro;
+		border-right: 1px solid gainsboro;
+	}
+	
+	/* 넣기 빼기 버튼 스타일 */
+	.btn-inout {
+		height: 110px;
+	}
+	
+	/* 휴지통 아이콘 설정 */
+	.bi-icon {
+	 	color: gray;
+	 	cursor: pointer;
+	 }
+	 
+	 /* 결재라인 버튼 마진 설정 */
+	 .btn-line-write {
+	 	margin: 5px 0 0 0;
+	 	text-align: right;
+	 }
+	 
+	 /* 등록 취소 버튼 위치 */
+	 .btn-button {
+	 	text-align: right;
+	 }
+	 
+	 /* 결재라인 최대 4명 경고창 취소버튼 없에기 */
+	 .cancel{
+	 	display: none;
+	 }
+	 
+	 /* 결재라인 테이블 스타일 변경 */
+	 .card .user-list-style {
+	    border: 1px solid #cdcdcd;
+	    border-radius: 0px;
+	    margin-bottom: -0.8rem;
+	 }
+	 
+	 /* 결재라인 버튼 오른쪽으로 */
+	 .line-insert {
+	 	float: right;
+	 }
+	 
+.chartHeadBox {
+    display: flex;           /* Flexbox 활성화 */
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center;      /* 세로 중앙 정렬 (필요 시) */
+    padding: 0px;
+    height: 50px;          
+}
+
+.modal-close {
+    font-size: 24px;          /* X 버튼 크기 */
+    cursor: pointer;          /* 마우스 포인터 변경 */
+    color: #333;              /* X 버튼 색상 */
+}
+	 
+	
+	
+/* 테이블 전체 스타일 */
+#customTable {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* 테이블 너비 고정 */
+    border: none; /* 테이블 전체 테두리 제거 */
+}
+
+/* thead와 tfoot 고정 */
+#customTable thead, #customTable tfoot {
+    width: 100%;
+    display: table; /* 테이블 구조 유지 */
+    table-layout: fixed;
+}
+
+#customTable thead th, #customTable tfoot th {
+    height: 50px; /* 고정된 높이 */
+    line-height: 50px;
+    text-align: center;
+    font-weight: bold;
+    background-color: #f1f1f1;
+    border: none; /* 테두리 제거 */
+}
+
+/* tbody 스크롤 및 너비 조정 */
+#customTable tbody {
+    display: block; /* 블록 요소로 변환 */
+    width: 100%; /* 테이블 전체 너비 */
+    height: 200px; /* 고정 높이 */
+    overflow-y: auto; /* 세로 스크롤 */
+    overflow-x: hidden; /* 가로 스크롤 비활성화 */
+    border: none; /* 테두리 제거 */
+}
+
+#customTable tbody tr {
+    display: table; /* 테이블 구조 유지 */
+    table-layout: fixed; /* 열 크기 고정 */
+    width: 100%; /* 테이블 전체 너비 */
+}
+
+#customTable tbody td {
+    text-align: center;
+    padding: 8px;
+    border: none; /* 모든 테두리 제거 */
+    box-sizing: border-box; /* 여백 포함 크기 계산 */
+}
+
+/* thead와 tbody 경계선 제거 */
+#customTable thead th {
+    border: none; /* thead 테두리 제거 */
+}
+
+/* tbody 세로선 완전히 제거 */
+#customTable tbody td {
+    border-left: none !important;
+    border-right: none !important;
+}
+
