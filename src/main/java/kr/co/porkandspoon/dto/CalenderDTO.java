@@ -2,7 +2,7 @@ package kr.co.porkandspoon.dto;
 
 import java.time.LocalDateTime;
 
-public class CalenderDTO {
+public class CalenderDTO extends ResponseDTO{
 	
 	// 일정 테이블
 	private String idx;

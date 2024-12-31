@@ -38,4 +38,6 @@ public interface ResevationDAO {
 
 	CalenderDTO itemDetail(String no);
 
+	List<CalenderDTO> articleList();
+
 }
