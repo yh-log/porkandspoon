@@ -51,6 +51,16 @@
     	gap: 10px; /* 요소 간 간격 */
 	}
 	
+	div.inline-layout{
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+		margin-top: 15px;
+	    margin-left: 12px;
+	}
+	
 </style>
 
 
@@ -88,10 +98,13 @@
 						</div>
 						<div class="cont-body"> 
 							<div class="row">
-								<div class="col-7 col-lg-7">날짜 데이터
-									<input type="date" name="start_date"/> ~ <input type="date" name="end_date"/>
+								<div class="col-6 col-lg-6">
+									<div class="inline-layout">
+										<input type="date" name="start_date" class="form-control" /> ~ <input type="date" name="end_date" class="form-control" />
+										<input type="checkbox" name="all" id="dateAll" class="form-check-input form-check-primary form-check-glow"> 
+									</div>
 								</div>
-								
+								<div class="col-1 col-lg-1"></div>
 								<div id="searchLayout" class="col-5 col-lg-5">
 									<select class="form-select selectStyle" >
 										<option>부서</option>
@@ -150,7 +163,37 @@
 <script src='/resources/js/menu.js'></script>
 <script>
 
+$(document).ready(function () {
+    // 로딩 시 체크박스를 체크 상태로 설정
+    $('#dateAll').prop('checked', true);
 
+    // 체크박스 상태에 따라 동작 처리
+    handleDateAllState();
+});
+
+// 체크박스 상태를 기반으로 입력 필드 처리 함수
+function handleDateAllState() {
+    const dateAllCheckbox = document.getElementById('dateAll');
+    const startDateInput = document.querySelector('input[name="start_date"]');
+    const endDateInput = document.querySelector('input[name="end_date"]');
+
+    if (dateAllCheckbox.checked) {
+        // 체크되었을 때
+        startDateInput.value = '2015-01-01'; // 시작 날짜
+        endDateInput.value = '2025-12-31';   // 종료 날짜
+        startDateInput.disabled = true;      // 입력 비활성화
+        endDateInput.disabled = true;        // 입력 비활성화
+    } else {
+        // 체크 해제되었을 때
+        startDateInput.value = '';           // 값 초기화
+        endDateInput.value = '';             // 값 초기화
+        startDateInput.disabled = false;     // 입력 활성화
+        endDateInput.disabled = false;       // 입력 활성화
+    }
+}
+
+// 체크박스 변경 이벤트
+document.getElementById('dateAll').addEventListener('change', handleDateAllState);
 
 
 </script>
