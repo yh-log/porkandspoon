@@ -238,7 +238,6 @@
     function userWrite() {
         var isFormValid = validateForm();
         
-        
         if (isFormValid) {
             console.log('폼이 유효합니다.');
             
@@ -273,14 +272,15 @@
 	    		
 	    		var username = document.getElementById("username");
 	    		username.classList.add('is-invalid');
+	    		removeAlert();
 	    		
 	        }else{
 		        fileAjax('POST', '/ad/user/write', formData);
-		        username.classList.remove('is-invalid');
 	        }
             
         } else {
             console.log('폼에 잘못된 값이 있습니다.');
+            layerPopup("필수값을 입력해주세요.", "확인", false, removeAlert, removeAlert); // 실패 시 팝업
         }
     }
     
@@ -321,14 +321,34 @@
             
         } else {
             console.log('폼에 잘못된 값이 있습니다.');
+            layerPopup("필수값을 입력해주세요.", "확인", false);
         }
     }
     
-function fileSuccess(response){
+function fileSuccess(response) {
+    console.log(response);
+    removeAlert();
 
-	if(response.status == 200){
-		alert(response.message);
-	}
-	
+    if (response.status === 200) {
+        var msg = response.message;
+
+        // 팝업 확인 버튼에 따라 동작
+        layerPopup(msg, "확인", false, function() {
+            location.href = '/ad/user/detailView/' + response.username;
+        });
+    }else{
+    	layerPopup(msg, "확인", false, function() {
+            location.href = '/ad/user/detailView/' + response.username;
+        });
+    }
 }
+
+
+function btn1Act() {
+	removeAlert(); // 기존팝업닫기
+}
+function btn2Act() {
+	removeAlert(); // 기존팝업닫기
+}
+
     

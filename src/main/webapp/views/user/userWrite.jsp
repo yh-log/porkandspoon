@@ -344,9 +344,9 @@
 									<tr>
 										<td colspan="6">
 											<div id="btn-gap">
-												<button type="button" class="btn btn-primary" onclick="userWrite()">등록</button>
+												<button type="button" class="btn btn-primary" onclick="layerPopup('직원을 등록하시겠습니까?','등록','취소', userWrite, removeAlert)">등록</button>
 												<!-- todo - 리스트로 이동 -->
-												<button type="button" class="btn btn-outline-secondary">취소</button>
+												<button type="button" class="btn btn-outline-secondary" onclick="location.href='/ad/user/listView'">취소</button>
 											</div>
 										</td>
 									</tr>

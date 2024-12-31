@@ -153,6 +153,19 @@
 											<span id="use_yn"></span>
 										</td>
 									</tr>
+									<tr>
+										<th>휴점</th>
+										<td>
+											<span id="isCloseYN"></span>
+										</td>
+										<th style="display: none;" id="restTh">휴점 일정 </th>
+	 									<td colspan="2">
+	 										<div class="radioLayoutBox" style="display: none;"> 
+												<input type="date" name="start_date" value="" class="form-control" /> ~ 
+	 											
+	 										</div>
+	 									</td>
+									</tr>
 									<tr><th colspan="5">설명</th></tr>
 									<tr>
 										<td colspan="5">
@@ -161,8 +174,8 @@
 									</tr>
 								</table>
 								<div class="btn-Layout">
-									<button type="button" class="btn btn-primary" onclick="">수정</button>
-									<button class="btn btn-outline-primary" id="listBtn">목록</button>
+									<button type="button" class="btn btn-primary" onclick="location.href='/ad/store/update/${storeInfo.id}'">수정</button>
+									<button type="button" class="btn btn-outline-primary" id="listBtn" onclick="location.href='/ad/store/list'">목록</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->
@@ -201,6 +214,35 @@ $(document).ready(function() {
 		$('#use_yn').text('활성');
     } else {
     	$('#use_yn').text('비활성');
+    }
+	
+	const isCloseYN = document.getElementById('isCloseYN'); // 상태 표시 영역
+    const restTh = document.getElementById('restTh'); // 휴점 일정 <th>
+    const restDiv = document.querySelector('td[colspan="2"] .radioLayoutBox'); // 휴점 일정 <div>
+
+    // 초기 상태 설정
+    const is_close = '${storeInfo.is_close}'.trim();
+
+    if (is_close === 'Y') {
+        // 휴점 상태 설정
+        isCloseYN.textContent = '휴점';
+
+        // 휴점 일정 관련 요소 표시
+        restTh.style.display = 'table-cell';
+        restDiv.style.display = 'block'; // 텍스트 표시
+
+        // 날짜 정보 설정
+        const start_date = '${storeInfo.start_date}'.split(" ")[0];
+        const end_date = '${storeInfo.end_date}'.split(" ")[0];
+        restDiv.textContent = start_date + '  ~  ' +  end_date; // 텍스트 형태로 표시
+    } else {
+        // 운영 상태 설정
+        isCloseYN.textContent = '운영';
+
+        // 휴점 일정 관련 요소 숨기기
+        restTh.style.display = 'none';
+        restDiv.style.display = 'none';
+        restDiv.textContent = ''; // 텍스트 초기화
     }
 	
 });

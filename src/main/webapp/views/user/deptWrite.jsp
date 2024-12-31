@@ -159,13 +159,13 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject">브랜드 등록</h5>
+							<h5 id="subMenuSubject">브랜드</h5>
 						</div>
 						<div class="cont-body"> 
 							<form>
 								<table>
 									<tr>
-										<td rowspan="2" class="filebox">
+										<td rowspan="4" class="filebox">
 											<div id="imgPreview"></div>
 											<img src="" id="dept-logo"/>
 											<label for="file">+ 로고 수정</label>
@@ -184,7 +184,9 @@
 									</tr>
 									<tr class="custom-height-row">
 										<th>브랜드 명</th>
-										<td colspan="2"><input type="text" name="text"  class="form-control" value="${deptInfo.name}" id="deptCode" data-required="true"/></td>
+										<td>
+											<input type="text" name="text"  class="form-control" value="${deptInfo.name}" id="deptCode" data-required="true"/>
+										</td>
 										<th>브랜드 코드</th>
 										<td>
 											<div class="inline-layout">
@@ -202,10 +204,7 @@
 												<button class="btn btn-primary" ><i class="bi bi-diagram-3"></i></button>
 											</div>
 										</td>
-										<th>시행일자</th>
-										<td>
-											<input type="date" name="use_date" class="form-control" value="${deptInfo.from_date}" data-required="true"/>
-										</td>
+										
 									</tr>
 									<tr>
 										<th>활성</th>
@@ -214,6 +213,12 @@
 												<input type="radio" name="use_yn" value="Y" class="form-check-input" checked/> 활성
 	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
 	 									    </div>
+										</td>
+										<th>
+											<div id="useText">시행일자</div>
+										</th>
+										<td>
+											<input type="date" name="use_date" class="form-control" value="${deptInfo.from_date}" data-required="true"/>
 										</td>
 									</tr>
 									<tr><th colspan="5">설명</th></tr>
@@ -225,7 +230,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('브랜드를 등록하시겠습니까?','등록','취소', deptWrire, removeAlert)">등록</button>
-									<button class="btn btn-outline-primary">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/dept/listView'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->
@@ -273,6 +278,28 @@
 		}else {
             document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
         }
+		
+		const useYnRadios = document.querySelectorAll('input[name="use_yn"]');
+	    const useText = document.getElementById('useText'); // 시행일자 텍스트 영역
+
+	    // 초기 상태 설정
+	    const initialUseYn = document.querySelector('input[name="use_yn"]:checked').value;
+	    if (initialUseYn === 'Y') {
+	        useText.textContent = '활성 시행일';
+	    } else {
+	        useText.textContent = '비활성 시행일';
+	    }
+
+	    // 라디오 버튼 클릭 이벤트 추가
+	    useYnRadios.forEach(function (radio) {
+	        radio.addEventListener('change', function () {
+	            if (radio.value === 'Y') {
+	                useText.textContent = '활성 시행일';
+	            } else if (radio.value === 'N') {
+	                useText.textContent = '비활성 시행일';
+	            }
+	        });
+	    });
 		
 	});
 	

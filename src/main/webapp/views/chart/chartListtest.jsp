@@ -27,8 +27,7 @@
 	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	
-	<!-- 조직도 노드 -->
-	<script src='/resources/js/jstree.js'></script>
+
 	
 	<!-- 부트스트랩 -->
 	<script src="resources/assets/static/js/components/dark.js"></script>
@@ -168,12 +167,14 @@
 										<div class="col-sm-4">
 												<div class="card">
 													<table>
-														<thead></thead>
-														<tbody class="tbody-style">
+														<thead>
 															<tr>
 																<td class="chart-btn-td chart-td"><button class="chart-btn chart-btn-style">조직도</button></td>
 																<td class="chart-mybtn-td chart-td"><button class="chart-mybtn chart-btn-style">나의 결재선</button></td>
 															</tr>
+														
+														</thead>
+														<tbody class="tbody-style">
 															<tr>
 																<td colspan="2" class="chart-search">
 																	<input class="form-control form-control-sm input-test" type="text" placeholder="이름/부서/직급으로 검색 가능합니다.">
@@ -223,7 +224,7 @@
 												</table>
 											</div>
 											<div class="btn-button">
-													<button class="btn btn-primary btn-line-write btn-user-write">등록</button>
+													<button class="btn btn-primary btn-line-write btn-user-write" >등록</button>
 													<button class="btn btn-outline-primary btn-line-write btn-user-delete">취소</button>
 											</div>
 										</div>
@@ -239,7 +240,8 @@
 	   </div>
 	</div>
 </body>
-
+	<!-- 조직도 노드 -->
+	<script src='/resources/js/jstree.js'></script>
 <script>
 	/* 조직도 모달 */
 	$('.btnModal').on('click', function() {
