@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.ResevationDAO;
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.DeptDTO;
+import kr.co.porkandspoon.dto.ResponseDTO;
 
 @Service
 public class ResevationService {
@@ -74,6 +77,29 @@ public class ResevationService {
 
 	public CalenderDTO itemDetail(String no) {
 		return resDao.itemDetail(no);
+	}
+
+	public List<CalenderDTO> articleList() {
+		
+		List<CalenderDTO> list = resDao.articleList();
+		CalenderDTO dto = new CalenderDTO();
+		
+		if(list.size() < 1) {
+			
+			list = new ArrayList<CalenderDTO>();
+			
+			
+			dto.setStatus(400);
+			dto.setMessage("예약이 존재하지 않습니다.");
+			
+			list.add(dto);
+			
+			return list;
+		}
+		
+		dto.setStatus(201);
+		
+		return list;
 	}
 
 
