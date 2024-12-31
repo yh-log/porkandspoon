@@ -34,6 +34,8 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -151,17 +153,36 @@ document.addEventListener("DOMContentLoaded", function () {
     const canvas = document.getElementById("signaturePad");
     const signaturePad = new SignaturePad(canvas);
 
+    // CSRF 정보 읽기
+    const csrfToken = document.querySelector("meta[name='_csrf']").content;
+    const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
+
+    // 캔버스 크기 동적으로 설정
+    function resizeCanvas() {
+        const ratio = Math.max(window.devicePixelRatio || 1, 1); // 디스플레이 비율
+        canvas.width = canvas.offsetWidth * ratio; // CSS 크기를 기준으로 캔버스 실제 픽셀 크기 설정
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio); // 캔버스 스케일 설정
+    }
+
+    window.addEventListener("resize", resizeCanvas); // 창 크기 변경 시 캔버스 크기 조정
+    resizeCanvas(); // 초기 실행
+
     // 서버에서 서명 불러오기
-    fetch("/signature/get")
+    fetch("/ad/myPagesign/get")
         .then(response => response.json())
         .then(data => {
+        	
+        	console.log(data);
+        	console.log(data.base64Image);
             if (data.base64Image) {
                 const image = new Image();
                 image.src = `data:image/png;base64,${data.base64Image}`;
+                console.log( image.src );
                 image.onload = function () {
                     const ctx = canvas.getContext("2d");
                     ctx.clearRect(0, 0, canvas.width, canvas.height); // 기존 캔버스 초기화
-                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // 서명 이미지 표시
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // 서명 이미지 캔버스에 표시
                 };
             } else {
                 console.log("저장된 서명이 없습니다.");
@@ -182,11 +203,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const formData = new FormData();
         formData.append("file", blob, "signature.png");
 
-        fetch("/signature/save", {
+        fetch("/ad/myPagesign/save", {
             method: "POST",
             body: formData,
+            headers: {
+                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+            },
         })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("서명 저장 실패");
+                }
+                return response.text();
+            })
             .then(result => {
                 alert(result); // 서버로부터 성공 메시지 표시
             })
@@ -197,7 +226,12 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("clearSignature").addEventListener("click", function () {
         signaturePad.clear();
 
-        fetch("/signature/delete", { method: "DELETE" })
+        fetch("/ad/myPagesign/delete", {
+            method: "DELETE",
+            headers: {
+                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+            },
+        })
             .then(response => response.text())
             .then(result => {
                 alert(result); // 서버로부터 성공 메시지 표시
@@ -220,6 +254,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return new Blob([arrayBuffer], { type: mimeString });
     }
 });
+
 </script>
 
 </html>
