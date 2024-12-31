@@ -82,6 +82,7 @@
 							
 							<button type="button" class="btn btn-primary" onclick="loadChartModal('chartInputModal')">조직도 모달 오픈</button>
 						
+							<!-- 조직도 모달 사용 시 추가 -->
 							<div id="chartModalBox" class="modal" style="display: none;">
 						    	<div class="chartModal-content"></div>
     						</div>
@@ -133,6 +134,8 @@ var exampleData = JSON.parse(JSON.stringify(initialData));
  // 선택된 ID를 rows에 추가하는 함수
  function addSelectedIdToRows(selectedId) {
      console.log("가져온 ID:", selectedId);
+     
+     // ajax();
 
      // 새로운 row 데이터 생성
      const newRow = [selectedId, '선택된 부서', '선택된 테스트', '<button class="btn btn-primary">삭제</button>'];

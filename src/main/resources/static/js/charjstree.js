@@ -161,10 +161,28 @@ function chartPrint(response){
                 }
             });
             
+            
             // 이벤트 등록
             $('#jstree').on('loaded.jstree', function () {
                 console.log("jsTree가 성공적으로 초기화되었습니다.");
 				$("#jstree").jstree("open_all");
+				
+				let searchTimeout = null;
+			    $('.input-test').on('input', function () {
+			        let search = $(this).val();
+			
+			        // 이전 타임아웃 제거
+			        if (searchTimeout) {
+			            clearTimeout(searchTimeout);
+			        }
+			
+			        // 입력 후 300ms 후에 검색 실행
+			        searchTimeout = setTimeout(function () {
+			            $('#jstree').jstree('search', search);
+			        }, 300);
+			    });
+				
+				
             }).on('changed.jstree', function (e, data) {
 	            console.log("선택된 노드:", data.selected);
 	            if (data.selected.length > 0) {
@@ -179,6 +197,7 @@ function chartPrint(response){
 			        console.log("선택된 노드가 없습니다.");
 			    }
 	        });
+	        
 }
 
 function getSelectId(callback) {
