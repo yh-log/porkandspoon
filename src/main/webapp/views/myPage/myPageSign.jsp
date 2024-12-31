@@ -107,13 +107,20 @@
 						</div>
 						<div class="cont-body">
 							<div class="col-12 col-lg-12">
-							<div id="signaturePadContainer">
-							    <canvas id="signaturePad" style="border: 1px solid black; width: 100%; height: 300px;"></canvas>
-							    <div style="margin-top: 10px;">
-							        <button id="clearSignature" class="btn btn-warning">지우기</button>
-							        <button id="saveSignature" class="btn btn-primary">저장</button>
-							    </div>
-							</div>
+								<div id="signaturePadContainer">
+								    <!-- 서명 이미지 -->
+								    <img id="signatureImage" src="" alt="서명 이미지" style="width: 100%; height: 300px; border: 1px solid black; display: none;">
+								    <!-- 서명 캔버스 -->
+								    <canvas id="signaturePad" style="border: 1px solid black; width: 100%; height: 300px; display: none;"></canvas>
+								    
+								    <!-- 버튼 영역 -->
+								    <div style="margin-top: 10px;">
+								        <button id="editSignature" class="btn btn-secondary">수정</button>
+								        <button id="deleteSignature" class="btn btn-danger">삭제</button>
+								        <button id="clearSignature" class="btn btn-warning" style="display: none;">지우기</button>
+								        <button id="saveSignature" class="btn btn-primary">저장</button>
+								    </div>
+								</div>
 							</div>
 						</div> 
 					</div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
@@ -152,46 +159,82 @@
 document.addEventListener("DOMContentLoaded", function () {
     const canvas = document.getElementById("signaturePad");
     const signaturePad = new SignaturePad(canvas);
-
-    // CSRF 정보 읽기
+    const signatureImage = document.getElementById("signatureImage");
     const csrfToken = document.querySelector("meta[name='_csrf']").content;
     const csrfHeader = document.querySelector("meta[name='_csrf_header']").content;
 
-    // 캔버스 크기 동적으로 설정
-    function resizeCanvas() {
-        const ratio = Math.max(window.devicePixelRatio || 1, 1); // 디스플레이 비율
-        canvas.width = canvas.offsetWidth * ratio; // CSS 크기를 기준으로 캔버스 실제 픽셀 크기 설정
-        canvas.height = canvas.offsetHeight * ratio;
-        canvas.getContext("2d").scale(ratio, ratio); // 캔버스 스케일 설정
-    }
+    const editButton = document.getElementById("editSignature");
+    const clearButton = document.getElementById("clearSignature");
+    const saveButton = document.getElementById("saveSignature");
+    const deleteButton = document.getElementById("deleteSignature");
 
-    window.addEventListener("resize", resizeCanvas); // 창 크기 변경 시 캔버스 크기 조정
-    resizeCanvas(); // 초기 실행
+    let originalImageURL = ""; // 원래 있던 이미지 URL을 저장
 
-    // 서버에서 서명 불러오기
-    fetch("/ad/myPagesign/get")
+    // 초기 서명 이미지 불러오기
+    fetch("/ad/myPageSign/getImage")
         .then(response => response.json())
         .then(data => {
-        	
-        	console.log(data);
-        	console.log(data.base64Image);
-            if (data.base64Image) {
-                const image = new Image();
-                image.src = `data:image/png;base64,${data.base64Image}`;
-                console.log( image.src );
-                image.onload = function () {
-                    const ctx = canvas.getContext("2d");
-                    ctx.clearRect(0, 0, canvas.width, canvas.height); // 기존 캔버스 초기화
-                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height); // 서명 이미지 캔버스에 표시
-                };
+            if (data.imageUrl) {
+                originalImageURL = data.imageUrl; // 원래 이미지 URL 저장
+                signatureImage.src = data.imageUrl;
+                signatureImage.style.display = "block"; // 이미지를 보여줌
+                canvas.style.display = "none"; // 캔버스 숨김
+                clearButton.style.display = "none"; // 초기에는 지우기 버튼 숨김
             } else {
                 console.log("저장된 서명이 없습니다.");
             }
         })
-        .catch(error => console.error("서명 불러오기 오류:", error));
+        .catch(error => console.error("서명 이미지 불러오기 오류:", error));
+
+    // 수정 버튼 클릭 시 Base64 데이터 불러오기
+    editButton.addEventListener("click", function () {
+        fetch("/ad/myPageSign/getBase64")
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Base64 데이터를 확인
+                if (data.base64Image) {
+                    const ctx = canvas.getContext("2d");
+                    const image = new Image();
+                    image.src = 'data:image/png;base64,' + data.base64Image;
+
+                    image.onload = function () {
+                        // 캔버스 크기를 이미지 크기에 맞게 동적으로 설정
+                        canvas.width = signatureImage.offsetWidth;
+                        canvas.height = signatureImage.offsetHeight;
+
+                        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+                        canvas.getContext("2d").scale(ratio, ratio);
+
+                        // 기존 이미지 숨기기 및 캔버스 표시
+                        signatureImage.style.display = "none";
+                        canvas.style.display = "block";
+
+                        // 캔버스 초기화 및 Base64 이미지를 캔버스에 그리기
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                        // 버튼 상태 변경
+                        editButton.style.display = "none"; // 수정 버튼 숨기기
+                        deleteButton.style.display = "none"; // 삭제 버튼 숨기기
+                        clearButton.style.display = "inline-block"; // 지우기 버튼 표시
+                    };
+                } else {
+                    console.log("Base64 데이터가 없습니다.");
+                }
+            })
+            .catch(error => console.error("Base64 데이터 불러오기 오류:", error));
+    });
+
+    // 초기화(지우기) 버튼 클릭 시 캔버스 초기화
+    clearButton.addEventListener("click", function () {
+        signaturePad.clear(); // 캔버스 초기화
+        canvas.style.display = "block"; // 캔버스 표시
+        signatureImage.style.display = "none"; // 기존 이미지 숨김
+        console.log("캔버스 초기화 완료");
+    });
 
     // 서명 저장
-    document.getElementById("saveSignature").addEventListener("click", function () {
+    saveButton.addEventListener("click", function () {
         if (signaturePad.isEmpty()) {
             alert("서명이 비어 있습니다.");
             return;
@@ -203,11 +246,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const formData = new FormData();
         formData.append("file", blob, "signature.png");
 
-        fetch("/ad/myPagesign/save", {
+        fetch("/ad/myPageSign/save", {
             method: "POST",
             body: formData,
             headers: {
-                [csrfHeader]: csrfToken, // CSRF 토큰 추가
+                [csrfHeader]: csrfToken,
             },
         })
             .then(response => {
@@ -217,27 +260,67 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.text();
             })
             .then(result => {
-                alert(result); // 서버로부터 성공 메시지 표시
+                alert(result);
+                if (originalImageURL) {
+                    // 원래 이미지 삭제 요청
+                    deleteOriginalImage(originalImageURL);
+                }
+                location.reload(); // 저장 후 새로고침
             })
             .catch(error => console.error("서명 저장 오류:", error));
     });
 
-    // 서명 지우기
-    document.getElementById("clearSignature").addEventListener("click", function () {
-        signaturePad.clear();
+    // 삭제 버튼 클릭 시 원래 이미지 삭제
+    deleteButton.addEventListener("click", function () {
+        if (!confirm("서명을 삭제하시겠습니까?")) {
+            return; // 사용자가 취소를 누르면 실행 중단
+        }
 
-        fetch("/ad/myPagesign/delete", {
+        fetch("/ad/myPageSign/delete", {
             method: "DELETE",
             headers: {
                 [csrfHeader]: csrfToken, // CSRF 토큰 추가
             },
         })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("서명 삭제 실패");
+                }
+                return response.text();
+            })
             .then(result => {
-                alert(result); // 서버로부터 성공 메시지 표시
+                alert(result);
+                signaturePad.clear(); // 캔버스 초기화
+                signatureImage.src = ""; // 이미지 초기화
+                signatureImage.style.display = "none"; // 이미지 숨김
+                canvas.style.display = "none"; // 캔버스 숨김
+
+                // 버튼 상태 초기화
+                editButton.style.display = "inline-block"; // 수정 버튼 표시
+                deleteButton.style.display = "inline-block"; // 삭제 버튼 표시
+                clearButton.style.display = "none"; // 지우기 버튼 숨김
             })
             .catch(error => console.error("서명 삭제 오류:", error));
     });
+
+    // 원래 이미지를 삭제하는 함수
+    function deleteOriginalImage(imageURL) {
+        fetch("/ad/myPageSign/delete", {
+            method: "DELETE",
+            headers: {
+                [csrfHeader]: csrfToken,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ imageUrl: imageURL }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("원래 이미지 삭제 실패");
+                }
+                console.log("원래 이미지가 성공적으로 삭제되었습니다.");
+            })
+            .catch(error => console.error("원래 이미지 삭제 오류:", error));
+    }
 
     // Base64 데이터를 Blob으로 변환
     function dataURLtoBlob(dataURL) {
@@ -254,6 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return new Blob([arrayBuffer], { type: mimeString });
     }
 });
+
 
 </script>
 
