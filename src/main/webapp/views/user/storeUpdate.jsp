@@ -95,12 +95,17 @@
 	    justify-content: center;
 	}
 	
-	.radioLayoutBox{
-		display: flex;
-	    gap: 20px;
-    	font-weight: 500;
-	}
-	
+.radioLayoutBox {
+    display: flex;
+    align-items: center; /* 수직 정렬 */
+    gap: 10px; /* 요소 간 간격 */
+    font-weight: 500; /* 필요 시 글자 굵기 설정 */
+}
+
+.radioLayoutBox input {
+    margin: 0;
+}
+		
 	#overlayMessage{
 	    display: none;
 	    margin-bottom: -15px;
@@ -225,12 +230,28 @@
 									</tr>
 									<tr>
 										<th>활성</th>
-										<td colspan="2">
+										<td>
 											<div class="radioLayoutBox">
-												<input type="radio" name="use_yn" value="Y" class="form-check-input" /> 활성
+												<input type="radio" name="use_yn" value="Y" class="form-check-input" /> 활성 
 	 										    <input type="radio" name="use_yn" value="N" class="form-check-input"> 비활성
 	 									    </div>
 										</td>
+									</tr>
+									<tr>
+										<th>휴점</th>
+										<td>
+											<div class="radioLayoutBox">
+												<input type="radio" name="is_close" value="Y" class="form-check-input" /> 휴점
+	 										    <input type="radio" name="is_close" value="N" class="form-check-input"> 운영
+	 										</div>
+	 									</td>
+	 									<th style="display: none;" id="restTh">휴점 일정 </th>
+	 									<td colspan="2">
+	 										<div class="radioLayoutBox" style="display: none;"> 
+	 											<input type="date" name="start_date" value="" class="form-control" /> ~ 
+	 											<input type="date" name="end_date" value="" class="form-control" />
+	 										</div>
+	 									</td>
 									</tr>
 									<tr><th colspan="5">설명</th></tr>
 									<tr>
@@ -239,12 +260,11 @@
 										</td>
 									</tr>
 									<c:set var="username" value="${pageContext.request.userPrincipal.name}" />
-
 									<input type="hidden" name="creater" value="${username}" />
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 수정하시겠습니까?','수정','취소', storeUpdate, removeAlert)">수정</button>
-									<button type="button" class="btn btn-outline-primary">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/store/detail/${storeInfo.id}'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->
@@ -297,6 +317,70 @@ $(document).ready(function() {
         document.querySelector('input[name="use_yn"][value="N"]').checked = true;
     }
 	
+	 var is_close = '${storeInfo.is_close}'.trim();
+	    const restTh = document.getElementById('restTh'); // 휴점 일정 <th>
+	    const restDiv = document.querySelector('td[colspan="2"] .radioLayoutBox'); // 휴점 일정 <div>
+
+	    if (is_close === 'Y') {
+	        // '휴점' 라디오 버튼 선택
+	        document.querySelector('input[name="is_close"][value="Y"]').checked = true;
+
+	        // 휴점 일정 관련 요소 표시
+	        restTh.style.display = 'table-cell'; // <th> 요소 표시
+	        restDiv.style.display = 'flex'; // <div> 표시 (flex로 강제 설정)
+
+	        // 시작일과 종료일 설정
+	        var start_date = '${storeInfo.start_date}';
+	        var end_date = '${storeInfo.end_date}';
+	        document.querySelector('input[name="start_date"]').value = start_date.split(" ")[0];
+	        document.querySelector('input[name="end_date"]').value = end_date.split(" ")[0];
+	    } else {
+	        // '운영' 라디오 버튼 선택
+	        document.querySelector('input[name="is_close"][value="N"]').checked = true;
+
+	        // 휴점 일정 관련 요소 숨기기
+	        restTh.style.display = 'none'; // <th> 숨김
+	        restDiv.style.display = 'none'; // <div> 숨김
+	    }
+
+	    // 라디오 버튼 클릭 이벤트 추가
+	    const isCloseRadios = document.querySelectorAll('input[name="is_close"]');
+
+	    isCloseRadios.forEach(function (radio) {
+	        radio.addEventListener('change', function () {
+	            if (radio.value === 'Y') {
+	                // 휴점 선택 시
+	                restTh.style.display = 'table-cell'; // 휴점 일정 표시
+	                restDiv.style.display = 'flex'; // 날짜 필드 표시 (flex로 강제 설정)
+	            } else {
+	                // 운영 선택 시
+	                restTh.style.display = 'none'; // 휴점 일정 숨기기
+	                restDiv.style.display = 'none'; // 날짜 필드 숨기기
+
+	                // 날짜 입력 필드 초기화
+	                document.querySelector('input[name="start_date"]').value = '';
+	                document.querySelector('input[name="end_date"]').value = '';
+	            }
+	        });
+	    });
+	    
+	    
+	    const parentDate = '${storeInfo.parent_date}'.trim(); // 서버에서 전달받은 parent_date 값
+	    const useDateInput = document.querySelector('input[name="use_date"]'); // 날짜 입력 필드
+	    console.log('parentDate:', parentDate);
+
+	    // parent_date 값을 `min` 속성으로 설정
+	    if (parentDate) {
+	        useDateInput.setAttribute('min', parentDate);
+	    }
+
+	    // 선택한 날짜가 parent_date보다 빠르면 경고 메시지
+	    useDateInput.addEventListener('change', function () {
+	        const selectedDate = this.value; // 사용자가 선택한 날짜
+	        if (selectedDate < parentDate) {
+	            this.value = ''; // 선택된 날짜 초기화
+	        }
+	    });
 });
 
 function addressUpload() {

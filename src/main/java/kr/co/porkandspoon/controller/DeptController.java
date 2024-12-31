@@ -69,4 +69,17 @@ public class DeptController {
 		logger.info("params : {}", params);
 		return deptService.getDeptdata(params);
 	}
+	
+	/**
+	 * author yh.kim (24.12.29) 
+	 * 조직도 데이터 조회
+	 */
+	@GetMapping(value="/getOrgChartData")
+	public List<DeptDTO> getChartData(){
+		
+		List<DeptDTO> result = deptService.getChartData();
+		
+		return result;
+	}
+	
 }

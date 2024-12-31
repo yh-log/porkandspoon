@@ -56,8 +56,19 @@ public class ApprovalDTO {
 	
 	// 부서 로고
 	private String logo_file;
+	private String parent_date;
 	
-    public String getLine_idx() {
+	
+	
+    public String getParent_date() {
+		return parent_date;
+	}
+
+	public void setParent_date(String parent_date) {
+		this.parent_date = parent_date;
+	}
+
+	public String getLine_idx() {
 		return line_idx;
 	}
 

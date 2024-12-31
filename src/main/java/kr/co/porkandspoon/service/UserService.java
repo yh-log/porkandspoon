@@ -149,7 +149,7 @@ public class UserService {
 	 * author yh.kim (24.12.24)
 	 * 직원등록 메서드 (직원 등록, 이력 등록, 파일 등록 진행)
 	 */
-	public boolean userWrite(UserDTO dto, MultipartFile file) {
+	public UserDTO userWrite(UserDTO dto, MultipartFile file) {
 		
 		// 사번 생성 메서드
 		String num = generateCompanyNumber(dto);
@@ -164,7 +164,9 @@ public class UserService {
 		logger.info("직원 등록 row => " + row);
 		
 		if(row == 0) {
-			return false;
+			dto.setStatus(500);
+			dto.setMessage("직원등록에 실패했습니다.");
+			return dto;
 		}
 		
 		// UserDTO의 career 리스트에 username 설정
@@ -191,14 +193,19 @@ public class UserService {
 	            logger.info("업로드된 파일 로우 => " + fileRow);
 	        } catch (Exception e) {
 	            logger.error("파일 업로드 중 오류 발생", e);
-	            return false; 
+	            dto.setStatus(500);
+				dto.setMessage("직원등록에 실패했습니다.");
+				return dto;
 	        }
 	    } else {
 	        logger.warn("프로필 이미지 파일이 없습니다. 기본 프로필 이미지 사용");
 	        // 기본 프로필 이미지 설정 로직이 필요하면 여기에 추가
 	    }
+	    
+	    dto.setStatus(200);
+	    dto.setMessage("직원 등록을 완료했습니다.");
 
-		return true;
+		return dto;
 	}
 
 	/**
@@ -288,13 +295,19 @@ public class UserService {
 	 * author yh.kim (24.12.24)
 	 * 직원 정보 수정 
 	 */
-	public boolean userUpdate(UserDTO dto, MultipartFile file) {
+	public UserDTO userUpdate(UserDTO dto, MultipartFile file) {
 		
 		// 수정할 때 update 부서 x -> 사번 o 
 		// 만약 이동되면 권한은 다시 검사!  일단 권한 x
 		
 		int row = userDao.userUpdate(dto);
 		logger.info("직원 수정 로우 => " + row);
+		
+		if(row == 0) {
+			dto.setStatus(500);
+			dto.setMessage("직원등록에 실패했습니다.");
+			return dto;
+		}
 		
 		// 기존에 없던 데이터일 경우 insert 이니까 근데 그거 판단을 어려우니까 delete하고 insert? - 일단이건 가능
 		// 기존 이력 제거 후 insert
@@ -332,20 +345,25 @@ public class UserService {
 	            logger.info("업로드된 파일 로우 => " + fileRow);
 	        } catch (Exception e) {
 	            logger.error("파일 업로드 중 오류 발생", e);
-	            return false; 
+	            dto.setStatus(500);
+				dto.setMessage("직원수정에 실패했습니다.");
+				return dto;
 	        }
 	    } else {
 	        logger.warn("프로필 이미지 파일이 없습니다. 기본 프로필 이미지 사용");
 	    }
+	    dto.setStatus(200);
+	    dto.setMessage("직원 수정을 완료했습니다.");
 		
-		return false;
+		return dto;
 	}
 
 	/**
 	 * author yh.kim (24.12.24)
 	 * 직원 리스트 조회
+	 * @param userYn 
 	 */
-	public List<UserDTO> userList(int page, int cnt, String option, String keyword) {
+	public List<UserDTO> userList(int page, int cnt, String option, String keyword, String userYn) {
 
 		int limit = cnt; // 10
 		int offset = (page -1) * cnt; // 0
@@ -355,6 +373,7 @@ public class UserService {
 		parmeterMap.put("offset", offset);
 		parmeterMap.put("option", option);
 		parmeterMap.put("keyword", keyword);
+		parmeterMap.put("userYn", userYn);
 		
 		return userDao.userList(parmeterMap);
 	}
@@ -450,6 +469,13 @@ public class UserService {
 		int deptRow = userDao.deptUpdate(dto);
 		
 		logger.info("브랜드 수정 로우 => " + deptRow);
+		
+		// 브랜드 비활성 시 직영점 업데이트
+		if(dto.getUse_yn().equals("N")) {
+			int storeRow = userDao.storeUseUpdate(dto);
+			logger.info("직영점 비활성 => " + storeRow);
+		}
+		
 		
 		List<FileDTO> imgs = dto.getImgs();
 		if(imgs.size() > 0 || imgs != null) {
@@ -653,6 +679,57 @@ public class UserService {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * author yh.kim (24.12.28)
+	 * 직영점 리스트
+	 */
+	public List<DeptDTO> storeList(int page, int cnt, String option, String keyword) {
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.storeList(parmeterMap);
+	}
+
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 생성 요청 리스트 
+	 */
+	public List<ApprovalDTO> ceateStoreList(int page, int cnt, String option, String keyword) {
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.ceateStoreList(parmeterMap);
+	}
+
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 폐점 요청 리스트
+	 */
+	public List<ApprovalDTO> deleteStoreList(int page, int cnt, String option, String keyword) {
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		
+		return userDao.deleteStoreList(parmeterMap);
 	}
 
 

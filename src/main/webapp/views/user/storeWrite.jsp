@@ -203,7 +203,10 @@
 										</td>
 										<th>시행일자</th>
 										<td>
-											<input type="date" name="use_date" class="form-control" value="${storeInfo.from_date}" data-required="true"/>
+											<div class="inline-layout">
+												<input type="date" name="use_date" class="form-control" value="${storeInfo.from_date}" data-required="true"/>
+											
+											</div>
 										</td>
 									</tr>
 									<tr>
@@ -237,7 +240,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 등록하시겠습니까?','등록','취소', storeWrire, removeAlert)">등록</button>
-									<button class="btn btn-outline-primary">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/store/list'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->
@@ -285,6 +288,23 @@ $(document).ready(function() {
 	}else {
         document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
     }
+	
+	const parentDate = '${storeInfo.parent_date}'.trim(); // 서버에서 전달받은 parent_date 값
+    const useDateInput = document.querySelector('input[name="use_date"]'); // 날짜 입력 필드
+    console.log('parentDate:', parentDate);
+
+    // parent_date 값을 `min` 속성으로 설정
+    if (parentDate) {
+        useDateInput.setAttribute('min', parentDate);
+    }
+
+    // 선택한 날짜가 parent_date보다 빠르면 경고 메시지
+    useDateInput.addEventListener('change', function () {
+        const selectedDate = this.value; // 사용자가 선택한 날짜
+        if (selectedDate < parentDate) {
+            this.value = ''; // 선택된 날짜 초기화
+        }
+    });
 	
 });
 

@@ -200,6 +200,30 @@ public interface UserDAO{
 	 */
 	int storeUpdate(DeptDTO dto);
 
+	/**
+	 * author yh.kim (24.12.28)
+	 * 직영점 리스트
+	 */
+	List<DeptDTO> storeList(Map<String, Object> parmeterMap);
+
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 생성 요청 리스트 
+	 */
+	List<ApprovalDTO> ceateStoreList(Map<String, Object> parmeterMap);
+
+	/**
+	 * author yh.kim (24.12.29)
+	 * 직영점 폐점 요청 리스트
+	 */
+	List<ApprovalDTO> deleteStoreList(Map<String, Object> parmeterMap);
+
+	/**
+	 * author yh.kim (24.12.30)
+	 * 직영점 비활성화
+	 */
+	int storeUseUpdate(DeptDTO dto);
+
 
 
 
