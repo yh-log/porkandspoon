@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/resources/css/chartModal.css">
+<link rel="stylesheet" href="/resources/css/common.css">
+
+<style>
+
+</style>
+
+</head>
+<body>
+	
+	<div id="chartInputModal" class="modal-template">
+		<div class="chartHeadBox"> <!-- 조직도 상단 -->
+			<span class="modal-close" id="closeModal">&times;</span>
+		</div>
+		<div class="col-12 col-lg-12">
+		<div class="row">
+			<div class="col-4 col-lg-4">
+					<div class="card">
+						<table>
+							<thead>
+								<tr>
+									<td class="chart-btn-td chart-td"><button class="chart-btn chart-btn-style">조직도</button></td>
+									<!-- 결재 시에만 추가 -->
+									<td class="chart-mybtn-td chart-td"><button class="chart-mybtn chart-btn-style" id="approvalBtn"></button></td>
+								</tr>
+							
+							</thead>
+							<tbody class="tbody-style">
+								<tr>
+									<td colspan="2" class="chart-search">
+										<input class="form-control form-control-sm input-test" type="text" placeholder="이름/부서/직급으로 검색 가능합니다.">
+									</td>
+								</tr>
+								<tr>
+									<!-- 조직도 호출 -->
+									<td colspan="2" class="chart-scroll">
+										<div class="jstree chart-list-style jstreeselect" id="jstree"></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+			</div>
+			<div class="col-1 col-lg-1"></div>
+			<div class="col-7 col-lg-7">
+				<div class="card user-list-style">
+					<table id="customTable">
+			            <thead id="orgHeader">
+			                <tr>
+			                    <th></th>
+			                </tr>
+			            </thead>
+			            <tbody id="orgBody" class="scrollable-tbody">
+			                
+			            </tbody>
+			            <tfoot id="orgFooter">
+			                <tr>
+			                    <th></th>
+			                </tr>
+			            </tfoot>
+			        </table>
+				</div>
+			</div>
+		</div>
+			<div class="btn-button">
+				<button class="btn btn-primary btn-line-write btn-user-write" id="addModal">등록</button>
+				<button class="btn btn-outline-primary btn-line-write btn-user-delete" id="cancelModal">취소</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

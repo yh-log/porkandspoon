@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,22 @@ public class DeptService {
 
 	public List<DirectstoreDTO> getDeptdata(Map<String, Object> params) {
 		return deptDAO.getDeptdata(params);
+	}
+
+	/**
+	 * author yh.kim (24.12.29) 
+	 * 조직도 데이터 조회
+	 */
+	public List<DeptDTO> getChartData() {
+		
+		List<DeptDTO> result = deptDAO.getChartData();
+		
+		if(result == null) {
+			result = new ArrayList<>();
+			
+		}
+		
+		return result;
 	}
 
 }

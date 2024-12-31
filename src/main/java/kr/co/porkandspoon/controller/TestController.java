@@ -103,6 +103,9 @@ public class TestController {
 	 */
 	@GetMapping(value="/loginTestView")
 	public ModelAndView loginTestView() {
+		
+		System.out.println("접속 아이디 ");
+		
 		return new ModelAndView("loginTest");
 	}
 	
@@ -161,6 +164,12 @@ public class TestController {
 		return new ModelAndView("layout");
 	}
 	
+	
+	// 조직도 모달 test 페이지
+	@GetMapping(value="/chartTestView")
+	public ModelAndView chartTestView() {
+		return new ModelAndView("/chart/chartTest");
+	}
 	
 	/*
 	 * author yh.kim (24.12.11)

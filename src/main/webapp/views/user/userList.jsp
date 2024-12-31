@@ -69,14 +69,14 @@
 						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
 						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
 					</ul>
-					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 직원 등록</div>
+					<div class="btn btn-primary full-size" onclick="location.href='/ad/user/writeView'"><i class="bi bi-plus-lg"></i> 직원 등록</div>
 				</section>
 				<!-- 등록하기 버튼 추가 필요 -->
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject"></h5>
+							<h5 id="subMenuSubject">직원 리스트</h5>
 						</div>
 						<div class="cont-body"> 
 							<div class="row">
@@ -146,47 +146,78 @@
 
 var firstPage = 1;
 var paginationInitialized = false;
+var currentOption = 'all'; // 현재 활성화된 메뉴를 저장 (default: all)
 
+// 페이지 로드 시 초기 데이터 호출
 $(document).ready(function () {
-	pageCall(firstPage);
+    pageCall(firstPage);
 });
 
+// 직원 리스트 클릭 이벤트
+$('#firstMenu').on('click', function() {
+    // '직원 리스트' 활성화
+    $('#firstMenu').addClass('active');
+    $('#secondMenu').removeClass('active');
+    currentOption = 'all'; // 현재 메뉴 설정
 
-// 검색 폼 제출 시 AJAX 호출
-$('#searchBtn').on('click', function(event) {
-    event.preventDefault();  // 폼 제출 기본 동작 중지
+    // 기본 데이터 호출
     firstPage = 1;
     paginationInitialized = false;
-    pageCall(firstPage);  // 검색어가 추가된 상태에서 호출
+    pageCall(firstPage, { userYn: '' }); // userYn 기본값 비움
+    $('input[name="search"]').val(''); 
+    $('#subMenuSubject').text($('#firstMenu').html());
 });
 
-
+// 퇴사자 리스트 클릭 이벤트
 $('#secondMenu').on('click', function() {
-	console.log('실행');
+    // '퇴사자 리스트' 활성화
+    $('#secondMenu').addClass('active');
+    $('#firstMenu').removeClass('active');
+    currentOption = 'resigned'; // 현재 메뉴 설정
+
+    // 퇴사자 데이터 호출
+    firstPage = 1;
+    paginationInitialized = false;
+    pageCall(firstPage, { userYn: 'Y' }); // userYn 값 전달
+    $('input[name="search"]').val(''); 
+    $('#subMenuSubject').text($('#secondMenu').html());
+});
+
+// 검색 버튼 클릭 이벤트
+$('#searchBtn').on('click', function(event) {
+    event.preventDefault(); // 기본 폼 동작 중지
     firstPage = 1;
     paginationInitialized = false;
 
-    // 특정 옵션과 키워드를 설정하여 pageCall 호출
-    pageCall(firstPage, {
-        option: 'user_yn', // 추가 옵션
-        keyword: 'Y'       // 추가 키워드
-    });
+    // 검색 데이터 설정
+    var extraData = {};
+    if (currentOption === 'resigned') {
+        extraData.userYn = 'Y'; // 퇴사자 필터링 유지
+    }
+    pageCall(firstPage, extraData); // 검색 호출
 });
 
-
-function pageCall(page = 1,  extraData = {}) {
+// 페이지 호출 함수
+function pageCall(page = 1, extraData = {}) {
     var option = $('#searchOption').val();
-    var keyword = $('input[name="search"]').val();  // 검색어
+    var keyword = $('input[name="search"]').val(); // 검색어
 
+    // 기본 데이터 설정
+    var requestData = {
+        page: page || 1,    // 현재 페이지
+        cnt: 10,            // 한 페이지당 항목 수
+        option: option,     // 검색 옵션
+        keyword: keyword    // 검색 키워드
+    };
+
+    // 추가 데이터 병합
+    requestData = { ...requestData, ...extraData };
+
+    
     $.ajax({
         type: 'GET',
         url: '/ad/user/list',
-        data: {
-            'page': page || 1, // 페이지 기본값 설정
-            'cnt': 10,         // 한 페이지당 항목 수
-            'option': option,
-            'keyword': keyword  // 검색어
-        },
+        data: requestData,
         datatype: 'JSON',
         success: function(response) {
             console.log("응답 데이터:", response);
@@ -233,15 +264,15 @@ function getSuccess(response){
 		content += '<tr>';
 		content += '<td>' + item.person_num + '</td>';
 		content += '<td>' + item.dept_name + '</td>';
-		content += '<td>' + item.name + '</td>';
+		content += '<td><a href="/ad/user/detailView/' + item.username +'">' + item.name + '</a></td>';
 		content += '<td>' + item.position_content + '</td>';
 		content += '<td>' + item.company_num + '</td>';
 		content += '<td>' + item.join_date + '</td>';
 		
 		if(item.user_yn === 'N'){
-			content += '<td><p class="btn icon btn-success" style="margin:0px 5px;">재직</p></td>';			
+			content += '<td><p class="btn icon btn-primary" style="margin:0px 5px; height: 34px;">재직</p></td>';			
 		}else{
-			content += '<td><p class="btn icon btn-danger" style="margin:0px 5px;">퇴사</p></td>';						
+			content += '<td><p class="btn icon btn-light" style="margin:0px 5px; height: 34px;">퇴사</p></td>';		 				
 		}
 		
 		content += '</tr>';
