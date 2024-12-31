@@ -223,6 +223,12 @@ public interface UserDAO{
 	 * 직영점 비활성화
 	 */
 	int storeUseUpdate(DeptDTO dto);
+	
+	/**
+	 * author yh.kim (24.12.31)
+	 * 인사이동 리스트 조회
+	 */
+	List<UserDTO> employeeTransferList(Map<String, Object> parmeterMap);
 
 
 

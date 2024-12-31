@@ -16,6 +16,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.catalina.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,6 +108,7 @@ public class UserController {
 	 */
 	@GetMapping(value="/ad/employeeTransfer")
 	public ModelAndView employeeTransferView() {
+		
 		return new ModelAndView("/user/employeeTransfer");
 	}
 
@@ -971,6 +973,24 @@ public class UserController {
 		List<ApprovalDTO> storeList = userService.deleteStoreList(page, cnt, option, keyword);
 		
 		return storeList;
+	}
+	
+	/**
+	 * author yh.kim (24.12.31)
+	 * 인사이동 리스트 조회
+	 */
+	@GetMapping(value="/ad/employeeTransferList")
+	public List<UserDTO> employeeTransferList(
+			@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword,
+	        @RequestParam(defaultValue = "", value ="start_date" ) String start_date,
+	        @RequestParam(defaultValue = "", value = "end_date") String end_date){
+		
+		List<UserDTO> result = userService.employeeTransferList(page, cnt, option, keyword, start_date, end_date);
+		
+		return result;
 	}
 	
 	

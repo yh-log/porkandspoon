@@ -529,4 +529,9 @@
 		UPDATE direct_store SET use_yn = 'N', use_date = #{use_date} WHERE parent = #{id}
 	</update>
 	
+	<!-- 인사이동 리스트 조회 -->
+	<select id="employeeTransferList" parameterType="map" resultType="kr.co.porkandspoon.dto.UserDTO">
+		
+	</select>
+	
 </mapper>
