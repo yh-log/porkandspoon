@@ -134,7 +134,6 @@
 											<table>
 												<colgroup>
 													<col width="6%" />
-													<col width="6%" />
 													<col />
 													<col width="30%" />
 													<col />
@@ -146,7 +145,6 @@
 												<thead>
 													<tr>
 														<th>체크</th>
-														<th>별</th>
 														<th>글번호</th>
 														<th>제목</th>
 														<th>작성자</th>
@@ -266,14 +264,13 @@ function pageCall(page = 1) {
 		var content = '';
 		response.forEach(function(item) {
 		    content += '<tr class="td-link">';
-		    // Checkbox column - admin 권한만 볼 수 있음
-		    content += '<td><sec:authorize access="hasRole(\'admin\')"><input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="toggleNoticeFields()"></sec:authorize></td>';
-		    // 별 (board_notice 값에 따라 표시)
 		    content += '<td>';
-		    if (item.board_notice === 'Y') {
-		        content += '<i class="bi bi-star-fill" style="color: gold;"></i>'; // 채워진 별
-		    } else {
-		        content += '<i class="bi bi-star" style="color: gray;"></i>'; // 비워진 별
+		    if (item.board_notice !== 'Y') {
+		        content += '<sec:authorize access="hasRole(\'admin\')">'
+		            + '<input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="toggleNoticeFields()">'
+		            + '</sec:authorize>';
+		    }else {
+		    	content += '<i class="bi bi-star-fill" style="color: gold;"></i>';
 		    }
 		    content += '</td>';
 		    // 번호
@@ -415,7 +412,25 @@ function pageCall(page = 1) {
 	    httpAjax('POST', url, params);
 	}
 	
-	
+	function httpSuccess(response) {
+		
+		if(response.status === 'notice') {
+			layerPopup(
+                    '공지사항 등록이 완료되었습니다.', // 서버에서 보낸 메시지
+                    '확인',
+                    null,
+                    function () {
+                        removeAlert();
+                    },
+                    function () {}
+                );
+			location.reload();
+		}
+
+		if (response.status === 'deleteboard') {
+			location.reload();
+		}
+	}
 	
 	
 	
@@ -495,7 +510,6 @@ function pageCall(page = 1) {
 		url = '/board/delete';
 		httpAjax('POST', url, params);
 		removeAlert();
-		location.reload();
 	}
 
 	// 게시글 삭제 취소버튼
