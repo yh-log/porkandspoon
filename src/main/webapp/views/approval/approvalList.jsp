@@ -94,13 +94,19 @@
 .draftList table {
 	table-layout: unset;
 }
-.draftList table tr {
+.draftList table td.cursor-pt {
 	cursor: pointer;
 }
 .draftList table td.status.sd{
-	color: var(--bs-success);
+	color: var(--bs-primary);
 }
 .draftList table td.status.re{
+	color: var(--bs-danger);
+}
+.draftList table td.status.ca{
+	color: var(--bs-secondary);
+}
+.draftList table td.status.co{
 	color: var(--bs-success);
 }
 
@@ -289,19 +295,19 @@
 		var type2='';
 		for (var view of list) {
 			approvalDate = view.approval_date.split(' ')[0];
-			content +='<tr onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">';
+			content +='<tr>';
 			if(listType == 'sv'){
 				type1 = view.target_type == 'df001' ? '브랜드' : '직영점';
 				type2 = view.action_type == 'df011' ? '오픈' : '폐점';
 				
 				content += '<td>'+view.create_date+'</td>';
-	            content += '<td class="align-l elipsis">'+view.subject+'</td>';
+	            content += '<td class="align-l elipsis cursor-pt" onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">'+view.subject+'</td>';
 	            content += '<td>'+type1+' '+type2+'</td>';
-	            content += '<td onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">삭제</td>';
+	            content += '<td class="cursor-pt" onclick="layerPopup(\'기안문을 삭제하시겠습니까?\', \'삭제\', \'취소\', deleteAct('+view.draft_idx+'), btn1Act)">삭제</td>';
 			}
 			if(listType != 'sv'){
 	            content += '<td>'+view.document_number+'</td>';
-	            content += '<td class="align-l elipsis">'+view.subject+'</td>';
+	            content += '<td class="align-l elipsis subject" onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">'+view.subject+'</td>';
 				content +='<td>'+view.name+'</td>';
 				content +='<td>'+view.dept_text+'</td>';
 			}
@@ -337,8 +343,40 @@
 		    paginationInitialized = false;
 		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
 		});
+		
+		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+		
+		// 기안문 삭제
+		function deleteAct(draftIdx) {
+			console.log("draftIdx값좀 받아와라 : "+draftIdx);
+			$.ajax({
+		        type : 'PUT',
+		        url : '/approval/changeStatusToDelete/'+draftIdx,
+		        data : {},
+		        dataType : 'JSON',
+		        beforeSend: function(xhr) {
+		            xhr.setRequestHeader(csrfHeader, csrfToken);
+		        },
+		        success : function(response){
+		        	 if(response.success){
+		     		 	removeAlert(); 
+		      			layerPopup('삭제 완료되었습니다.', '확인', false, btn1Act, btn1Act);
+		     		 }else{
+		     		 	removeAlert(); 
+		      			layerPopup('삭제 실패하였습니다.', '재시도', '취소', deleteAct, btn1Act);
+		     		 }
+		        },error: function(e){
+		            console.log(e);
+		        }
+		    });
+		}
+
+		function btn1Act() {
+			location.reload();
+			removeAlert(); 
+		}
 	
-	// 필터링 하던중  pageCall(show, filter);에 filter 전체 추가!!! 
 
 </script>
 

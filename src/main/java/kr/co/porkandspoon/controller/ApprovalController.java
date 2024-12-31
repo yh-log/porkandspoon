@@ -520,10 +520,12 @@ public class ApprovalController {
 		// 기안문 상태 확인(임시저장or회수)
 		String draftStatus = approvalService.getDraftStatus(draft_idx);
 		boolean deletable = draftStatus.equals("sv") || draftStatus.equals("ca");
-
+		logger.info("어디까지1");
 		if(isDraftSender && deletable) {
+			logger.info("어디까지2");
 			approvalService.changeStatusToDelete(draft_idx);
 			success = true;
+			logger.info("어디까지3");
 		}
 		result.put("success", success);
 		return result;

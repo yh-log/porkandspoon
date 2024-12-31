@@ -348,6 +348,11 @@ content = VALUES(content); -->
 
 	<!-- 기안리스트 -->
 	<select id="getApprovalMyListData" resultType="kr.co.porkandspoon.dto.ApprovalDTO" parameterType="map">
+		WITH user_parent AS (
+		    SELECT parent 
+		    FROM user 
+		    WHERE username = 'smpark'
+		)
 		SELECT 
 			d.draft_idx 
 			,d.document_number
@@ -399,6 +404,10 @@ content = VALUES(content); -->
 				<when test="listType == 'sv'">
 					WHERE d.username = #{loginId}
 					AND d.status = 'sv'
+				</when>
+				<when test="listType == 'dept'">
+					WHERE d.dept_id = (SELECT parent FROM user_parent)
+					OR d.cooper_dept_id = (SELECT parent FROM user_parent)
 				</when>
 			</choose>
 			<if test="search != null and !search.equals('') and option == 'subject'"> 
