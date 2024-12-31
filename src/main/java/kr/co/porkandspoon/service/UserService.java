@@ -732,6 +732,35 @@ public class UserService {
 		return userDao.deleteStoreList(parmeterMap);
 	}
 
+	/**
+	 * author yh.kim (24.12.31)
+	 * 인사이동 리스트 조회
+	 */
+	public List<UserDTO> employeeTransferList
+		(int page, int cnt, String option, String keyword, String start_date, String end_date) {
+		
+		int limit = cnt; // 10
+		int offset = (page -1) * cnt; // 0
+		
+		Map<String, Object> parmeterMap = new HashMap<>();
+		parmeterMap.put("limit", limit);
+		parmeterMap.put("offset", offset);
+		parmeterMap.put("option", option);
+		parmeterMap.put("keyword", keyword);
+		parmeterMap.put("start_date", start_date);
+		parmeterMap.put("end_date", end_date);
+		
+		List<UserDTO> result = userDao.employeeTransferList(parmeterMap);
+		
+		if(result.size() < 1) {
+			
+			result = new ArrayList<UserDTO>();
+			return result;
+		}
+		
+		return result;
+	}
+
 
 
 }

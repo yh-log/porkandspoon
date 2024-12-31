@@ -112,8 +112,13 @@
 	               <div class="cont-body"> 
 	               <p id="currentUser" style="display:none;"><sec:authentication property="principal.username"/></p>
 	               	  <div class="row">
-	               	  	<div class="col-sm-2"><input type="date" id="notice_date1" name="notice_date1" class="form-control" style="width: 150px; display: none;"></div>
-	               	  	<div class="col-sm-2"><input type="date" id="notice_date2" name="notice_date2" class="form-control" style="width: 150px; display: none;"></div>
+	               	  	<div class="col-sm-4">
+	               	  		<div>
+		               	  		<input type="date" id="notice_date1" name="notice_date1" class="form-control" style="width: 150px; display: none;">
+		               	  		&nbsp;<span id="notice_i" style="display: none;">~</span>&nbsp;
+		               	  		<input type="date" id="notice_date2" name="notice_date2" class="form-control" style="width: 150px; display: none;">
+	               	  		</div>
+               	  		</div>
 	               	  	<div class="col-sm-1"><button class="btn btn-primary" id="notice_button" onclick="notice_write()" style="display: none;">공지</button></div>
 	               	  	<div class="col-sm-1"></div>
 	               	  	<div class="col-sm-1">
@@ -306,6 +311,8 @@ function pageCall(page = 1) {
 		const date1 = document.getElementById('notice_date1');
 	    const date2 = document.getElementById('notice_date2');
 	    const button = document.getElementById('notice_button');	
+	    const notice_i = document.getElementById('notice_i');	
+	    
 	    let blockType = false;
 	    const allCheckboxes = document.querySelectorAll('.form-check-input');
 
@@ -322,6 +329,7 @@ function pageCall(page = 1) {
 	    date1.style.display = blockType ? 'inline-block' : 'none';
 	    date2.style.display = blockType ? 'inline-block' : 'none';
 	    button.style.display = blockType ? 'inline-block' : 'none';
+	    notice_i.style.display = blockType ? 'inline-block' : 'none';
 
 	    // 다른 체크박스 숨기기 또는 다시 보이게 하기
 	    allCheckboxes.forEach(checkbox => {

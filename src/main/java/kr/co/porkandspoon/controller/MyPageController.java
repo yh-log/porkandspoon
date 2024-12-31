@@ -133,7 +133,7 @@ public class MyPageController {
 		return new ModelAndView("/myPage/myPageSign");
 	}
 	
-	@PostMapping("/ad/myPagesign/save")
+	@PostMapping("/ad/myPageSign/save")
     @ResponseBody
     public ResponseEntity<String> saveSignature( @RequestParam("file") MultipartFile file,
     		@AuthenticationPrincipal UserDetails userDetails) {
@@ -159,62 +159,63 @@ public class MyPageController {
     /**
      * 저장된 서명 불러오기
      */
-	@GetMapping("/ad/myPagesign/get")
+	@GetMapping("/ad/myPageSign/getImage")
 	@ResponseBody
-	public ResponseEntity<Map<String, String>> getSignature(@AuthenticationPrincipal UserDetails userDetails) {
+	public ResponseEntity<Map<String, String>> getSignatureImage(@AuthenticationPrincipal UserDetails userDetails) {
 	    String pk_idx = userDetails.getUsername();
 	    String code_name = "SG001";
 	    FileDTO dto = myPageService.signExist(pk_idx, code_name);
 
-	    logger.info("dto : {}", dto);
+	    if (dto != null) {
+	        String savedFileName = dto.getNew_filename();
+	        String imageUrl = "/photo/" + savedFileName; // 실제 이미지 URL 경로 반환
+	        return ResponseEntity.ok(Collections.singletonMap("imageUrl", imageUrl));
+	    } else {
+	        return ResponseEntity.ok(Collections.singletonMap("imageUrl", "")); // 이미지 없음
+	    }
+	}
+		
+	
+	@GetMapping("/ad/myPageSign/getBase64")
+	@ResponseBody
+	public ResponseEntity<Map<String, String>> getSignatureBase64(@AuthenticationPrincipal UserDetails userDetails) {
+	    String pk_idx = userDetails.getUsername();
+	    String code_name = "SG001";
+	    FileDTO dto = myPageService.signExist(pk_idx, code_name);
 
 	    if (dto != null) {
 	        try {
-	            // dto에서 저장된 파일 이름 가져오기
 	            String savedFileName = dto.getNew_filename();
 	            Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
-	            logger.info("saveFileName :{}",savedFileName);
-	            logger.info("filePath :{}",filePath);
-	         
-	            // 파일 존재 여부 확인
-	            if (!Files.exists(filePath)) {
-	                logger.warn("파일이 존재하지 않습니다: {}", filePath.toString());
-	                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-	                                     .body(Collections.singletonMap("error", "파일이 존재하지 않습니다."));
-	            }
-
-	            // 파일을 Base64로 변환
 	            byte[] fileContent = Files.readAllBytes(filePath);
 	            String base64Image = Base64.getEncoder().encodeToString(fileContent);
-	            
-	            logger.info("fileContent :{}",fileContent);
-	            logger.info("base64Image :{}",base64Image);
-	            
-	            // Base64와 파일 이름 반환
-	            Map<String, String> response = new HashMap<>();
-	            response.put("base64Image", base64Image);
-	            logger.info("response : {}",response);
 
-	            return ResponseEntity.ok(response);
+	            return ResponseEntity.ok(Collections.singletonMap("base64Image", base64Image));
 	        } catch (IOException e) {
-	            logger.error("파일 로드 중 오류 발생", e);
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                                 .body(Collections.singletonMap("error", "파일 로드 중 오류 발생"));
 	        }
 	    } else {
-	        logger.info("저장된 서명이 없습니다.");
-	        return ResponseEntity.ok(Collections.singletonMap("base64Image", "")); // 저장된 서명 없음
+	        return ResponseEntity.ok(Collections.singletonMap("base64Image", ""));
 	    }
 	}
     /**
      * 저장된 서명 삭제
      */
-    @DeleteMapping("/ad/myPagesign/delete")
+    @DeleteMapping("/ad/myPageSign/delete")
     @ResponseBody
-    public ResponseEntity<String> deleteSignature() {
+    public ResponseEntity<String> deleteSignature(@AuthenticationPrincipal UserDetails userDetails) {
         String savedFileName = "signature_user123.png"; // 사용자별 고유 파일명 지정
         Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
-
+        
+        String pk_idx = userDetails.getUsername();
+	    String code_name = "SG001";
+	    FileDTO dto = new FileDTO();
+	    dto.setCode_name(code_name);
+	    dto.setCode_name(pk_idx);
+	    
+        int row = myPageService.fileDelete(dto);
+        
         try {
             if (Files.exists(filePath)) {
                 Files.delete(filePath);

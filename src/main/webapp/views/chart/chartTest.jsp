@@ -116,18 +116,38 @@
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 <script>
-const exampleData = {
-	    headers: ['이름', '부서', '테스트', '삭제'],
-	    rows: [
-	        ['테스트', '경영팀', '팀장', '<button class="btn btn-primary">삭제</button>'],
-	        ['김철수', '개발팀', '대리', '<button class="btn btn-primary">삭제</button>'],
-	        ['이영희', '마케팅팀', '사원', '<button class="btn btn-primary">삭제</button>']
-	    ],
-	    footer: '<button class="btn btn-outline-secondary btn-line-write">라인저장</button>'
-	}; 
-	 
 
+//초기 데이터
+const initialData = {
+    headers: ['이름', '부서', '테스트', '삭제'],
+    rows: [
+        ['홍길동', '경영팀', '팀장', '<button class="btn btn-primary">삭제</button>'],
+        ['김철수', '개발팀', '대리', '<button class="btn btn-primary">삭제</button>'],
+        ['이영희', '마케팅팀', '사원', '<button class="btn btn-primary">삭제</button>']
+    ],
+    footer: '<button class="btn btn-outline-secondary btn-line-write">라인저장</button>'
+};
 
+var exampleData = JSON.parse(JSON.stringify(initialData));
+
+ // 선택된 ID를 rows에 추가하는 함수
+ function addSelectedIdToRows(selectedId) {
+     console.log("가져온 ID:", selectedId);
+
+     // 새로운 row 데이터 생성
+     const newRow = [selectedId, '선택된 부서', '선택된 테스트', '<button class="btn btn-primary">삭제</button>'];
+
+     // 기존 rows에 추가
+     exampleData.rows.push(newRow);
+
+     // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+     updateTableData('customTable', exampleData);
+ }
+
+ // 선택된 ID를 받아서 처리
+ getSelectId(function (selectedId) {
+     addSelectedIdToRows(selectedId);
+ });
 
 
 </script>

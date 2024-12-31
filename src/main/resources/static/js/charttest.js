@@ -1,4 +1,7 @@
-
+/**
+* author yh.kim (24.12.31)
+* 조직도 모달 기능 (조직도 노드 조회, 직원 추가, 동적 데이터 삽입)
+*/
 
 // CSS 및 JS 라이브러리 동적 로드 함수
 function loadResources(callback) {
@@ -105,7 +108,6 @@ function loadOrgChartData() {
     });
 }
 
-var selectedNodeData = null;
 
 
 function chartPrint(response){
@@ -159,14 +161,28 @@ function chartPrint(response){
                 }
             });
             
-
             // 이벤트 등록
             $('#jstree').on('loaded.jstree', function () {
                 console.log("jsTree가 성공적으로 초기화되었습니다.");
+				$("#jstree").jstree("open_all");
             }).on('changed.jstree', function (e, data) {
 	            console.log("선택된 노드:", data.selected);
-	            
+	            if (data.selected.length > 0) {
+			        var selectedId = data.selected[0]; // 선택된 노드의 ID
+			        console.log("선택된 노드 ID:", selectedId);
+			
+			        // 설정된 콜백 함수 호출
+			        if (typeof selectIdCallback === "function") {
+			            selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+			        }
+			    } else {
+			        console.log("선택된 노드가 없습니다.");
+			    }
 	        });
+}
+
+function getSelectId(callback) {
+    selectIdCallback = callback;
 }
 
 
@@ -178,6 +194,7 @@ function setupModalEvents(modal) {
     if (closeModal) {
         closeModal.addEventListener("click", function () {
             modal.style.display = "none";
+            resetTableData();
         });
     }
 
@@ -185,15 +202,11 @@ function setupModalEvents(modal) {
     if (cancelButton) {
         cancelButton.addEventListener("click", function () {
             modal.style.display = "none";
+            resetTableData();
         });
     }
 
-    // 모달 외부 클릭 시 닫기
-    window.addEventListener("click", function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    });
+   
 }
 
 
@@ -227,5 +240,11 @@ function updateTableData(tableId, data) {
     if (data.footer) {
         footer.innerHTML = '<tr><th colspan="4">' + data.footer + '</th></tr>';
     }
+}
+
+function resetTableData() {
+    exampleData.rows = JSON.parse(JSON.stringify(initialData.rows)); // 초기 데이터로 복원
+    updateTableData('customTable', exampleData); // 초기화된 데이터를 테이블에 반영
+    console.log("테이블 데이터가 초기화되었습니다. 초기 데이터로 복원됨:", exampleData.rows);
 }
 
