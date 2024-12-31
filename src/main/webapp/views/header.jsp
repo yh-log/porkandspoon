@@ -108,7 +108,7 @@
 	}
 </style>
 
-<header class="mb-4">
+<header>
     <a href="#" class="burger-btn d-block ">
         <i class="bi bi-justify fs-3 d-xl-none"></i>
     </a>

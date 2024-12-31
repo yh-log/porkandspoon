@@ -59,6 +59,8 @@ public class ApprovalDTO {
    
    private String parent_date;
    
+   private String user_dept_text;
+   
    // 상태명
    private String status_name;
    
@@ -348,7 +350,15 @@ public class ApprovalDTO {
    public void setTotal_count(int total_count) {
       this.total_count = total_count;
    }
-   
+
+	public String getUser_dept_text() {
+		return user_dept_text;
+	}
+	
+	public void setUser_dept_text(String user_dept_text) {
+		this.user_dept_text = user_dept_text;
+	}
+	   
    
 
 

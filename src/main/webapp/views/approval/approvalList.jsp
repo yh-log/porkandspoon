@@ -35,6 +35,9 @@
 	type="text/javascript"></script>
 
 <style>
+.draftList .cont-body{
+	padding-top: 10px;
+}
 .draftList table tr:hover {
 	background: #f7f7f7;
 }
@@ -45,6 +48,7 @@
 }
 
 .draftList .search-area {
+	float: right;
 	display: flex;
 	gap: 4px;
 }
@@ -62,9 +66,12 @@
 
 
 .draftList .buttons {
-	display: flex;
-	justify-content: space-between;
+	margin-top: 18px;
 	padding: 4px 40px;
+}
+
+.draftList .buttons .btn-group {
+	float:left;
 }
 
 .draftList .buttons .btn {
@@ -75,8 +82,7 @@
     border-color: var(--bs-primary);
 	color: #fff;
 }
-    
-    
+
     
 .draftList h4.doc-subject {
 	margin: 20px 0 50px;
@@ -142,14 +148,16 @@
 						<div class="tit-area">
 							<h5>기안문서함</h5>
 						</div>
-						<div class="buttons filter-btns">
-							<div class="btn-group" role="group" aria-label="Basic example">
-								<button type="button" data-filter="all" class="btn selected">전체</button>
-								<button type="button" data-filter="sd" class="btn">진행</button>
-								<button type="button" data-filter="co" class="btn">완료</button>
-								<button type="button" data-filter="re" class="btn">반려</button>
-								<button type="button" data-filter="ca" class="btn">회수</button>
-							</div>
+						<div class="buttons filter-btns clearfix">
+							<c:if test="${listType == 'my'}">
+								<div class="btn-group" role="group" aria-label="Basic example">
+									<button type="button" data-filter="all" class="btn selected">전체</button>
+									<button type="button" data-filter="sd" class="btn">진행</button>
+									<button type="button" data-filter="co" class="btn">완료</button>
+									<button type="button" data-filter="re" class="btn">반려</button>
+									<button type="button" data-filter="ca" class="btn">회수</button>
+								</div>
+							</c:if>
 							<div class="search-area">
 								<select name="search" class="form-select">
 									<option value="subject">제목</option>
@@ -168,7 +176,7 @@
 							<table class="list">
 								<colgroup>
 									<col>
-									<col width="40%">
+									<col width="30%">
 									<col>
 									<col>
 									<col>
@@ -187,6 +195,13 @@
 										<c:if test="${listType != 'sv'}">
 											<th>문서번호</th>
 											<th class="align-l">제목</th>
+										</c:if>
+										<!-- 부서 문서 -->
+										<c:if test="${listType == 'dept'}">
+											<th>구분</th>
+										</c:if>
+										<!-- 임시저장 외 나머지 기본항목 -->
+										<c:if test="${listType != 'sv'}">
 											<th>기안자</th>
 											<th>부서</th>
 										</c:if>
@@ -202,6 +217,11 @@
 										<!-- 결재할 문서 -->
 										<c:if test="${listType == 'tobe'}">
 											<th>기안일자</th>
+										</c:if>
+										<!-- 부서 문서 -->
+										<c:if test="${listType == 'dept'}">
+											<th>결재일자</th>
+											<th>결재상태</th>
 										</c:if>
 									
 									</tr>
@@ -234,6 +254,10 @@
 	var search = '';
 	var filter = '';
 	
+	var totalCount = 0;
+    var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
+    var totalPage = 0;
+	
 	pageCall(show, listType);
 	
 	function pageCall(page, listType) {
@@ -259,10 +283,11 @@
 			success:function(data){
 				console.log(data);
 				drawList(data.approvalList, listType);
-				
-				var totalCount = data.approvalList[0].total_count;  // 총 게시글 수
-	            var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
-	            var totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+
+				if(data.approvalList.length > 0){
+					totalCount = data.approvalList[0].total_count;  // 총 게시글 수
+		            totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+				}
 				console.log("totalCount",totalCount,"totalPage",totalPage);
 	            
 	            
@@ -293,6 +318,11 @@
 		var approvalDate = '';
 		var type1='';
 		var type2='';
+		if(totalCount == 0){
+			content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
+			$('.list tbody').html(content);
+			return false;
+		}
 		for (var view of list) {
 			approvalDate = view.approval_date.split(' ')[0];
 			content +='<tr>';
@@ -308,8 +338,18 @@
 			if(listType != 'sv'){
 	            content += '<td>'+view.document_number+'</td>';
 	            content += '<td class="align-l elipsis subject" onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">'+view.subject+'</td>';
+			}
+			if(listType == 'dept'){
+				// mapper에 user_parent 가져오도록함!!!! 오류안나는지 체크하기!! => dept 테이블 조인해서  텍스트가져오기 추가해야함!!
+				 if(view.user_dept_text == view.dept_text){				 
+					 content += '<td>부서</td>';
+				 }else{
+					 content += '<td>협조부서</td>';
+				 }
+			}
+			if(listType != 'sv'){
 				content +='<td>'+view.name+'</td>';
-				content +='<td>'+view.dept_text+'</td>';
+				content +='<td>'+view.dept_text+'</td>';	
 			}
 			if(listType == 'did'){
 				content +='<td>'+approvalDate+'</td>';
@@ -320,6 +360,10 @@
 			}
 			if(listType == 'tobe'){
 				 content += '<td>'+view.create_date+'</td>';
+			}
+			if(listType == 'dept'){
+				 content += '<td>'+approvalDate+'</td>';
+				 content += '<td>'+view.status+'</td>';
 			}
 			content +='</tr>';
 			console.log("view.draft_idx",view.draft_idx);

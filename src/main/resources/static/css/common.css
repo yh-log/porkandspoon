@@ -78,6 +78,21 @@ a {
 	color: var(--bs-body-color);
 }
 
+/* float clearfix */
+.clearfix:before, .clearfix:after {
+    display: block;
+    content: '';
+    line-height: 0;
+}
+
+.clearfix:after {
+    clear:both;
+}
+
+.clearfix {
+	zoom: 1;
+}
+
 /* 사이드바 */
 .sidebar-wrapper {
 	width: 260px;
@@ -149,6 +164,7 @@ header {
 	background: #fff;
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
+	margin-bottom: 24px;
 }
 
 /* header .bi-search {
@@ -270,6 +286,7 @@ header #chat i {
 	display: flex;
 	display: -moz-box;
 	display: -ms-flexbox;
+    min-height: calc(100vh - 144px - 1.5rem);
 	background: #fff;
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
