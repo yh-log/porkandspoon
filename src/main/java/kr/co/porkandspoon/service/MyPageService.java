@@ -106,6 +106,12 @@ public class MyPageService {
 		return myPageDao.signExist(pk_idx,code_name);
 		
 	}
+
+
+	public int fileDelete(FileDTO dto) {
+		return myPageDao.fileDelete(dto);
+		
+	}
 	
 	
 	
