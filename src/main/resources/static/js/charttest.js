@@ -159,14 +159,28 @@ function chartPrint(response){
                 }
             });
             
-
             // 이벤트 등록
             $('#jstree').on('loaded.jstree', function () {
                 console.log("jsTree가 성공적으로 초기화되었습니다.");
+				$("#jstree").jstree("open_all");
             }).on('changed.jstree', function (e, data) {
 	            console.log("선택된 노드:", data.selected);
-	            
+	            if (data.selected.length > 0) {
+			        var selectedId = data.selected[0]; // 선택된 노드의 ID
+			        console.log("선택된 노드 ID:", selectedId);
+			
+			        // 설정된 콜백 함수 호출
+			        if (typeof selectIdCallback === "function") {
+			            selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+			        }
+			    } else {
+			        console.log("선택된 노드가 없습니다.");
+			    }
 	        });
+}
+
+function getSelectId(callback) {
+    selectIdCallback = callback;
 }
 
 

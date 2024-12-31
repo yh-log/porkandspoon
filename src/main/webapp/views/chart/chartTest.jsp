@@ -126,7 +126,10 @@ const exampleData = {
 	    footer: '<button class="btn btn-outline-secondary btn-line-write">라인저장</button>'
 	}; 
 	 
-
+	getSelectId(function(selectedId) {
+	    console.log("가져온 ID:", selectedId);
+	
+	});
 
 
 
