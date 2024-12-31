@@ -1,4 +1,7 @@
-
+/**
+* author yh.kim (24.12.31)
+* 조직도 모달 기능 (조직도 노드 조회, 직원 추가, 동적 데이터 삽입)
+*/
 
 // CSS 및 JS 라이브러리 동적 로드 함수
 function loadResources(callback) {
@@ -105,7 +108,6 @@ function loadOrgChartData() {
     });
 }
 
-var selectedNodeData = null;
 
 
 function chartPrint(response){
@@ -192,6 +194,7 @@ function setupModalEvents(modal) {
     if (closeModal) {
         closeModal.addEventListener("click", function () {
             modal.style.display = "none";
+            resetTableData();
         });
     }
 
@@ -199,15 +202,11 @@ function setupModalEvents(modal) {
     if (cancelButton) {
         cancelButton.addEventListener("click", function () {
             modal.style.display = "none";
+            resetTableData();
         });
     }
 
-    // 모달 외부 클릭 시 닫기
-    window.addEventListener("click", function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    });
+   
 }
 
 
@@ -241,5 +240,11 @@ function updateTableData(tableId, data) {
     if (data.footer) {
         footer.innerHTML = '<tr><th colspan="4">' + data.footer + '</th></tr>';
     }
+}
+
+function resetTableData() {
+    exampleData.rows = JSON.parse(JSON.stringify(initialData.rows)); // 초기 데이터로 복원
+    updateTableData('customTable', exampleData); // 초기화된 데이터를 테이블에 반영
+    console.log("테이블 데이터가 초기화되었습니다. 초기 데이터로 복원됨:", exampleData.rows);
 }
 
