@@ -52,26 +52,77 @@ public class UserDTO extends ResponseDTO{
    private int menuOrder;
    private String text;
    private String new_filename;
+   private int totalpage;
+ 
+   // 인사 이동
+   private String transfer_date;
+   private String old_position;
+   private String new_position;
+   private String old_department;
+   private String new_department;
+   
+   
+   
 
    
    
-   public String getText() {
-	return text;
-}
+   public String getTransfer_date() {
+		return transfer_date;
+	}
+	
+	public void setTransfer_date(String transfer_date) {
+		this.transfer_date = transfer_date;
+	}
+	
+	public String getOld_position() {
+		return old_position;
+	}
+	
+	public void setOld_position(String old_position) {
+		this.old_position = old_position;
+	}
+	
+	public String getNew_position() {
+		return new_position;
+	}
+	
+	public void setNew_position(String new_position) {
+		this.new_position = new_position;
+	}
+	
+	public String getOld_department() {
+		return old_department;
+	}
+	
+	public void setOld_department(String old_department) {
+		this.old_department = old_department;
+	}
+	
+	public String getNew_department() {
+		return new_department;
+	}
+	
+	public void setNew_department(String new_department) {
+		this.new_department = new_department;
+	}
+	
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
+	
+	public String getNew_filename() {
+		return new_filename;
+	}
+	
+	public void setNew_filename(String new_filename) {
+		this.new_filename = new_filename;
+	}
 
-public void setText(String text) {
-	this.text = text;
-}
 
-public String getNew_filename() {
-	return new_filename;
-}
-
-public void setNew_filename(String new_filename) {
-	this.new_filename = new_filename;
-}
-
-private int totalpage;
    
    public int getMenuOrder() {
 	   return menuOrder;

@@ -193,4 +193,20 @@
 	    font-weight: bold;
 	    border-radius: 6px;
 	}
+	
+	#transferBox{
+		flost: left;
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
+	}
+	
+	#transferCheckBox button {
+		margin-right: 2px;
+	}
 
+	#transferCheckBox button:first-child {
+        margin-right: 0; /* 첫번째 버튼은 오른쪽 간격 제거 */
+    }

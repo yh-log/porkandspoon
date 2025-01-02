@@ -230,7 +230,23 @@ public interface UserDAO{
 	 */
 	List<UserDTO> employeeTransferList(Map<String, Object> parmeterMap);
 
+	/**
+	 * author yh.ki, (25.1.1)
+	 * 직영점 이동 리스트 조회
+	 */
+	List<UserDTO> storeTransferList(Map<String, Object> parmeterMap);
 
+	/**
+	 * author yh.ki, (25.1.1)
+	 * 미발령 직원 리스트 조회
+	 */
+	List<UserDTO> notTransferList(Map<String, Object> parmeterMap);
+
+	/**
+	 * author yh.ki, (25.1.2)
+	 * 인사이동 부서 및 직급 리스트 조회
+	 */
+	List<UserDTO> userTransferInfo(String username);
 
 
 }
