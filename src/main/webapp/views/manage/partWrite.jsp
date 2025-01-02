@@ -132,87 +132,86 @@
 						<div class="cont-body">
 						<div class="row">
 
-			         <div class="col-12 col-lg-12">
-                     <table>
-                        <tr>
-                           <th class="align-l">이름</th>
-                           <td ><input class="form-control sor-1 "  type="text" placeholder="이름을 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">생년월일</th>
-                           <td ><input class="form-control sor-1 short"  type="date"  required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">성별</th>
-                          <td ><div class="card-body">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											남자 </label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											여자 </label>
-									</div>
-								</div>	
+				         <div class="col-12 col-lg-12">
+	                     <table>
+	                        <tr>
+	                           <th class="align-l">이름</th>
+	                           <td ><input class="form-control sor-1 " name="name" type="text" placeholder="이름을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">생년월일</th>
+	                           <td ><input class="form-control sor-1 short"  name="birth" type="date"  required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">성별</th>
+	                          <td >
+	                          <div class="card-body">
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="gender" id="flexRadioDefault1" checked="checked"> 
+									<label class="form-check-label" for="flexRadioDefault1"> 남자 </label>
+								</div>
+								<div class="form-check">
+									<input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2" >
+									<label class="form-check-label" for="flexRadioDefault2"> 여자 </label>
+								</div>
+									</div>	
+								</td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">상태</th>
+	                          <td ><div class="card-body">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="is_quit" id="flexRadioDefault1" checked="checked"> 
+											<label class="form-check-label" for="flexRadioDefault1">재직 </label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="radio" name="is_quit" id="flexRadioDefault2" >
+											<label class="form-check-label" for="flexRadioDefault2">퇴사 </label>
+										</div>
+									</div>	
+								</td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">지점명</th>
+	                          <td ><input class="form-control sor-1 " name="spotname" type="text" placeholder="지점명을 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">전화번호</th>
+	                          <td ><input class="form-control sor-1 " name="phone"  type="text" placeholder="전화번호를 입력해주세요." required="required"/></td>
+	                        </tr>
+	                        <tr>
+	                           <th class="align-l">주소</th>
+	                          <td >
+	                          	<div class="inline-layout">
+									<input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true"/>
+									<button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
+								</div>
 							</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">상태</th>
-                          <td ><div class="card-body">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											재직 </label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											퇴사 </label>
-									</div>
-								</div>	
-							</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">지점명</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="지점명을 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">전화번호</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="전화번호를 입력해주세요." required="required"/></td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">주소</th>
-                          <td >
-                          	<div class="inline-layout">
-								<input type="text" name="address" class="form-control" disabled="disabled"/>
-								<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-geo-alt-fill"></i></button>
-							</div>
-						</td>
-                        </tr>
-                        
-                        <tr>
-                           <th class="align-l">근무 요일</th>
-                          <td >
-                          	<div id="searchLayout" class="col-7 col-lg-7">
-								<select class="form-select selectStyle">
-									<option>월</option>
-									<option>화</option>
-									<option>수</option>
-									<option>목</option>
-									<option>금</option>
-									<option>토</option>
-									<option>일</option>
-								</select>
-								<input type="text" class="form-control start_date" id="basicInput" placeholder="시작 시간">		
-								<p class="title" id="text">~</p>
-								<input type="text" class="form-control end_date" id="basicInput" placeholder="종료 시간">		
-								
-							</div>
-						 </td>
-                        </tr>
-                     	</table>
-                     
-                  		</div>
+	                        </tr>
+	                        
+	                        <tr>
+	                           <th class="align-l">근무 요일</th>
+	                          <td >
+	                          	<div id="searchLayout" class="col-7 col-lg-7" >
+									<select class="form-select selectStyle" name="work_date">
+										<option>월</option>
+										<option>화</option>
+										<option>수</option>
+										<option>목</option>
+										<option>금</option>
+										<option>토</option>
+										<option>일</option>
+									</select>
+									<input type="text" class="form-control start_date" id="basicInput" name="start_time" placeholder="시작 시간">		
+									<p class="title" id="text">~</p>
+									<input type="text" class="form-control end_date" id="basicInput" name="end_time" placeholder="종료 시간">		
+									
+								</div>
+							 </td>
+	                        </tr>
+	                     	</table>
+	                     
+	                  		</div>
 							<div id="btn-gap">							
 								<button class="btn btn-primary">등록</button>
 								<button class="btn btn-outline-primary">취소</button>
@@ -230,7 +229,8 @@
 
 
 
-
+<script src='/resources/js/common.js'></script>
+<script src='/resources/js/daumApi.js'></script>
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
@@ -266,8 +266,7 @@
 
 
 <!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<script src="/resources/js/jquery.twbsPagination.js" type="text/javascript"></script>
 <script>
 
 	

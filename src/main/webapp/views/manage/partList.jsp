@@ -94,7 +94,7 @@
 					</div>
 	
 					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
 						<li><a href="/ad/rest/List">휴점신청</a></li>
 					</ul>
 				</section>
@@ -106,13 +106,11 @@
 						<div class="cont-body">
 							<div class="row">
 								<div class="col-5 col-lg-5"></div>
-								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option>부서</option>
-										<option>이름</option>
-										<option>직위</option>
+								<div id="searchLayout"  class="col-7 col-lg-7">
+									<select id="searchOption" class="form-select selectStyle">
+										<option value="name">이름</option>
 									</select>
-									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
+									<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
 									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
 								</div>
 							</div>
@@ -124,30 +122,26 @@
 									<col >
 									<col>
 									<col>
-									<col width="5%">
-									<col width="5%">
+									<col>
 								</colgroup>
 								<thead>
 									<tr>
 										<th>이름</th>
 										<th >나이</th>
-										<th>지점명</th>
+										<th>직영점이름</th>
 										<th>입사일</th>
-										<th></th>
 										<th></th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td>김열무</td>
-										<td>1999.08.20</td>
-										<td>남</td>
-										<td>2024.11.20</td>
-										<td onclick="location.href='/ad/part/Update'">수정</td>
-										<td>아이콘</td>
-									</tr>
+								<tbody id="list">
+									
 								</tbody>
+								
+						             
 							</table>
+						                <nav aria-label="Page navigation">
+						                 <ul class="pagination" id="pagination"></ul>
+						                </nav>
 							
 							</div>
 							</div>
@@ -163,121 +157,102 @@
 
 
 
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
-<!-- 페이지네이션 -->
+
+
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+var show = 1;
+var cnt = 10; // 한 페이지당 항목 수
+var url = '/ad/part/List'; // 서버 요청 URL
+var paginationInitialized = false;
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
+$(document).ready(function () {
+    pageCall(show);
+});
 
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+function pageCall(page) {
+	console.log(page);
+    var keyword = $('#searchKeyword').val(); // 검색어
+    var opt = $('#searchOption').val(); // 검색 옵션
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
+    var requestData = {
+        page: page,
+        cnt: cnt,
+        opt: opt,
+        keyword: keyword
+    };
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
+    $.ajax({
+        type: 'GET',
+        url: url,
+        data: requestData,
+        dataType: 'JSON',
+        success: function (data) {
+            console.log(data);
+            renderList(data.list);
+
+            if (paginationInitialized) {
+                $('#pagination').twbsPagination('destroy'); // 기존 페이지네이션 제거
+            }
+
+            if (data.totalPages > 0) {
+                $('#pagination').twbsPagination({
+                    totalPages: data.totalPages,
+                    visiblePages: 10,
+                    startPage: page,
+                    initiateStartPageClick: false,
+                    onPageClick: function (evt, page) {
+                        pageCall(page);
+                    }
+                });
+                paginationInitialized = true;
+            } else {
+                paginationInitialized = false;
+            }
+        },
+        error: function (e) {
+            console.error(e);
+        }
+    });
+}
+
+function renderList(list) {
+    var content = '';
+    if (list.length === 0) {
+        content = '<tr><td colspan="5" style="text-align: center;">데이터가 없습니다.</td></tr>';
+    } else {
+        for (var view of list) {
+            var formattedDate = view.create_date
+                ? view.create_date.replace('T', ' ').split('.')[0]
+                : '-';
+
+            content += '<tr>';
+            content += '<td>' + view.name + '</td>';
+            content += '<td>' + view.birth + '</td>';
+            content += '<td>' + view.spotName + '</td>';
+            content += '<td>' + view.join_date + '</td>';
+            content += '<td>수정<i class="bi bi-trash" ></i></td>';
+            content += '</tr>';
+        }
+    }
+    $('#list').html(content);
+}
 	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 
 
 </script>
