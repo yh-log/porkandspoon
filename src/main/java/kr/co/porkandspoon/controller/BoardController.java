@@ -36,7 +36,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.porkandspoon.dto.BoardDTO;
 import kr.co.porkandspoon.dto.BoardReviewDTO;
 import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.service.AlarmService;
 import kr.co.porkandspoon.service.BoardService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -45,6 +47,7 @@ public class BoardController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired BoardService boardService;
+	@Autowired AlarmService alarmService;
 	private final TaskScheduler taskScheduler;
 	private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
@@ -99,7 +102,27 @@ public class BoardController {
 		return mav;
 	}
 	
-	// 공자사항 상세보기
+	// 라이브러리 상세보기
+	@GetMapping(value="/lbboarddetail/View/{board_idx}")
+	public ModelAndView lbboardDetail(@PathVariable String board_idx) {
+		BoardDTO boarddto = new BoardDTO();
+		ModelAndView mav = new ModelAndView();
+		List<FileDTO> file = boardService.getlbBoardFile(board_idx);
+		FileDTO photo = boardService.getlbBoardphoto(board_idx);
+		boarddto = boardService.lbboardDetail(board_idx);
+		if(boarddto != null) {
+			int boardidx = Integer.parseInt(board_idx);
+			// 조회수 + 1 메서드
+			boardService.lbboardUpCount(boardidx);
+		}
+		mav.addObject("photoInfo", photo);
+		mav.addObject("fileInfo", file);
+		mav.addObject("boardInfo", boarddto);
+		mav.setViewName("/board/lbboardDetail");
+		return mav;
+	}
+	
+	// 공지사항 상세보기
 	@GetMapping(value="/boarddetail/View/{board_idx}")
 	public ModelAndView boardDetail(@PathVariable String board_idx) {
 		BoardDTO boarddto = new BoardDTO();
@@ -391,7 +414,7 @@ public class BoardController {
 	}
 	
 	// 비공개 게시글 부서 찾아오기
-	@GetMapping(value="checkDept")
+	@GetMapping(value="/checkDept")
 	public Map<String, Object> getCheckDept(@RequestParam Map<String, Object> params) {
 		Map<String, Object> response = new HashMap<>();
 		response.put("status", false);
@@ -412,6 +435,13 @@ public class BoardController {
 		logger.info("댓글 밧 : {} ", params);
 		boardService.setReviewWrite(params);
 		Map<String, Object> response = new HashMap<>();
+		NoticeDTO noticedto = new NoticeDTO();
+		noticedto.setUsername((String) params.get("board_username"));
+		noticedto.setFrom_idx((String) params.get("board_idx"));
+		noticedto.setCode_name("ml003");
+		noticedto.setFrom_id((String) params.get("username"));
+		noticedto.setSubject((String) params.get("subject"));
+		alarmService.saveAlarm(noticedto);
 		response.put("success", true);
 		response.put("status", "write");
 		return response;

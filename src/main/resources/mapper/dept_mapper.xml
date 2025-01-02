@@ -68,11 +68,53 @@
 	</select>
 	
 	<select id="getDeptdata" resultType="kr.co.porkandspoon.dto.DirectstoreDTO">
-		SELECT ds.*, f.new_filename
-	    FROM direct_store ds
-	    LEFT JOIN file f ON f.pk_idx = ds.parent
-	    WHERE ds.parent = #{departmentId}
-      	AND f.code_name = 'bl001'
+		SELECT 
+        ds.id,
+        ds.parent,
+        ds.name,
+        COALESCE(f.new_filename, 'noImg') AS new_filename,
+        u.name AS username,
+        u.birth,
+        u.phone,
+        u.join_date,
+        u.title,
+        u.position,
+        d.text AS text
+	    FROM 
+	        direct_store ds
+	    LEFT JOIN 
+	        file f 
+	        ON f.pk_idx = ds.parent AND f.code_name = 'bl001'
+	    LEFT JOIN 
+	        user u
+	        ON u.username = ds.owner
+	    LEFT JOIN 
+	        department d
+	        ON d.id = ds.parent
+	    WHERE 
+	        ds.parent = #{departmentId}
+	    UNION
+	    SELECT 
+	        NULL AS id,
+	        #{departmentId} AS parent,
+	        NULL AS name,
+	        COALESCE((SELECT new_filename FROM file WHERE pk_idx = #{departmentId} AND code_name = 'bl001'), 'noImg') AS new_filename,
+	        NULL AS username,
+	        NULL AS birth,
+	        NULL AS phone,
+	        NULL AS join_date,
+	        NULL AS title,
+	        NULL AS position,
+	        d.text AS text
+	    FROM 
+	        department d
+	    WHERE 
+	        d.id = #{departmentId}
+	        AND NOT EXISTS (
+	            SELECT 1
+	            FROM direct_store ds
+	            WHERE ds.parent = #{departmentId}
+	        );
 	</select>
 	
 	<!-- author yh.kim (24.12.29) 조직도 데이터 조회 -->

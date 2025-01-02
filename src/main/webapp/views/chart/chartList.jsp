@@ -48,9 +48,10 @@
 	}
 	
 	#orgchart .google-visualization-orgchart-node {
-	    background: var(--bs-primary) !important;
+	    background: none !important;
 	    border: none !important;
 	    box-shadow: none !important;
+	    color: white;
 	}
 	
 	#orgchart .google-visualization-orgchart-node-selected {
@@ -59,15 +60,43 @@
 	}
 	
 	.userNode {
-		background: var(--bs-secondary);
+		background: #9fb4ff;
 		border: none !important;
+		border-radius: 6px;
+	}
+	
+	.deptNode {
+		background: var(--bs-secondary);
+		background-color: var(--bs-primary);
+		border-radius: 6px;
+	}
+	
+	.deptNode:hover {
+	    background: #5c7aea; /* 더 진한 색상 */
+	    color: white;
+	    cursor: pointer; /* 마우스 포인터를 손가락 모양으로 */
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 마우스 올릴 때 약간의 그림자 효과 */
+	}
+	
+	.userNode:hover {
+	    background: #6d92ff; /* 더 진한 파란색 */
+	    color: white;
+	    cursor: pointer; /* 마우스 포인터를 손가락 모양으로 */
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* 마우스 올릴 때 약간의 그림자 효과 */
 	}
 	
 	#modal .modal-style {
 		top: 150px;
 	    border: none;
 	    height: 640px;
-	    width: 350px;
+	    width: 600px;
+	}
+	
+	#modal .modal-style-style {
+		top: 150px;
+	    border: none;
+	    height: 640px;
+	    width: 600px;
 	}
 	
 	.one1 {
@@ -78,7 +107,7 @@
 	    justify-content: center;
  	    align-items: center;
 	    position: relative;
-	    background-color: gray;
+	    background-color: #dae2ff;
 	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 	}
 	
@@ -111,6 +140,10 @@
 	.td-style-style {
 		height: 100px;
 	}
+	
+	.tr-style2 tr {
+		margin-bottom: 10px;
+	}
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -141,7 +174,7 @@
 													<table class="table-sun">
 														<tbody>
 															<tr>
-																<td>브랜드팀</td>
+																<td style="font-weight: bold; ont-size: 20px;"></td>
 															</tr>
 															<tr>
 																<td class="td-style-style" style="text-align: -webkit-center;">
@@ -164,23 +197,31 @@
 											<tbody class="tr-style">
 												<tr>
 													<th>이름</th>
-													<td></td>
-												</tr>
-												<tr>
-													<th>직급</th>
-													<td></td>
-												</tr>
-												<tr>
-													<th>사번</th>
-													<td></td>
-												</tr>
-												<tr>
+													<td>response.name</td>
 													<th>생년월일</th>
-													<td></td>
+													<td>response.birth</td>
+												</tr>
+												<tr>
+													<th>주소</th>
+													<td colspan="3">response.address</td>
 												</tr>
 												<tr>
 													<th>번호</th>
-													<td></td>
+													<td>response.phone</td>
+													<th>사내번호</th>
+													<td>response.company_num</td>
+												</tr>
+												<tr>
+													<th>직급</th>
+													<td>response.position</td>
+													<th>직책</th>
+													<td>response.title</td>
+												</tr>
+												<tr>
+													<th>입사일</th>
+													<td>response.create_date</td>
+													<th>이메일</th>
+													<td>response.email</td>
 												</tr>
 											</tbody>
 										</table>
@@ -189,7 +230,7 @@
 							</div>
 						</div>
 						<div id="modal" class="modal modal-dept">
-							<div class="modal-cont modal-cont-chart modal-style">
+							<div class="modal-cont modal-cont-chart modal-style-style" style="overflow: auto;">
 								<span class="close">&times;</span>
 								<div id="modal-body2">
 									<div class="col-12 col-lg-12">
@@ -321,7 +362,7 @@
 	        } else {
 	            // 부서 데이터 추가
 	            chartData.addRow([
-	                { v: id, f: '<div onclick="deptIdData(\'' + id + '\', \'' + parent + '\')" style="padding: 5px; text-align: center;">' + text + '</div>' },
+	                { v: id, f: '<div class="deptNode" onclick="deptIdData(\'' + id + '\', \'' + parent + '\')" style="padding: 5px; text-align: center;">' + text + '</div>' },
 	                parent
 	            ]);
 	        }
@@ -349,10 +390,34 @@
 	    // 조직도 렌더링
 	    const chart = new google.visualization.OrgChart(document.getElementById('orgchart'));
 	    chart.draw(chartData, { allowHtml: true });
+	    
 	}
+	document.addEventListener('click', (event) => {
+	    // 부서 모달 처리
+	    const deptModalOverlay = document.querySelector('.modal-dept');
+	    const deptModalContent = deptModalOverlay?.querySelector('.modal-style-style');
+
+	    if (deptModalOverlay && deptModalContent) {
+	        const isOutsideDeptModal = !deptModalContent.contains(event.target);
+	        if (isOutsideDeptModal && event.target === deptModalOverlay) {
+	            deptModalOverlay.style.display = 'none'; // 부서 모달 닫기
+	        }
+	    }
+
+	    // 사원 모달 처리
+	    const userModalOverlay = document.querySelector('#modal');
+	    const userModalContent = userModalOverlay?.querySelector('.modal-style');
+
+	    if (userModalOverlay && userModalContent) {
+	        const isOutsideUserModal = !userModalContent.contains(event.target);
+	        if (isOutsideUserModal && event.target === userModalOverlay) {
+	            userModalOverlay.style.display = 'none'; // 사원 모달 닫기
+	        }
+	    }
+	});
 	
 	// 일단 브랜드팀 부서코드 임의로 지저
-	const brandDeptId = "5";
+	const brandDeptId = "BS0001";
 	
 	// 부서 데이터 가져오기
 	function deptIdData(departmentId, parent) {
@@ -384,55 +449,125 @@
 	
 	function depthttpSuccess(response) {
 	    console.log("서버 응답 데이터:", response);
-	    const modalBody = document.getElementById('modal-body2');
-	    const firstItem = response[0];
-	    const departmentName = firstItem.name || '없음';
-	    const imageFileName = firstItem.new_filename || 'resources/img/person.png';
 
-	    // 부서명 삽입
+	    const modalBody = document.getElementById('modal-body2');
+	    if (!modalBody) {
+	        console.error('Modal body가 존재하지 않습니다.');
+	        return;
+	    }
+
+	    const firstItem = response[0] || {};
+	    const departmentName = firstItem.text || '없음';
+	    const imageFileName = firstItem.new_filename === 'noImg' 
+	        ? '/resources/img/person.png' 
+	        : '/photo/' + (firstItem.new_filename || '');
+
+	    // 1. 모달 내부 초기화
 	    const nameTd = modalBody.querySelector('.table-sun td');
-	    if (!nameTd.innerText) {
+	    const profileImageDiv = modalBody.querySelector('.one2');
+	    const tbody = modalBody.querySelector('.tr-style2');
+
+	    if (nameTd) {
+	        nameTd.innerText = ''; // 부서명 초기화
+	    }
+
+	    if (profileImageDiv) {
+	        profileImageDiv.innerHTML = ''; // 이미지 초기화
+	    }
+
+	    if (tbody) {
+	        tbody.innerHTML = ''; // 테이블 초기화
+	    }
+
+	    // 2. 부서명 삽입
+	    if (nameTd) {
 	        nameTd.innerText = departmentName;
 	    }
 
-	    // 이미지 삽입
-	    const profileImageDiv = modalBody.querySelector('.one2');
-	    if (!profileImageDiv.querySelector('img')) {
-	        profileImageDiv.innerHTML = 
-	            '<img src="/photo/' + imageFileName + '">';
+	    // 3. 이미지 삽입
+	    if (profileImageDiv) {
+	        const imageSrc = imageFileName.startsWith('/resources/') 
+	            ? imageFileName 
+	            : imageFileName;
+
+	        const imgElement = document.createElement('img');
+	        imgElement.src = imageSrc;
+	        imgElement.alt = '프로필 이미지';
+	        profileImageDiv.appendChild(imgElement);
 	    }
 
-	    // 3. 직영점 데이터 출력
-	    const tbody = modalBody.querySelector('.tr-style2');
-	    tbody.innerHTML = ''; // 기존의 내용 지우기
-
-	    // 직영점 데이터가 있다면 테이블 행 추가
+	    // 4. 직영점 데이터 출력
 	    if (response.length > 0) {
-	        response.forEach(store => {
-	            const tr = document.createElement('tr');
+		    response.forEach(store => {
+		        // 첫 번째 행: 제목
+		        const trTitle = document.createElement('tr');
+		        const thTitle = document.createElement('th');
+		        thTitle.colSpan = 4; // 제목 행은 4칸을 병합
+		        thTitle.innerText = store.name || '제목 없음'; // 부서명
+		        trTitle.appendChild(thTitle);
+		        tbody.appendChild(trTitle);
+		
+		        // 두 번째 행: 직영점주와 번호
+		        const trOwnerPhone = document.createElement('tr');
+		
+		        const thOwner = document.createElement('th');
+		        thOwner.innerText = '직영점주';
+		        trOwnerPhone.appendChild(thOwner);
+		
+		        const tdOwner = document.createElement('td');
+		        tdOwner.innerText = store.username || '이름 없음';
+		        trOwnerPhone.appendChild(tdOwner);
+		
+		        const thPhone = document.createElement('th');
+		        thPhone.innerText = '번호';
+		        trOwnerPhone.appendChild(thPhone);
+		
+		        const tdPhone = document.createElement('td');
+		        tdPhone.innerText = store.phone || '번호 없음';
+		        trOwnerPhone.appendChild(tdPhone);
+		
+		        tbody.appendChild(trOwnerPhone);
+		
+		        // 세 번째 행: 직급과 입사일
+		        const trPositionJoinDate = document.createElement('tr');
+		
+		        const thPosition = document.createElement('th');
+		        thPosition.innerText = '직급';
+		        trPositionJoinDate.appendChild(thPosition);
+		
+		        const tdPosition = document.createElement('td');
+		        tdPosition.innerText = store.position || '직급 없음';
+		        trPositionJoinDate.appendChild(tdPosition);
+		
+		        const thJoinDate = document.createElement('th');
+		        thJoinDate.innerText = '입사일';
+		        trPositionJoinDate.appendChild(thJoinDate);
+		
+		        const tdJoinDate = document.createElement('td');
+		        tdJoinDate.innerText = store.join_date || '입사일 없음';
+		        trPositionJoinDate.appendChild(tdJoinDate);
+		
+		        tbody.appendChild(trPositionJoinDate);  
+		        const br = document.createElement('br');
+		        tbody.appendChild(br);
+		    });
+		} else if (tbody) {
+		    // 데이터가 없을 경우
+		    const tr = document.createElement('tr');
+		    const td = document.createElement('td');
+		    td.colSpan = 4; // 열 개수에 맞게 설정
+		    td.innerText = '직영점 정보가 없습니다.';
+		    tr.appendChild(td);
+		    tbody.appendChild(tr);
+		}
 
-	            const td1 = document.createElement('td');
-	            td1.innerText = store.name || '직영점 이름 없음'; // 직영점 이름
-	            tr.appendChild(td1);
-
-	            const td2 = document.createElement('td');
-	            td2.innerText = store.code_name || '구분 코드 없음'; // 구분 코드
-	            tr.appendChild(td2);
-
-	            tbody.appendChild(tr);
-	        });
-	    } else {
-	        const tr = document.createElement('tr');
-	        const td = document.createElement('td');
-	        td.colSpan = 2; // 여러 칸을 합친 셀로 처리
-	        td.innerText = '직영점 정보가 없습니다.';
-	        tr.appendChild(td);
-	        tbody.appendChild(tr);
-	    }
-
-	    // 모달 표시
+	    // 5. 모달 표시
 	    const modal = document.querySelector('.modal-dept');
-	    modal.style.display = 'block';
+	    if (modal) {
+	        modal.style.display = 'block';
+	    } else {
+	        console.error('모달이 존재하지 않습니다.');
+	    }
 	}
 	
 	// 사원 데이터 가져오기
@@ -446,27 +581,52 @@
 
 	function httpSuccess(response) {
 	    console.log("서버 응답 데이터:", response);
+
 	    const modalBody = document.getElementById('modal-body');
-	    
-	    // 응답 데이터 확인
-	    document.querySelector('#modal .table-sun td').innerText = response.text || "없음"; // 브랜드명 = 부서명
-	    const tableRows = document.querySelectorAll('#modal .tr-style tr');
+	    if (!modalBody) {
+	        console.error('Modal body가 존재하지 않습니다.');
+	        return;
+	    }
+
+	    // 부서명 삽입
+	    document.querySelector('#modal .table-sun td').innerText = response.text || "없음";
 
 	    // 각 데이터가 null, undefined 또는 빈 문자열이면 "없음"으로 표시
-	    tableRows[0].querySelector('td').innerText = response.name || "없음";       // 이름
-	    tableRows[1].querySelector('td').innerText = response.position || "없음";   // 직급
-	    tableRows[2].querySelector('td').innerText = response.person_num || "없음"; // 사번
-	    tableRows[3].querySelector('td').innerText = response.birth || "없음";        // 나이
-	    tableRows[4].querySelector('td').innerText = response.phone || "없음";      // 번호
+	    const tableRows = document.querySelectorAll('#modal .tr-style tr');
+
+	    // 이름
+	    tableRows[0].querySelectorAll('td')[0].innerText = response.name || "없음";
+	    // 생년월일
+	    tableRows[0].querySelectorAll('td')[1].innerText = response.birth || "없음";
+	    // 주소
+	    tableRows[1].querySelectorAll('td')[0].innerText = response.address || "없음";
+	    // 번호
+	    tableRows[2].querySelectorAll('td')[0].innerText = response.phone || "없음";
+	    // 사내번호
+	    tableRows[2].querySelectorAll('td')[1].innerText = response.company_num || "없음";
+	    // 직급
+	    tableRows[3].querySelectorAll('td')[0].innerText = response.position || "없음";
+	    // 직책
+	    tableRows[3].querySelectorAll('td')[1].innerText = 
+	        response.title === 'U' ? '사원' : 
+	        response.title === 'T' ? '팀장' : 
+	        "없음";
+	    // 입사일
+	    tableRows[4].querySelectorAll('td')[0].innerText = response.create_date || "없음";
+	    // 이메일
+	    tableRows[4].querySelectorAll('td')[1].innerText = response.email || "없음";
+
+	    // 프로필 이미지 삽입
 	    const profileImageDiv = document.querySelector('.one2');
 	    profileImageDiv.innerHTML = 
 	        '<img src="' + (response.new_filename ? '/photo/' + response.new_filename : '/resources/img/person.png') + 
-	        '">';
-	    
+	        '" alt="프로필 이미지">';
+
 	    // 모달 표시
 	    const modal = document.getElementById('modal');
 	    modal.style.display = 'block';
 	}
+
 	
 	
 	

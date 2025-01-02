@@ -300,9 +300,23 @@
         AND f.code_name = 'up100';
 	</select>
 	
+	<!-- 게시글 작성자 사진 가져오기 -->
+	<select id="getlbBoardphoto" resultType="kr.co.porkandspoon.dto.FileDTO">
+    	SELECT f.new_filename FROM file f 
+    	INNER JOIN library_board fb ON f.pk_idx = fb.username 
+    	WHERE 
+        fb.board_idx = #{board_idx}
+        AND f.code_name = 'up100';
+	</select>
+	
 	<!-- 조회수 증가 쿼리 -->
 	<update id="boardUpCount" parameterType="int">
 		UPDATE free_board SET count = count + 1 WHERE board_idx = #{board_idx}
+	</update>
+	
+	<!-- 조회수 증가 쿼리 -->
+	<update id="lbboardUpCount" parameterType="int">
+		UPDATE library_board SET count = count + 1 WHERE board_idx = #{board_idx}
 	</update>
 	
 	<!-- 읽음 리스트에서 읽었나 조회 쿼리 -->

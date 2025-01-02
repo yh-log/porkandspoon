@@ -14,6 +14,55 @@ public class DirectstoreDTO {
 	private LocalDateTime update_date;
 	private String is_close;
 	private String use_yn;
+	private String text;
+	private String username;
+	private String birth;
+	private String phone;
+	private String join_date;
+	private String title;
+	private String position;
+	public String getText() {
+		return text;
+	}
+	public void setText(String text) {
+		this.text = text;
+	}
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	public String getBirth() {
+		return birth;
+	}
+	public void setBirth(String birth) {
+		this.birth = birth;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getJoin_date() {
+		return join_date;
+	}
+	public void setJoin_date(String join_date) {
+		this.join_date = join_date;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getPosition() {
+		return position;
+	}
+	public void setPosition(String position) {
+		this.position = position;
+	}
 	public String getCode_name() {
 		return code_name;
 	}

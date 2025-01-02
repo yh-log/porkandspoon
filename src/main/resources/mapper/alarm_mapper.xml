@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+>
+
+<mapper namespace="kr.co.porkandspoon.dao.AlarmDAO">
+	
+	<insert id="savaAlarm" parameterType="kr.co.porkandspoon.dto.NoticeDTO">
+		INSERT INTO notice(username, code_name, subject, content, from_id, from_idx, url) VALUES(#{username}, #{code_name}, #{subject}, #{content}, #{from_id}, #{from_idx}, #{url})
+	</insert>
+	
+	<select id="getUsername" resultType="String">
+		SELECT name FROM user WHERE username = #{username}
+	</select>
+	
+	<select id="getAlarm" parameterType="String" resultType="kr.co.porkandspoon.dto.NoticeDTO">
+	    SELECT * 
+	    FROM notice 
+	    WHERE username = #{username} AND is_confirm = 'N'
+	</select>
+
+	<update id="updateConfirm" parameterType="int">
+	    UPDATE notice
+	    SET is_confirm = 'Y', check_date = NOW()
+	    WHERE alarm_idx = #{alarm_idx}
+	</update>
+</mapper>

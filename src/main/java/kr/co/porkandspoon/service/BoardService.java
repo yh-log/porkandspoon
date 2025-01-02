@@ -257,14 +257,24 @@ public class BoardService {
 		return boardDAO.lbboardDelete(board_idx);
 	}
 
-	// 해당 게시글 작성자의 사진 가져오기
+	// 해당 공지사항 게시글 작성자의 사진 가져오기
 	public FileDTO getBoardphoto(String board_idx) {
 		return boardDAO.getBoardphoto(board_idx);
+	}
+	
+	// 해당 라이브러리 게시글 작성자의 사진 가져오기
+	public FileDTO getlbBoardphoto(String board_idx) {
+		return boardDAO.getlbBoardphoto(board_idx);
 	}
 	
 	// 조회수 증가
 	public void boardUpCount(int boardidx) {
 		boardDAO.boardUpCount(boardidx);
+	}
+	
+	// 조회수 증가
+	public void lbboardUpCount(int boardidx) {
+		boardDAO.lbboardUpCount(boardidx);
 	}
 
 	// 해당 게시글 확인한 사원 저장시키기

@@ -149,14 +149,14 @@
 												</colgroup>
 												<thead>
 													<tr>
-														<th>체크</th>
+														<th>공지</th>
 														<th>글번호</th>
 														<th>제목</th>
 														<th>작성자</th>
 														<th>조회수</th>
 														<th>작성일시</th>
-														<th>수정</th>
-														<th>삭제</th>
+														<th></th>
+														<th></th>
 													</tr>
 												</thead>
 												<tbody id="boardList">
@@ -281,7 +281,7 @@ function pageCall(page = 1) {
 		    // 번호
 		    content += '<td>' + item.board_idx + '</td>';
 		    // 제목 (클릭 시 이동)
-		    content += '<td class="align-l elipsis" style="cursor: pointer;"';
+		    content += '<td class="align-l elipsis" style="cursor: pointer; text-align: center;"';
 			if (item.board_state === 'N') {
 			    content += 'onclick="checkdept(' + item.board_idx + ')"';
 			} else {

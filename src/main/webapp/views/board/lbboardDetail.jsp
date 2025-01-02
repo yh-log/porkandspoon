@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -179,167 +180,78 @@
 								</td>
 							</tr>
 							<tr></tr>
+							<tr>
+								<td>
+									<div class="row">
+								        <c:if test="${not empty fileInfo}">
+										    <c:forEach var="file" items="${fileInfo}">
+										        <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #d1d1d1; width: auto; margin-bottom: 5px;">
+										            <span>
+										                <c:choose>
+										                    <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                        <img src="/photo/${file.new_filename}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="이미지">
+										                    </c:when>
+										                    <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                        <i class="bi bi-file-earmark-pdf" style="font-size: 24px; color: red;"></i>
+										                    </c:when>
+										                    <c:otherwise>
+										                        <i class="bi bi-file-earmark" style="font-size: 24px;"></i>
+										                    </c:otherwise>
+										                </c:choose>
+										                ${file.ori_filename}
+										            </span>
+										            <br>
+										            <a href="/photo/${file.new_filename}" class="btn btn-primary" download>
+										                다운로드
+										            </a>
+										            <c:choose>
+										                <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.new_filename}')">
+										                        미리보기
+										                    </button>
+										                </c:when>
+										                <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.new_filename}')">
+										                        미리보기
+										                    </button>
+										                </c:when>
+										            </c:choose>
+										        </div>
+										    </c:forEach>
+										</c:if>
+										<c:if test="${empty fileInfo}">
+										    <p>첨부된 파일이 없습니다.</p>
+										</c:if>
+									</div>
+							    </td>
+							</tr>
 							<tr class="table-sun">
 								<td style="text-align: left;">
 									${boardInfo.content}
 								</td>
 							</tr>
-							<tr class="table-sun">
-								<td class="table-text table-text-text">
-									<i class="bi bi-chat"></i>&nbsp;<span>댓글 ${boardInfo.reviewrow}개</span>&nbsp;|&nbsp;<span class="btnModal user-list" onclick="checklist('${boardInfo.board_idx}')"><i class="bi bi-person-fill"></i>${boardInfo.listrow}</span>&nbsp;|&nbsp;조회&nbsp;<span>${boardInfo.count}</span>
-									<!-- 유저 리스트 모달 -->
-									<div id="modal" class="modal">
-										<div class="modal-cont modal-user-list">
-											<span class="close">&times;</span>
-											<div id="modal-body">
-												<h4 class="menu-title">확인한 직원 리스트</h4>
-												<div class="scl">
-													<table id="userList">
-														<colgroup>
-															<col width="30%" />
-															<col />
-														</colgroup>
-														<tbody>
-														</tbody>
-													</table>
-												</div>
-											</div>
-										</div>
-									</div>									
-								</td>
-							</tr>
+							<tr></tr>
 						</tbody>
 					</table>
+					<div id="previewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+					    <div style="position: relative; margin: 50px auto; width: 80%; height: 80%; background: #fff; border-radius: 8px; padding: 10px; overflow: hidden;">
+					        <!-- 닫기 버튼 -->
+					        <button class="btn btn-outline-secondary" style="position: absolute; top: -7px; right: 26px;" onclick="closePreview()">닫기</button>
+					        <!-- 미리보기 내용 -->
+					        <div id="previewContent" style="width: 100%; height: 100%; overflow: auto; text-align: center;"></div>
+					    </div>
+					</div>
 					<div>
-						<table>
-							<colgroup>
-								<col width="5%" />
-								<col width="75%" />
-								<col width="20%" />
-							</colgroup>
-							<thead>
-							</thead>
-							<tbody>
-							    <c:forEach var="parentComment" items="${reviewInfo}">
-								    <!-- 부모 댓글 -->
-								    <c:if test="${parentComment.parent == null}">
-								        <tr class="table-sun">
-								            <td class="table-text table-text-text" id="userphoto">
-								                <!-- 부모 댓글 프로필 이미지 -->
-								                <c:choose>
-								                    <c:when test="${not empty parentComment.new_filename}">
-								                        <img src="/photo/${parentComment.new_filename}" alt="프로필" class="user-photo">
-								                    </c:when>
-								                    <c:otherwise>
-								                        <img src="/resources/img/person.png" alt="기본 이미지" class="user-photo" style="background-color: gray;">
-								                    </c:otherwise>
-								                </c:choose>
-								            </td>
-								            <td style="text-align: left;">
-											    ${parentComment.text} ${parentComment.name}
-											    <button class="btn-review" onclick="showReplyInput(${parentComment.review_idx}, ${parentComment.board_idx})">댓글달기</button>&nbsp;&nbsp;
-											    <span style="color: gray; font-size: 14px;">${parentComment.rereview_date}</span>
-											</td>
-								            <td>
-								                <c:if test="${parentComment.username == pageContext.request.userPrincipal.name && parentComment.use_yn == 'Y'}">
-											        <button class="btn icon btn-secondary btn-update" onclick="updateReview(${parentComment.review_idx})">
-											            <i class="bi bi-pencil"></i>
-											        </button>
-											    </c:if>
-											    <c:if test="${parentComment.use_yn == 'Y'}">
-											        <sec:authorize access="(#parentComment.username == principal.username) or hasRole('admin') or hasRole('superadmin')">
-											            <button class="btn icon btn-secondary btn-delete" onclick="deleteReview(${parentComment.review_idx})">
-											                <i class="bi bi-trash"></i>
-											            </button>
-											        </sec:authorize>
-											    </c:if>
-								            </td>
-								        </tr>
-								        <tr>
-								            <td></td>
-								            <td class="table-text table-text-text" id="reviewcontent-${parentComment.review_idx}">
-								                <c:choose>
-								                    <c:when test="${parentComment.use_yn == 'Y'}">
-								                        <p class="comment-content">${parentComment.review_content}</p>
-								                    </c:when>
-								                    <c:otherwise>
-								                        <p style="color: gray;">삭제된 댓글입니다.</p>
-								                    </c:otherwise>
-								                </c:choose>
-								            </td>
-								        </tr>
-								
-								        <!-- 자식 댓글 -->
-								        <c:forEach var="childComment" items="${reviewInfo}">
-								            <c:if test="${childComment.parent == parentComment.review_idx}">
-								                <tr class="table-sun">
-								                    <td><i class="bi bi-arrow-return-right" style="color: gray;"></i></td>
-								                    <td class="table-text table-text-text">
-								                        <!-- 자식 댓글 프로필 이미지 -->
-								                        <c:choose>
-								                            <c:when test="${not empty childComment.new_filename}">
-								                                <img src="/photo/${childComment.new_filename}" alt="프로필" class="user-photo">
-								                            </c:when>
-								                            <c:otherwise>
-								                                <img src="/resources/img/person.png" alt="기본 이미지" class="user-photo" style="background-color: gray;">
-								                            </c:otherwise>
-								                        </c:choose>
-								                        &nbsp;&nbsp;&nbsp;&nbsp;
-								                        ${childComment.text} ${childComment.name}&nbsp;&nbsp;
-								                        <span style="color: gray; font-size: 14px;">${childComment.rereview_date}</span>
-								                    </td>
-								                    <td>
-								                        <c:if test="${childComment.username == pageContext.request.userPrincipal.name && childComment.use_yn == 'Y'}">
-													        <button class="btn icon btn-secondary btn-update" onclick="updateReview(${childComment.review_idx})">
-													            <i class="bi bi-pencil"></i>
-													        </button>
-													    </c:if>
-													    <c:if test="${childComment.use_yn == 'Y'}">
-													        <sec:authorize access="(#childComment.username == principal.username) or hasRole('admin') or hasRole('superadmin')">
-													            <button class="btn icon btn-secondary btn-delete" onclick="deleteReview(${childComment.review_idx})">
-													                <i class="bi bi-trash"></i>
-													            </button>
-													        </sec:authorize>
-													    </c:if>
-								                    </td>
-								                </tr>
-								                <tr>
-								                    <td></td>
-								                    <td class="table-text table-text-text" id="reviewcontent-${childComment.review_idx}">
-								                        <c:choose>
-								                            <c:when test="${childComment.use_yn == 'Y'}">
-								                                <p class="comment-content" style="padding-left: 63px;">${childComment.review_content}</p>
-								                            </c:when>
-								                            <c:otherwise>
-								                                <p style="color: gray; padding-left: 63px;">삭제된 댓글입니다.</p>
-								                            </c:otherwise>
-								                        </c:choose>
-								                    </td>
-								                </tr>
-								            </c:if>
-								        </c:forEach>
-								    </c:if>
-								</c:forEach>
-							</tbody>
-						</table>
-						<br>
-							<div class="review-group btn-div-write">
-								<div class="row">
-				               	  	<div class="col-sm-11"><input class="form-control review-write" type="text" placeholder="댓글을 입력하세요."></div>
-				               	  	<div class="col-sm-1"><button type="button" class="btn btn-primary btn-review-write" onclick="reviewWrite()"><span>등록</span></button></div>
-		               	  		</div>
+						<div class="row">
+							<div class="col-sm-2">
+								<c:if test="${boardInfo.username == pageContext.request.userPrincipal.name}">
+								    <button class="btn btn-outline-primary btn-update board-update" onclick="updateboard(${boardInfo.board_idx}, '${boardInfo.username}')">수정</button>
+								    <button class="btn btn-outline-secondary btn-delete board-delete" onclick="deleteboard(${boardInfo.board_idx})">삭제</button>
+								</c:if>
 							</div>
-						<hr>
-							<div class="row">
-								<div class="col-sm-2">
-									<c:if test="${boardInfo.username == pageContext.request.userPrincipal.name}">
-									    <button class="btn btn-outline-primary btn-update board-update" onclick="updateboard(${boardInfo.board_idx}, '${boardInfo.username}')">수정</button>
-									    <button class="btn btn-outline-secondary btn-delete board-delete" onclick="deleteboard(${boardInfo.board_idx})">삭제</button>
-									</c:if>
-								</div>
-								<div class="col-sm-9"></div>
-								<div class="col-sm-1"><a href="/board/View" class="btn btn-primary">목록</a></div>
-					    	</div>
+							<div class="col-sm-9"></div>
+							<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-primary">목록</a></div>
+				    	</div>
 					</div>
                	  </div>
                </div>
@@ -383,292 +295,66 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 <script>
+
+	function showImg(fileUrl) {
+		console.log(fileUrl);
+	    const modal = document.getElementById("previewModal");
+	    const content = document.getElementById("previewContent");
+	
+	    content.innerHTML = '<img src="' + fileUrl + '" style="max-width: 100%; max-height: 100%; object-fit: contain;" alt="이미지 미리보기">';
+	    modal.style.display = "block";
+	}
+	
+	// PDF 미리보기
+	function showPdf(fileUrl) {
+		console.log(fileUrl);
+	    const modal = document.getElementById("previewModal");
+	    const content = document.getElementById("previewContent");
+	
+	    content.innerHTML = '<iframe src="' + fileUrl + '" style="width: 90%; height: 100%; border: none;"></iframe>';
+	    modal.style.display = "block";
+	}
+	
+	// 모달 닫기
+	function closePreview() {
+	    const modal = document.getElementById("previewModal");
+	    modal.style.display = "none";
+	    document.getElementById("previewContent").innerHTML = "";
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	const username = document.getElementById("currentUser").textContent.trim();
-	console.log(username);
-	function checklist(data) {
-		console.log();
-		var params = {board_idx: data};
-		$.ajax({
-	        type: 'GET', 
-	        url: '/check/list', 
-	        data: params, 
-	        dataType: 'json', 
-	        success: function(response) {
-	            listSuccess(response);
-	        },
-	        error: function(error) {
-	            console.error('AJAX 호출 실패:', error);
-	        }
-	    });
-	}
-	
-	function listSuccess(response) {
-		console.log(response);
-		console.log('체크');
-		let users = $('#userList tbody');
-		users.empty();
-		
-		response.forEach(function(item) {
-		    let photo = item.new_filename
-		        ? '<img src="/photo/' + item.new_filename + '" alt="사진" class="user-photo">'
-		        : '<img src="/resources/img/person.png" alt="기본 사진" class="user-photo" style="background-color: gray;">';
-		    let text = item.text ? item.text : '';
-		    let newname = item.newname ? item.newname : '탈퇴한 회원';
-		    let row = '<tr><td>' + photo + '</td><td>' + text + '  ' + newname + '</td></tr>';
-		    users.append(row);
-		});
-	}
-	
-	function reviewWrite() {
-		const review = document.querySelector('.review-write');
-		const reviewText = review.value.trim(); // 입력 값에서 공백 제거
-	    if (!reviewText) {
-	    	layerPopup( '댓글을 입력하세요.','확인',null,
-	                function () {
-	                    removeAlert();
-	                },
-	                function () {
-	    		    }
-	            );
-	        return;
-	    };
-		const board_idx = '${boardInfo.board_idx}';
-		const username = document.getElementById("currentUser").textContent.trim();
-		const data = {board_idx: board_idx, username: username, review_content: reviewText};
-		httpAjax('POST', '/board/review/write', data);
-	}
-	
-	function deleteReview(data) {
-		console.log(data);
-    	layerPopup( '댓글을 삭제하시겠습니까?','예','아니오',
-	        function () {
-	            const url = '/review/delete';
-	            const params = {review_idx: data};
-	            httpAjax('POST', url , params);
-	            removeAlert();
-	        },
-	        function () {
-	        	removeAlert();
-			}
-        );
-    };
     
     // 성공 콜백
     function httpSuccess(response) {
         console.log('AJAX 호출 성공: ', response);
-    	
-        // 댓글 삭제
-    	if(response.status === 'delete') {
-	        location.reload();
-    	}
-    	
-        // 댓글 작성
-    	if(response.status === 'write') {
-    		location.reload();
-    	}
-        
-    	// 댓글 수정
-    	if(response.status === 'update') {
-    		console.log('수정 완료');
-    	}
-    	
-    	// 대댓글 작성
-    	if(response.status === 'rewrite') {
-    		location.reload();
-    	}
-    	
+
     	// 게시글 삭제
     	if(response.status === 'deleteboard') {
-    		window.location.href = '/board/View';
+    		window.location.href = '/lbboardlist/View';
     	}
         
     }
-    
-    let activeReviewId = null; // 현재 활성화된 리뷰 ID
-
-	 // 수정 버튼 클릭 시 호출
-	 function updateReview(reviewId) {
-	     const reviewCell = document.getElementById('reviewcontent-' + reviewId);
-	     const reviewParagraph = reviewCell.querySelector('.comment-content');
-	
-	     // 기존 활성화된 input이 있다면 복원
-	     if (activeReviewId !== null && activeReviewId !== reviewId) {
-	         revertUpdateMode(activeReviewId);
-	     }
-	
-	     // 현재 상태가 input인지 확인
-	     if (reviewCell.querySelector('input')) {
-	         revertUpdateMode(reviewId);
-	     } else {
-	         const currentContent = reviewParagraph.textContent.trim();
-	
-	         // 기존 내용을 숨기고 input 생성
-	         reviewParagraph.style.display = 'none';
-	         const input = document.createElement('input');
-	         input.type = 'text';
-	         input.value = currentContent;
-	         input.classList.add('form-control');
-	         input.style.width = '80%';
-	
-	         // 저장 버튼 생성
-	         const saveButton = document.createElement('button');
-	         saveButton.textContent = '저장';
-	         saveButton.className = 'btn btn-primary btn-save';
-	         saveButton.style.marginLeft = '10px';
-	         saveButton.onclick = function () {
-	             saveReviewContent(reviewId, input.value);
-	         };
-	
-	         // 취소 버튼 생성
-	         const cancelButton = document.createElement('button');
-	         cancelButton.textContent = '취소';
-	         cancelButton.className = 'btn btn-secondary btn-cancel';
-	         cancelButton.style.marginLeft = '5px';
-	         cancelButton.onclick = function () {
-	             revertUpdateMode(reviewId);
-	         };
-	
-	         // input과 버튼 추가
-	         reviewCell.appendChild(input);
-	         reviewCell.appendChild(saveButton);
-	         reviewCell.appendChild(cancelButton);
-	
-	         // input에 포커스 및 커서 설정
-	         input.focus();
-	         input.setSelectionRange(currentContent.length, currentContent.length); // 커서를 끝으로 이동
-	
-	         // 활성화된 리뷰 ID 저장
-	         activeReviewId = reviewId;
-	     }
-	 }
-	
-	 // 수정 취소
-	 function revertUpdateMode(reviewId) {
-	     const reviewCell = document.getElementById('reviewcontent-' + reviewId);
-	     const input = reviewCell.querySelector('input');
-	     const saveButton = reviewCell.querySelector('.btn-save');
-	     const cancelButton = reviewCell.querySelector('.btn-cancel');
-	     const reviewParagraph = reviewCell.querySelector('.comment-content');
-	
-	     // input과 버튼 제거, 원래 텍스트 복원
-	     if (input) input.remove();
-	     if (saveButton) saveButton.remove();
-	     if (cancelButton) cancelButton.remove();
-	     reviewParagraph.style.display = 'block';
-	
-	     // 활성화된 리뷰 ID 초기화
-	     activeReviewId = null;
-	 }
-	
-	 // 저장 버튼 클릭 시 호출
-	 function saveReviewContent(reviewId, newContent) {
-		 if (!newContent.trim()) {
-		        layerPopup(
-		            '내용을 입력하세요.',
-		            '확인',
-		            null,
-		            function () {
-		                removeAlert();
-		            },
-		            function () {}
-		        );
-		        return;
-		    }
-		 const params = {review_idx: reviewId, review_content: newContent};
-		 const url = '/review/update';
-		 httpAjax('POST', url, params);
-	
-	     // 업데이트된 내용 반영
-	     const reviewParagraph = document.getElementById('reviewcontent-' + reviewId).querySelector('.comment-content');
-	     reviewParagraph.textContent = newContent;
-	
-	     // 수정 모드 종료
-	     revertUpdateMode(reviewId);
-	 }
-    
-	 function showReplyInput(reviewIdx, boardIdx) {
-		    // 기존에 열려있는 댓글 입력 창 제거
-		    const existingInput = document.querySelector('.reply-input');
-		    if (existingInput) {
-		        existingInput.remove();
-		    }
-
-		    // 대상 댓글의 content 영역 찾기
-		    const targetContent = document.querySelector('#reviewcontent-' + reviewIdx);
-		    if (targetContent) {
-		        // 대댓글 입력 창 생성
-		        const replyDiv = document.createElement('div');
-		        replyDiv.className = 'reply-input';
-		        replyDiv.innerHTML = '' +
-		            '<div class="input-group" style="margin-top: 10px; display: flex; gap: 10px;">' +
-		                '<input type="text" class="form-control" placeholder="댓글을 입력하세요." id="reply-input-' + reviewIdx + '" style="border-radius: 5px;">' +
-		                '<button class="btn btn-primary" onclick="submitReply(' + reviewIdx + ', ' + boardIdx + ')" style="border-radius: 5px;">등록</button>' +
-		                '<button class="btn btn-secondary" onclick="cancelReply()" style="border-radius: 5px;">취소</button>' +
-		            '</div>';
-
-		        // content 아래에 입력 창 추가
-		        targetContent.appendChild(replyDiv);
-		    } else {
-		        console.error('댓글 ID ' + reviewIdx + '에 해당하는 content를 찾을 수 없습니다.');
-		    }
-		}
-
-		function submitReply(parentReviewIdx, boardIdx) {
-		    // 입력된 대댓글 내용 가져오기
-		    const replyInput = document.getElementById('reply-input-' + parentReviewIdx);
-		    const replyContent = replyInput.value.trim();
-		    const username = document.getElementById("currentUser").textContent.trim();
-
-		    if (!replyContent) {
-		        layerPopup(
-		            '내용을 입력하세요.',
-		            '확인',
-		            null,
-		            function () {
-		                removeAlert();
-		            },
-		            function () {}
-		        );
-		        return;
-		    }
-
-		    console.log('작성한 유저: ' + username);
-		    console.log('댓글 idx: ' + parentReviewIdx);
-		    console.log('게시글 idx: ' + boardIdx);
-		    console.log('댓글 내용: ' + replyContent);
-
-		    // AJAX 호출로 대댓글 저장
-		    const params = {
-		        parent: parentReviewIdx,
-		        board_idx: boardIdx,
-		        review_content: replyContent,
-		        username: username
-		    };
-		    const url = '/reReview/write';
-
-		    httpAjax('POST', url, params);
-		}
-
-		function cancelReply() {
-		    // 댓글 입력 창 제거
-		    const existingInput = document.querySelector('.reply-input');
-		    if (existingInput) {
-		        existingInput.remove();
-		    }
-		}
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 	function deleteboard(data) {
 		layerPopup('게시글을 삭제하시겠습니까?', '예', '아니오', function() { secondBtn1Act(data); },
@@ -680,7 +366,7 @@
 	function secondBtn1Act(data) {
 		console.log('받아온idx',data);
 		params = {board_idx: data};
-		url = '/board/delete';
+		url = '/lbboard/delete';
 		httpAjax('POST', url, params);
 		removeAlert();
 	}
@@ -707,7 +393,7 @@
 	function updateboards(data) {
 	    console.log('수정 페이지 이동:', data);
 	    removeAlert(); // 팝업 닫기
-	    location.href = '/boardupdate/View/' + data; // 수정 페이지로 이동
+	    location.href = '/lbboardupdate/View/' + data; // 수정 페이지로 이동
 	}
 
 	// 취소 버튼

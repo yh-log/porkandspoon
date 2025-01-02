@@ -265,7 +265,9 @@ function pageCall(page = 1) {
 		    // 번호
 		    content += '<td>' + item.text + '</td>';
 		    // 제목 (클릭 시 이동)
-		    content += '<td>' + item.subject + '</td>';
+		    content += '<td class="align-l elipsis" style="cursor: pointer; text-align: center;" onclick="window.location.href=\'/lbboarddetail/View/' + item.board_idx + '\'">' 
+		         + item.subject 
+		         + '</td>';
 		    // 작성자
 		    content += '<td>' + item.userNick + '</td>';
 		    // 조회수

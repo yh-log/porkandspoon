@@ -179,6 +179,51 @@
 								</td>
 							</tr>
 							<tr></tr>
+							<tr>
+								<td>
+									<div class="row">
+								        <c:if test="${not empty fileInfo}">
+										    <c:forEach var="file" items="${fileInfo}">
+										        <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #d1d1d1; width: auto; margin-bottom: 5px;">
+										            <span>
+										                <c:choose>
+										                    <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                        <img src="/photo/${file.new_filename}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="이미지">
+										                    </c:when>
+										                    <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                        <i class="bi bi-file-earmark-pdf" style="font-size: 24px; color: red;"></i>
+										                    </c:when>
+										                    <c:otherwise>
+										                        <i class="bi bi-file-earmark" style="font-size: 24px;"></i>
+										                    </c:otherwise>
+										                </c:choose>
+										                ${file.ori_filename}
+										            </span>
+										            <br>
+										            <a href="/photo/${file.new_filename}" class="btn btn-primary" download>
+										                다운로드
+										            </a>
+										            <c:choose>
+										                <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.new_filename}')">
+										                        미리보기
+										                    </button>
+										                </c:when>
+										                <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.new_filename}')">
+										                        미리보기
+										                    </button>
+										                </c:when>
+										            </c:choose>
+										        </div>
+										    </c:forEach>
+										</c:if>
+										<c:if test="${empty fileInfo}">
+										    <p>첨부된 파일이 없습니다.</p>
+										</c:if>
+									</div>
+							    </td>
+							</tr>
 							<tr class="table-sun">
 								<td style="text-align: left;">
 									${boardInfo.content}
@@ -210,6 +255,14 @@
 							</tr>
 						</tbody>
 					</table>
+					<div id="previewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000;">
+					    <div style="position: relative; margin: 50px auto; width: 80%; height: 80%; background: #fff; border-radius: 8px; padding: 10px; overflow: hidden;">
+					        <!-- 닫기 버튼 -->
+					        <button class="btn btn-outline-secondary" style="position: absolute; top: -7px; right: 26px;" onclick="closePreview()">닫기</button>
+					        <!-- 미리보기 내용 -->
+					        <div id="previewContent" style="width: 100%; height: 100%; overflow: auto; text-align: center;"></div>
+					    </div>
+					</div>
 					<div>
 						<table>
 							<colgroup>
@@ -433,8 +486,10 @@
 	        return;
 	    };
 		const board_idx = '${boardInfo.board_idx}';
+		const board_username = '${boardInfo.username}';
+		const subject = '${boardInfo.subject}';
 		const username = document.getElementById("currentUser").textContent.trim();
-		const data = {board_idx: board_idx, username: username, review_content: reviewText};
+		const data = {board_idx: board_idx, username: username, review_content: reviewText, board_username: board_username, subject: subject};
 		httpAjax('POST', '/board/review/write', data);
 	}
 	
@@ -660,7 +715,31 @@
     
     
     
-    
+	function showImg(fileUrl) {
+		console.log(fileUrl);
+	    const modal = document.getElementById("previewModal");
+	    const content = document.getElementById("previewContent");
+	
+	    content.innerHTML = '<img src="' + fileUrl + '" style="max-width: 100%; max-height: 100%; object-fit: contain;" alt="이미지 미리보기">';
+	    modal.style.display = "block";
+	}
+	
+	// PDF 미리보기
+	function showPdf(fileUrl) {
+		console.log(fileUrl);
+	    const modal = document.getElementById("previewModal");
+	    const content = document.getElementById("previewContent");
+	
+	    content.innerHTML = '<iframe src="' + fileUrl + '" style="width: 90%; height: 100%; border: none;"></iframe>';
+	    modal.style.display = "block";
+	}
+	
+	// 모달 닫기
+	function closePreview() {
+	    const modal = document.getElementById("previewModal");
+	    modal.style.display = "none";
+	    document.getElementById("previewContent").innerHTML = "";
+	}
     
     
     

@@ -37,8 +37,12 @@ public interface BoardDAO {
 	int boardDelete(int board_idx);
 
 	FileDTO getBoardphoto(String board_idx);
+	
+	FileDTO getlbBoardphoto(String board_idx);
 
 	void boardUpCount(int board_idx);
+	
+	void lbboardUpCount(int board_idx);
 
 	int boardListCheck(int board_idx, String username);
 
