@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.ResevationService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -72,8 +73,20 @@ public class ResevationController {
 	
 	// 회의실 예약하기(캘린더) 이동
 	@GetMapping(value="/roomResevation")
-	public ModelAndView roomResevationView() {
-		return new ModelAndView("/resevation/roomResevation");
+	public ModelAndView roomResevationView(@AuthenticationPrincipal UserDetails userDetails) {
+		String loginId = userDetails.getUsername();
+		ModelAndView mav = new ModelAndView("/resevation/roomResevation");
+		UserDTO dto = resService.info(loginId);
+		mav.addObject("info",dto);
+		mav.addObject("room", resService.room());
+		return mav;
+	}
+	
+	// 조직도 인원 설정 (선택한 사람 데이터 가져오기)
+	@GetMapping(value="/getUserInfo/{userId}")
+	public UserDTO getUserInfo (@PathVariable String userId){
+		UserDTO userInfo = resService.info(userId);		
+		return userInfo;
 	}
 	
 	// 자원리스트(ad권한만) 이동
@@ -307,7 +320,41 @@ public class ResevationController {
 		
     	return resultMap;
     }
-	
+    
+    @GetMapping(value="/roomDetail")
+    public Map<String,Object> resRoomDetail(@RequestParam String no){
+    	
+    	Map<String,Object> result = new HashMap<String, Object>();
+		CalenderDTO dto = resService.resRoomDetail(no);
+		LocalDateTime time = dto.getCreate_date();
+		String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+		dto.setReCreate_date(create_date);
+		result.put("list",dto);
+		
+		return result;
+    }
+    
+    // 선택된 리스트
+ 	@GetMapping(value="/selectRoomList")
+ 	public Map<String,Object> selectRoomList(){
+ 		
+ 		Map<String,Object> result = new HashMap<String, Object>();
+ 		List<CalenderDTO> dto = resService.room();
+ 		result.put("list", dto);
+ 		
+ 		return result;
+ 	}
+ 	
+ 	// 회의실 예약 리스트
+ 	@GetMapping(value="/roomList")
+	public Map<String,Object> roomList(){
+ 		
+ 		List<CalenderDTO> list = resService.roomList();
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.put("result", list);
+ 		
+ 		return result;
+ 	}
 	
 	
 	

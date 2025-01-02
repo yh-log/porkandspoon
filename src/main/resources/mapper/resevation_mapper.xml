@@ -4,11 +4,44 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.ResevationDAO">
+	<!-- DeptDTO에 대한 ResultMap-->
+    <resultMap id="DeptMap" type="kr.co.porkandspoon.dto.DeptDTO">
+        <result property="text" column="text"/>
+        <result property="parent" column="parent"/>
+    </resultMap>
+
+    <!-- UserDTO에 대한 ResultMap -->
+    <resultMap id="UserMap" type="kr.co.porkandspoon.dto.UserDTO">
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="position_content" column="position_content"/>
+        <!-- dept는 DeptMap을 참조 -->
+        <association property="dept" resultMap="DeptMap"/>
+    </resultMap>
+
+    <!-- 사용자 정보를 가져오는 select 문 -->
+    <select id="info" resultMap="UserMap">
+        SELECT 
+            u.username, u.name, c.content AS position_content	, u.parent, d.text
+        FROM 
+            user u
+        JOIN 
+            department d
+	        ON  
+	            u.parent = d.id
+		JOIN
+			code c
+			ON
+				u.position = c.name
+        WHERE 
+            u.username = #{userId}
+    </select>
 	
-	<!-- 등록 페이지(등록자 정보) -->
-	<select id="info">
-		SELECT name FROM user WHERE username = #{loginId}
-	</select>
+	
+	<!-- 등록 페이지(등록자 정보) 
+	<select id="info" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT * FROM user WHERE username = #{loginId}
+	</select> -->
 	
 	<!-- 물품 등록 -->
 	<insert id="articleWrite" parameterType="map">
@@ -289,5 +322,17 @@
 		DELETE FROM item_schedule WHERE idx = #{idx}
 	</delete>
 	
+	<select id="room" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM room
+	</select>
+	
+	<select id="resRoomDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM room WHERE no = #{no}
+	</select>
+	
+	<select id="roomList" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM room_schedule
+	</select>
+		
 	
 </mapper>

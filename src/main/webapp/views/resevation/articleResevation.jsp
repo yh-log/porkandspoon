@@ -123,7 +123,6 @@
 	}
 	
 	.detail-res{
-		margin-top: 173px;
 		border-top: 1px solid #dee2e6;
 	}
 	
