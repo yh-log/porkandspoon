@@ -21,8 +21,8 @@
 	<script src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 	<script src="/resources/assets/compiled/js/app.js"></script>
 	
-	<!-- jQuery -->
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<!-- summernote bootstrap-->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 	
 	<!-- 부트스트랩 -->
 	<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -31,8 +31,6 @@
 	<!-- select -->
 	<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 	
-	<!-- summernote bootstrap-->
-	<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 	
 	<!-- rating.js(별점) -->
 	<link rel="stylesheet" href="/resources/assets/extensions/rater-js/lib/style.css">
@@ -42,10 +40,6 @@
 	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 	<link rel="stylesheet" href="/resources/css/common.css">
 	
-	<!-- summernote -->
-	<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-	<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}"> 
@@ -155,6 +149,10 @@
 </body>
 <script src='/resources/js/textEaditor.js'></script>
 <script src='/resources/js/common.js'></script>
+<!-- summernote -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	
 <script>
 	$(document).ready(function () {

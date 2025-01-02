@@ -2,7 +2,7 @@ package kr.co.porkandspoon.dto;
 
 import java.time.LocalDateTime;
 
-public class NoticeDTO {
+public class NoticeDTO extends ResponseDTO {
 
 	private int alarm_idx;
 	private String username;
@@ -15,6 +15,13 @@ public class NoticeDTO {
 	private String from_idx;
 	private String is_confirm;
 	private LocalDateTime check_date;
+	private String board_idx;
+	public String getBoard_idx() {
+		return board_idx;
+	}
+	public void setBoard_idx(String board_idx) {
+		this.board_idx = board_idx;
+	}
 	public String getFrom_id() {
 		return from_id;
 	}

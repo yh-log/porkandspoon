@@ -36,8 +36,6 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}"> 
 </head>
