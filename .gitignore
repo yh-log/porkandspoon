@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+PorkAndSpoon/.gitattributes
+PorkAndSpoon/.gitignore
+PorkAndSpoon/mvnw
+PorkAndSpoon/mvnw.cmd
+PorkAndSpoon/pom.xml
