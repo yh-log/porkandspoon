@@ -4,7 +4,7 @@ console.log("approval.js 실행");
 //글 전송할 url 파라미터 포함
 //전송 버튼에 textEaditorWrite(url) 함수 사용
 function textEaditorWrite(url, after){
-console.log('approval.js textEaditorWrite실행');
+	console.log('approval.js textEaditorWrite실행');
 	// check!!! 이거두줄
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
     var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
@@ -39,22 +39,25 @@ console.log('approval.js textEaditorWrite실행');
              var filename = src.split('/').pop();  // 파일명 추출
              imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
          }
- });
+         
+ 	});
  
- // new_filename과 일치하는 항목만 필터링
- var finalImgs = tempImg.filter(function (temp) {
-     return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
- });
+	 // new_filename과 일치하는 항목만 필터링
+	 var finalImgs = tempImg.filter(function (temp) {
+	     return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
+	 });
  
- formData.append('imgsJson', JSON.stringify(finalImgs));
+ 	formData.append('imgsJson', JSON.stringify(finalImgs));
  
- fileAjax('POST', url, formData, after);
+ 	fileAjaxDo('POST', url, formData, after);
+     console.log("textEaditorWrite 실행완료");
+     console.log("textEaditorWrite after : "+after);
 }
 
 
 // 에디터 이미지 저장
-function fileAjax(type, url, formData, after){
-
+function fileAjaxDo(type, url, formData, after){
+	console.log("fileAjax 실행시작");
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
     var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
@@ -74,6 +77,8 @@ function fileAjax(type, url, formData, after){
             console.log(e);
         }
     });
+    console.log("fileAjax 실행끝");
+    console.log("fileAjax after : "+after);
 }
 
 // 결재 요청
@@ -141,9 +146,11 @@ function saveTemp(){
 
 // 저장 성공 후 상세페이지 이동
 function fileSuccess(response, after){
+	console.log("after : "+after);
 	console.log("success : "+response.success);
 	console.log("success : "+response.draftIdx);
 	if(after){
+		console.log("여기?? : "+response.draftIdx);
 		location.href = "/approval/detail/"+response.draftIdx;
 	}else{
 		$('input[name="draft_idx"]').val(response.draftIdx);

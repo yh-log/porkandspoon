@@ -5,6 +5,7 @@
 #chartModalBox {
     width: 50%;
     height: 540px;
+    z-index: 500;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -126,6 +127,20 @@
     color: #333;              /* X 버튼 색상 */
 }
 	 
+#chartModalBox #orgHeader th{
+    padding: 3px 10px;
+}
+#chartModalBox #orgBody .btn{
+	--bs-btn-padding-y: .25rem;
+    --bs-btn-font-size: .875rem;
+    margin: 4px 6px;
+}	 
+#chartModalBox #orgFooter .btn{
+	margin: 13px 0;
+}
+#customTable tfoot th {
+	padding: 0;
+}
 	
 	
 /* 테이블 전체 스타일 */
@@ -156,7 +171,7 @@
 #customTable tbody {
     display: block; /* 블록 요소로 변환 */
     width: 100%; /* 테이블 전체 너비 */
-    height: 200px; /* 고정 높이 */
+    height: 223px; /* 고정 높이 */
     overflow-y: auto; /* 세로 스크롤 */
     overflow-x: hidden; /* 가로 스크롤 비활성화 */
     border: none; /* 테두리 제거 */

@@ -36,6 +36,7 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<link rel="stylesheet" href="/resources/css/chartModal.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
 <!-- FilePond CSS -->
@@ -53,6 +54,9 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+<!-- jstree -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 <style>
 	.draftWrite table{
 		border: 1px solid #ddd;
@@ -99,6 +103,9 @@
 	}
 	.draftWrite table.appr_line th{
 		width: 44px;
+	}
+	.draftWrite table.appr_line td{
+		width: 92px;
 	}
 	.draftWrite table.appr_line tr:nth-child(2) td p{
 		margin-top: 1rem;
@@ -169,6 +176,99 @@
 		width: 100% !important;
 		margin-top: 20px;
 	}
+	
+	
+	
+	/* 모달 */
+	/* 기본 모달 스타일 */
+	.modal {
+	    display: none;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5);
+	    z-index: 1100;
+	}
+	
+	/* 모달 내부 콘텐츠 */
+	.modal-content {
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    background: #fff;
+	    padding: 20px;
+	    border-radius: 8px;
+	    width: 400px;
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	/* 모달 헤더 */
+	.modal-header {
+	    display: flex;
+	    justify-content: end;
+	    align-items: center;
+	    border-bottom: 1px none #ddd;
+	    margin-bottom: 15px;
+	}
+
+	/* 닫기(x) 버튼 */
+	.modal-close {
+	    font-size: 20px;
+	    cursor: pointer;
+	}
+	
+	/* 모달 바디 */
+	.modal-body .form-group {
+	    margin-bottom: 15px;
+	}
+	
+	.form-label {
+	    display: block;
+	    font-size: 14px;
+	    margin-bottom: 5px;
+	}
+	
+	.form-input {
+	    width: 100%;
+	    padding: 8px;
+	    font-size: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 4px;
+	}
+	
+	/* 모달 푸터 */
+	.modal-footer {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	}
+	#modalBox .modal-close {
+    	font-size: 30px;
+    }
+	#modalBox h5 {
+		padding-bottom: 16px;
+	}
+	#modalBox .form-control {
+		display: inline-block;
+	}
+	#modalBox .input-row {
+	    display: flex;
+		margin: 6px 0;
+	}
+	#modalBox .item-tit {
+		width: 88px;
+	    flex-shrink: 0;
+		margin-top: 4px;
+	}
+	#modalBox input {
+		padding-left: 10px;
+	}
+ 	#modalBox .btn{ 
+	 	margin: 16px 5px 0;
+	}
 </style>
 
 </head>
@@ -203,7 +303,7 @@
 						</div>
 						<div class="buttons">
 							<button href="#" class="btn btn-primary" onclick="sendApproval()">결재 요청</button>
-							<button href="#" class="btn btn-outline-primary">결재 정보</button>
+							<button href="#" class="btn btn-outline-primary" onclick="loadChartModal('chartInputModal')">결재라인 설정</button>
 							<button href="#" class="btn btn-outline-primary" onclick="saveTemp()">임시저장</button>
 							<button href="#" class="btn btn-outline-primary">취소</button>
 						</div>
@@ -238,29 +338,29 @@
 									</table>
 									
 									<table class="appr_line">
-										<tr>
+										<tr class="position">
 											<th rowspan="3">결재</th>
-											<td>사원</td>
+											<td>${userDTO.position_content}</td>
 											<td>차장</td>
 											<td>부장</td>
 											<td>대표</td>
 										</tr>
-										<tr>
+										<tr class="name">
 											<td>
-												<input type="hidden" name="appr_user" value="wjsaus123" required/>
-												<p>이진형</p>
+												<input type="hidden" name="appr_user" value="${userDTO.username}" required/>
+												<p>${userDTO.name}</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="jwbak"/>
-												<p>백종원</p>
+												<input type="hidden" name="appr_user"/>
+												<p></p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="qtgks9"/>
-												<p>이주빈</p>
+												<input type="hidden" name="appr_user"/>
+												<p></p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user" value="qwre"/>
-												<p>김지원</p>
+												<input type="hidden" name="appr_user"/>
+												<p></p>
 											</td>
 										</tr>
 										
@@ -321,6 +421,19 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<!-- 조직도 모달 사용 시 추가 -->
+	<div id="chartModalBox" class="modal" style="display: none;">
+    	<div class="chartModal-content"></div>
+	</div>
+	<input type="hidden" id="selectedNodeInput" value=""/>
+	
+	<!-- 모달 -->
+	<div id="modalBox" class="modal" style="display: none;">
+        <div class="modal-content"></div>
+    </div>
+    
 </body>
 
 <!-- 부트스트랩 -->
@@ -351,10 +464,22 @@
 
 	
 <script src='/resources/js/common.js'></script>
+<!-- summer note -->
 <script src='/resources/js/textEaditor.js'></script>
 
+<!-- 다음검색 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src='/resources/js/approval.js'></script>
+
+<!-- 조직도 js -->
+<script src='/resources/js/common.js'></script>
+<script src='/resources/js/charjstree.js'></script>
+
+<!-- select  -->
+<!-- <script
+	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/resources/assets/static/js/pages/form-element-select.js"></script> -->
+
 <script>
 
 //FilePond를 모든 파일 입력 요소에 적용
@@ -473,6 +598,213 @@ function sample6_execDaumPostcode() {
             document.getElementById("sample6_detailAddress").focus();
         }
     }).open();
+}
+
+
+/* 조직도노드  */
+ //초기 데이터
+const initialData = {
+    headers: ['이름', '부서', '직급', '구분', '삭제'],
+    rows: [
+        ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '기안', '<button class="btn btn-primary">삭제</button>'],
+    ],
+    footer: '<button class="btn btn-outline-secondary btn-line-write" onclick="loadModal(\'ApprLine\',\'Bookmark\')">라인저장</button>'
+};
+
+var exampleData = JSON.parse(JSON.stringify(initialData));
+
+var userName = "";
+var userPosition = "";
+var userDept = "";
+var approvalLines = ['${userDTO.username}'];
+ // 선택된 ID를 rows에 추가하는 함수
+ function addSelectedIdToRows(selectedId) {
+     console.log("가져온 ID:", selectedId);
+     approvalLines.push(selectedId);
+     console.log("approvalLines:", approvalLines);
+     $.ajax({
+         type: 'GET',
+         url: '/approval/getUserInfo/'+selectedId,
+         data: {},
+         dataType: "JSON",
+         success: function(response) {
+        	 console.log("유저이름: ",response.name);
+        	 console.log("유저정보: ",response.position_content);
+        	 console.log("유저정보: ",response.dept.text);
+        	 
+        	 userName = response.name;
+        	 userPosition = response.position_content;
+        	 userDept = response.dept.text;
+        	 
+             // 새로운 row 데이터 생성
+             const newRow = [userName, userDept, userPosition, '결재', '<button class="btn btn-primary">삭제</button>'];
+
+             // 기존 rows에 추가
+             exampleData.rows.push(newRow);
+
+             // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+             updateTableData('customTable', exampleData);
+         },
+         error: function(e) {
+             console.log(e);
+         }
+     });
+ }
+
+ // 선택된 ID를 받아서 처리
+ getSelectId(function (selectedId) {
+     addSelectedIdToRows(selectedId);
+ });
+ 
+ function chartPrint(response){
+	 // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
+	            response.sort(function (a, b) {
+	                if (a.menuDepth === b.menuDepth) {
+	                    return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+	                }
+	                return a.menuDepth - b.menuDepth; // depth 기준 정렬
+	            });
+
+	            console.log("AJAX 응답 데이터 (정렬 후):", response);
+
+	            // jsTree 데이터 형식으로 변환
+	            var jsTreeData = response.map(function(item) {
+	                return {
+	                    id: item.id, // 고유 ID
+	                    parent: item.parent, // 부모 ID
+	                    text: item.text, // 노드에 표시할 텍스트
+	                    type: item.type, // 노드 유형
+	                    li_attr: { // HTML <li> 태그에 추가 속성
+	                        "data-menu-depth": item.menuDepth,
+	                        "data-menu-order": item.menuOrder
+	                    },
+	                    a_attr: { // HTML <a> 태그에 추가 속성
+	                        "data-menu-depth": item.menuDepth,
+	                        "data-menu-order": item.menuOrder
+	                    }
+	                };
+	            });
+
+	            console.log("jsTree 변환 데이터:", jsTreeData);
+
+	            // jsTree 초기화
+	            $('#jstree').jstree({
+	                'core': {
+	                    'themes': {
+	                        'dots': true,
+	                        'icons': true
+	                    },
+	                    'data': jsTreeData // 변환된 데이터
+	                },
+	                "plugins": ["types", "search"],
+	                "types": {
+	                    "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
+	                    "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
+	                },
+	                "search": {
+	                    "show_only_matches": true,
+	                    "show_only_matches_children": true
+	                }
+	            });
+	            
+	            
+	            // 이벤트 등록
+	            $('#jstree').on('loaded.jstree', function () {
+	                console.log("jsTree가 성공적으로 초기화되었습니다.");
+					$("#jstree").jstree("open_all");
+					
+					let searchTimeout = null;
+				    $('.input-test').on('input', function () {
+				        let search = $(this).val();
+				
+				        // 이전 타임아웃 제거
+				        if (searchTimeout) {
+				            clearTimeout(searchTimeout);
+				        }
+				
+				        // 입력 후 300ms 후에 검색 실행
+				        searchTimeout = setTimeout(function () {
+				            $('#jstree').jstree('search', search);
+				        }, 300);
+				    });
+					
+					
+	            }).on('changed.jstree', function (e, data) {
+		            console.log("선택된 노드:", data.selected);
+		            if (data.selected.length > 0) {
+		            	if(document.getElementById('orgBody').childNodes.length > 3){
+		            		layerPopup( "결재자는 최대3명까지 선택 가능합니다.","확인",false,removeAlert,removeAlert);
+					    	return false;
+					    } 
+				        var selectedId = data.selected[0]; // 선택된 노드의 ID
+				        console.log("선택된 노드 ID:", selectedId);
+				
+				        // 설정된 콜백 함수 호출
+				        if (typeof selectIdCallback === "function") {
+				            selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+				        }
+				    } else {
+				        console.log("선택된 노드가 없습니다.");
+				    }
+		        });
+		        
+	}
+ 
+ // 조직도노드 등록버튼 (결재라인 설정)
+ var addBtn = document.getElementById('addModal');
+/*  addBtn.addEventListener("click", function () {
+	 console.log("등록 : ", document.getElementById('orgBody').childNodes);
+ }); */
+ 
+function addBtnFn(){
+	var lineNodes = document.getElementById('orgBody').childNodes;
+	 for(var i = 0; i <= lineNodes.length ; i++){
+		 userName = lineNodes[i].childNodes[0].innerText;
+		 userPosition = lineNodes[i].childNodes[2].innerText;
+		 document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText = userName;
+		 document.querySelectorAll('.appr_line tr.position > td')[i].innerText = userPosition;
+		 document.querySelectorAll('input[name="appr_user"')[i].defaultValue = approvalLines[i];
+	 	 document.getElementById('chartModalBox').style.display = "none"; 
+	 	 console.log("approvalLines",approvalLines[i]);
+	 }
+}
+ 
+ function setModalData(){}
+ document.addEventListener('click', function(event){
+    // 결재라인 즐겨찾기 모달 등록 버튼 클릭
+    if(event.target.id === 'SaveBookmark'){
+    	saveApprvalLine();
+    }
+});
+
+var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+function saveApprvalLine() {
+	console.log("approvalLines",approvalLines);
+	var formData = new FormData($('#BookmarkFrom')[0]);
+	formData.append('approvalLines', JSON.stringify(approvalLines));
+	$.ajax({
+        type : 'POST',
+        url : '/approval/setApprLineBookmark',
+        data : formData,
+        processData: false, 
+        contentType: false,
+        dataType : 'JSON',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+            console.log("성ㅇ공:", response.success);
+            if(response.success){
+            	document.getElementById('modalBox').style.display = "none";
+            	layerPopup( "결재라인 저장이 저장되었습니다.","확인",false,removeAlert,removeAlert);
+            }
+        },error : function(e){
+            console.log(e);
+        }
+    });
+	
 }
 
 </script>
