@@ -746,9 +746,12 @@
 	<!-- 인사이동 부서 및 직급 리스트 조회 -->
 	<select id="userTransferInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT 
+			u.name AS name,
+			u.username AS username,
+			u.person_num AS person_num ,
 		    u.parent AS old_department,
 		    u.position AS old_position,
-		    NULL AS id,
+		    NULL AS parent,
 		    NULL AS text,
 		    NULL AS position,
 		    NULL AS title
@@ -760,18 +763,55 @@
 		UNION ALL
 		
 		SELECT 
-		    NULL AS old_department,
+			NULL AS name,
+			NULL AS username,
+			NULL AS person_num ,
+			NULL AS old_department,
 		    NULL AS old_position,
-		    d.id AS id,
-		    d.text AS text,
+		    NULL AS parent,
+		    NULL AS text,
 		    c.name AS position,
 		    c.content AS title
+		FROM code c 
+			WHERE c.name LIKE 'po%'
+			
+		UNION ALL
+			
+		SELECT 
+			NULL AS name,
+			NULL AS username,
+			NULL AS person_num ,
+		    NULL AS old_department,
+		    NULL AS old_position,
+		    d.id AS parent,
+		    d.text AS text,
+		    NULL AS position,
+		    NULL AS title
 		FROM 
 		    department d
-		CROSS JOIN code c
-		WHERE 
-		    c.name LIKE 'po%'
-	
 	</select>
+	
+	<!-- 직원 인사이동 (인사이동 테이블 insert) -->
+	<insert id="setEmployeeTransfer" parameterType="java.util.List">
+	    INSERT INTO employee_transfer(username, transfer_date, old_department, old_position, new_department, new_position, creater, type) 
+	    VALUES
+	    <foreach collection="list" item="user" separator=",">
+	        (#{user.username}, #{user.transfer_date}, #{user.old_department}, #{user.old_position}, #{user.new_department}, #{user.new_position}, #{user.creater}, 'E')
+	    </foreach>
+	</insert>
+	
+	<!-- 직원 정보 수정 (인사이동) -->
+	<update id="updateEmployeeUser" parameterType="kr.co.porkandspoon.dto.UserDTO">
+	    UPDATE user
+	    SET position = #{new_position}, parent = #{new_department}
+	    WHERE username = #{username}
+	</update>
+	
+	
+	
+	<!-- 직원 퇴사 처리 -->
+	<update id="usrQuitDelete" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET user_yn = 'Y', leave_date = #{transfer_date} WHERE username= #{username}
+	</update>
 	
 </mapper>
