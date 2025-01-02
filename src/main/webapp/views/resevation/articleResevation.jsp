@@ -528,9 +528,7 @@
 	    var end_date = $('#calendar_end_date_edit').val();
 	    var subject = $('#calendar_subject_edit').val();
 	    var content = $('#calendar_content_edit').val();
-	          	      	       	
-      	
-	
+	          	      	       		
        	// 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
        	var params = {
        		idx: idx,
@@ -579,7 +577,12 @@
 		removeAlert(); // 팝업닫기
 	}
 	
-	
+    // 삭제 버튼 클릭 시 삭제 실행
+    function handleDeleteSchedule() {
+    	var idx = $('#event_id').val();
+    	console.log('삭제할때 받아와?',idx);
+    	httpAjax('DELETE', '/itemDelete/'+idx);
+	}
 	
 	
 	

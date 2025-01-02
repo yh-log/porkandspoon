@@ -297,6 +297,16 @@ public class ResevationController {
     	}
     	return resultMap;
     }
+    
+    // 물품 예약 삭제 ajax
+    @DeleteMapping(value="/itemDelete/{idx}")
+    public Map<String,Object> calenderDelete(@PathVariable String idx){
+    	
+    	Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("success", resService.itemDelete(idx));
+		
+    	return resultMap;
+    }
 	
 	
 	
