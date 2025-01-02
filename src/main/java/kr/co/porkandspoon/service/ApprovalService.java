@@ -40,8 +40,8 @@ public class ApprovalService {
     @Value("${upload.path}") String paths;
     @Value("${uploadTem.path}") String tem_path;
 	
-	public UserDTO getUserInfo(String loginId) {
-		return approvalDAO.getUserInfo(loginId);
+	public UserDTO getUserInfo(String userId) {
+		return approvalDAO.getUserInfo(userId);
 	}
 	
 	public List<DeptDTO> getDeptList() {
@@ -384,6 +384,17 @@ public class ApprovalService {
 	        params.put("offset", offset);
 	       
 	        return approvalDAO.getApprovalMyListData(params);
+		}
+
+		@Transactional
+		public boolean setApprLineBookmark(Map<String, Object> params) {
+			int bookmarkIdx = approvalDAO.getMaxBookmarkIdx();
+			params.put("bookmarkIdx", bookmarkIdx);
+			return approvalDAO.setApprLineBookmark(params) > 0 ? true : false;
+		}
+
+		public List<ApprovalDTO> getLineBookmark(String loginId) {
+			return approvalDAO.getLineBookmark(loginId);
 		}
 
 
