@@ -27,12 +27,6 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 
 <style>
 .draftList .cont-body{
@@ -248,6 +242,10 @@
 <script src="/resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
 
+<!-- 페이지네이션 -->
+<script src="/resources/js/jquery.twbsPagination.js"
+	type="text/javascript"></script>
+
 <script>
 	var listType = '${listType}';
 	console.log("listType : ",listType);
@@ -260,19 +258,20 @@
 	var totalCount = 0;
     var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
     var totalPage = 0;
-	var filterElem = document.querySelector('.filter-btns .btn.selected');
+	var filterElem = '';
 	
 	pageCall(show, listType);
 	
 	function pageCall(page, listType) {
 		option = document.querySelector('select[name="search"]').value;
 		search = document.querySelector('input[name="search-data"]').value;
+		filterElem = document.querySelector('.filter-btns .btn.selected');
 		if(filterElem){		
 			filter = filterElem.getAttribute('data-filter');
+			console.log("filter!!!! ",filter );
 		}
 		console.log("option",option);
 		console.log("search",search);
-		//console.log("filter!!!! ",filter );
 		
 		$.ajax({
 			type:'GET',
@@ -330,7 +329,12 @@
 			return false;
 		}
 		for (var view of list) {
-			approvalDate = view.approval_date.split(' ')[0];
+			if(view.approval_date != null){
+				approvalDate = view.approval_date.split(' ')[0];
+			}else{
+				approvalDate = '-';
+			}
+			
 			content +='<tr>';
 			if(listType == 'sv'){
 				type1 = view.target_type == 'df001' ? '브랜드' : '직영점';

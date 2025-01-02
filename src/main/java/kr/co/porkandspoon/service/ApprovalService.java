@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dao.ApprovalDAO;
 import kr.co.porkandspoon.dto.ApprovalDTO;
@@ -56,7 +60,7 @@ public class ApprovalService {
 		
 		// draft_idx 가져오기 
 		String draftIdx = approvalDTO.getDraft_idx();
-		logger.info("draftIdx DTO : "+ draftIdx);
+		logger.info("@@@approvalDTO.getCOntent!!! : "+ approvalDTO.getContent());
 		if(draftIdx == null || draftIdx.isEmpty()) {
 		    draftIdx = String.valueOf(approvalDAO.getDraftIdx());
 			approvalDTO.setDraft_idx(draftIdx);
@@ -117,6 +121,10 @@ public class ApprovalService {
         	for (String filename : new_filename) {
         		approvalDAO.saveExistingFiles(filename, draftIdx);
 			}
+        }
+        
+        if(status.equals("sd")) {
+        	logger.info("전송!!!!!sd!!!여기에 알림");
         }
         
         return draftIdx;
@@ -391,7 +399,8 @@ public class ApprovalService {
 			int bookmarkIdx = approvalDAO.getMaxBookmarkIdx();
 			params.put("bookmarkIdx", bookmarkIdx);
 			logger.info("!!!!bookmarkIdx : "+bookmarkIdx);
-			 List<String> approvalLines = (List<String>) params.get(params);
+			
+			List<String> approvalLines = (List<String>) params.get("approvalLines");
 			logger.info("!!!!approvalLines : "+ approvalLines);
 	        for (String line : approvalLines) {
 	            System.out.println("!!!!!!Approval Line: " + line);
@@ -399,8 +408,16 @@ public class ApprovalService {
 			return approvalDAO.setApprLineBookmark(params) > 0 ? true : false;
 		}
 
-		public List<ApprovalDTO> getLineBookmark(String loginId) {
-			return approvalDAO.getLineBookmark(loginId);
+		public List<ApprovalDTO> getLineBookmark(Map<String, Object> params) {
+			logger.info("page : "+params.get("page"));
+			logger.info("cnt : "+params.get("cnt"));
+		    int page_ = Integer.parseInt((String) params.get("page"));
+		    int cnt_ = Integer.parseInt((String) params.get("cnt"));
+	        int limit = cnt_;
+	        int offset = (page_ - 1) * cnt_;
+	        params.put("limit", limit);
+	        params.put("offset", offset);
+			return approvalDAO.getLineBookmark(params);
 		}
 
 
