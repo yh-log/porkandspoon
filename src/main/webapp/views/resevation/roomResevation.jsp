@@ -7,8 +7,8 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<!-- fullcalender -->
 	<script src='/resources/js/calender/main.js'></script>
 	<script src='/resources/js/calender/daygridmain.js'></script>
@@ -37,7 +37,7 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>	
+		
 <style>
      #calendarBox{
         width: 80%;
@@ -128,13 +128,16 @@
 	}
 	
 	.detail-res{
-		margin-top: 173px;
 		border-top: 1px solid #dee2e6;
 	}
 	
 	.detail-p{
 		margin-top: 20px;
     	margin-left: 70px;
+	}
+	.item-list{
+		overflow-y: auto;
+		height: 300px; 
 	}
 	
 </style>
@@ -152,8 +155,8 @@
             <h4 class="menu-title">회의실 예약</h4>
 			<div>				
 				<ul class="item-list">
-					<c:forEach items="${note}" var="item">
-						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+					<c:forEach items="${room}" var="item">
+						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.room_name}</li>
 					</c:forEach>
 				</ul>
 			</div>			
@@ -194,7 +197,7 @@
 	
 	
 </body>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 <!-- 부트스트랩 -->
 <script src="resources/assets/static/js/components/dark.js"></script>
 <script src="resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
@@ -208,25 +211,12 @@
 
 	var section= 'room';
 	
-	
+	 
 
 	$(document).ready(function(){
-
+		
 	    getAjax('/roomList','JSON');
 	    dataSetting('room', 'Input');
-	    
-	    // 이벤트 위임을 사용하여 동적으로 추가된 #calendar_type에도 이벤트 핸들러 적용
-	    $(document).on('change', '#calendar_type', function() {
-	        var selection = $(this).val();
-	        console.log('선택된 카테고리:', selection);
-	        if (selection) {
-	            fetchCategoryItems(selection);
-	        } else {
-	            // 카테고리가 선택되지 않은 경우, 물품 목록 숨기기
-	            $('#category_items_group').hide();
-	            $('#category_items').empty().append('<option value="">-- 선택하세요 --</option>');
-	        }
-	    });
 	    
 	});
 
@@ -239,7 +229,7 @@
 		
 		$.ajax({
 	        type: 'GET',
-	        url: '/itemDetail',
+	        url: '/roomDetail',
 	        data: data,
 	        dataType: 'JSON',
 	        success: function(response) {
@@ -255,35 +245,21 @@
 		console.log(response);
 		var content = '';
 		content +='<p class="detail-p">상세정보</p>';
-		if (response.list.selection == 'note') {
-			content +='<p>분류 : 노트북</p>';
-		}else if(response.list.selection == 'project'){
-			content +='<p>분류 : 빔 프로젝터</p>';
-		}else{
-			content +='<p>분류 : 차량</p>';
-		}
-		
-		if (response.list.type == 'G') {
-			content +='<p>유형 : 지급 물품</p>';
-		}else if(response.list.type == 'S'){
-			content +='<p>유형 : 단기 대여</p>';
-		}else{
-			content +='<p>유형 : 장기 대여</p>';
-		}
-		content +='<p>물품 명 : '+response.list.item_name+'</p>';
-		content +='<p>모델 명 : '+response.list.model_name+'</p>';
+		content +='<p>회의실 명 : '+response.list.room_name+'</p>';
+		content +='<p>수용인원 : '+response.list.count+'</p>';
 		content +='<p>내용 : '+response.list.content+'</p>';
 		content +='<p>등록일 : '+response.list.reCreate_date+'</p>';
 		$('#list').html(content);
 	}
 	
 	// 카테고리별 물품 목록을 서버에서 불러오는 함수
-	function fetchCategoryItems(selection,no) {
+	function fetchCategoryItems() {
 	    // AJAX 요청을 통해 서버로부터 물품 목록을 가져옵니다.
+	    
 	    $.ajax({
 	        type: 'GET',
-	        url: '/selectList', // 백엔드 엔드포인트
-	        data: { selection: selection },
+	        url: '/selectRoomList', // 백엔드 엔드포인트
+	        data: {},
 	        dataType: 'JSON',
 	        beforeSend: function(xhr) {
 	            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -291,40 +267,30 @@
 	            xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
 	        },
 	        success: function(response) {
-	        	 console.log('서버 응답:', response);
-	            if (response.list) {
-	                populateCategoryItems(response.list,no);
-	            } else {
-	                alert(response.message || '물품 목록을 불러오는 데 실패했습니다.');
-	                $('#category_items_group').hide();
-	                $('#category_items').empty().append('<option value="">-- 선택하세요 --</option>');
-	            }
+	        	 console.log('서버 응답:', response.list);
+	             populateCategoryItems(response.list);
+
 	        },
 	        error: function(err) {
 	            console.error('물품 목록 불러오기 실패:', err);
 	            alert('물품 목록을 불러오는 데 실패했습니다.');
-	            $('#category_items_group').hide();
-	            $('#category_items').empty().append('<option value="">-- 선택하세요 --</option>');
 	        }
 	    });
 	}
 	
 	// 물품 목록을 select 요소에 채우는 함수
-	function populateCategoryItems(items,no) {
-	    var category_item = $('#category_items');
-	    category_item.empty().append('<option value="">-- 선택하세요 --</option>');
+	function populateCategoryItems(items) {
+		console.log('여기? : ',items);
+	    var category_item = $('#category_items_room');
+	    //category_item.empty().append('<option value="">-- 선택하세요 --</option>');
+	    console.log('옵션 초기화');
 	    
 	    items.forEach(function(item) {
-	    	category_item.append('<option value="'+item.no+'">'+item.item_name+'</option>');
+	    	console.log('포이치 돌아가?',item.no,item.room_name);
+	    	category_item.append('<option value="'+item.no+'">'+item.room_name+'</option>');
 	    });
 	    
-	    // 물품 목록 표시
-	    $('#category_items_group').show();
-	    
-	    if(no){
-	    	category_item.val(no);
-	    }
-	    
+	    console.log('populateCategoryItems 함수 종료');
 	}
 	
 	function handleAddSchedule() {
@@ -423,16 +389,16 @@
 	// 데이터 주입 함수 수정
     function setModalData(type, data) {
         console.log('셋모달데이타 실행 : ',data);
+        fetchCategoryItems();
         if (type === 'Input') {
             // 일정 추가 모드: 입력 필드 초기화
             console.log("일정 추가 모드: 데이터 없음");
             document.getElementById("calendar_subject_input").value = '';
             document.getElementById("calendar_content_input").value = '';
             document.getElementById("calendar_start_date_input").value = '';
-            document.getElementById("calendar_end_date_input").value = '';
-            document.getElementById("calendar_type").value = '';
-            document.getElementById("category_items").value = '';
-            document.getElementById("calendar_username_input").textContent = '${info}'; // 작성자 자동 입력
+            document.getElementById("calendar_end_date_input").value = '';          
+            document.getElementById("category_items_room").value = '';
+            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
         } else if (type === 'Info') {
             // 일정 상세 보기 모드: 데이터 주입
             console.log("일정 상세 보기 모드: 데이터 주입", data);
@@ -462,9 +428,9 @@
             document.getElementById("calendar_end_date_edit").value = data.end_date;
             document.getElementById("calendar_type").value = data.selection;
             document.getElementById("category_items").value = data.item_name;
-            document.getElementById("calendar_username_edit").textContent = '${info}';
-            console.log("이름 받다", '${info}');  
-            fetchCategoryItems(data.selection,data.no);
+            document.getElementById("calendar_username_edit").textContent = '${info.name}';
+            console.log("이름 받다", '${info.name}');  
+            fetchCategoryItems(data.no);
         }
     }
 	
@@ -581,33 +547,50 @@
 	// 조직도 부분
 	//초기 데이터
 	const initialData = {
-	    headers: ['이름', '부서', '테스트', '삭제'],
+	    headers: ['이름','부서','직위', '삭제'],
 	    rows: [
-	        ['홍길동', '경영팀', '팀장', '<button class="btn btn-primary">삭제</button>'],
-	        ['김철수', '개발팀', '대리', '<button class="btn btn-primary">삭제</button>'],
-	        ['이영희', '마케팅팀', '사원', '<button class="btn btn-primary">삭제</button>']
+	    	['${info.name}', '${info.dept.text}', '${info.position_content}', '<button class="btn btn-primary">삭제</button>'],
 	    ],
-	    footer: '<button class="btn btn-outline-secondary btn-line-write">라인저장</button>'
+	    footer: ''
 	};
 	
 	var exampleData = JSON.parse(JSON.stringify(initialData));
 	
+	var userName = "";
+	var userPosition = "";
+	var userDept = "";
 	 // 선택된 ID를 rows에 추가하는 함수
 	 function addSelectedIdToRows(selectedId) {
 	     console.log("가져온 ID:", selectedId);
 	     
-	     // ajax();
+	     $.ajax({
+	         type: 'GET',
+	         url: '/getUserInfo/'+selectedId,
+	         data: {},
+	         dataType: "JSON",
+	         success: function(response) {
+	        	 console.log("유저이름: ",response.name);
+	        	 console.log("유저정보: ",response.position_content);
+	        	 console.log("유저정보: ",response.dept.text);
+	        	 
+	        	 userName = response.name;
+	        	 userPosition = response.position_content;
+	        	 userDept = response.dept.text;
 	
 	     // 새로운 row 데이터 생성
-	     const newRow = [selectedId, '선택된 부서', '선택된 테스트', '<button class="btn btn-primary">삭제</button>'];
+	     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
 	
 	     // 기존 rows에 추가
 	     exampleData.rows.push(newRow);
 	
 	     // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
 	     updateTableData('customTable', exampleData);
-	 }
-	
+		 },
+	     error: function(e) {
+	         console.log(e);
+	     }
+	});
+ }
 	 // 선택된 ID를 받아서 처리
 	 getSelectId(function (selectedId) {
 	     addSelectedIdToRows(selectedId);
