@@ -390,6 +390,12 @@ public class ApprovalService {
 		public boolean setApprLineBookmark(Map<String, Object> params) {
 			int bookmarkIdx = approvalDAO.getMaxBookmarkIdx();
 			params.put("bookmarkIdx", bookmarkIdx);
+			logger.info("!!!!bookmarkIdx : "+bookmarkIdx);
+			 List<String> approvalLines = (List<String>) params.get(params);
+			logger.info("!!!!approvalLines : "+ approvalLines);
+	        for (String line : approvalLines) {
+	            System.out.println("!!!!!!Approval Line: " + line);
+	        }
 			return approvalDAO.setApprLineBookmark(params) > 0 ? true : false;
 		}
 
