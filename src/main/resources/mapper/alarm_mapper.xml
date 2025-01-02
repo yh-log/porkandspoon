@@ -24,4 +24,35 @@
 	    SET is_confirm = 'Y', check_date = NOW()
 	    WHERE alarm_idx = #{alarm_idx}
 	</update>
+	
+	<select id="getBoardUS" resultType="kr.co.porkandspoon.dto.BoardDTO">
+		SELECT 
+		    fb.subject, 
+		    br.username 
+		FROM 
+		    board_review br
+		INNER JOIN 
+		    free_board fb ON fb.board_idx = br.board_idx
+		WHERE 
+		    br.review_idx = #{from_idx} 
+		AND 
+		    br.board_idx = #{board_idx}
+		AND 
+		    fb.board_idx = #{board_idx}
+	</select>
+	
+	<select id="getAlarmList" resultType="kr.co.porkandspoon.dto.NoticeDTO">
+		SELECT * FROM notice WHERE username = #{username} ORDER BY create_date DESC
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </mapper>

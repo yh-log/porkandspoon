@@ -2,9 +2,11 @@ package kr.co.porkandspoon.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.porkandspoon.dto.NoticeDTO;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AlarmController {
@@ -40,5 +43,16 @@ public class AlarmController {
         return filteredAlarms;
         
     }
+    
+    @GetMapping("/getAlarmList")
+    public List<NoticeDTO> getAlarmList(@ModelAttribute NoticeDTO dto) {
+    	logger.info("params : {}", dto);
+    	List<NoticeDTO> noticedto = alarmService.getAlarmList(dto);
+    	return noticedto;
+    }
+    
+    
+    
+    
     
 }

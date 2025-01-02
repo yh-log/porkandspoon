@@ -63,7 +63,11 @@ public class DeptService {
 	}
 
 	public List<DirectstoreDTO> getDeptdata(Map<String, Object> params) {
-		return deptDAO.getDeptdata(params);
+		List<DirectstoreDTO> dsdto = deptDAO.getDeptdata(params);
+		for(DirectstoreDTO dto : dsdto) {
+			dto.setPosition(changePosition(dto.getPosition()));
+		}
+		return dsdto;
 	}
 
 	/**

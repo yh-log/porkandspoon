@@ -27,6 +27,13 @@ public class BoardDTO {
 	private String status;
 	private int sort_order;
 	private String name;
+	private String from_idx;
+	public String getFrom_idx() {
+		return from_idx;
+	}
+	public void setFrom_idx(String from_idx) {
+		this.from_idx = from_idx;
+	}
 	public String getName() {
 		return name;
 	}
