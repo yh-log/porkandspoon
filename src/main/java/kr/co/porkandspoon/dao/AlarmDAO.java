@@ -1,9 +1,11 @@
 package kr.co.porkandspoon.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.co.porkandspoon.dto.BoardDTO;
 import kr.co.porkandspoon.dto.NoticeDTO;
 
 @Mapper
@@ -18,5 +20,9 @@ public interface AlarmDAO {
 	List<NoticeDTO> getAlarm(String username);
 
 	void updateConfirm(int alarm_idx);
+
+	BoardDTO getBoardUS(BoardDTO boarddto);
+
+	List<NoticeDTO> getAlarmList(NoticeDTO dto);
 
 }
