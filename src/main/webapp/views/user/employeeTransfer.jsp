@@ -424,6 +424,8 @@ function getSuccess(response){
 
 }
 
+
+
 var modal = document.getElementById("chartModalBox");
 
 function modelTransferOpen(){

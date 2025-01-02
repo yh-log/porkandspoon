@@ -37,6 +37,11 @@
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
+<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<link rel="stylesheet" href="/resources/css/common.css">
 </head>
 
 <body>
@@ -94,6 +99,12 @@
 								<div class="page-title">
 									<div class="row">
 										<div class="col-12 col-md-12 order-md-1 order-last">
+										
+										<!-- 여기 추가!!  -->
+										<div id="summernote-container">
+												<textarea name="postContent" id="summernote" maxlength="10000"></textarea>
+										</div>
+										
 											<h3>컬러</h3>
 											<h5>normal</h5>
 											<div class="row">
@@ -2154,6 +2165,27 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
+
+$(document).ready(function() {
+    // Summernote 초기화
+  /*   $('#summernote').summernote({
+        height: 300
+    }); */
+    $('#summernote').summernote({
+        lang: 'ko-KR',
+        height: 300,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture']]
+        ],
+        popover: false,
+        tooltip: false,
+        dialogsInBody: true
+    });
+   
+});
 	/* 페이지네이션 */
 	$('#pagination').twbsPagination({
 		startPage : 1,
