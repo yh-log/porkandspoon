@@ -40,4 +40,12 @@ public interface ResevationDAO {
 
 	List<CalenderDTO> articleList();
 
+	List<CalenderDTO> selection(String selection);
+
+	int itemWrite(CalenderDTO calederDto);
+
+	CalenderDTO resDetail(int idx);
+
+	int itemUpdate(String idx, CalenderDTO calenderDto);
+
 }
