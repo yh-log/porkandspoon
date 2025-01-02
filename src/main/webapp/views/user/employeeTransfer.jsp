@@ -11,7 +11,36 @@
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 <link rel="shortcut icon"
-	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
+	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHR
+	YTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN
+	6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENv
+	cmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi
+	1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0c
+	DovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZ
+	mYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKIC
+gIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYW
+RvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZ
+S9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQ
+iCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiA
+gIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2
+LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKIC
+AgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMT
+A6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9
+uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3
+aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZX
+NjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LT
+IuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z
++nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEX
+FL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZL
+pEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuS
+Sbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxF
+BRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqV
+q9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnv
+NdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRC
+PLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN
++2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4f
+lQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqq
+hTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
 	type="image/png">
 
 <!-- select -->
@@ -26,11 +55,8 @@
 <link rel="stylesheet" href="/resources/css/chartModal.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 <style>
@@ -42,7 +68,7 @@
 	}
 	
 	.selectStyle{
-		width: 120px;
+		width: 100px;
 	}
 	.form-control{
 		width: 350px;
@@ -128,6 +154,8 @@
 										
 									</tbody>
 								</table>
+								
+								
 							</div>
 							<div class="">
 								<nav aria-label="Page navigation">
@@ -153,7 +181,7 @@
 														<tbody class="tbody-style">
 															<tr>
 																<td colspan="2" class="chart-search">
-																	<input class="form-control form-control-sm input-test" type="text" placeholder="이름/부서/직급으로 검색 가능합니다.">
+																	<input class="form-control form-control-sm input-test" type="text"  id="" placeholder="이름/부서/직급으로 검색 가능합니다.">
 																</td>
 															</tr>
 															<tr>
@@ -174,9 +202,9 @@
 													<input type="date" name="transfer_date" class="form-control" style="width: 150px;"/>
 												</div>
 												<div id="transferCheckBox">
-													<button class="btn btn-sm btn-outline-primary">인사이동</button>
-													<button class="btn btn-sm btn-outline-primary">직영점이동</button>
-													<button class="btn btn-sm btn-outline-primary">퇴사처리</button>
+													<button class="btn btn-sm btn-outline-primary" id="employee">인사이동</button>
+													<button class="btn btn-sm btn-outline-primary" id="store">직영점이동</button>
+													<button class="btn btn-sm btn-outline-primary" id="leave">퇴사처리</button>
 												</div>
 											</div>
 											<div class="card user-list-style">
@@ -199,8 +227,8 @@
 										</div>
 									</div>
 										<div class="btn-button">
-											<button class="btn btn-primary btn-line-write btn-user-write" id="addModal">등록</button>
-											<button class="btn btn-outline-primary btn-line-write btn-user-delete" id="cancelModal">취소</button>
+											<button type="button" class="btn btn-primary btn-line-write btn-user-write" id="addModal" onclick="transferAdd()">등록</button>
+											<button type="button" class="btn btn-outline-primary btn-line-write btn-user-delete" id="cancelModal">취소</button>
 										</div>
 									</div>
 								</div>
@@ -231,9 +259,12 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 	
-<!-- <script src='/resources/js/common.js'></script> -->
+<script src='/resources/js/common.js'></script> 
 <script src='/resources/js/menu.js'></script>
 <script src='/resources/js/charjstree.js'></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
 <script>
 
@@ -424,6 +455,28 @@ function getSuccess(response){
 
 }
 
+//전역 변수 선언
+let lastClickedButtonId = null;
+
+// 클릭 이벤트 등록
+document.querySelectorAll('.btn-outline-primary').forEach(button => {
+    button.addEventListener('click', function () {
+        // 현재 클릭된 버튼의 id를 전역 변수에 저장
+        lastClickedButtonId = this.id;
+        console.log('최근 클릭된 버튼 ID:', lastClickedButtonId);
+    });
+});
+
+// 나중에 전역 변수 사용
+function useLastClickedButton() {
+    if (lastClickedButtonId) {
+        console.log('저장된 버튼 ID를 사용:', lastClickedButtonId);
+        // 원하는 작업 수행
+    } else {
+        console.log('아직 클릭된 버튼이 없습니다.');
+    }
+}
+
 
 
 var modal = document.getElementById("chartModalBox");
@@ -435,12 +488,12 @@ function modelTransferOpen(){
 
 // 인사이동 기능 
 const initialData = {
-	    headers: ['사번', '이름', '부서', '직위'],
+	    headers: ['사번', '이름', '부서', '직위', '<i class="bi bi-trash3"></i>'],
 	    rows: [
-	    	[]
+	    	
 	    
-	    ]
-		//footer: '<button class="btn btn-outline-secondary btn-line-write">라인저장</button>'
+	    ],
+		footer: '<div></div>',
 	};
 
 	var exampleData = JSON.parse(JSON.stringify(initialData));
@@ -456,9 +509,61 @@ const initialData = {
 			 data: { selectedId: selectedId },
 			 success: function(response){
 				 
-				 console.log(response);
-			     // 새로운 row 데이터 생성
-			     const newRow = [selectedId, '홍길동', '<select class="form-select selectStyle"></select>', '<select class="form-select selectStyle"></select>'];
+				console.log(response);
+				 
+				var userResult = response[0];
+				 
+				var deptSelect = document.createElement('select');
+	            deptSelect.className = 'form-select selectStyle';
+
+	            // `response` 데이터를 순회하며 `<option>` 추가
+	            response.forEach(function(item) {
+	                if (item.parent !== null && item.parent !== '' && item.text !== null && item.text !== '') {
+	                    var option = document.createElement('option');
+	                    option.value = item.parent;
+	                    option.textContent = item.text;
+	                    
+	                    console.log(userResult.old_department,'는');
+	                    
+	                    if (item.parent === userResult.old_department) {
+	                  		console.log('동일한 ', item.parent);
+	                        option.setAttribute('selected', 'selected');
+	                    }
+	                    
+	                    // 기본 선택값 설정 (old_department와 동일한 값)
+
+	                    deptSelect.appendChild(option);
+	                    
+	                }
+	                
+	            });
+	            //deptSelect.value = userResult.old_department.trim();
+			    	 
+			     var positionSelect = document.createElement('select');
+			     positionSelect.className = 'form-select selectStyle';
+			     
+			     response.forEach(function(item){
+			    	if(item.position !== null && item.position !== '' && item.title !== null && item.title !== '') {
+			    		var option = document.createElement('option');
+			    		option.value = item.position;
+			    		option.textContent = item.title;
+			    		positionSelect.appendChild(option);
+			    		
+			    		if(item.position === userResult.old_position){
+			    			option.setAttribute('selected', 'selected');
+			    		} 
+			    		
+			    	}
+			     });
+			     
+	            console.log("부서 선택:", deptSelect.outerHTML);
+	            console.log("직위 선택:", positionSelect.outerHTML);
+	            var cencleUser = '<div onclick="chartTableDelete(this, \'' + userResult.person_num + '\')"><i class="bi bi-trash3"></i></div>';
+	            
+	            var setUsetInfo = '<input type="hidden" name="old_position" value="'+userResult.old_position+'"/><input type="hidden" name="old_department" value="'+ userResult.old_department +'"/><input type="hidden" name="username" value="'+ userResult.username +'"/>' + userResult.person_num;
+				 
+			     // 새로운 row 데이터 생성 outerHTML 이거를 추가해줘야 DOM 요소를 HTML 문자열로 변환해준다! 
+			     const newRow = [setUsetInfo, userResult.name, deptSelect.outerHTML, positionSelect.outerHTML, cencleUser];
 		
 			     // 기존 rows에 추가
 			     exampleData.rows.push(newRow);
@@ -480,9 +585,59 @@ const initialData = {
 	     addSelectedIdToRows(selectedId);
 	 });
 	 
+	 
+	 function chartTableDelete(element, personNum) {
+		    console.log('삭제 요청된 person_num:', personNum);
+
+		    // 클릭된 버튼의 부모 행을 삭제
+		    const row = element.closest('tr');
+		    if (row) {
+		        row.remove(); // DOM에서 행 제거
+		        console.log(`DOM에서 person_num: ${personNum}인 행 삭제 완료`);
+		    }
+
+		    // exampleData.rows에서도 삭제
+		    exampleData.rows = exampleData.rows.filter(function (row) {
+		        return row[0] !== personNum; // row[0]은 person_num에 해당
+		    });
+
+		    console.log('삭제 후 데이터:', exampleData.rows);
+		}
 
 
+	 function transferAdd(){
+		 
+		 const userDto = exampleData.rows.map(row => {
+			    const container = document.createElement('div');
+			    container.innerHTML = row[0]; // row[0]의 HTML 문자열을 DOM으로 변환
 
+			    const oldPosition = container.querySelector('input[name="old_position"]').value;
+			    const oldDepartment = container.querySelector('input[name="old_department"]').value;
+			    const userName = container.querySelector('input[name="username"]').value;
+			    const personNum = container.textContent.trim(); // HTML 외 텍스트 값(person_num)
+			    const transferDate = $('input[name="transfer_date"]').val();
+
+			    return {
+			        person_num: personNum,
+			        old_position: oldPosition,
+			        old_department: oldDepartment,
+			        transfer_date: transferDate,
+			        username: userName,
+			        name: row[1],
+			        new_department: $(row[2]).val(),
+			        new_position: $(row[3]).val(),
+			        type: lastClickedButtonId,
+			        create: 'admin',
+			    }; // todo - 나중에 로그인한 아이디로 create 넣기
+			});
+		 
+		 console.log('가공', userDto);
+		 
+		
+		// httpVariousAjax('PUT', '/ad/setEmployeeTransfer', JSON.stringify(userDto), 'application/json');
+		 httpVariousAjax('DELETE', '/ad/userQuitDelete', JSON.stringify(userDto), 'application/json');
+		 
+	 }
 </script>
 
 </html>

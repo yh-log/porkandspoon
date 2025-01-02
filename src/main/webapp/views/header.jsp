@@ -396,22 +396,22 @@ setInterval(checkNewAlarms, 5000); */
 	
 		
    //알림 리스트 불러오기 (20개)
-   $('#alarm').on('click', function(){
+/*    $('#alarm').on('click', function(){
       alarmListPrint();
    });
    
    function alarmListPrint(){
       $('#alarmPopup').show();
-   }
+   } */
    
    /* 알람 닫기 */
-   $('#alarmPopup .btn-close').on('click', function(){
+/*    $('#alarmPopup .btn-close').on('click', function(){
        $('#alarmPopup').hide();
    });
-   
+    */
    /* alert 메세지전달 */
-   if(${param.message} != null){
+/*    if(${param.message} != null){
        alert('${param.message}');
-   }
+   } */
       
 </script>

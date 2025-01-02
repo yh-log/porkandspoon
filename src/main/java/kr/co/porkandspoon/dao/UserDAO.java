@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.CareerDTO;
@@ -247,6 +248,30 @@ public interface UserDAO{
 	 * 인사이동 부서 및 직급 리스트 조회
 	 */
 	List<UserDTO> userTransferInfo(String username);
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 인사이동 
+	 */
+	int setEmployeeTransfer(List<UserDTO> userDto);
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 정보 업데이트 (인사이동)
+	 */
+	int updateEmployeeUser(UserDTO user);
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직영점 인사이동
+	 */
+	int setStoreTransfer(List<UserDTO> userDto);
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 퇴사 처리 
+	 */
+	int usrQuitDelete(UserDTO user);
 
 
 }
