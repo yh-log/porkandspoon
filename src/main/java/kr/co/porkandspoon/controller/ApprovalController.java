@@ -515,7 +515,7 @@ public class ApprovalController {
 		return result;
 	}
 
-	// 임시저장 -> 상신
+	// 삭제
 	@PutMapping(value="/approval/changeStatusToDelete/{draft_idx}")
 	public Map<String, Object> changeStatusToDelete(@PathVariable String draft_idx, @AuthenticationPrincipal UserDetails userDetails){
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -560,10 +560,11 @@ public class ApprovalController {
 		}
 
         // 처리된 approvalLines 배열
-        for (String line : approvalLines) {
-            System.out.println("!!!!!!Approval Line: " + line);
-        }
+//        for (String line : approvalLines) {
+//            System.out.println("!!!!!!Approval Line: " + line);
+//        }
         params.put("approvalLines", approvalLines);
+        //params.put("approvalLines", approvalLinesJson);
 
         String loginId = userDetails.getUsername();
         params.put("loginId", loginId);

@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dao.ApprovalDAO;
 import kr.co.porkandspoon.dto.ApprovalDTO;
@@ -117,6 +121,10 @@ public class ApprovalService {
         	for (String filename : new_filename) {
         		approvalDAO.saveExistingFiles(filename, draftIdx);
 			}
+        }
+        
+        if(status.equals("sd")) {
+        	logger.info("전송!!!!!sd!!!여기에 알림");
         }
         
         return draftIdx;
@@ -391,7 +399,8 @@ public class ApprovalService {
 			int bookmarkIdx = approvalDAO.getMaxBookmarkIdx();
 			params.put("bookmarkIdx", bookmarkIdx);
 			logger.info("!!!!bookmarkIdx : "+bookmarkIdx);
-			 List<String> approvalLines = (List<String>) params.get(params);
+			
+			List<String> approvalLines = (List<String>) params.get("approvalLines");
 			logger.info("!!!!approvalLines : "+ approvalLines);
 	        for (String line : approvalLines) {
 	            System.out.println("!!!!!!Approval Line: " + line);

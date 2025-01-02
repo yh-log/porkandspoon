@@ -42,21 +42,12 @@
 <!-- FilePond CSS -->
 <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
-<!-- FilePond JavaScript -->
-<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
 <!-- summernote -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-
 <!-- jstree -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
 <style>
 	.draftWrite table{
 		border: 1px solid #ddd;
@@ -462,6 +453,16 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script> -->
 
+<!-- FilePond JavaScript -->
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+
+<!-- jQuery -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<!-- jstree -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
 	
 <script src='/resources/js/common.js'></script>
 <!-- summer note -->
@@ -469,7 +470,7 @@
 
 <!-- 다음검색 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<!-- <script src='/resources/js/approval.js'></script> -->
+<script src='/resources/js/approval.js'></script>
 
 <!-- 조직도 js -->
 <script src='/resources/js/common.js'></script>
