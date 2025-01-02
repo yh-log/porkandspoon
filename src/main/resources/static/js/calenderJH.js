@@ -138,7 +138,7 @@ var typeColorMap = {
 // 일정 불러오기 완료 후 함수
 function getSuccess(response){
 	var event = [];
-
+	console.log('getSuccess response:', response);
     response.result.forEach(function(item){
         event.push({
         	id: item.idx,

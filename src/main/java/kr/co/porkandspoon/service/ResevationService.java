@@ -79,27 +79,25 @@ public class ResevationService {
 		return resDao.itemDetail(no);
 	}
 
-	public List<CalenderDTO> articleList() {
-		
-		List<CalenderDTO> list = resDao.articleList();
-		CalenderDTO dto = new CalenderDTO();
-		
-		if(list.size() < 1) {
-			
-			list = new ArrayList<CalenderDTO>();
-			
-			
-			dto.setStatus(400);
-			dto.setMessage("예약이 존재하지 않습니다.");
-			
-			list.add(dto);
-			
-			return list;
-		}
-		
-		dto.setStatus(201);
-		
-		return list;
+	public List<CalenderDTO> articleList() {		
+		return resDao.articleList();
+	}
+
+	public List<CalenderDTO> selectList(String selection) {		
+		return resDao.selection(selection);
+	}
+
+	public int itemWrite(CalenderDTO calederDto) {
+		return resDao.itemWrite(calederDto);
+	}
+
+	public CalenderDTO resDetail(int idx) {
+		return resDao.resDetail(idx);
+	}
+
+	public boolean itemUpdate(String idx, CalenderDTO calenderDto) {
+		int result = resDao.itemUpdate(idx, calenderDto);
+		return result > 0;
 	}
 
 

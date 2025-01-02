@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,23 +32,28 @@ public class ResevationController {
 	
 	// 물품 예약하기(캘린더) 이동
 	@GetMapping(value="/articleResevation")
-	public ModelAndView articleResevation() {
+	public ModelAndView articleResevation(@AuthenticationPrincipal UserDetails userDetails) {
+		
+		String loginId = userDetails.getUsername();
 		
 		ModelAndView mav = new ModelAndView("/resevation/articleResevation");
 		mav.addObject("note", resService.note());
 		mav.addObject("project", resService.project());
 		mav.addObject("car", resService.car());
+		mav.addObject("info",resService.info(loginId));
 		
 		return mav;
 	}
 	
 	// 물품 예약 리스트 조회 ajax
-	@GetMapping(value="/articleList")
-	public List<CalenderDTO> articleList() {
+	@GetMapping(value="/itemList")
+	public Map<String, Object> articleList() {
 		
-		List<CalenderDTO> dto = resService.articleList();
+		List<CalenderDTO> list = resService.articleList();
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.put("result", list);
 		
-		return dto;
+		return result;
 	}
 	
 	// 예약하기 페이지에 물품 상세정보 ajax
@@ -237,7 +243,60 @@ public class ResevationController {
 		return result;
 	}
 	
+	// 선택된 리스트
+	@GetMapping(value="/selectList")
+	public Map<String,Object> selectList(@RequestParam String selection){
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		List<CalenderDTO> dto = resService.selectList(selection);
+		result.put("list", dto);
+		
+		return result;
+	}
 	
+	// 물품 예약 등록 ajax
+	@PostMapping(value="/itemWrite")
+	public Map<String, Object> itemWrite(@RequestBody CalenderDTO calederDto,@AuthenticationPrincipal UserDetails userDetails){
+						
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("success", resService.itemWrite(calederDto));
+			
+		return resultMap;
+	}
+	
+	// 물품 예약 일정 조회 ajax
+    @GetMapping(value="/resDetail/{idx}")
+    public Map<String, Object> resDetail(@PathVariable int idx){
+        logger.info("일정 상세 조회 실행, IDX: " + idx);
+        CalenderDTO schedule = resService.resDetail(idx);
+        System.out.println(CommonUtil.toString(schedule));
+        //schedule.setStart_date(CommonUtil.formatDateTime(schedule.getStart_date(), "yyyy-mm-dd HH:mm:ss"));
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        if(schedule != null) {
+            resultMap.put("success", true);
+            resultMap.put("schedule", schedule);
+        } else {
+            resultMap.put("success", false);
+            resultMap.put("message", "일정을 찾을 수 없습니다.");
+        }
+        return resultMap;
+    }
+    
+    // 물품 예약 수정 ajax
+    @PutMapping(value="/itemUpdate/{idx}")
+    public Map<String,Object> calenderUpdate(@PathVariable String idx, @RequestBody CalenderDTO calenderDto){
+    	logger.info("일정 수정 실행, IDX: " + idx + ", 데이터: " + CommonUtil.toString(calenderDto));
+    	boolean success = resService.itemUpdate(idx, calenderDto);
+    	Map<String, Object> resultMap = new HashMap<>();
+    	if(success) {
+    		resultMap.put("success", true);
+    		resultMap.put("message", "일정이 수정되었습니다.");
+    	} else {
+    		resultMap.put("success", false);
+    		resultMap.put("message", "일정 수정에 실패했습니다. 존재하지 않는 일정 ID일 수 있습니다.");
+    	}
+    	return resultMap;
+    }
 	
 	
 	
