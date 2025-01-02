@@ -14,6 +14,7 @@ import kr.co.porkandspoon.dao.ResevationDAO;
 import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.ResponseDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 
 @Service
 public class ResevationService {
@@ -22,7 +23,7 @@ public class ResevationService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	// 물품 등록(작성자 정보)
-	public String info(String loginId) {	
+	public UserDTO info(String loginId) {	
 		return resDao.info(loginId);
 	}
 
@@ -103,6 +104,20 @@ public class ResevationService {
 	public int itemDelete(String idx) {
 		return resDao.itemDelete(idx);
 	}
+
+	public List<CalenderDTO> room() {
+		return resDao.room();
+	}
+
+	public CalenderDTO resRoomDetail(String no) {
+		return resDao.resRoomDetail(no);
+	}
+
+	public List<CalenderDTO> roomList() {
+		return resDao.roomList();
+	}
+
+
 
 
 }

@@ -6,11 +6,12 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
 public interface ResevationDAO {
 
-	String info(String loginId);
+	UserDTO info(String loginId);
 
 	int articleWrite(Map<String, Object> params);
 
@@ -49,5 +50,12 @@ public interface ResevationDAO {
 	int itemUpdate(String idx, CalenderDTO calenderDto);
 
 	int itemDelete(String idx);
+
+	List<CalenderDTO> room();
+
+	CalenderDTO resRoomDetail(String no);
+
+	List<CalenderDTO> roomList();
+
 
 }
