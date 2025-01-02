@@ -64,7 +64,7 @@
 	}
 	
 	/* 조직도 검색창 스타일 변경 */
-	.chart-search {
+	div.chart-search {
 		padding: 3px 16px;
 	}
 	
@@ -224,4 +224,14 @@
 
 	#transferCheckBox button:first-child {
         margin-right: 0; /* 첫번째 버튼은 오른쪽 간격 제거 */
+    }
+    
+    
+    #transferBoxInner{
+    	flost: left;
+		display: flex;
+	    align-items: center;
+	    flex-wrap: nowrap;
+	    white-space: nowrap;
+	    gap: 10px;
     }

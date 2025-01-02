@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 <script src="/resources/js/common.js"></script>
-
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
    #alarmPopup {
        position: fixed;
@@ -244,22 +244,22 @@
 
 <script>
    //알림 리스트 불러오기 (20개)
-   $('#alarm').on('click', function(){
+/*    $('#alarm').on('click', function(){
       alarmListPrint();
    });
    
    function alarmListPrint(){
       $('#alarmPopup').show();
-   }
+   } */
    
    /* 알람 닫기 */
-   $('#alarmPopup .btn-close').on('click', function(){
+/*    $('#alarmPopup .btn-close').on('click', function(){
        $('#alarmPopup').hide();
    });
-   
+    */
    /* alert 메세지전달 */
-   if(${param.message} != null){
+/*    if(${param.message} != null){
        alert('${param.message}');
-   }
+   } */
       
 </script>

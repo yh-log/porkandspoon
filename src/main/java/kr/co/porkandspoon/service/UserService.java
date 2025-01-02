@@ -836,5 +836,73 @@ public class UserService {
 		return result;
 	}
 
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 인사이동 
+	 */
+	public boolean setEmployeeTransfer(List<UserDTO> userDto) {
+		
+		int insertRow = userDao.setEmployeeTransfer(userDto);
+		logger.info("인사이동 로우 => " + insertRow);
+		
+		if(insertRow < 1) {
+			logger.warn("인사이동 입력이 미완료되었습니다");
+			return false;
+		}
+		
+		logger.info(CommonUtil.toString(userDto));
+		// 직원 데이블 정보 변경
+		for (UserDTO user : userDto) {
+	        int result = userDao.updateEmployeeUser(user);
+	        if (result < 1) {
+	            logger.warn("업데이트 실패: " + user.getUsername());
+	            return false;
+	        }
+	    }
+		
+		return true;
+	}
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직영점 인사이동
+	 */
+	public boolean setStoreTransfer(List<UserDTO> userDto) {
+		
+		int insertRow = userDao.setStoreTransfer(userDto);
+		logger.info("직영점 이동 로우 => " + insertRow);
+		
+		if(insertRow < 1) {
+			logger.warn("인사이동 입력이 미완료되었습니다");
+			return false;
+		}
+		
+		// user 테이블 + 직영점 테이블 수정 필요
+		// 직원 테이블 수정
+		
+		
+		return false;
+	}
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 퇴사 처리 
+	 */
+	public boolean usrQuitDelete(List<UserDTO> userDto) {
+
+		
+		for (UserDTO user : userDto) {
+	        int result = userDao.usrQuitDelete(user);
+	        logger.info("직원 퇴사 로우 =>" + result);
+	        if (result < 1) {
+	            logger.warn("업데이트 실패: " + user.getUsername());
+	            return false;
+	        }
+	    }
+		
+		return true;
+		
+	}
+
 
 }

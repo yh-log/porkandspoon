@@ -359,4 +359,25 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
 
 //}
 
+function httpVariousAjax(type, url, params, content){
+
+   var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    $.ajax({
+        type : type,
+        url : url,
+        data : params,
+        dataType : 'JSON',
+        contentType: content,
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+               httpVariousSuccess(response);
+        },error: function(e){
+            console.log(e);
+        }
+    });
+}
 
