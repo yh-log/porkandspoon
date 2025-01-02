@@ -132,45 +132,33 @@
 	                        </tr>
 	                        
 	                        <tr>
-    <th class="align-l">파일첨부</th>
-    <td>
-        <!-- FilePond File Uploader -->
-        <input class="filepond" type="file" name="filepond" />
-
-        <!-- Hidden image preview (fallback for non-FilePond users) -->
-        <c:if test="${not empty fileUrl}">
-            <div>
-                
-            </div>
-        </c:if>
-    </td>
-</tr>
-	                        
+							    <th class="align-l">파일첨부</th>
+							    <td>
+							        <!-- FilePond File Uploader -->
+							        <input class="filepond" type="file" name="filepond" />
+							
+							        <!-- Hidden image preview (fallback for non-FilePond users) -->
+							        <c:if test="${not empty fileUrl}">
+							            <div>
+							                
+							            </div>
+							        </c:if>
+							    </td>
+							</tr>
+								                        
 	                        
 	                     <tr>
 						   <th class="align-l">활성여부</th>
 						   <td>
 						      <div class="card-body">
 						         <div class="form-check">
-						            <input 
-						               class="form-check-input" 
-						               type="radio" 
-						               name="use_yn" 
-						               value="Y" 
-						               id="flexRadioDefault1"
-						               <c:if test="${info.use_yn == 'Y'}">checked</c:if>
-						            >
+						            <input class="form-check-input"  type="radio"  name="use_yn" value="Y"  id="flexRadioDefault1"
+						               <c:if test="${info.use_yn == 'Y'}">checked</c:if>>
 						            <label class="form-check-label" for="flexRadioDefault1">활성</label>
 						         </div>
 						         <div class="form-check">
-						            <input 
-						               class="form-check-input" 
-						               type="radio" 
-						               name="use_yn" 
-						               value="N" 
-						               id="flexRadioDefault2"
-						               <c:if test="${info.use_yn == 'N'}">checked</c:if>
-						            >
+						            <input  class="form-check-input"  type="radio"  name="use_yn"  value="N"  id="flexRadioDefault2"
+						               <c:if test="${info.use_yn == 'N'}">checked</c:if>  >
 						            <label class="form-check-label" for="flexRadioDefault2">비활성</label>
 						         </div>
 						      </div>
