@@ -298,3 +298,5 @@ function updateTransferBox(boxId, data) {
         }
     }
 }
+
+

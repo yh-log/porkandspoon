@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -1029,7 +1030,7 @@ public class UserController {
 	}
 	
 	/**
-	 * author yh.ki, (25.1.2)
+	 * author yh.kim, (25.01.02)
 	 * 인사이동 부서 및 직급 리스트 조회
 	 */
 	@GetMapping(value="/ad/userTransferInfo")
@@ -1041,5 +1042,68 @@ public class UserController {
 		
 		return result;
 	}
-
+	
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 인사이동 
+	 */
+	// @ModelAttribute는 단일 객체를 바인딩하기 위해 설계
+	@PutMapping(value="/ad/setEmployeeTransfer")
+	public UserDTO setEmployeeTransfer(@RequestBody List<UserDTO> userDto) {
+		logger.info(CommonUtil.toString(userDto));
+		
+		UserDTO dto = new UserDTO();
+		
+		boolean result = userService.setEmployeeTransfer(userDto);
+		
+		if(result) {
+			dto.setStatus(200);
+			dto.setMessage("인사이동이 완료되었습니다.");
+		}
+		
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직영점 인사이동
+	 */
+	@PutMapping(value="/ad/setStoreTransfer")
+	public UserDTO setStoreTransfer(@RequestBody List<UserDTO> userDto) {
+		
+		logger.info(CommonUtil.toString(userDto));
+		
+		boolean result = userService.setStoreTransfer(userDto);
+		
+		UserDTO dto = new UserDTO();
+		
+		if(result) {
+			dto.setStatus(200);
+			dto.setMessage("인사이동이 완료되었습니다.");
+		}
+		
+		return dto;
+	}
+	
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직원 퇴사 처리 
+	 */
+	@DeleteMapping(value="/ad/userQuitDelete")
+	public UserDTO usrQuitDelete(@RequestBody List<UserDTO> userDto){
+		logger.info(CommonUtil.toString(userDto));
+		
+		boolean result = userService.usrQuitDelete(userDto);
+		
+		UserDTO dto = new UserDTO();
+		
+		if(result) {
+			dto.setStatus(200);
+			dto.setMessage("인사이동이 완료되었습니다.");
+		}
+		
+		return dto;
+		
+	}
+	
 }
