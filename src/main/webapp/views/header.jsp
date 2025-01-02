@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
-<script src="/resources/js/common.js"></script>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <sec:authentication var="loggedInUser" property="principal.username" />
 <script>
@@ -14,7 +14,7 @@ function checkNewAlarms() {
         return;
     }
 
-    fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
+   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
@@ -31,24 +31,23 @@ function checkNewAlarms() {
 
 function displayAlarmMessage(alarm) {
     var alarmMessage = document.getElementById('alarmMessage');
-    
-    alarmMessage.innerHTML = alarm.content;
+    alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>'+ alarm.subject;
 
     // 메시지 표시
     alarmMessage.style.display = 'flex';
     alarmMessage.style.opacity = '1'; // 천천히 나타나기
 
-    // 3초 후 메시지 천천히 사라짐
-    /* setTimeout(function () {
+    /* // 3초 후 메시지 천천히 사라짐
+    setTimeout(function () {
         alarmMessage.style.opacity = '0'; // 점점 사라지기
         setTimeout(function () {
             alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
         }, 1000); // 사라지는 애니메이션 지속 시간 (1초)
-    }, 3000); // 알림이 유지되는 시간 (3초) */
+    }, 3000); // 알림이 유지되는 시간 (3초)
 }
 
 // 5초마다 알림 확인
-setInterval(checkNewAlarms, 5000);
+setInterval(checkNewAlarms, 5000); */
 </script> 
 <style>
 	#alarmPopup {
@@ -171,6 +170,14 @@ setInterval(checkNewAlarms, 5000);
     font-size: 16px;
     white-space: nowrap; 
 	}
+	
+	.alarm-icon-style {
+		font-size: 7px;
+    	color: #ff7976;
+    	display: flex;
+	    align-items: center;
+	    justify-content: center;
+	}
 </style>
 
 <header>
@@ -215,88 +222,13 @@ setInterval(checkNewAlarms, 5000);
         			</div>
        				<button style="background : #fff" class="alarmclose" data-alarm-idx="569">×</button>
       			</div>
-     			<div class="alarm-item" id="alarmBox" data-alarm-idx="562">
-     				<div class="alarm-item" onclick="chatWindowSet('/chat/100')">
-     					<span id="al_subject">1:1 채팅</span>
-     					<span id="al_content">HH</span>
-     					<span id="al_date">2024-12-03</span>
-    				</div>
-    				<button style="background : #fff" class="alarmclose" data-alarm-idx="562">×</button>
-   				</div>
-   				<div class="alarm-item" id="alarmBox" data-alarm-idx="561">
-   					<div class="alarm-item" onclick="chatWindowSet('/chat/100')">
-   						<span id="al_subject">1:1 채팅</span>
-   						<span id="al_content">dd</span>
-   						<span id="al_date">2024-12-03</span>
-  					</div>
-  					<button style="background : #fff" class="alarmclose" data-alarm-idx="561">×</button>
- 				</div>
- 				<div class="alarm-item" id="alarmBox" data-alarm-idx="560">
- 					<div class="alarm-item" onclick="chatWindowSet('/chat/100')">
- 						<span id="al_subject">1:1 채팅</span>
- 						<span id="al_content">hh</span>
- 						<span id="al_date">2024-12-03</span>
- 					</div>
- 					<button style="background : #fff" class="alarmclose" data-alarm-idx="560">×</button>
-				</div>
-				<div class="alarm-item" id="alarmBox" data-alarm-idx="536">
-					<div class="alarm-item" onclick="chatWindowSet('/crewChat/open/84/45')">
-						<span id="al_subject">크루 채팅</span>
-						<span id="al_content">크루와 함께 Just Run!</span>
-						<span id="al_date">2024-11-11</span>
-					</div>
-					<button style="background : #fff" class="alarmclose" data-alarm-idx="536">×</button>
-				</div>
-				
-				
-				<div class="alarm-item" id="alarmBox" data-alarm-idx="521">
-					<div class="alarm-item" onclick="chatWindowSet('/crewChat/open/84/45')">
-						<span id="al_subject">크루 채팅</span>
-						<span id="al_content">크루와 함께 Just Run!</span>
-						<span id="al_date">2024-11-11</span>
-					</div>
-					<button style="background : #fff" class="alarmclose" data-alarm-idx="521">×</button>
-				</div>
-				<div class="alarm-item" id="alarmBox" data-alarm-idx="489">
-					<div class="alarm-item" onclick="chatWindowSet('/crewChat/open/84/45')">
-						<span id="al_subject">크루 채팅</span>
-						<span id="al_content">크루와 함께 Just Run!</span>
-						<span id="al_date">2024-11-11</span>
-					</div>
-					<button style="background : #fff" class="alarmclose" data-alarm-idx="489">×</button>
-				</div>
-				<div class="alarm-item" id="alarmBox" data-alarm-idx="480">
-					<div class="alarm-item" onclick="chatWindowSet('/crewChat/open/84/45')">
-						<span id="al_subject">크루 채팅</span>
-						<span id="al_content">크루와 함께 Just Run!</span>
-						<span id="al_date">2024-11-11</span>
-					</div>
-					<button style="background : #fff" class="alarmclose" data-alarm-idx="480">×</button>
-				</div>
-				<div class="alarm-item" id="alarmBox" data-alarm-idx="448">
-					<div class="alarm-item" onclick="chatWindowSet('/crewChat/open/84/45')">
-						<span id="al_subject">크루 채팅</span>
-						<span id="al_content">크루와 함께 Just Run!</span>
-						<span id="al_date">2024-11-10</span>
-					</div>
-					<button style="background : #fff" class="alarmclose" data-alarm-idx="448">×</button>
-				</div>
-
-				<div class="alarm-item" id="alarmBox" data-alarm-idx="367">
-					<div class="alarm-item" onclick="chatWindowSet('/crewChat/open/84/49')">
-						<span id="al_subject">크루 채팅</span>
-						<span id="al_content">크루 권한 테스트 크루</span>
-						<span id="al_date">2024-11-08</span>
-					</div>
-					<button style="background : #fff" class="alarmclose" data-alarm-idx="367">×</button>
-				</div>
 
 
 				
 			</div><!-- alarmListContent -->
 			
 	    </div><!-- popup-content -->
-	</div><!-- alarmPopup -->
+</div><!-- alarmPopup -->
 
 
 
@@ -305,26 +237,58 @@ setInterval(checkNewAlarms, 5000);
 
 
 
-
+<script src="/resources/js/common.js"></script>
 <script>
-	//알림 리스트 불러오기 (20개)
-	$('#alarm').on('click', function(){
-		alarmListPrint();
+	var loggedInUser = '${loggedInUser}';
+	$(document).ready(function() {
+	    $('#alarm').on('click', function() {
+	    	const url = '/getAlarmList';
+	    	const data = {username: loggedInUser};
+	    	$.ajax({
+	            type: 'GET',
+	            url: url,
+	            data: data,
+	            datatype: 'JSON',
+	            success: function(response) {
+	                drawAlarm(response);
+	                $('#alarmPopup').show();
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+	            }
+	        });
+	    });
+
+	    $('#alarmPopup .btn-close').on('click', function() {
+	        $('#alarmPopup').hide();
+	    });
 	});
 	
-	function alarmListPrint(){
-		$('#alarmPopup').show();
+	function drawAlarm(response) {
+		console.log('실행');
+	    console.log("전체 응답:", response); // 전체 데이터 확인
+	    const alarmListContainer = $('#alarmList');
+	    alarmListContainer.empty(); // 기존 내용 제거
+
+	    if (response && response.length > 0) {
+	        response.forEach(function(alarm) {
+	            const alarmHTML = 
+	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
+	                '    <div class="alarm-item" onclick="chatWindowSet(\'' + alarm.chatUrl + '\')">' +
+	                '        <span id="al_subject">' + alarm.subject + '</span>' +
+	                '        <span id="al_content">' + alarm.content + '</span>' +
+	                '        <span id="al_date">' + alarm.date + '</span>' +
+	                '    </div>' +
+	                '    <button style="background : #fff" class="alarmclose" data-alarm-idx="' + alarm.idx + '">×</button>' +
+	                '</div>';
+
+	            alarmListContainer.append(alarmHTML);
+	        });
+	    } else {
+	        alarmListContainer.append('<li>새로운 알림이 없습니다.</li>');
+	    }
 	}
 	
-	/* 알람 닫기 */
-	$('#alarmPopup .btn-close').on('click', function(){
-	    $('#alarmPopup').hide();
-	});
-	
-	/* alert 메세지전달 */
-	if(${param.message} != null){
-    	alert('${param.message}');
-	}
 	
 		
 </script>

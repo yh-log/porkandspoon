@@ -26,8 +26,6 @@
 	
 	
 	
-	<!-- jQuery -->
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 	
 	<!-- google chart -->
 	<script src="https://www.gstatic.com/charts/loader.js"></script>
@@ -161,7 +159,7 @@
 	               <div class="tit-area">
 	                  <h5>조직도 리스트</h5>
 	               </div>												
-	               <div class="cont-body" id="clickToMove">
+	               <div class="cont-body" id="clickToMove" style="overflow: auto;">
 		               <div id="modal" class="modal">
 							<div class="modal-cont modal-cont-chart modal-style">
 								<span class="close">&times;</span>
@@ -230,7 +228,7 @@
 							</div>
 						</div>
 						<div id="modal" class="modal modal-dept">
-							<div class="modal-cont modal-cont-chart modal-style-style" style="overflow: auto;">
+							<div class="modal-cont modal-cont-chart modal-style-style" style="overflow: auto;  border-radius: 10px; clip-path: inset(0 round 10px);">
 								<span class="close">&times;</span>
 								<div id="modal-body2">
 									<div class="col-12 col-lg-12">
