@@ -115,11 +115,13 @@
 								    
 								    <!-- 버튼 영역 -->
 								    <div style="margin-top: 10px;">
-								        <button id="editSignature" class="btn btn-secondary">수정</button>
-								        <button id="deleteSignature" class="btn btn-danger">삭제</button>
-								        <button id="clearSignature" class="btn btn-warning" style="display: none;">지우기</button>
-								        <button id="saveSignature" class="btn btn-primary">저장</button>
-								    </div>
+									    <button id="editSignature" class="btn btn-secondary">수정</button>
+									    <button id="deleteSignature" class="btn btn-danger">삭제</button>
+									    <button id="clearSignature" class="btn btn-warning" style="display: none;">지우기</button>
+									    <button id="saveSignature" class="btn btn-primary" style="display: none;">저장</button>
+									    <button id="writeSignature" class="btn btn-primary">직인 등록</button>
+									    <button id="registerSignature" class="btn btn-primary" style="display: none;">사인 등록</button>
+									</div>
 								</div>
 							</div>
 						</div> 
@@ -167,162 +169,379 @@ document.addEventListener("DOMContentLoaded", function () {
     const clearButton = document.getElementById("clearSignature");
     const saveButton = document.getElementById("saveSignature");
     const deleteButton = document.getElementById("deleteSignature");
+    const writeButton = document.getElementById("writeSignature");
+    const registerButton = document.getElementById("registerSignature");
 
-    let originalImageURL = ""; // 원래 있던 이미지 URL을 저장
+    let originalImageURL = ""; // 현재 이미지 URL 저장
+    let currentCodeName = ""; // 현재 이미지의 codeName (SG001 or SG002)
+
+    // 캔버스 크기 초기화 함수
+    function resizeCanvas() {
+        const containerWidth = canvas.parentElement.offsetWidth;
+        const containerHeight = 300; // 고정 높이 설정
+        canvas.width = containerWidth;
+        canvas.height = containerHeight;
+
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.getContext("2d").scale(ratio, ratio);
+    }
+
+    // 초기 캔버스 크기 설정
+    resizeCanvas();
+
+    // 브라우저 창 크기 변경 시 캔버스 크기 재설정
+    window.addEventListener("resize", resizeCanvas);
 
     // 초기 서명 이미지 불러오기
     fetch("/ad/myPageSign/getImage")
         .then(response => response.json())
         .then(data => {
             if (data.imageUrl) {
-                originalImageURL = data.imageUrl; // 원래 이미지 URL 저장
+                originalImageURL = data.imageUrl;
+                currentCodeName = data.codeName; // SG001(사인) 또는 SG002(직인)
                 signatureImage.src = data.imageUrl;
-                signatureImage.style.display = "block"; // 이미지를 보여줌
-                canvas.style.display = "none"; // 캔버스 숨김
-                clearButton.style.display = "none"; // 초기에는 지우기 버튼 숨김
+                signatureImage.style.display = "block";
+                canvas.style.display = "none";
+
+                // 버튼 상태 설정
+                if (currentCodeName === "SG002") {
+                    // 직인 이미지인 경우
+                    editButton.style.display = "inline-block";
+                    deleteButton.style.display = "inline-block";
+                    writeButton.style.display = "none"; // 직인 등록 버튼 숨김
+                    registerButton.style.display = "inline-block"; // 사인 등록 버튼 표시
+                    clearButton.style.display = "none";
+                    saveButton.style.display = "none";
+                } else if (currentCodeName === "SG001") {
+                    // 사인 이미지인 경우
+                    editButton.style.display = "inline-block";
+                    deleteButton.style.display = "inline-block";
+                    writeButton.style.display = "inline-block"; // 직인 등록 버튼 표시
+                    registerButton.style.display = "none"; // 사인 등록 버튼 숨김
+                    clearButton.style.display = "none";
+                    saveButton.style.display = "none";
+                }
             } else {
-                console.log("저장된 서명이 없습니다.");
+                // 저장된 이미지가 없는 경우
+                signatureImage.style.display = "none";
+                canvas.style.display = "block";
+                signaturePad.clear();
+
+                // 버튼 상태 설정
+                editButton.style.display = "none";
+                deleteButton.style.display = "none";
+                writeButton.style.display = "inline-block";
+                registerButton.style.display = "none";
+                clearButton.style.display = "inline-block";
+                saveButton.style.display = "inline-block";
             }
         })
         .catch(error => console.error("서명 이미지 불러오기 오류:", error));
 
-    // 수정 버튼 클릭 시 Base64 데이터 불러오기
-    editButton.addEventListener("click", function () {
-        fetch("/ad/myPageSign/getBase64")
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); // Base64 데이터를 확인
-                if (data.base64Image) {
+    // 직인 등록 버튼 클릭 시
+   writeButton.addEventListener("click", async function () {
+    if (currentCodeName === "SG001") {
+        // 새로운 직인 등록 -> 기존 사인 이미지 삭제
+        await uploadImage("SG002");
+        deleteExistingImage("SG001");
+    } else {
+        // 새로운 직인 등록
+        uploadImage("SG002");
+    }
+});
+
+
+    // 사인 등록 버튼 클릭 시
+    registerButton.addEventListener("click", async function () {
+    if (currentCodeName === "SG002") {
+        // 캔버스 활성화
+        signatureImage.style.display = "none";
+        canvas.style.display = "block";
+        signaturePad.clear();
+
+        // 버튼 상태 업데이트
+        editButton.style.display = "none";
+        deleteButton.style.display = "none";
+        writeButton.style.display = "none";
+        registerButton.style.display = "none";
+        clearButton.style.display = "inline-block";
+        saveButton.style.display = "inline-block";
+
+        // 저장 후 기존 직인 삭제
+        saveButton.addEventListener("click", async function () {
+            if (!signaturePad.isEmpty()) {
+                await saveSignature("SG001");
+                deleteExistingImage("SG002");
+            }
+        });
+    }
+});
+
+
+
+    // 수정 버튼 클릭 시
+   editButton.addEventListener("click", function () {
+    if (currentCodeName === "SG002") {
+        // 직인 수정 로직
+        try {
+            console.log("직인 수정 시작...");
+
+            // 새로운 직인 업로드
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.accept = "image/*";
+
+            fileInput.onchange = async function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // 새로운 파일을 저장하기 전에 기존 파일 삭제
+                try {
+                    console.log("기존 직인 이미지 삭제 중...");
+                    const deleteResponse = await fetch(`/ad/myPageSign/delete?code_name=SG002`, {
+                        method: "DELETE",
+                        headers: { [csrfHeader]: csrfToken },
+                    });
+
+                    if (!deleteResponse.ok) {
+                        throw new Error("기존 직인 이미지 삭제 실패");
+                    }
+                    console.log("기존 직인 이미지 삭제 완료");
+                } catch (error) {
+                    console.error("기존 직인 이미지 삭제 오류:", error);
+                    alert("기존 직인 이미지를 삭제하지 못했습니다.");
+                    return; // 삭제 실패 시 종료
+                }
+
+                // 새로운 파일 저장
+                try {
+                    console.log("새로운 직인 이미지 저장 중...");
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("code_name", "SG002"); // 직인 코드
+
+                    const saveResponse = await fetch("/ad/myPageSign/save", {
+                        method: "POST",
+                        body: formData,
+                        headers: { [csrfHeader]: csrfToken },
+                    });
+
+                    if (!saveResponse.ok) {
+                        throw new Error("새로운 직인 이미지 저장 실패");
+                    }
+
+                    const result = await saveResponse.text();
+                    alert(result);
+
+                    // 새로고침
+                    location.reload();
+                } catch (error) {
+                    console.error("새로운 직인 이미지 저장 오류:", error);
+                }
+            };
+
+            fileInput.click();
+        } catch (error) {
+            console.error("직인 수정 오류:", error);
+        }
+    } else if (currentCodeName === "SG001") {
+        // 사인 수정 로직 (캔버스 활성화)
+        try {
+            console.log("사인 수정 시작...");
+            fetch("/ad/myPageSign/getBase64")
+                .then(response => response.json())
+                .then(data => {
                     const ctx = canvas.getContext("2d");
                     const image = new Image();
                     image.src = 'data:image/png;base64,' + data.base64Image;
 
                     image.onload = function () {
-                        // 캔버스 크기를 이미지 크기에 맞게 동적으로 설정
-                        canvas.width = signatureImage.offsetWidth;
-                        canvas.height = signatureImage.offsetHeight;
-
-                        const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                        canvas.getContext("2d").scale(ratio, ratio);
-
-                        // 기존 이미지 숨기기 및 캔버스 표시
+                        resizeCanvas();
                         signatureImage.style.display = "none";
                         canvas.style.display = "block";
-
-                        // 캔버스 초기화 및 Base64 이미지를 캔버스에 그리기
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-                        // 버튼 상태 변경
-                        editButton.style.display = "none"; // 수정 버튼 숨기기
-                        deleteButton.style.display = "none"; // 삭제 버튼 숨기기
-                        clearButton.style.display = "inline-block"; // 지우기 버튼 표시
+                        // 버튼 상태 업데이트
+                        clearButton.style.display = "inline-block";
+                        saveButton.style.display = "inline-block";
+                        editButton.style.display = "none";
+                        deleteButton.style.display = "none";
+                        writeButton.style.display = "none";
+                        registerButton.style.display = "none";
                     };
-                } else {
-                    console.log("Base64 데이터가 없습니다.");
-                }
-            })
-            .catch(error => console.error("Base64 데이터 불러오기 오류:", error));
-    });
+                })
+                .catch(error => {
+                    throw new Error("사인 데이터 가져오기 실패");
+                });
+        } catch (error) {
+            console.error("사인 수정 오류:", error);
+        }
+    }
+});
 
-    // 초기화(지우기) 버튼 클릭 시 캔버스 초기화
+
+    
+    
+    
+    //초기화 버튼
     clearButton.addEventListener("click", function () {
         signaturePad.clear(); // 캔버스 초기화
-        canvas.style.display = "block"; // 캔버스 표시
         signatureImage.style.display = "none"; // 기존 이미지 숨김
-        console.log("캔버스 초기화 완료");
+        canvas.style.display = "block"; // 캔버스 활성화
+
+        // 버튼 상태 조정
+        saveButton.style.display = "inline-block";
+        clearButton.style.display = "inline-block";
+        editButton.style.display = "none";
+        deleteButton.style.display = "none";
+        writeButton.style.display = "none";
+        registerButton.style.display = "none";
+
+        console.log("캔버스가 초기화되었습니다.");
     });
 
-    // 서명 저장
-    saveButton.addEventListener("click", function () {
-        if (signaturePad.isEmpty()) {
-            alert("서명이 비어 있습니다.");
-            return;
-        }
+    
 
-        const dataURL = signaturePad.toDataURL("image/png");
-        const blob = dataURLtoBlob(dataURL);
-
-        const formData = new FormData();
-        formData.append("file", blob, "signature.png");
-
-        fetch("/ad/myPageSign/save", {
-            method: "POST",
-            body: formData,
-            headers: {
-                [csrfHeader]: csrfToken,
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("서명 저장 실패");
-                }
-                return response.text();
-            })
-            .then(result => {
-                alert(result);
-                if (originalImageURL) {
-                    // 원래 이미지 삭제 요청
-                    deleteOriginalImage(originalImageURL);
-                }
-                location.reload(); // 저장 후 새로고침
-            })
-            .catch(error => console.error("서명 저장 오류:", error));
-    });
-
-    // 삭제 버튼 클릭 시 원래 이미지 삭제
-    deleteButton.addEventListener("click", function () {
-        if (!confirm("서명을 삭제하시겠습니까?")) {
-            return; // 사용자가 취소를 누르면 실행 중단
-        }
-
-        fetch("/ad/myPageSign/delete", {
-            method: "DELETE",
-            headers: {
-                [csrfHeader]: csrfToken, // CSRF 토큰 추가
-            },
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("서명 삭제 실패");
-                }
-                return response.text();
-            })
-            .then(result => {
-                alert(result);
-                signaturePad.clear(); // 캔버스 초기화
-                signatureImage.src = ""; // 이미지 초기화
-                signatureImage.style.display = "none"; // 이미지 숨김
-                canvas.style.display = "none"; // 캔버스 숨김
-
-                // 버튼 상태 초기화
-                editButton.style.display = "inline-block"; // 수정 버튼 표시
-                deleteButton.style.display = "inline-block"; // 삭제 버튼 표시
-                clearButton.style.display = "none"; // 지우기 버튼 숨김
-            })
-            .catch(error => console.error("서명 삭제 오류:", error));
-    });
-
-    // 원래 이미지를 삭제하는 함수
-    function deleteOriginalImage(imageURL) {
-        fetch("/ad/myPageSign/delete", {
-            method: "DELETE",
-            headers: {
-                [csrfHeader]: csrfToken,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ imageUrl: imageURL }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("원래 이미지 삭제 실패");
-                }
-                console.log("원래 이미지가 성공적으로 삭제되었습니다.");
-            })
-            .catch(error => console.error("원래 이미지 삭제 오류:", error));
+ // 저장 버튼 클릭 시
+   saveButton.addEventListener("click", async function () {
+    if (signaturePad.isEmpty()) {
+        alert("사인이 비어 있습니다.");
+        return;
     }
 
-    // Base64 데이터를 Blob으로 변환
+    // 사인 데이터를 캔버스에서 가져오기
+    const dataURL = signaturePad.toDataURL("image/png");
+    const blob = dataURLtoBlob(dataURL);
+
+    const formData = new FormData();
+    formData.append("file", blob, "signature.png");
+    formData.append("code_name", "SG001"); // 사인으로 저장
+
+    try {
+        // 1. 기존 직인 이미지 삭제 (만약 현재 이미지가 직인일 경우)
+        if (currentCodeName === "SG002") {
+            console.log("기존 직인 이미지 삭제 중...");
+            const deleteResponse = await fetch(`/ad/myPageSign/delete?code_name=SG002`, {
+                method: "DELETE",
+                headers: { [csrfHeader]: csrfToken },
+            });
+
+            if (!deleteResponse.ok) {
+                throw new Error("기존 직인 이미지 삭제 실패");
+            }
+            console.log("기존 직인 이미지 삭제 완료");
+        }
+
+        // 2. 기존 사인 이미지 삭제 (만약 현재 이미지가 사인일 경우)
+        if (currentCodeName === "SG001") {
+            console.log("기존 사인 이미지 삭제 중...");
+            const deleteResponse = await fetch(`/ad/myPageSign/delete?code_name=SG001`, {
+                method: "DELETE",
+                headers: { [csrfHeader]: csrfToken },
+            });
+
+            if (!deleteResponse.ok) {
+                throw new Error("기존 사인 이미지 삭제 실패");
+            }
+            console.log("기존 사인 이미지 삭제 완료");
+        }
+
+        // 3. 새로운 사인 이미지 저장
+        console.log("새로운 사인 이미지 저장 중...");
+        const saveResponse = await fetch("/ad/myPageSign/save", {
+            method: "POST",
+            body: formData,
+            headers: { [csrfHeader]: csrfToken },
+        });
+
+        if (!saveResponse.ok) {
+            throw new Error("사인 이미지 저장 실패");
+        }
+
+        const result = await saveResponse.text();
+        alert(result);
+
+        // 페이지 새로고침
+        location.reload();
+    } catch (error) {
+        console.error("사인 저장 오류:", error);
+    }
+});
+ 
+    async function deleteExistingImage(codeName) {
+        if (!confirm("이미지를 삭제하시겠습니까?")) return;
+
+        try {
+            const response = await fetch(`/ad/myPageSign/delete?code_name=${codeName}`, {
+                method: "DELETE",
+                headers: { [csrfHeader]: csrfToken },
+            });
+
+            if (!response.ok) {
+                throw new Error("이미지 삭제 실패");
+            }
+            console.log("기존 이미지 삭제 완료");
+        } catch (error) {
+            console.error("이미지 삭제 오류:", error);
+        }
+    }
+
+ 
+    
+    // 삭제 버튼 클릭 시
+    deleteButton.addEventListener("click", deleteExistingImage);
+
+    // 이미지 삭제
+  function deleteExistingImage() {
+    var codeNameToDelete = currentCodeName; // 현재 이미지의 code_name (SG001 또는 SG002)
+	console.log(codeNameToDelete);
+    if (!confirm("이미지를 삭제하시겠습니까?")) return;
+
+    fetch(`/ad/myPageSign/delete?code_name=`+codeNameToDelete, { // codeName 동적 처리
+        method: "DELETE",
+        headers: { [csrfHeader]: csrfToken },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("삭제 실패");
+            }
+            return response.text();
+        })
+        .then(result => {
+            alert(result);
+            location.reload(); // 삭제 후 새로고침
+        })
+        .catch(error => console.error("이미지 삭제 오류:", error));
+}
+
+    // 이미지 업로드
+    function uploadImage(codeName) {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+
+        fileInput.onchange = async function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("code_name", codeName);
+
+            fetch("/ad/myPageSign/save", {
+                method: "POST",
+                body: formData,
+                headers: { [csrfHeader]: csrfToken },
+            })
+                .then(response => response.ok ? response.text() : Promise.reject("저장 실패"))
+                .then(() => location.reload())
+                .catch(error => console.error("이미지 저장 오류:", error));
+        };
+
+        fileInput.click();
+    }
+    
     function dataURLtoBlob(dataURL) {
         const [header, base64Data] = dataURL.split(",");
         const byteString = atob(base64Data);
@@ -336,7 +555,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         return new Blob([arrayBuffer], { type: mimeString });
     }
+    
+    
 });
+
 
 
 </script>

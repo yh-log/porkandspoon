@@ -21,33 +21,37 @@
    
 
    
-   <select id="count" resultType="int" >
-      SELECT CEIL(count(meal_idx)/#{cnt_}) AS pages FROM meal_ticket
-       <where>
-          username = #{username} <!-- username은 필수 -->
-       <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
-           name LIKE CONCAT('%', #{keyword}, '%')
-       </if>
-       <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
-           create_date LIKE CONCAT('%', #{keyword}, '%')
-       </if>
-   </where>
-   </select>
+  <select id="count" resultType="int">
+    SELECT CEIL(count(meal_idx) / #{cnt_}) AS pages
+    FROM meal_ticket
+    <where>
+        username = #{username} <!-- username은 필수 -->
+        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+            AND name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
+            AND DATE_FORMAT(create_date, '%Y-%m-%d') LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+</select>
    
-   <select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO" parameterType="String">
-       SELECT mt.meal_idx,mt.username,mt.is_buy,mt.count,mt.create_date,m.name AS meal_name,
-           CASE WHEN mt.is_buy = 'U' THEN NULL  ELSE m.cost END AS total_cost
-          FROM meal_ticket mt LEFT JOIN meal m ON mt.meal_idx = m.meal_idx
-          <where>
-              mt.username = #{username} <!-- username은 필수 -->
-              <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
-                  AND m.name LIKE CONCAT('%', #{keyword}, '%')
-              </if>
-              <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
-                  AND mt.create_date LIKE CONCAT('%', #{keyword}, '%')
-              </if>
-          </where>
-          ORDER BY mt.create_date DESC LIMIT #{limit} OFFSET #{offset}
+   <select id="buyList" resultType="kr.co.porkandspoon.dto.MealDTO">
+    SELECT mt.meal_idx, mt.username, mt.is_buy, mt.count, mt.create_date,
+           m.name AS meal_name,
+           CASE WHEN mt.is_buy = 'U' THEN NULL ELSE m.cost END AS total_cost
+    FROM meal_ticket mt
+    LEFT JOIN meal m ON mt.meal_idx = m.meal_idx
+    <where>
+        mt.username = #{username} <!-- username은 필수 -->
+        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+            AND m.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        <if test="keyword != null and !keyword.equals('') and opt.equals('create_date')">
+            AND DATE_FORMAT(mt.create_date, '%Y-%m-%d') LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+    ORDER BY mt.create_date DESC
+    LIMIT #{limit} OFFSET #{offset}
 </select>
 
    <!-- 직원 정보 수정 -->

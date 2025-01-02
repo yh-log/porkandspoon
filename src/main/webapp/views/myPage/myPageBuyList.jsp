@@ -187,6 +187,7 @@ $(document).ready(function () {
 });
 
 function pageCall(page) {
+	console.log(page);
     var keyword = $('#searchKeyword').val(); // 검색어
     var opt = $('#searchOption').val(); // 검색 옵션
 
