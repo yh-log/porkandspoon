@@ -1,13 +1,22 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.co.porkandspoon.service.ManageService;
+
 @RestController
 public class ManageController {
+	
+	@Autowired ManageService manageService;
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -31,13 +40,25 @@ public class ManageController {
 	
 	//아르바이트
 	
-	@GetMapping(value="/ad/part/List")
+	@GetMapping(value="/ad/part/")
 	public ModelAndView partListView() {
+		return new ModelAndView("/manage/partList");
+	}
+	
+	@GetMapping(value="/ad/part/List")
+	public ModelAndView getPartList() {
 		return new ModelAndView("/manage/partList");
 	}
 	
 	@GetMapping(value="/ad/part/Write")
 	public ModelAndView partWriteView() {
+		return new ModelAndView("/manage/partWrite");
+	}
+	@PostMapping(value="/ad/part/Write")
+	public ModelAndView setpartWrite(@RequestParam Map<String, String> params) {
+		
+		manageService.setpartWrite(params);
+		
 		return new ModelAndView("/manage/partWrite");
 	}
 	

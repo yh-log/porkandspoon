@@ -134,27 +134,31 @@ public class MyPageController {
 	}
 	
 	@PostMapping("/ad/myPageSign/save")
-    @ResponseBody
-    public ResponseEntity<String> saveSignature( @RequestParam("file") MultipartFile file,
-    		@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            // 기존 서명 파일 대체
-        	
-        	String pk_idx = userDetails.getUsername();
-        	String code_name = "SG001";
-            FileDTO dto = CommonUtil.uploadSingleFile(file);
-            dto.setCode_name(code_name);
-            dto.setPk_idx(pk_idx);
-            myPageService.signSave(dto);
-            
-            
-            // 파일 저장 성공 메시지 반환
-            return ResponseEntity.ok("서명이 저장되었습니다: " + dto.getNew_filename());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("서명 저장 실패: " + e.getMessage());
-        }
-    }
+	@ResponseBody
+	public ResponseEntity<String> saveSignature(
+	        @RequestParam("file") MultipartFile file,
+	        @RequestParam(value = "code_name", defaultValue = "SG001") String codeName, // code_name 파라미터 추가
+	        @AuthenticationPrincipal UserDetails userDetails) {
+	    try {
+	        // 사용자 정보 가져오기
+	        String pk_idx = userDetails.getUsername();
+	        
+	        // 파일 저장 로직
+	        FileDTO dto = CommonUtil.uploadSingleFile(file);
+	        dto.setCode_name(codeName); // 프론트에서 받은 code_name 사용
+	        dto.setPk_idx(pk_idx);
+
+	        // DB 저장
+	        myPageService.signSave(dto);
+
+	        // 성공 메시지 반환
+	        return ResponseEntity.ok("파일이 저장되었습니다: " + dto.getNew_filename());
+	    } catch (Exception e) {
+	        // 실패 메시지 반환
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("파일 저장 실패: " + e.getMessage());
+	    }
+	}
 
     /**
      * 저장된 서명 불러오기
@@ -163,17 +167,29 @@ public class MyPageController {
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> getSignatureImage(@AuthenticationPrincipal UserDetails userDetails) {
 	    String pk_idx = userDetails.getUsername();
-	    String code_name = "SG001";
-	    FileDTO dto = myPageService.signExist(pk_idx, code_name);
 
-	    if (dto != null) {
-	        String savedFileName = dto.getNew_filename();
-	        String imageUrl = "/photo/" + savedFileName; // 실제 이미지 URL 경로 반환
-	        return ResponseEntity.ok(Collections.singletonMap("imageUrl", imageUrl));
-	    } else {
-	        return ResponseEntity.ok(Collections.singletonMap("imageUrl", "")); // 이미지 없음
+	    // SG001(사인) 검색
+	    FileDTO signature = myPageService.signExist(pk_idx, "SG001");
+	    if (signature != null) {
+	        Map<String, String> response = new HashMap<>();
+	        response.put("imageUrl", "/photo/" + signature.getNew_filename());
+	        response.put("codeName", "SG001"); // 사인인 경우
+	        return ResponseEntity.ok(response);
 	    }
+
+	    // SG002(직인) 검색
+	    FileDTO seal = myPageService.signExist(pk_idx, "SG002");
+	    if (seal != null) {
+	        Map<String, String> response = new HashMap<>();
+	        response.put("imageUrl", "/photo/" + seal.getNew_filename());
+	        response.put("codeName", "SG002"); // 직인인 경우
+	        return ResponseEntity.ok(response);
+	    }
+
+	    // 아무 파일도 없을 경우
+	    return ResponseEntity.ok(Collections.singletonMap("imageUrl", ""));
 	}
+
 		
 	
 	@GetMapping("/ad/myPageSign/getBase64")
@@ -202,86 +218,108 @@ public class MyPageController {
     /**
      * 저장된 서명 삭제
      */
-    @DeleteMapping("/ad/myPageSign/delete")
-    @ResponseBody
-    public ResponseEntity<String> deleteSignature(@AuthenticationPrincipal UserDetails userDetails) {
-        String savedFileName = "signature_user123.png"; // 사용자별 고유 파일명 지정
-        Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
-        
-        String pk_idx = userDetails.getUsername();
-	    String code_name = "SG001";
-	    FileDTO dto = new FileDTO();
-	    dto.setCode_name(code_name);
-	    dto.setCode_name(pk_idx);
-	    
-        int row = myPageService.fileDelete(dto);
-        
-        try {
-            if (Files.exists(filePath)) {
-                Files.delete(filePath);
-                return ResponseEntity.ok("서명이 삭제되었습니다.");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제할 서명이 없습니다.");
-            }
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body("서명 삭제 실패: " + e.getMessage());
-        }
-    }
+	@DeleteMapping("/ad/myPageSign/delete")
+	@ResponseBody
+	public ResponseEntity<String> deleteSignature(
+	    @AuthenticationPrincipal UserDetails userDetails,
+	    @RequestParam("code_name") String code_name) { // code_name을 동적으로 받음
+	    try {
+	        // 사용자 정보
+	        String pk_idx = userDetails.getUsername();
 
-	
-	
-	
+	        // DB에서 파일 정보 조회
+	        FileDTO dto = myPageService.signExist(pk_idx, code_name);
+
+	        if (dto == null || dto.getNew_filename() == null) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("삭제할 파일이 없습니다.");
+	        }
+
+	        // 실제 파일 경로 생성
+	        String savedFileName = dto.getNew_filename();
+	        Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
+
+	        try {
+	            if (Files.exists(filePath)) {
+	                Files.delete(filePath); // 실제 파일 삭제
+	                logger.info("파일 삭제 성공: " + savedFileName);
+	            } else {
+	                logger.warn("파일이 이미 존재하지 않습니다: " + savedFileName);
+	            }
+	        } catch (IOException e) {
+	            logger.error("파일 삭제 중 오류 발생: " + savedFileName, e);
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                                 .body("파일 삭제 중 오류가 발생했습니다: " + e.getMessage());
+	        }
+
+	        // DB에서 파일 정보 삭제
+	        int row = myPageService.fileDelete(dto);
+	        if (row > 0) {
+	            return ResponseEntity.ok("파일이 성공적으로 삭제되었습니다.");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                                 .body("DB에서 파일 정보를 삭제하는 데 실패했습니다.");
+	        }
+	    } catch (Exception e) {
+	        logger.error("파일 삭제 중 오류 발생", e);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                             .body("파일 삭제 중 오류 발생: " + e.getMessage());
+	    }
+	}
 	
 	@GetMapping(value="/ad/myPageBuy")
 	public ModelAndView myPageBuyListView() {
 		return new ModelAndView("/myPage/myPageBuyList");
 	}
 	
-	@GetMapping(value="/ad/myPageBuy/List")
+	@GetMapping(value = "/ad/myPageBuy/List")
 	@ResponseBody
-	public Map<String, Object> getBuyListView(@AuthenticationPrincipal UserDetails userDetails, 
-			@RequestParam String page, String cnt,String opt,String keyword ) {
-		 int page_ = Integer.parseInt(page);
-         int cnt_ = Integer.parseInt(cnt);
-         int limit = cnt_;
-         int offset = (page_ - 1) * cnt_;
-         
-         logger.info("opt: {}", opt);
-         logger.info("keyword: {}", keyword);
-         String username = userDetails.getUsername();
+	public Map<String, Object> getBuyListView(
+	        @AuthenticationPrincipal UserDetails userDetails, 
+	        @RequestParam String page, 
+	        @RequestParam String cnt, 
+	        @RequestParam(required = false, defaultValue = "") String opt, 
+	        @RequestParam(required = false, defaultValue = "") String keyword) {
 
-         // 검색 조건을 반영하여 페이지 수를 계산
-         int totalPages = myPageService.count(username,cnt_, opt, keyword);
+	    int page_ = Integer.parseInt(page);
+	    int cnt_ = Integer.parseInt(cnt);
+	    int limit = cnt_;
+	    int offset = (page_ - 1) * cnt_;
+	    String username = userDetails.getUsername();
 
-         Map<String, Object> result = new HashMap<>();
-         List<MealDTO> list = myPageService.buyList(username, opt, keyword, limit, offset);
-         logger.info("총갯수" + totalPages);
-         logger.info(page);
-         result.put("totalPages", totalPages);
-         result.put("currpage", page);
+	    // 로그 출력
+	    logger.info("opt: {}", opt);
+	    logger.info("keyword: {}", keyword);
 
-         for (MealDTO dto : list) {
-        	
-        	 
-             if (dto.getTotal_cost() != null) {
-                 try {
-                     int rawCost = Integer.parseInt(dto.getTotal_cost());
-                     String cost = CommonUtil.addCommaToNumber(rawCost, "#,###");
-                     logger.info("Formatted cost: {}", cost);
-                     dto.setTotal_cost(cost); // 콤마 추가
-                 } catch (NumberFormatException e) {
-                     logger.error("Invalid total_cost format: {}", dto.getTotal_cost(), e);
-                     dto.setTotal_cost("0"); // 오류 발생 시 기본값 설정
-                 }
-             } else {
-                 dto.setTotal_cost("-"); // total_cost가 null일 경우 '-'로 표시
-             }
-         }
+	    // 검색 조건에 따른 전체 페이지 수 계산
+	    int totalPages = myPageService.count(username, cnt_, opt, keyword);
 
-         result.put("list", list);
-         return result;
-     }
+	    // 구매 목록 조회
+	    List<MealDTO> list = myPageService.buyList(username, opt, keyword, limit, offset);
+
+	    // 금액 포맷팅
+	    for (MealDTO dto : list) {
+	        if (dto.getTotal_cost() != null) {
+	            try {
+	                int rawCost = Integer.parseInt(dto.getTotal_cost());
+	                String cost = CommonUtil.addCommaToNumber(rawCost, "#,###");
+	                dto.setTotal_cost(cost);
+	            } catch (NumberFormatException e) {
+	                logger.error("Invalid total_cost format: {}", dto.getTotal_cost(), e);
+	                dto.setTotal_cost("0");
+	            }
+	        } else {
+	            dto.setTotal_cost("-");
+	        }
+	    }
+
+	    // 결과 반환
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("totalPages", totalPages);
+	    result.put("currpage", page);
+	    result.put("list", list);
+
+	    return result;
+	}
 	
 	// 출장 리스트 이동 페이지
 	@GetMapping(value="/trip/list")
