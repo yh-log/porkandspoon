@@ -275,3 +275,26 @@ function resetTableData() {
     console.log("테이블 데이터가 초기화되었습니다. 초기 데이터로 복원됨:", exampleData.rows);
 }
 
+
+// transferBox 내부 내용을 업데이트하는 함수
+function updateTransferBox(boxId, data) {
+    console.log("업데이트할 데이터:", data);
+
+    // 1. 발령일자 업데이트
+    if (data.transferDate) {
+        const dateInput = document.querySelector(`#${boxId} input[name='transfer_date']`);
+        if (dateInput) {
+            dateInput.value = data.transferDate;
+        }
+    }
+
+    // 2. 버튼 내용 업데이트
+    if (data.buttons && data.buttons.length > 0) {
+        const buttonContainer = document.querySelector(`#${boxId} #transferCheckBox`);
+        if (buttonContainer) {
+            buttonContainer.innerHTML = data.buttons
+                .map(button => `<button class="btn btn-sm btn-outline-primary">${button}</button>`)
+                .join('');
+        }
+    }
+}

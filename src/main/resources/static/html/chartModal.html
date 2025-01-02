@@ -75,5 +75,77 @@
 	</div>
 	
 	
+	
+	<!-- 인사이동 모달 -->
+	<div id="chartTransferModal" class="modal-template">
+		<div class="chartHeadBox"> <!-- 조직도 상단 -->
+			<span class="modal-close" id="closeModal">&times;</span>
+		</div>
+		<div class="col-12 col-lg-12">
+		<div class="row">
+			<div class="col-4 col-lg-4">
+					<div class="card">
+						<table>
+							<thead>
+								<tr>
+									<td class="chart-btn-td chart-td"><button class="chart-btn chart-btn-style">조직도</button></td>
+								</tr>
+							
+							</thead>
+							<tbody class="tbody-style">
+								<tr>
+									<td colspan="2" class="chart-search">
+										<input class="form-control form-control-sm input-test" type="text" placeholder="이름/부서/직급으로 검색 가능합니다.">
+									</td>
+								</tr>
+								<tr>
+									<!-- 조직도 호출 -->
+									<td colspan="2" class="chart-scroll">
+										<div class="jstree chart-list-style jstreeselect" id="jstree"></div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+			</div>
+			<div class="col-1 col-lg-1"></div>
+			<div class="col-7 col-lg-7">
+				<div id="transferBox">
+					<div id="transferBox">
+						<span>발령일자</span><span style="color: red;">*</span>
+						<input type="date" name="transfer_date" class="form-control" style="width: 150px;"/>
+					</div>
+					<div id="transferCheckBox">
+						<button class="btn btn-sm btn-outline-primary">인사이동</button>
+						<button class="btn btn-sm btn-outline-primary">직영점이동</button>
+						<button class="btn btn-sm btn-outline-primary">퇴사처리</button>
+					</div>
+				</div>
+				<div class="card user-list-style">
+					<table id="customTable">
+			            <thead id="orgHeader">
+			                <tr>
+			                    
+			                </tr>
+			            </thead>
+			            <tbody id="orgBody" class="scrollable-tbody">
+			                
+			            </tbody>
+			            <tfoot id="orgFooter">
+			                <tr>
+			                    
+			                </tr>
+			            </tfoot>
+			        </table>
+				</div>
+			</div>
+		</div>
+			<div class="btn-button">
+				<button class="btn btn-primary btn-line-write btn-user-write" id="addModal">등록</button>
+				<button class="btn btn-outline-primary btn-line-write btn-user-delete" id="cancelModal">취소</button>
+			</div>
+		</div>
+	</div>
+	
 </body>
 </html>

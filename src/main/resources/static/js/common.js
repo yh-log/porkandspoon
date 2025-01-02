@@ -306,7 +306,7 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
  * filtering : 필터링 값
  */
  
-if($('#pagination')){
+//if($('#pagination')){
    
     var firstPage = 1;
 	var paginationInitialized = false;
@@ -357,6 +357,6 @@ if($('#pagination')){
     }
 
 
-}
+//}
 
 

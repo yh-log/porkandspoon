@@ -531,7 +531,247 @@
 	
 	<!-- 인사이동 리스트 조회 -->
 	<select id="employeeTransferList" parameterType="map" resultType="kr.co.porkandspoon.dto.UserDTO">
+	    SELECT 
+	        et.idx, 
+	        et.transfer_date, 
+	        u.name, 
+	        u.username, 
+	        c1.content AS old_position, 
+	        c2.content AS new_position, 
+	        d1.text AS old_department, 
+	        d2.text AS new_department, 
+	        et.type,
+	        (SELECT COUNT(*) 
+	         FROM employee_transfer et 
+	         LEFT JOIN user u ON et.username = u.username
+	         LEFT JOIN code c1 ON et.old_position = c1.name
+	         LEFT JOIN code c2 ON et.new_position = c2.name
+	         LEFT JOIN department d1 ON et.old_department = d1.id
+	         LEFT JOIN department d2 ON et.new_department = d2.id
+	         WHERE et.type = 'E'
+	         <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND (d1.text LIKE CONCAT('%', #{keyword}, '%') OR d2.text LIKE CONCAT('%', #{keyword}, '%'))
+	                </when>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'position'">
+	                    AND (c1.content LIKE CONCAT('%', #{keyword}, '%') OR c2.content LIKE CONCAT('%', #{keyword}, '%'))
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0
+	                </otherwise>
+	            </choose>
+	        </if>
+	        <if test="start_date != null and start_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date >= STR_TO_DATE(#{start_date}, '%Y-%m-%d') ]]>
+	        </if>
+	        <if test="end_date != null and end_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date <= STR_TO_DATE(#{end_date}, '%Y-%m-%d') ]]>
+	        </if>
+	        ) AS totalpage
+	    FROM 
+	        employee_transfer et 
+	    LEFT JOIN 
+	        user u ON et.username = u.username
+	    LEFT JOIN 
+	        code c1 ON et.old_position = c1.name
+	    LEFT JOIN 
+	        code c2 ON et.new_position = c2.name
+	    LEFT JOIN 
+	        department d1 ON et.old_department = d1.id
+	    LEFT JOIN 
+	        department d2 ON et.new_department = d2.id
+	    WHERE 
+	        et.type = 'E'
+	        <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND (d1.text LIKE CONCAT('%', #{keyword}, '%') OR d2.text LIKE CONCAT('%', #{keyword}, '%'))
+	                </when>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'position'">
+	                    AND (c1.content LIKE CONCAT('%', #{keyword}, '%') OR c2.content LIKE CONCAT('%', #{keyword}, '%'))
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0
+	                </otherwise>
+	            </choose>
+	        </if>
+	        <if test="start_date != null and start_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date >= STR_TO_DATE(#{start_date}, '%Y-%m-%d') ]]>
+	        </if>
+	        <if test="end_date != null and end_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date <= STR_TO_DATE(#{end_date}, '%Y-%m-%d') ]]>
+	        </if>
+	    ORDER BY 
+	        et.transfer_date DESC
+	    LIMIT 
+	        #{offset}, #{limit}
+	</select>
+
+	
+	<!-- 직영점 이동 리스트 조회 -->
+	<select id="storeTransferList" parameterType="map" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT 
+	        et.idx, 
+	        et.transfer_date, 
+	        u.name, 
+	        u.username, 
+	        ds1.name AS old_position, 
+	        ds2.name AS new_position, 
+	        d.text AS old_department, 
+	        et.type,
+	        (SELECT COUNT(*) 
+	         FROM employee_transfer et 
+	         LEFT JOIN user u ON et.username = u.username
+	         LEFT JOIN direct_store ds1 ON et.old_position = ds1.id
+	         LEFT JOIN direct_store ds2 ON et.new_position = ds2.id
+	         LEFT JOIN department d ON et.old_department = d.id
+	         WHERE et.type = 'S'
+	         <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND d.text LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'position'">
+	                    AND (ds1.name LIKE CONCAT('%', #{keyword}, '%') OR ds2.name LIKE CONCAT('%', #{keyword}, '%'))
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0
+	                </otherwise>
+	            </choose>
+	        </if>
+	        <if test="start_date != null and start_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date >= STR_TO_DATE(#{start_date}, '%Y-%m-%d') ]]>
+	        </if>
+	        <if test="end_date != null and end_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date <= STR_TO_DATE(#{end_date}, '%Y-%m-%d') ]]>
+	        </if>
+	        ) AS totalpage
+	    FROM 
+	        employee_transfer et 
+	    LEFT JOIN 
+	        user u ON et.username = u.username
+	    LEFT JOIN 
+	        direct_store ds1 ON et.old_position = ds1.id
+	    LEFT JOIN 
+	        direct_store ds2 ON et.new_position = ds2.id
+	    LEFT JOIN 
+	        department d ON et.old_department = d.id
+	    WHERE 
+	        et.type = 'S'
+	        <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'dept'">
+	                    AND d.text LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'position'">
+	                    AND (ds1.name LIKE CONCAT('%', #{keyword}, '%') OR ds2.name LIKE CONCAT('%', #{keyword}, '%'))
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0
+	                </otherwise>
+	            </choose>
+	        </if>
+	        <if test="start_date != null and start_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date >= STR_TO_DATE(#{start_date}, '%Y-%m-%d') ]]>
+	        </if>
+	        <if test="end_date != null and end_date.trim() != ''">
+	            <![CDATA[ AND et.transfer_date <= STR_TO_DATE(#{end_date}, '%Y-%m-%d') ]]>
+	        </if>
+	    ORDER BY 
+	        et.transfer_date DESC
+	    LIMIT 
+	        #{offset}, #{limit}
+	</select>
+	
+	<!-- 미발령 직원 리스트 조회 -->
+	<select id="notTransferList" parameterType="map" resultType="kr.co.porkandspoon.dto.UserDTO">
+	    SELECT 
+	        u.username, 
+	        u.name, 
+	        u.birth, 
+	        u.join_date,
+	        (SELECT COUNT(*) 
+	         FROM user u 
+	         WHERE u.parent = 'NO1000'
+	         <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'username'">
+	                    AND u.username LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0
+	                </otherwise>
+	            </choose>
+	         </if>
+	        ) AS totalpage
+	    FROM 
+	        user u
+	    WHERE 
+	        u.parent = 'NO1000'
+	        <if test="keyword != null and keyword.trim() != ''">
+	            <choose>
+	                <when test="option == 'name'">
+	                    AND u.name LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <when test="option == 'username'">
+	                    AND u.username LIKE CONCAT('%', #{keyword}, '%')
+	                </when>
+	                <otherwise>
+	                    AND 1 = 0
+	                </otherwise>
+	            </choose>
+	        </if>
+	    ORDER BY 
+	        u.join_date DESC
+	    LIMIT 
+	        #{offset}, #{limit}
+	</select>
+	
+	<!-- 인사이동 부서 및 직급 리스트 조회 -->
+	<select id="userTransferInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT 
+		    u.parent AS old_department,
+		    u.position AS old_position,
+		    NULL AS id,
+		    NULL AS text,
+		    NULL AS position,
+		    NULL AS title
+		FROM 
+		    user u
+		WHERE 
+		    u.username = #{username}
 		
+		UNION ALL
+		
+		SELECT 
+		    NULL AS old_department,
+		    NULL AS old_position,
+		    d.id AS id,
+		    d.text AS text,
+		    c.name AS position,
+		    c.content AS title
+		FROM 
+		    department d
+		CROSS JOIN code c
+		WHERE 
+		    c.name LIKE 'po%'
+	
 	</select>
 	
 </mapper>

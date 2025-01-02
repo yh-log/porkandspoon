@@ -39,12 +39,12 @@ function displayAlarmMessage(alarm) {
     alarmMessage.style.opacity = '1'; // 천천히 나타나기
 
     // 3초 후 메시지 천천히 사라짐
-    setTimeout(function () {
+    /* setTimeout(function () {
         alarmMessage.style.opacity = '0'; // 점점 사라지기
         setTimeout(function () {
             alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
         }, 1000); // 사라지는 애니메이션 지속 시간 (1초)
-    }, 3000); // 알림이 유지되는 시간 (3초)
+    }, 3000); // 알림이 유지되는 시간 (3초) */
 }
 
 // 5초마다 알림 확인
@@ -185,7 +185,7 @@ setInterval(checkNewAlarms, 5000);
     
      <div class="profile-area">
      	<div class="profile-img"></div>
-     	<span>${loggedInUser} 상무</span>
+     	<span>백종원 상무</span>
      </div>
      <div class="utils">
      	<a id="alarm">

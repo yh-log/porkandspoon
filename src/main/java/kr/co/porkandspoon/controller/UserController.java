@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -992,6 +993,53 @@ public class UserController {
 		
 		return result;
 	}
+
+	/**
+	 * author yh.ki, (25.1.1)
+	 * 직영점 이동 리스트 조회
+	 */
+	@GetMapping(value="/ad/storeTransferList")
+	public List<UserDTO> storeTransferList(
+		@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword,
+	        @RequestParam(defaultValue = "", value ="start_date" ) String start_date,
+	        @RequestParam(defaultValue = "", value = "end_date") String end_date){
+		
+		List<UserDTO> result = userService.storeTransferList(page, cnt, option, keyword, start_date, end_date);
+
+		return result;
+	}
 	
+	/**
+	 * author yh.ki, (25.1.1)
+	 * 미발령 직원 리스트 조회
+	 */
+	@GetMapping(value="/ad/notTransferList")
+	public List<UserDTO> notTransferList(
+		@RequestParam(value = "page", defaultValue = "1") int page, 
+	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
+	        @RequestParam(defaultValue = "", value = "option") String option,
+	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+		
+		List<UserDTO> result = userService.notTransferList(page, cnt, option, keyword);
+
+		return result;
+	}
 	
+	/**
+	 * author yh.ki, (25.1.2)
+	 * 인사이동 부서 및 직급 리스트 조회
+	 */
+	@GetMapping(value="/ad/userTransferInfo")
+	public List<UserDTO> userTransferInfo(@RequestParam String selectedId){
+		
+		logger.info(selectedId);
+		
+		List<UserDTO> result = userService.userTransferInfo(selectedId);
+		
+		return result;
+	}
+
 }
