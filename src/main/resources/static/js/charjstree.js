@@ -208,7 +208,15 @@ function getSelectId(callback) {
 function setupModalEvents(modal) {
     var closeModal = modal.querySelector("#closeModal");
     var cancelButton = modal.querySelector("#cancelModal");
+    var addButton = modal.querySelector("#addModal");
 
+    // 확인 클릭 이벤트
+    if (addButton) {
+        addButton.addEventListener("click", function () {
+            addBtnFn();
+        });
+    }
+    
     // 닫기 버튼 클릭 이벤트
     if (closeModal) {
         closeModal.addEventListener("click", function () {

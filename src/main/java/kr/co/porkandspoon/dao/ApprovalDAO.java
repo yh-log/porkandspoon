@@ -13,7 +13,7 @@ import kr.co.porkandspoon.dto.UserDTO;
 @Mapper
 public interface ApprovalDAO {
 
-	UserDTO getUserInfo(String loginId);
+	UserDTO getUserInfo(String userId);
 
 	int saveDraft(ApprovalDTO approvalDTO);
 
@@ -89,5 +89,11 @@ public interface ApprovalDAO {
 	int changeStatusToDelete(String draft_idx);
 
 	List<ApprovalDTO> getApprovalMyListData(Map<String, Object> params);
+
+	int setApprLineBookmark(Map<String, Object> params);
+
+	int getMaxBookmarkIdx();
+
+	List<ApprovalDTO> getLineBookmark(String loginId);
 
 }

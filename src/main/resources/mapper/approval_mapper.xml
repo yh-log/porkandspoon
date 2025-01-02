@@ -14,6 +14,7 @@
     <resultMap id="UserMap" type="kr.co.porkandspoon.dto.UserDTO">
         <result property="username" column="username"/>
         <result property="name" column="name"/>
+        <result property="position_content" column="position_content"/>
         <!-- dept는 DeptMap을 참조 -->
         <association property="dept" resultMap="DeptMap"/>
     </resultMap>
@@ -21,15 +22,19 @@
     <!-- 사용자 정보를 가져오는 select 문 -->
     <select id="getUserInfo" resultMap="UserMap">
         SELECT 
-            u.username, u.name, u.parent, d.text
+            u.username, u.name, c.content AS position_content	, u.parent, d.text
         FROM 
             user u
         JOIN 
             department d
-        ON  
-            u.parent = d.id
+	        ON  
+	            u.parent = d.id
+		JOIN
+			code c
+			ON
+				u.position = c.name
         WHERE 
-            u.username = #{loginId}
+            u.username = #{userId}
     </select>
 	
 	
@@ -206,9 +211,9 @@ content = VALUES(content); -->
 		SELECT a.*, c.name AS position, u.name AS user_name, f.new_filename AS sign, f.code_name FROM approval_line a 
 			JOIN user u ON a.username = u.username 
 			JOIN code c ON u.position = c.name
-			JOIN file f ON a.username = f.pk_idx
+			LEFT JOIN file f ON a.username = f.pk_idx
 			WHERE draft_idx = #{draft_idx} 
-			AND f.code_name = 'us100'
+			AND (f.code_name = 'us100' OR f.code_name IS NULL)
 	</select>
 	
 	<select id="getLogoFile" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
@@ -408,16 +413,40 @@ content = VALUES(content); -->
 					AND d.status = 'sv'
 				</when>
 				<when test="listType == 'dept'">
-					WHERE d.dept_id = (SELECT parent FROM user_parent)
-					OR d.cooper_dept_id = (SELECT parent FROM user_parent)
+					WHERE (d.dept_id = (SELECT parent FROM user_parent)
+					OR d.cooper_dept_id = (SELECT parent FROM user_parent))
 				</when>
 			</choose>
 			<if test="search != null and !search.equals('') and option == 'subject'"> 
 				AND d.subject LIKE CONCAT('%',#{search},'%')		
 			</if>
+			AND d.status != 'de'
 			ORDER BY d.create_date DESC 
 			LIMIT #{limit} 
 			OFFSET #{offset}			
 	</select>
+	
+    <select id="getMaxBookmarkIdx" resultType="int">
+        SELECT IFNULL(MAX(line_idx), 0) + 1
+        FROM approval_bookmark
+        FOR UPDATE
+    </select>
+	
+	<insert id="setApprLineBookmark" parameterType="map">
+		INSERT INTO approval_bookmark (line_idx, username, line_name, `order_user`) 
+			VALUES
+			 (#{bookmarkIdx}, #{loginId}, #{line_name}, 
+				CONCAT(
+		            <foreach collection="approvalLines" item="lineItem" index="index" separator=",">
+				'"', #{index}, '"',:, '"', #{lineItem}, '"'
+		            </foreach>
+				)
+		    )
+	</insert>
+	
+<!-- 	<select id="getLineBookmark" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO" >
+		SELECT FROM approval_bookmark
+			WHERE 
+	</select> -->
 	
 </mapper>
