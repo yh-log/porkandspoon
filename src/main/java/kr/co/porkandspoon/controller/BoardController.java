@@ -452,6 +452,15 @@ public class BoardController {
 	public Map<String, Object> setRereviewWrite(@RequestParam Map<String, Object> params) {
 		logger.info("댓글 내용 : {}", params);
 		boardService.setRereviewWrite(params);
+		NoticeDTO noticedto = new NoticeDTO();
+		// 작성한 유저
+		noticedto.setFrom_id((String) params.get("username"));
+		// 댓글 idx
+		noticedto.setFrom_idx((String) params.get("parent"));
+		// 게시글 idx
+		noticedto.setBoard_idx((String) params.get("board_idx"));
+		noticedto.setCode_name("ml004");
+		alarmService.saveAlarm(noticedto);
 		Map<String, Object> response = new HashMap<>();
 		response.put("success", true);
 		response.put("status", "rewrite");
