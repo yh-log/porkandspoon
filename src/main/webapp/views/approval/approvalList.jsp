@@ -115,6 +115,9 @@
 .draftList table td.status.co{
 	color: var(--bs-success);
 }
+.draftList table .subject {
+	cursor: pointer;
+}
 
 </style>
 
@@ -257,16 +260,19 @@
 	var totalCount = 0;
     var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
     var totalPage = 0;
+	var filterElem = document.querySelector('.filter-btns .btn.selected');
 	
 	pageCall(show, listType);
 	
 	function pageCall(page, listType) {
 		option = document.querySelector('select[name="search"]').value;
 		search = document.querySelector('input[name="search-data"]').value;
-		filter = document.querySelector('.filter-btns .btn.selected').getAttribute('data-filter');
+		if(filterElem){		
+			filter = filterElem.getAttribute('data-filter');
+		}
 		console.log("option",option);
 		console.log("search",search);
-		console.log("filter!!!! ",filter );
+		//console.log("filter!!!! ",filter );
 		
 		$.ajax({
 			type:'GET',
@@ -363,7 +369,7 @@
 			}
 			if(listType == 'dept'){
 				 content += '<td>'+approvalDate+'</td>';
-				 content += '<td>'+view.status+'</td>';
+     			 content +='<td class="status '+view.status+'">'+view.status_name+'</td>';
 			}
 			content +='</tr>';
 			console.log("view.draft_idx",view.draft_idx);

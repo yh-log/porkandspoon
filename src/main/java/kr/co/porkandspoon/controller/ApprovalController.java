@@ -92,8 +92,8 @@ public class ApprovalController {
 		//logger.info("OriginalFilename : " + logo.getOriginalFilename());
 		
 		logger.info("new filename 받아와지나?!!!!! : "+ new_filename);
-		//logger.info("appr_user : "+ appr_user);
-		//logger.info("appr_user : "+ appr_user[0]);
+		logger.info("appr_user : "+ appr_user);
+		logger.info("appr_user : "+ appr_user[0]);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -270,12 +270,16 @@ public class ApprovalController {
 	// 기안문 정보 가져오기
 	private void getDetailInfo(String draft_idx, ModelAndView mav) {
 		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
+		List<ApprovalDTO> ApprLine = approvalService.getApprLine(draft_idx);
 		mav.addObject("DraftInfo", DraftInfo);
-		mav.addObject("ApprLine", approvalService.getApprLine(draft_idx));
+		mav.addObject("ApprLine", ApprLine);
 		mav.addObject("logoFile", approvalService.getLogoFile(draft_idx));
 		mav.addObject("attachedFiles", approvalService.getAttachedFiles(draft_idx));
 		mav.addObject("deptList", approvalService.getDeptList());
-		logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());
+		logger.info("ApprLine !!!!!!! : "+ApprLine.get(0));
+		//ogger.info("ApprLine !!!!!!! : "+ApprLine.get(1));
+		//logger.info("ApprLine !!!!!!! : "+ApprLine.get(1).getUsername());
+		//logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());
 	}
 	
 	// 결재자 상태변경(결재중으로)
@@ -439,7 +443,9 @@ public class ApprovalController {
 	}
 
 	@GetMapping(value="/approval/list/line")
-	public ModelAndView approvbalLineListView() {
+	public ModelAndView approvbalLineListView(@AuthenticationPrincipal UserDetails userDetails) {
+		String loginId = userDetails.getUsername();
+		approvalService.getLineBookmark(loginId);
 		ModelAndView mav = new ModelAndView("/approval/approvalLineList");  
 		return mav;
 	}
@@ -531,5 +537,44 @@ public class ApprovalController {
 		return result;
 	}
 	
+	// 조직도 결재라인 설정 (선택한 사람 데이터 가져오기)
+	@GetMapping(value="/approval/getUserInfo/{userId}")
+	public UserDTO getUserInfo (@PathVariable String userId){
+		UserDTO userInfo = approvalService.getUserInfo(userId);
+		return userInfo;
+	}
+	
+	@PostMapping(value="/approval/setApprLineBookmark")
+	public Map<String, Object> setApprLineBookmark(
+			@RequestParam Map<String, Object> params,
+            @RequestParam("approvalLines") String approvalLinesJson,
+            @AuthenticationPrincipal UserDetails userDetails){
+		
+		 // JSON 문자열을 List로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> approvalLines = new ArrayList<String>();
+		try {
+			approvalLines = objectMapper.readValue(approvalLinesJson, new TypeReference<List<String>>(){});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+        // 처리된 approvalLines 배열
+        for (String line : approvalLines) {
+            System.out.println("Approval Line: " + line);
+        }
+        params.put("approvalLines", approvalLines);
+
+        String loginId = userDetails.getUsername();
+        params.put("loginId", loginId);
+        
+		Map<String, Object> result = new HashMap<String, Object>();
+//		for (String line : approvalLines) {
+//            System.out.println("Approval Line: " + line);
+//        }
+		//logger.info("approvalLines"+ params.get("approvalLines"));
+		result.put("success", approvalService.setApprLineBookmark(params));
+		return result;
+	}
 
 }
