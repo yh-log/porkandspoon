@@ -256,7 +256,26 @@
 			        </div>
 		    </div>
 		    <div class="modal-footer">
-		        <button id="ApprovalBtn" type="button" class="btn btn-primary">결재</button>
+		        <button id="ApprovalBtn" type="button" class="btn btn-primary">저장</button>
+		        <button id="cancelModal" class="btn btn-secondary">취소</button>
+		    </div>
+        </form>
+	</div>
+	
+	<!-- 결재라인 즐겨찾기 모달 -->
+	<div id="ApprLineBookmarkModal" class="modal-template">
+        <form id="BookmarkFrom">
+		    <div class="modal-header">
+		        <span class="modal-close" id="closeModal">&times;</span>
+		    </div>
+		    <div class="modal-body">
+		        <h5 class="align-c">결재라인 저장</h5>
+			        <div class="input-row">
+			        	<label class="item-tit">결재선 이름</label><input class="form-control" type="text" name="line_name"/>
+			        </div>
+		    </div>
+		    <div class="modal-footer">
+		        <button id="SaveBookmark" type="button" class="btn btn-primary">저장</button>
 		        <button id="cancelModal" class="btn btn-secondary">취소</button>
 		    </div>
         </form>
