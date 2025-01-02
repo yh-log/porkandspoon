@@ -413,7 +413,57 @@
 		</div>
 	</div>
 	
-	
+	<!-- 회의 예약 일정 등록 모달 -->
+	<div id="roomInputModal" class="modal-template">	
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	    	<div class="form-group">
+            	<label for="calendar_type" class="form-label">카테고리</label>
+            	<select id="calendar_type" class="form-input1">
+                	<option value="note">노트북</option>
+                	<option value="project">빔 프로젝터</option>
+                	<option value="car">차량</option>
+            	</select>
+        	</div>
+        	<!-- 카테고리별 물품 목록을 표시할 추가적인 요소 -->
+        	<div class="form-group" id="category_items_group">
+	            <label for="category_items" class="form-label">물품 목록</label>
+	            <select id="category_items" class="form-input1">	                
+	                <!-- 동적으로 물품 목록이 추가됩니다 -->
+	            </select>
+        	</div>
+	    	<label for="calendar_username_input" class="form-label" style="font-weight: 600; margin-bottom: 20px;">등록자</label>
+	    	<p id="calendar_username_input"></p>	    	
+	        <div class="form-group" style="display: flex; align-items: center;">
+	            <label for="calendar_start_date" class="form-label" >시작일</label>
+	            <input type="datetime-local" id="calendar_start_date_input" class="form-input" style="margin-left: 15px;">
+	           	<label for="calendar_end_date" class="form-label" style="margin-left: 15px;">종료일</label>
+	            <input type="datetime-local" id="calendar_end_date_input" class="form-input" style="margin-left: 15px;">
+	        </div>
+	       	<div class="form-group">
+	            <label for="calendar_subject" class="form-label">회의 제목</label>
+	            <input type="text" id="calendar_subject_input" class="form-input1" >
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_content" class="form-label">회의 내용</label>
+	            <input type="text" id="calendar_content_input" class="form-input1" >
+	    	</div>
+	    	 <div class="form-group">
+	            <button id="loadChartModal" class="btn btn-primary">조직도</button>
+	            <!-- 조직도 모달 사용 시 추가
+				<div id="chartModalBox" class="modal" style="display: none;">
+					<div class="chartModal-content"></div>
+    			</div>
+				<input type="hidden" id="selectedNodeInput" value=""> -->
+	    	</div>
+	    	<div class="modal-footer">
+		        <button id="addSchedule" class="btn btn-primary">등록</button>
+		        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    	</div>
+		</div>
+	</div>
 	
 	
 	

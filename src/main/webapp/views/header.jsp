@@ -48,7 +48,7 @@ function displayAlarmMessage(alarm) {
 }
 
 // 5초마다 알림 확인
-setInterval(checkNewAlarms, 5000);
+//setInterval(checkNewAlarms, 5000);
 </script> 
 <style>
 	#alarmPopup {

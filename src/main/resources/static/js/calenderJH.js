@@ -105,6 +105,10 @@ document.addEventListener('click', function(event){
         else if(event.target.id === 'saveEditSchedule'){
             handleSaveEditSchedule();
         }
+        // 조직도 모달 버튼 클릭
+        else if(event.target.id === 'loadChartModal'){
+            loadChartModal('chartInputModal')
+        }
     }
 });
 
