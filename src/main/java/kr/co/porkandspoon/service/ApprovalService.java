@@ -60,7 +60,7 @@ public class ApprovalService {
 		
 		// draft_idx 가져오기 
 		String draftIdx = approvalDTO.getDraft_idx();
-		logger.info("draftIdx DTO : "+ draftIdx);
+		logger.info("@@@approvalDTO.getCOntent!!! : "+ approvalDTO.getContent());
 		if(draftIdx == null || draftIdx.isEmpty()) {
 		    draftIdx = String.valueOf(approvalDAO.getDraftIdx());
 			approvalDTO.setDraft_idx(draftIdx);
@@ -408,8 +408,16 @@ public class ApprovalService {
 			return approvalDAO.setApprLineBookmark(params) > 0 ? true : false;
 		}
 
-		public List<ApprovalDTO> getLineBookmark(String loginId) {
-			return approvalDAO.getLineBookmark(loginId);
+		public List<ApprovalDTO> getLineBookmark(Map<String, Object> params) {
+			logger.info("page : "+params.get("page"));
+			logger.info("cnt : "+params.get("cnt"));
+		    int page_ = Integer.parseInt((String) params.get("page"));
+		    int cnt_ = Integer.parseInt((String) params.get("cnt"));
+	        int limit = cnt_;
+	        int offset = (page_ - 1) * cnt_;
+	        params.put("limit", limit);
+	        params.put("offset", offset);
+			return approvalDAO.getLineBookmark(params);
 		}
 
 

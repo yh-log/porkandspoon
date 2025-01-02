@@ -94,6 +94,6 @@ public interface ApprovalDAO {
 
 	int getMaxBookmarkIdx();
 
-	List<ApprovalDTO> getLineBookmark(String loginId);
+	List<ApprovalDTO> getLineBookmark(Map<String, Object> params);
 
 }

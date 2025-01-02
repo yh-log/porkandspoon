@@ -90,7 +90,7 @@ public class ApprovalController {
 		//logger.info("logoFile: " + logoFile);
 	//	logger.info("Files: " + Arrays.toString(files));
 		//logger.info("OriginalFilename : " + logo.getOriginalFilename());
-		
+		logger.info("@@@***approvalDTO.getCOntent!!! : "+ approvalDTO.getContent());
 		logger.info("new filename 받아와지나?!!!!! : "+ new_filename);
 		logger.info("appr_user : "+ appr_user);
 		logger.info("appr_user : "+ appr_user[0]);
@@ -442,12 +442,20 @@ public class ApprovalController {
 		return result;
 	}
 
-	@GetMapping(value="/approval/list/line")
-	public ModelAndView approvbalLineListView(@AuthenticationPrincipal UserDetails userDetails) {
-		String loginId = userDetails.getUsername();
-		approvalService.getLineBookmark(loginId);
+	@GetMapping(value="/approval/listView/line")
+	public ModelAndView approvalLineListView() {
 		ModelAndView mav = new ModelAndView("/approval/approvalLineList");  
 		return mav;
+	}
+
+	@GetMapping(value="/approval/list/line")
+	public Map<String, Object> approvalLineList(@RequestParam Map<String, Object> params, @AuthenticationPrincipal UserDetails userDetails) {
+		String loginId = userDetails.getUsername();
+		params.put("loginId", loginId);
+		List<ApprovalDTO> bookmarkList = approvalService.getLineBookmark(params);
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("bookmarkList", bookmarkList);
+		return result;
 	}
 	
 	// 기안문 반려

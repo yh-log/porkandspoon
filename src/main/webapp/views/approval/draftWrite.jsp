@@ -394,7 +394,7 @@
 									
 								</div>
 								<div class="editor-area">
-									<textarea name="content" id="summernote" maxlength="10000"></textarea>
+									<textarea id="summernote" maxlength="10000"></textarea>
 								</div>
 								
 								<h5><span class="ico-required">*</span>로고파일 첨부</h5>
@@ -466,7 +466,7 @@
 	
 <script src='/resources/js/common.js'></script>
 <!-- summer note -->
-<script src='/resources/js/textEaditor.js'></script>
+<!-- <script src='/resources/js/textEaditor.js'></script> -->
 
 <!-- 다음검색 -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

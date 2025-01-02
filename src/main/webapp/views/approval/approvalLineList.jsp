@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>문서함</title>
+<title>결재라인 즐겨찾기 리스트</title>
 
 <meta name="_csrf" content="${_csrf.token}">
 <meta name="_csrf_header" content="${_csrf.headerName}">
@@ -164,41 +164,83 @@
 
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
+<script src='/resources/js/common.js'></script>
 
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 	
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
-<script src='/resources/js/common.js'></script>
 
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+var show = 1;
 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
+var totalCount = 0;
+var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
+var totalPage = 0;
+
+pageCall(show);
+
+function pageCall(page) {
+	console.log("page : ", page);
+	$.ajax({
+		type:'GET',
+		url:'/approval/list/line',
+		data:{
+			'page':page,
+			'cnt':15
+		},
+		datatype:'JSON',
+		success:function(data){
+			console.log(data);
+			drawList(data.bookmarkList);
+
+			if(data.bookmarkList.length > 0){
+				totalCount = data.bookmarkList[0].total_count;  // 총 게시글 수
+	            totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+			}
+			console.log("totalCount",totalCount,"totalPage",totalPage);
+            
+			
+            
+			 /* 페이지네이션 */       
+
+			$('#pagination').twbsPagination({
+				startPage:1, 
+           		totalPages: totalPage, 
+           		visiblePages:10,
+           		onPageClick:function(evt,page){
+           			console.log('evt',evt); 
+           			console.log('page',page); 
+           			pageCall(page);
+           		}
+			});
+
+		},
+		error:function(e){
+			console.log("에러러러ㅓ");
+			console.log(e);
+		}
+	});
+}
+
+function drawList(list) {
+	var content ='';
+	if(totalCount == 0){
+		content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
+		$('.list tbody').html(content);
+		return false;
+	}
+ 	for (var view of list) {
+		content += '<tr>';
+		content += '<td>'+view.line_idx+'</td>';
+		content += '<td>'+view.line_name+'</td>';
+		content += '<td>'+view.name+'</td>';
+	
+     $('.list tbody').html(content);
+   } 
+	
+	console.log("bookmarkList:  ", '${bookmarkList}');
+}
 </script>
 
 </html>
