@@ -49,6 +49,11 @@ public class ApprovalDTO {
    private String approval_date;
    private String comment;
    
+   // 결재라인 즐겨찾기 테이블
+   private String line_name;
+   private String order_user;
+   
+   
    private FileDTO fileDTO;
 
    // 부서 이름
@@ -357,6 +362,22 @@ public class ApprovalDTO {
 	
 	public void setUser_dept_text(String user_dept_text) {
 		this.user_dept_text = user_dept_text;
+	}
+
+	public String getLine_name() {
+		return line_name;
+	}
+
+	public String getOrder_user() {
+		return order_user;
+	}
+
+	public void setLine_name(String line_name) {
+		this.line_name = line_name;
+	}
+
+	public void setOrder_user(String order_user) {
+		this.order_user = order_user;
 	}
 	   
    

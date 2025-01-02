@@ -436,17 +436,28 @@ content = VALUES(content); -->
 		INSERT INTO approval_bookmark (line_idx, username, line_name, `order_user`) 
 			VALUES
 			 (#{bookmarkIdx}, #{loginId}, #{line_name}, 
-				CONCAT(
+		         JSON_OBJECT(
 		            <foreach collection="approvalLines" item="lineItem" index="index" separator=",">
-				'"', #{index}, '"',:, '"', #{lineItem}, '"'
+		                '${index}', #{lineItem}
 		            </foreach>
-				)
+		         )
 		    )
 	</insert>
 	
-<!-- 	<select id="getLineBookmark" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO" >
-		SELECT FROM approval_bookmark
-			WHERE 
-	</select> -->
+	<select id="getLineBookmark" parameterType="map" resultType="kr.co.porkandspoon.dto.ApprovalDTO" >
+		SELECT a.line_idx
+			,a.name
+			,a.line_name
+			,a.order_user
+			,c.content
+			,COUNT(*) OVER() AS total_count 
+			FROM approval_bookmark a
+				JOIN user u on a.username = u.username 
+				JOIN code c on u.position = c.content
+			WHERE username = #{loginId}
+			ORDER BY line_idx
+			LIMIT #{limit} 
+			OFFSET #{offset}		
+	</select>
 	
 </mapper>
