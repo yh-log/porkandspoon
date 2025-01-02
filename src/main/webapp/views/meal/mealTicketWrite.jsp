@@ -160,7 +160,7 @@
 												활성 </label>
 										</div>
 										<div class="form-check">
-											<input class="form-check-input" type="radio" name="use_yn" value="Y" id="flexRadioDefault2" >
+											<input class="form-check-input" type="radio" name="use_yn" value="N" id="flexRadioDefault2" >
 											<label class="form-check-label" for="flexRadioDefault2">
 												비활성 </label>
 										</div>

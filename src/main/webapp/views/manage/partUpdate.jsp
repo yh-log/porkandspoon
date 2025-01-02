@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -140,23 +141,24 @@
                      <table>
                         <tr>
                            <th class="align-l">이름</th>
-                           <td ><input class="form-control sor-1 "  type="text" placeholder="이름을 입력해주세요." required="required"/></td>
+                           <td ><input class="form-control sor-1 "  type="text" placeholder="이름을 입력해주세요." value="${info.name}" required="required"/></td>
                         </tr>
                         <tr>
                            <th class="align-l">생년월일</th>
-                           <td ><input class="form-control sor-1 short"  type="date"  required="required"/></td>
+                           <td ><input class="form-control sor-1 short"  type="date" value="${info.birth}"  required="required"/></td>
                         </tr>
                         <tr>
                            <th class="align-l">성별</th>
                           <td ><div class="card-body">
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											남자 </label>
+									    <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault1"
+									        ${info.gender == 'M' ? 'checked' : ''}>
+									    <label class="form-check-label" for="flexRadioDefault1">남자</label>
 									</div>
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											여자 </label>
+									    <input class="form-check-input" type="radio" name="gender" id="flexRadioDefault2"
+									        ${info.gender == 'W' ? 'checked' : ''}>
+									    <label class="form-check-label" for="flexRadioDefault2">여자</label>
 									</div>
 								</div>	
 							</td>
@@ -165,53 +167,61 @@
                            <th class="align-l">상태</th>
                           <td ><div class="card-body">
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-											재직 </label>
+									    <input class="form-check-input" type="radio" name="is_quit" id="flexRadioDefault1"
+									        ${info.is_quit == 'N' ? 'checked' : ''}>
+									    <label class="form-check-label" for="statusWorking">재직</label>
 									</div>
 									<div class="form-check">
-										<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
-										<label class="form-check-label" for="flexRadioDefault2">
-											퇴사 </label>
+									    <input class="form-check-input" type="radio" name="is_quit" id="flexRadioDefault2"
+									        ${info.is_quit == 'Y' ? 'checked' : ''}>
+									    <label class="form-check-label" for="statusQuit">퇴사</label>
 									</div>
 								</div>	
 							</td>
                         </tr>
                         <tr>
                            <th class="align-l">지점명</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="지점명을 입력해주세요." required="required"/></td>
+                          <td ><input class="form-control sor-1 "  type="text" placeholder="직영점코드을 입력해주세요." value="${info.id}" required="required"/></td>
                         </tr>
                         <tr>
                            <th class="align-l">전화번호</th>
-                          <td ><input class="form-control sor-1 "  type="text" placeholder="전화번호를 입력해주세요." required="required"/></td>
+                          <td ><input class="form-control sor-1 "  type="text" placeholder="전화번호를 입력해주세요." value="${info.phone}" required="required"/></td>
                         </tr>
                         <tr>
                            <th class="align-l">주소</th>
                           	<td >
 	                          	<div class="inline-layout">
-									<input type="text" name="address" class="form-control" disabled="disabled"/>
+									<input type="text" name="address" class="form-control" value="${info.address}" disabled="disabled"/>
 									<button type="button" class="btn btn-sm btn-outline-primary"><i class="bi bi-geo-alt-fill"></i></button>
 								</div>
 							</td>
                         </tr>
                         <tr>
-                           <th class="align-l">근무 요일</th>
-                          <td >
-                          	<div id="searchLayout" class="col-7 col-lg-7">
-								<select class="form-select selectStyle">
-									<option>월</option>
-									<option>화</option>
-									<option>수</option>
-									<option>목</option>
-									<option>금</option>
-									<option>토</option>
-									<option>일</option>
-								</select>
-								<input type="text" class="form-control start_date" id="basicInput" placeholder="시작 시간">		
-								<p class="title" id="text">~</p>
-								<input type="text" class="form-control end_date" id="basicInput" placeholder="종료 시간">		
-							</div>
-						</td>
-                        </tr>
+						    <th class="align-l">근무 요일</th>
+						    <td>
+						        <div id="searchLayout">
+						            <c:forEach var="schedule" items="${list}">
+						                <div class="d-flex work-time-entry">
+						                    <select class="form-select selectStyle" name="work_date[]">
+						                        <option value="월" ${schedule.work_date == '월' ? 'selected' : ''}>월</option>
+						                        <option value="화" ${schedule.work_date == '화' ? 'selected' : ''}>화</option>
+						                        <option value="수" ${schedule.work_date == '수' ? 'selected' : ''}>수</option>
+						                        <option value="목" ${schedule.work_date == '목' ? 'selected' : ''}>목</option>
+						                        <option value="금" ${schedule.work_date == '금' ? 'selected' : ''}>금</option>
+						                        <option value="토" ${schedule.work_date == '토' ? 'selected' : ''}>토</option>
+						                        <option value="일" ${schedule.work_date == '일' ? 'selected' : ''}>일</option>
+						                    </select>
+						                    <input type="time" class="form-control start_date" name="start_time[]" value="${schedule.start_time}" />
+						                    <p class="title">~</p>
+						                    <input type="time" class="form-control end_date" name="end_time[]" value="${schedule.end_time}" />
+						                    <button type="button" class="btn btn-outline-danger remove-time-btn">-</button>
+						                </div>
+						            </c:forEach>
+						        </div>
+						        <button type="button" class="btn btn-outline-primary" id="addTimeBtn">+</button>
+						    </td>
+						</tr>
+
                      </table>
                   </div>
 			
@@ -277,7 +287,34 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 <script>
+	$(document).ready(function () {
+	    // 근무 시간 추가
+	    $('#addTimeBtn').click(function () {
+	        const newEntry = `
+	            <div class="d-flex work-time-entry">
+	                <select class="form-select selectStyle" name="work_date[]">
+	                    <option value="월">월</option>
+	                    <option value="화">화</option>
+	                    <option value="수">수</option>
+	                    <option value="목">목</option>
+	                    <option value="금">금</option>
+	                    <option value="토">토</option>
+	                    <option value="일">일</option>
+	                </select>
+	                <input type="time" class="form-control start_date" name="start_time[]" />
+	                <p class="title">~</p>
+	                <input type="time" class="form-control end_date" name="end_time[]" />
+	                <button type="button" class="btn btn-outline-danger remove-time-btn">-</button>
+	            </div>`;
+	        $('#searchLayout').append(newEntry);
+	    });
 	
+	    // 근무 시간 삭제
+	    $(document).on('click', '.remove-time-btn', function () {
+	        $(this).closest('.work-time-entry').remove();
+	    });
+	});
+
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
