@@ -100,5 +100,9 @@ public class ResevationService {
 		return result > 0;
 	}
 
+	public int itemDelete(String idx) {
+		return resDao.itemDelete(idx);
+	}
+
 
 }

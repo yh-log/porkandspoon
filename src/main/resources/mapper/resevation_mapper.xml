@@ -284,5 +284,10 @@
 	    WHERE idx = #{idx}
 	</update>
 	
+	<!-- 물품 예약 일정 삭제 -->
+	<delete id="itemDelete">
+		DELETE FROM item_schedule WHERE idx = #{idx}
+	</delete>
+	
 	
 </mapper>

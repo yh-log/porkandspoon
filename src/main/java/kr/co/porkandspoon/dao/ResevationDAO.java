@@ -48,4 +48,6 @@ public interface ResevationDAO {
 
 	int itemUpdate(String idx, CalenderDTO calenderDto);
 
+	int itemDelete(String idx);
+
 }
