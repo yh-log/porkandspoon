@@ -3,7 +3,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 <script src="/resources/js/common.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
 <sec:authentication var="loggedInUser" property="principal.username" />
 <script>
 function checkNewAlarms() {
@@ -48,7 +49,7 @@ function displayAlarmMessage(alarm) {
 }
 
 // 5초마다 알림 확인
-setInterval(checkNewAlarms, 5000);
+//setInterval(checkNewAlarms, 5000);
 </script> 
 <style>
 	#alarmPopup {

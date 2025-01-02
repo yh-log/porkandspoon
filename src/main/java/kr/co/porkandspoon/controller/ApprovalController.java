@@ -561,7 +561,7 @@ public class ApprovalController {
 
         // 처리된 approvalLines 배열
         for (String line : approvalLines) {
-            System.out.println("Approval Line: " + line);
+            System.out.println("!!!!!!Approval Line: " + line);
         }
         params.put("approvalLines", approvalLines);
 
