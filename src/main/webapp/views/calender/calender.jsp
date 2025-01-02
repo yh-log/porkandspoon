@@ -264,7 +264,7 @@
         // 컨펌박스로 교체	        
 	    // 데이터 유효성 검사
 	    if (!subject || !start_date || !end_date || !content) {
-	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn2Act);
+	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
 	        return;
 	    }
 

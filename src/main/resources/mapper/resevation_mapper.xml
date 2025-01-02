@@ -237,12 +237,52 @@
 	</select>
 	
 	<select id="itemDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		select * from item where no = #{no}
+		SELECT * FROM item WHERE no = #{no}
 	</select>
 	
 	<select id="articleList" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		select * from item_schedule
+		SELECT * FROM item_schedule
 	</select>
+	
+	<select id="selection" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT * FROM item WHERE selection = #{selection}
+	</select>
+	
+	<insert id="itemWrite" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
+		INSERT INTO item_schedule(no, username, start_date, end_date, subject, content)
+        							VALUES(#{no},#{username},#{start_date},#{end_date},#{subject},#{content})
+	</insert>
+	
+	<!-- 예약 일정 상세보기 -->
+    <select id="resDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+        SELECT 
+			s.idx,
+			s.no,
+			s.username,
+			s.start_date,
+			s.end_date,
+			s.subject,
+			s.content,
+			s.create_date,
+			i.item_name,
+			i.selection,
+			u.name 
+		FROM item_schedule s JOIN item i ON s.no = i.no
+		JOIN user u ON s.username = u.username 
+		WHERE idx=#{idx}
+    </select>
+    
+    <!-- 캘린더 일정 수정 -->
+    <update id="itemUpdate" parameterType="map">
+	    UPDATE item_schedule SET 
+	        start_date = #{calenderDto.start_date},
+	        end_date = #{calenderDto.end_date},
+	        subject = #{calenderDto.subject},
+	        content = #{calenderDto.content},
+	        updater = #{calenderDto.username},
+	        no = #{calenderDto.no}
+	    WHERE idx = #{idx}
+	</update>
 	
 	
 </mapper>
