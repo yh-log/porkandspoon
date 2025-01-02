@@ -66,7 +66,9 @@ function initializeCalendar(event) {
     	},
         dateClick: function (info) {
             formattedDate = info.dateStr;
-            loadModal(section, 'Input'); // 일정 등록 모달
+            loadModal(section, 'Input', function(){
+            	console.log("******");
+            }); // 일정 등록 모달
         },
         eventClick: function(info){
         	formattedDate = info.dateStr;
@@ -104,6 +106,10 @@ document.addEventListener('click', function(event){
         // 일정 수정 저장 버튼 클릭
         else if(event.target.id === 'saveEditSchedule'){
             handleSaveEditSchedule();
+        }
+        // 조직도 모달 버튼 클릭
+        else if(event.target.id === 'loadChartModal'){
+            loadChartModal('chartInputModal')
         }
     }
 });
