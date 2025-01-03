@@ -499,86 +499,142 @@ const initialData = {
 	var exampleData = JSON.parse(JSON.stringify(initialData));
 
 	 // 선택된 ID를 rows에 추가하는 함수
-	 function addSelectedIdToRows(selectedId) {
-		 
-		 console.log(selectedId);
-	     
-		 $.ajax({
-			 type: 'GET',
-			 url: '/ad/userTransferInfo',
-			 data: { selectedId: selectedId },
-			 success: function(response){
-				 
+function addSelectedIdToRows(selectedId) {
+
+	console.log(selectedId);
+	// 인사이동, 퇴사 처리
+	if(lastClickedButtonId === 'employee' || lastClickedButtonId === 'leave'){
+		$.ajax({
+			type: 'GET',
+			url: '/ad/userTransferInfo',
+			data: { selectedId: selectedId },
+			success: function(response){
+
 				console.log(response);
-				 
+
 				var userResult = response[0];
-				 
+
 				var deptSelect = document.createElement('select');
-	            deptSelect.className = 'form-select selectStyle';
+				deptSelect.className = 'form-select selectStyle';
 
-	            // `response` 데이터를 순회하며 `<option>` 추가
-	            response.forEach(function(item) {
-	                if (item.parent !== null && item.parent !== '' && item.text !== null && item.text !== '') {
-	                    var option = document.createElement('option');
-	                    option.value = item.parent;
-	                    option.textContent = item.text;
-	                    
-	                    console.log(userResult.old_department,'는');
-	                    
-	                    if (item.parent === userResult.old_department) {
-	                  		console.log('동일한 ', item.parent);
-	                        option.setAttribute('selected', 'selected');
-	                    }
-	                    
-	                    // 기본 선택값 설정 (old_department와 동일한 값)
+				// `response` 데이터를 순회하며 `<option>` 추가
+				response.forEach(function(item) {
+					if (item.parent !== null && item.parent !== '' && item.text !== null && item.text !== '') {
+						var option = document.createElement('option');
+						option.value = item.parent;
+						option.textContent = item.text;
 
-	                    deptSelect.appendChild(option);
-	                    
-	                }
-	                
-	            });
-	            //deptSelect.value = userResult.old_department.trim();
-			    	 
-			     var positionSelect = document.createElement('select');
-			     positionSelect.className = 'form-select selectStyle';
-			     
-			     response.forEach(function(item){
-			    	if(item.position !== null && item.position !== '' && item.title !== null && item.title !== '') {
-			    		var option = document.createElement('option');
-			    		option.value = item.position;
-			    		option.textContent = item.title;
-			    		positionSelect.appendChild(option);
-			    		
-			    		if(item.position === userResult.old_position){
-			    			option.setAttribute('selected', 'selected');
-			    		} 
-			    		
-			    	}
-			     });
-			     
-	            console.log("부서 선택:", deptSelect.outerHTML);
-	            console.log("직위 선택:", positionSelect.outerHTML);
-	            var cencleUser = '<div onclick="chartTableDelete(this, \'' + userResult.person_num + '\')"><i class="bi bi-trash3"></i></div>';
-	            
-	            var setUsetInfo = '<input type="hidden" name="old_position" value="'+userResult.old_position+'"/><input type="hidden" name="old_department" value="'+ userResult.old_department +'"/><input type="hidden" name="username" value="'+ userResult.username +'"/>' + userResult.person_num;
-				 
-			     // 새로운 row 데이터 생성 outerHTML 이거를 추가해줘야 DOM 요소를 HTML 문자열로 변환해준다! 
-			     const newRow = [setUsetInfo, userResult.name, deptSelect.outerHTML, positionSelect.outerHTML, cencleUser];
-		
-			     // 기존 rows에 추가
-			     exampleData.rows.push(newRow);
-		
-			     // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
-			     updateTableData('customTable', exampleData);
-				 
-			 },error: function(e){
-				 console.log(e);
-			 }
-		 
-			 
-		 });
+						console.log(userResult.old_department,'는');
 
-	 }
+						if (item.parent === userResult.old_department) {
+							console.log('동일한 ', item.parent);
+							option.setAttribute('selected', 'selected');
+						}
+
+						// 기본 선택값 설정 (old_department와 동일한 값)
+
+						deptSelect.appendChild(option);
+
+					}
+
+				});
+				//deptSelect.value = userResult.old_department.trim();
+
+				var positionSelect = document.createElement('select');
+				positionSelect.className = 'form-select selectStyle';
+
+				response.forEach(function(item){
+					if(item.position !== null && item.position !== '' && item.title !== null && item.title !== '') {
+						var option = document.createElement('option');
+						option.value = item.position;
+						option.textContent = item.title;
+						positionSelect.appendChild(option);
+
+						if(item.position === userResult.old_position){
+							option.setAttribute('selected', 'selected');
+						}
+
+					}
+				});
+
+				console.log("부서 선택:", deptSelect.outerHTML);
+				console.log("직위 선택:", positionSelect.outerHTML);
+				var cencleUser = '<div onclick="chartTableDelete(this, \'' + userResult.person_num + '\')"><i class="bi bi-trash3"></i></div>';
+
+				var setUsetInfo = '<input type="hidden" name="old_position" value="'+userResult.old_position+'"/><input type="hidden" name="old_department" value="'+ userResult.old_department +'"/><input type="hidden" name="username" value="'+ userResult.username +'"/>' + userResult.person_num;
+
+				// 새로운 row 데이터 생성 outerHTML 이거를 추가해줘야 DOM 요소를 HTML 문자열로 변환해준다!
+				const newRow = [setUsetInfo, userResult.name, deptSelect.outerHTML, positionSelect.outerHTML, cencleUser];
+
+				// 기존 rows에 추가
+				exampleData.rows.push(newRow);
+
+				// 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+				updateTableData('customTable', exampleData);
+
+			},error: function(e){
+				console.log(e);
+			}
+		});
+
+	}else{
+		$.ajax({
+			type: 'GET',
+			url: '/ad/storeTransferInfo',
+			data: { selectedId: selectedId },
+			success: function(response){
+
+				console.log(response);
+
+				var userResult = response[0];
+
+				var deptSelect = document.createElement('select');
+				deptSelect.className = 'form-select selectStyle';
+
+				// `response` 데이터를 순회하며 `<option>` 추가
+				response.forEach(function(item) {
+					if (item.id !== null && item.id !== '' && item.dept_name !== null && item.dept_name !== '') {
+						var option = document.createElement('option');
+						option.value = item.id;
+						option.textContent = item.dept_name;
+
+						console.log(userResult.old_department,'는');
+
+						if (item.parent === userResult.old_department) {
+							console.log('동일한 ', item.parent);
+							option.setAttribute('selected', 'selected');
+						}
+
+						// 기본 선택값 설정 (old_department와 동일한 값)
+
+						deptSelect.appendChild(option);
+
+					}
+
+				});
+
+				console.log("부서 선택:", deptSelect.outerHTML);
+				var cencleUser = '<div onclick="chartTableDelete(this, \'' + userResult.person_num + '\')"><i class="bi bi-trash3"></i></div>';
+
+				var setUsetInfo = '<input type="hidden" name="old_position" value="'+userResult.old_position+'"/><input type="hidden" name="old_department" value="'+ userResult.old_department +'"/><input type="hidden" name="username" value="'+ userResult.username +'"/>' + userResult.person_num;
+
+				// 새로운 row 데이터 생성 outerHTML 이거를 추가해줘야 DOM 요소를 HTML 문자열로 변환해준다!
+				const newRow = [setUsetInfo, userResult.name, deptSelect.outerHTML, deptSelect.outerHTML, cencleUser];
+
+				// 기존 rows에 추가
+				exampleData.rows.push(newRow);
+
+				// 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+				updateTableData('customTable', exampleData);
+
+			},error: function(e){
+				console.log(e);
+			}
+		});
+
+	}
+
+}
 
 	 // 선택된 ID를 받아서 처리
 	 getSelectId(function (selectedId) {
@@ -634,8 +690,8 @@ const initialData = {
 		 console.log('가공', userDto);
 		 
 		
-		// httpVariousAjax('PUT', '/ad/setEmployeeTransfer', JSON.stringify(userDto), 'application/json');
-		 httpVariousAjax('DELETE', '/ad/userQuitDelete', JSON.stringify(userDto), 'application/json');
+		 httpVariousAjax('PUT', '/ad/setEmployeeTransfer', JSON.stringify(userDto), 'application/json');
+		 //httpVariousAjax('DELETE', '/ad/userQuitDelete', JSON.stringify(userDto), 'application/json');
 		 
 	 }
 </script>

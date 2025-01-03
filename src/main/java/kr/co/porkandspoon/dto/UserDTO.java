@@ -61,12 +61,18 @@ public class UserDTO extends ResponseDTO{
    private String old_department;
    private String new_department;
    
-   
-   
+   private String owner;
 
-   
-   
-   public String getTransfer_date() {
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getTransfer_date() {
 		return transfer_date;
 	}
 	

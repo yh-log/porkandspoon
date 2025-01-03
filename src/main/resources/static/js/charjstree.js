@@ -110,95 +110,268 @@ function loadOrgChartData() {
 
 
 
-function chartPrint(response){
- // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
-            response.sort(function (a, b) {
-                if (a.menuDepth === b.menuDepth) {
-                    return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+// function chartPrint(response){
+//
+//     console.log(response, '받아온 데이터');
+//
+//  // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
+//             response.sort(function (a, b) {
+//                 if (a.menuDepth === b.menuDepth) {
+//                     return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+//                 }
+//                 return a.menuDepth - b.menuDepth; // depth 기준 정렬
+//             });
+//
+//             console.log("AJAX 응답 데이터 (정렬 후):", response);
+//
+//             // jsTree 데이터 형식으로 변환
+//             var jsTreeData = response.map(function(item) {
+//                 return {
+//                     id: item.id, // 고유 ID
+//                     parent: item.parent, // 부모 ID
+//                     text: item.text, // 노드에 표시할 텍스트
+//                     type: item.type, // 노드 유형
+//                     li_attr: { // HTML <li> 태그에 추가 속성
+//                         "data-menu-depth": item.menuDepth,
+//                         "data-menu-order": item.menuOrder
+//                     },
+//                     a_attr: { // HTML <a> 태그에 추가 속성
+//                         "data-menu-depth": item.menuDepth,
+//                         "data-menu-order": item.menuOrder
+//                     }
+//                 };
+//             });
+//
+//             console.log("jsTree 변환 데이터:", jsTreeData);
+//
+//             $('#jstree').jstree('destroy').empty();
+//             // jsTree 초기화
+//             $('#jstree').jstree({
+//                 'core': {
+//                     'themes': {
+//                         'dots': true,
+//                         'icons': true
+//                     },
+//                     'data': jsTreeData // 변환된 데이터
+//                 },
+//                 "plugins": ["types", "search"],
+//                 "types": {
+//                     "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
+//                     "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
+//                 },
+//                 "search": {
+//                     "show_only_matches": true,
+//                     "show_only_matches_children": true
+//                 }
+//             });
+//
+//
+//             // 이벤트 등록
+//             $('#jstree').on('loaded.jstree', function () {
+//                 console.log("jsTree가 성공적으로 초기화되었습니다.");
+// 				$("#jstree").jstree("open_all");
+//
+// 				let searchTimeout = null;
+// 			    $('.input-test').on('input', function () {
+// 			        let search = $(this).val();
+//
+// 			        // 이전 타임아웃 제거
+// 			        if (searchTimeout) {
+// 			            clearTimeout(searchTimeout);
+// 			        }
+//
+// 			        // 입력 후 300ms 후에 검색 실행
+// 			        searchTimeout = setTimeout(function () {
+// 			            $('#jstree').jstree('search', search);
+// 			        }, 300);
+// 			    });
+//
+//
+//             }).on('changed.jstree', function (e, data) {
+// 	            console.log("선택된 노드:", data.selected);
+// 	            if (data.selected.length > 0) {
+// 			        var selectedId = data.selected[0]; // 선택된 노드의 ID
+// 			        console.log("선택된 노드 ID:", selectedId);
+//
+// 			        // 설정된 콜백 함수 호출
+// 			        if (typeof selectIdCallback === "function") {
+// 			            selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+// 			        }
+// 			    } else {
+// 			        console.log("선택된 노드가 없습니다.");
+// 			    }
+// 	        });
+//
+// }
+
+function chartPrint(response) {
+    console.log(response, '받아온 데이터');
+
+    // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
+    response.sort(function (a, b) {
+        if (a.menuDepth === b.menuDepth) {
+            return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+        }
+        return a.menuDepth - b.menuDepth; // depth 기준 정렬
+    });
+
+    console.log("AJAX 응답 데이터 (정렬 후):", response);
+
+    // jsTree 데이터 형식으로 변환
+    const processedData = processJsTreeData(response);
+
+    console.log("jsTree 변환 데이터:", processedData);
+
+    $('#jstree').jstree('destroy').empty();
+    // jsTree 초기화
+    $('#jstree').jstree({
+        'core': {
+            'data': function (node, callback) {
+                // 루트 노드 (#) 또는 특정 노드의 children 반환
+                if (node.id === "#") {
+                    callback(processedData.filter(item => item.parent === "#"));
+                } else {
+                    callback(processedData.filter(item => item.parent === node.id));
                 }
-                return a.menuDepth - b.menuDepth; // depth 기준 정렬
-            });
+            },
+            'themes': {
+                'dots': true,
+                'icons': true
+            }
+        },
+        "plugins": ["types", "search"],
+        "types": {
+            "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
+            "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
+        },
+        "search": {
+            "show_only_matches": true,
+            "show_only_matches_children": true
+        }
+    }).on('loaded.jstree', function () {
+        console.log("jsTree가 성공적으로 초기화되었습니다.");
+        $("#jstree").jstree("open_all");
 
-            console.log("AJAX 응답 데이터 (정렬 후):", response);
+        // 검색 이벤트 처리
+        let searchTimeout = null;
+        $('.input-test').on('input', function () {
+            const search = $(this).val();
 
-            // jsTree 데이터 형식으로 변환
-            var jsTreeData = response.map(function(item) {
-                return {
-                    id: item.id, // 고유 ID
-                    parent: item.parent, // 부모 ID
-                    text: item.text, // 노드에 표시할 텍스트
-                    type: item.type, // 노드 유형
-                    li_attr: { // HTML <li> 태그에 추가 속성
-                        "data-menu-depth": item.menuDepth,
-                        "data-menu-order": item.menuOrder
-                    },
-                    a_attr: { // HTML <a> 태그에 추가 속성
-                        "data-menu-depth": item.menuDepth,
-                        "data-menu-order": item.menuOrder
-                    }
-                };
-            });
+            // 이전 타임아웃 제거
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
 
-            console.log("jsTree 변환 데이터:", jsTreeData);
+            // 입력 후 300ms 후에 검색 실행
+            searchTimeout = setTimeout(function () {
+                $('#jstree').jstree('search', search);
+            }, 300);
+        });
 
-            // jsTree 초기화
-            $('#jstree').jstree({
-                'core': {
-                    'themes': {
-                        'dots': true,
-                        'icons': true
-                    },
-                    'data': jsTreeData // 변환된 데이터
-                },
-                "plugins": ["types", "search"],
-                "types": {
-                    "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
-                    "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
-                },
-                "search": {
-                    "show_only_matches": true,
-                    "show_only_matches_children": true
-                }
-            });
-            
-            
-            // 이벤트 등록
-            $('#jstree').on('loaded.jstree', function () {
-                console.log("jsTree가 성공적으로 초기화되었습니다.");
-				$("#jstree").jstree("open_all");
-				
-				let searchTimeout = null;
-			    $('.input-test').on('input', function () {
-			        let search = $(this).val();
-			
-			        // 이전 타임아웃 제거
-			        if (searchTimeout) {
-			            clearTimeout(searchTimeout);
-			        }
-			
-			        // 입력 후 300ms 후에 검색 실행
-			        searchTimeout = setTimeout(function () {
-			            $('#jstree').jstree('search', search);
-			        }, 300);
-			    });
-				
-				
-            }).on('changed.jstree', function (e, data) {
-	            console.log("선택된 노드:", data.selected);
-	            if (data.selected.length > 0) {
-			        var selectedId = data.selected[0]; // 선택된 노드의 ID
-			        console.log("선택된 노드 ID:", selectedId);
-			
-			        // 설정된 콜백 함수 호출
-			        if (typeof selectIdCallback === "function") {
-			            selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
-			        }
-			    } else {
-			        console.log("선택된 노드가 없습니다.");
-			    }
-	        });
-	        
+    }).on('changed.jstree', function (e, data) {
+        console.log("선택된 노드:", data.selected);
+        if (data.selected.length > 0) {
+            const selectedId = data.selected[0]; // 선택된 노드의 ID
+            console.log("선택된 노드 ID:", selectedId);
+
+            // 설정된 콜백 함수 호출
+            if (typeof selectIdCallback === "function") {
+                selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+            }
+        } else {
+            console.log("선택된 노드가 없습니다.");
+        }
+    }).on("load_node.jstree", function (e, data) {
+        console.log("노드 로드 완료:", data.node);
+    });
 }
+
+
+// function processJsTreeData(response) {
+//     // 노드에 children 여부를 설정
+//     const nodesWithChildren = response.reduce((acc, item) => {
+//         acc[item.parent] = acc[item.parent] || [];
+//         acc[item.parent].push(item.id);
+//         return acc;
+//     }, {});
+//
+//     return response.map(item => ({
+//         id: item.id, // 고유 ID
+//         parent: item.parent, // 부모 ID
+//         text: item.text, // 노드에 표시할 텍스트
+//         type: item.type, // 노드 유형
+//         children: !!nodesWithChildren[item.id], // children이 있으면 true
+//         li_attr: { // HTML <li> 태그에 추가 속성
+//             "data-menu-depth": item.menuDepth,
+//             "data-menu-order": item.menuOrder
+//         },
+//         a_attr: { // HTML <a> 태그에 추가 속성
+//             "data-menu-depth": item.menuDepth,
+//             "data-menu-order": item.menuOrder
+//         }
+//     }));
+// }
+
+// function processJsTreeData(response) {
+//     // 부모 ID 기준으로 자식 노드를 그룹화
+//     const nodesWithChildren = response.reduce((acc, item) => {
+//         acc[item.parent] = acc[item.parent] || [];
+//         acc[item.parent].push(item.id);
+//         return acc;
+//     }, {});
+//
+//     response.forEach(item => {
+//         if (!item.id || !item.parent) {
+//             console.warn("잘못된 데이터:", item);
+//         }
+//         if (item.parent !== "#" && !response.find(x => x.id === item.parent)) {
+//             console.warn("유효하지 않은 parent:", item);
+//         }
+//     });
+//
+//     return response.map(item => ({
+//         id: item.id, // 고유 ID
+//         parent: item.parent, // 부모 ID
+//         text: item.text, // 노드에 표시할 텍스트
+//         type: item.type, // 노드 유형
+//         children: nodesWithChildren[item.id]?.length > 0, // 자식 노드가 있으면 true
+//         li_attr: { // HTML <li> 태그에 추가 속성
+//             "data-menu-depth": item.menuDepth,
+//             "data-menu-order": item.menuOrder
+//         },
+//         a_attr: { // HTML <a> 태그에 추가 속성
+//             "data-menu-depth": item.menuDepth,
+//             "data-menu-order": item.menuOrder
+//         }
+//     }));
+// }
+
+function processJsTreeData(response) {
+    // 부모 ID 기준으로 자식 노드를 그룹화
+    const nodesWithChildren = response.reduce((acc, item) => {
+        acc[item.parent] = acc[item.parent] || [];
+        acc[item.parent].push(item.id);
+        return acc;
+    }, {});
+
+    return response.map(item => ({
+        id: item.id, // 고유 ID
+        parent: item.parent, // 부모 ID
+        text: item.text, // 노드에 표시할 텍스트
+        type: item.type, // 노드 유형 (부서 또는 직원)
+        children: item.type === 'default' ? !!nodesWithChildren[item.id] : false, // 부서는 자식 여부, 직원은 항상 false
+        li_attr: { // HTML <li> 태그에 추가 속성
+            "data-menu-depth": item.menuDepth,
+            "data-menu-order": item.menuOrder
+        },
+        a_attr: { // HTML <a> 태그에 추가 속성
+            "data-menu-depth": item.menuDepth,
+            "data-menu-order": item.menuOrder
+        }
+    }));
+}
+
+
 
 function getSelectId(callback) {
     selectIdCallback = callback;
