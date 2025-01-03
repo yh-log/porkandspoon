@@ -45,8 +45,25 @@
 		SELECT * FROM notice WHERE username = #{username} ORDER BY create_date DESC
 	</select>
 	
+	<select id="getDraftLine" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT * FROM approval_line WHERE username = #{username} AND draft_idx = #{from_idx}
+	</select>
 	
-	
+	<select id="getDraft" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT 
+	        al.*,
+	        d.username AS user_name,
+	        d.subject
+	    FROM 
+	        approval_line al
+	    JOIN 
+	        draft d
+	    ON 
+	        al.draft_idx = d.draft_idx
+	    WHERE 
+	        al.draft_idx = #{draft_idx} 
+	        AND al.order_num = #{order_num}
+	</select>
 	
 	
 	

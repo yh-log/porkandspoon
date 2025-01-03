@@ -18,6 +18,13 @@ public class NoticeDTO extends ResponseDTO {
 	private LocalDateTime check_date;
 	private String board_idx;
 	private String recreate_date;
+	private String state;
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
 	public String getRecreate_date() {
 		return recreate_date;
 	}

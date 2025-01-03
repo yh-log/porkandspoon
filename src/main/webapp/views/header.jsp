@@ -37,8 +37,8 @@ function displayAlarmMessage(alarm) {
     alarmMessage.style.display = 'flex';
     alarmMessage.style.opacity = '1'; // 천천히 나타나기
 
-    /* // 3초 후 메시지 천천히 사라짐
-    setTimeout(function () {
+    // 3초 후 메시지 천천히 사라짐
+    /* setTimeout(function () {
         alarmMessage.style.opacity = '0'; // 점점 사라지기
         setTimeout(function () {
             alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
@@ -276,7 +276,7 @@ setInterval(checkNewAlarms, 5000); */
 
 	            // 동적 HTML 생성
 	            const alarmHTML = 
-	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
+	                '<div class="alarm-item" id="alarmBox" onclick="deleteAlarm('+ alarm.alarm_idx +')" data-alarm-idx="' + alarm.idx + '">' +
 	                '    <div class="alarm-item">' +
 	                '        <a href="' + alarm.url + '">' + // href 속성으로 URL 처리
 	                '            <span id="al_subject">' + alarm.subject + '</span>' +
@@ -284,7 +284,7 @@ setInterval(checkNewAlarms, 5000); */
 	                '            <span id="al_date">' + relativeTime + '</span>' +
 	                '        </a>' +
 	                '    </div>' +
-	                '    <button style="background : #fff" class="alarmclose" data-alarm-idx="' + alarm.idx + '">×</button>' +
+	                '    <button style="background : #fff" class="alarmclose" onclick="deleteAlarm('+ alarm.alarm_idx +')" data-alarm-idx="' + alarm.idx + '">×</button>' +
 	                '</div>';
 
 	            alarmListContent.append(alarmHTML);
@@ -310,8 +310,10 @@ setInterval(checkNewAlarms, 5000); */
 	    }
 	}
 
-
-	
+	function deleteAlarm(data) {
+		console.log(data);
+	}
+ 	
 	
 		
 </script>
