@@ -125,11 +125,11 @@
 					<h4 class="menu-title">매장관리</h4>
 					<div class="buttons">							
 						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchdule'">스케줄 관리</button>
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchedule'">스케줄 관리</button>
 					</div>
 					
 					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
 						<li><a href="/ad/rest/List">휴점신청</a></li>
 						
 					</ul>
@@ -158,6 +158,12 @@
 		                           <th class="align-l">입사일</th>
 		                           <td >${info.join_date}</td>
 		                        </tr>
+		                        <c:if test="${info.is_quit == 'Y'}">
+								    <tr>
+								        <th class="align-l">퇴사일</th>
+								        <td>${info.quit_date}</td>
+								    </tr>
+								</c:if>
 		                        <tr>
 		                           <th class="align-l">성별</th>
 		                          <td > 
@@ -191,10 +197,19 @@
 		                           <th class="align-l">시급</th>
 		                          <td >${info.pay}</td>
 		                        </tr>
-		                        <tr>
-		                           <th class="align-l">주소</th>
-		                          <td >${info.address}</td>
-		                        </tr>
+		                       <tr>
+								    <th class="align-l">주소</th>
+								    <td>
+								        <c:choose>
+								            <c:when test="${info.address != null && !info.address.isEmpty()}">
+								                ${info.address}
+								            </c:when>
+								            <c:otherwise>
+								                미등록
+								            </c:otherwise>
+								        </c:choose>
+								    </td>
+								</tr>
 			                  <tr>
 								    <th class="align-l">근무 요일</th>
 								    <td>
@@ -212,7 +227,15 @@
 		                 
 							<div id="btn-gap">							
 								<button type="button" class="btn btn-primary" onclick="location.href='/ad/part/Update/${info.part_idx}'">수정</button>
-								<button class="btn btn-outline-primary" onclick="location.href = '/ad/part/List'">취소</button>
+								<button class="btn btn-outline-primary" 
+							    onclick="
+							    <c:choose>
+							        <c:when test='${info.is_quit == "Y"}'>location.href = '/ad/part/Quit'</c:when>
+							        <c:otherwise>location.href = '/ad/part'</c:otherwise>
+							    </c:choose>
+							">
+							    취소
+							</button>
 							</div>
 				         
 	                  		</div>
