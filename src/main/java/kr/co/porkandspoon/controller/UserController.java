@@ -1053,7 +1053,7 @@ public class UserController {
 		logger.info(CommonUtil.toString(userDto));
 		
 		UserDTO dto = new UserDTO();
-		
+
 		boolean result = userService.setEmployeeTransfer(userDto);
 		
 		if(result) {
@@ -1071,7 +1071,7 @@ public class UserController {
 	@PutMapping(value="/ad/setStoreTransfer")
 	public UserDTO setStoreTransfer(@RequestBody List<UserDTO> userDto) {
 		
-		logger.info(CommonUtil.toString(userDto));
+		logger.info("컨트롤러 => " + CommonUtil.toString(userDto));
 		
 		boolean result = userService.setStoreTransfer(userDto);
 		

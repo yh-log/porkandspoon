@@ -854,6 +854,7 @@ public class UserService {
 		// 직원 데이블 정보 변경
 		for (UserDTO user : userDto) {
 	        int result = userDao.updateEmployeeUser(user);
+			logger.info("직원 테이블 업데이트 => " + result);
 	        if (result < 1) {
 	            logger.warn("업데이트 실패: " + user.getUsername());
 	            return false;
@@ -869,20 +870,74 @@ public class UserService {
 	 * 직영점 인사이동
 	 */
 	public boolean setStoreTransfer(List<UserDTO> userDto) {
+
+		logger.info("서비스 => " + CommonUtil.toString(userDto));
 		
+		// 직영점 인사이동
 		int insertRow = userDao.setStoreTransfer(userDto);
 		logger.info("직영점 이동 로우 => " + insertRow);
 		
 		if(insertRow < 1) {
-			logger.warn("인사이동 입력이 미완료되었습니다");
+			logger.warn("직영점 이동 입력이 미완료되었습니다");
 			return false;
 		}
-		
-		// user 테이블 + 직영점 테이블 수정 필요
-		// 직원 테이블 수정
-		
-		
-		return false;
+
+		// 기존 직영점 주 인사이동
+		int storeInsertRow = userDao.setExistingStoreTransfer(userDto);
+
+		logger.info("기존 직염점 주 변경 인사 로우 => " + storeInsertRow);
+
+		if(storeInsertRow < 1) {
+			logger.warn("기존 직영점주의 직영점 이동 입력이 미완료되었습니다");
+			return false;
+		}
+
+		boolean insertResult = false;
+
+		// 1차 update - 직원 테이블
+		for (UserDTO user : userDto) {
+			int result = userDao.updateStoreUser(user);
+			logger.info("직원 테이블 업데이트 => " + result);
+			if (result < 1) {
+				logger.warn("업데이트 실패: " + user.getUsername());
+				return false;
+			}
+
+			//int temporaryRow = userDao.temporaryStoreId(user);
+			int storeResult = userDao.updateStoreOwner(user);
+			logger.info("직영점 테이블 업데이트 => " + storeResult);
+
+			if (storeResult < 1) {
+				logger.warn("업데이트 실패: " + user.getUsername());
+				return false;
+			}
+
+			insertResult = true;
+		}
+
+		if(insertResult){
+			for (UserDTO user : userDto) {
+				user.setUsername(user.getOwner());
+				user.setNew_position(user.getOld_position());
+
+				// 직원 테이블 업데이트
+				int result = userDao.updateStoreUser(user);
+				logger.info("2차 직원 테이블 업데이트 => " + result);
+				if (result < 1) {
+					logger.warn("2차 업데이트 실패: " + user.getUsername());
+					return false;
+				}
+
+				// 직영점 테이블 업데이트
+				int storeResult = userDao.updateStoreOwner(user);
+				logger.info("2차 직영점 테이블 업데이트 => " + storeResult);
+				if (storeResult < 1) {
+					logger.warn("2차 업데이트 실패: " + user.getUsername());
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	/**

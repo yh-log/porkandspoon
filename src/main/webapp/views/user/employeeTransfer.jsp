@@ -209,17 +209,15 @@ hTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAA
 											</div>
 											<div class="card user-list-style">
 												<table id="customTable">
-										            <thead id="orgHeader">
-										                <tr>
-										                    
-										                </tr>
+										            <thead id="orgHeaderTransfer">
+
 										            </thead>
-										            <tbody id="orgBody" class="scrollable-tbody">
-										                
+										            <tbody id="orgBodyTransfer" class="scrollable-tbody">
+
 										            </tbody>
-										            <tfoot id="orgFooter">
-										                <tr>
-										                    
+										            <tfoot id="orgFooterTransfer">
+														<tr>
+															<th></th>
 										                </tr>
 										            </tfoot>
 										        </table>
@@ -483,22 +481,24 @@ var modal = document.getElementById("chartModalBox");
 
 function modelTransferOpen(){
 	 modal.style.display = "block"; // 모달 열기
+
+	document.getElementById('employee').click();
+
+	$('#employee, #leave').on('click', function (){
+		console.log('클릭 되었어요!! ');
+		$('#orgHeaderTransfer').empty();
+		$('#orgHeaderTransfer').append('<tr><th>사번</th><th>이름</th><th>부서</th><th>직위</th><th><i class="bi bi-trash3"></i></th></tr>');
+	});
+
+	$('#store').on('click', function (){
+		$('#orgHeaderTransfer').empty();
+		$('#orgHeaderTransfer').append('<tr><th>사번</th><th>이름</th><th>부서</th><th>직영점</th><th><i class="bi bi-trash3"></i></th></tr>');
+	});
 	 loadOrgChartData(); // 데이터 로드 함수 호출
 }
 
-// 인사이동 기능 
-const initialData = {
-	    headers: ['사번', '이름', '부서', '직위', '<i class="bi bi-trash3"></i>'],
-	    rows: [
-	    	
-	    
-	    ],
-		footer: '<div></div>',
-	};
 
-	var exampleData = JSON.parse(JSON.stringify(initialData));
-
-	 // 선택된 ID를 rows에 추가하는 함수
+// 선택된 ID를 rows에 추가하는 함수
 function addSelectedIdToRows(selectedId) {
 
 	console.log(selectedId);
@@ -513,6 +513,15 @@ function addSelectedIdToRows(selectedId) {
 				console.log(response);
 
 				var userResult = response[0];
+
+				var uniqueId = userResult.person_num;
+
+				var hiddenInput =
+						'<input type="hidden" name="old_position_' + uniqueId + '" value="' + userResult.old_position + '"/>' +
+						'<input type="hidden" name="old_department_' + uniqueId + '" value="' + userResult.old_department + '"/>' +
+						'<input type="hidden" name="username_' + uniqueId + '" value="' + userResult.username + '"/>';
+
+				$('#orgBodyTransfer').append(hiddenInput);
 
 				var deptSelect = document.createElement('select');
 				deptSelect.className = 'form-select selectStyle';
@@ -530,15 +539,9 @@ function addSelectedIdToRows(selectedId) {
 							console.log('동일한 ', item.parent);
 							option.setAttribute('selected', 'selected');
 						}
-
-						// 기본 선택값 설정 (old_department와 동일한 값)
-
 						deptSelect.appendChild(option);
-
 					}
-
 				});
-				//deptSelect.value = userResult.old_department.trim();
 
 				var positionSelect = document.createElement('select');
 				positionSelect.className = 'form-select selectStyle';
@@ -557,20 +560,24 @@ function addSelectedIdToRows(selectedId) {
 					}
 				});
 
+				if (lastClickedButtonId === 'leave') {
+					deptSelect.setAttribute('disabled', 'disabled');
+					positionSelect.setAttribute('disabled', 'disabled');
+				}
+
 				console.log("부서 선택:", deptSelect.outerHTML);
 				console.log("직위 선택:", positionSelect.outerHTML);
 				var cencleUser = '<div onclick="chartTableDelete(this, \'' + userResult.person_num + '\')"><i class="bi bi-trash3"></i></div>';
 
-				var setUsetInfo = '<input type="hidden" name="old_position" value="'+userResult.old_position+'"/><input type="hidden" name="old_department" value="'+ userResult.old_department +'"/><input type="hidden" name="username" value="'+ userResult.username +'"/>' + userResult.person_num;
+				var content = '<tr>' +
+						'<td>' + userResult.person_num + '</td>' +
+						'<td>' + userResult.name + '</td>' +
+						'<td>' + deptSelect.outerHTML + '</td>' +
+						'<td>' + positionSelect.outerHTML + '</td>' +
+						'<td>' + cencleUser + '</td>' +
+						'</tr>';
 
-				// 새로운 row 데이터 생성 outerHTML 이거를 추가해줘야 DOM 요소를 HTML 문자열로 변환해준다!
-				const newRow = [setUsetInfo, userResult.name, deptSelect.outerHTML, positionSelect.outerHTML, cencleUser];
-
-				// 기존 rows에 추가
-				exampleData.rows.push(newRow);
-
-				// 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
-				updateTableData('customTable', exampleData);
+				$('#orgBodyTransfer').append(content);
 
 			},error: function(e){
 				console.log(e);
@@ -587,45 +594,57 @@ function addSelectedIdToRows(selectedId) {
 				console.log(response);
 
 				var userResult = response[0];
+				var deptResult = response[1];
 
-				var deptSelect = document.createElement('select');
-				deptSelect.className = 'form-select selectStyle';
+				var uniqueId = userResult.person_num;
+
+				var hiddenInput =
+						'<input type="hidden" name="old_position_' + uniqueId + '" value="' + userResult.old_position + '"/>' +
+						'<input type="hidden" name="old_department_' + uniqueId + '" value="' + userResult.old_department + '"/>' +
+						'<input type="hidden" name="username_' + uniqueId + '" value="' + userResult.username + '"/>';
+
+				$('#orgBodyTransfer').append(hiddenInput);
+
+				var positionSelect = document.createElement('select');
+				positionSelect.className = 'form-select selectStyle';
 
 				// `response` 데이터를 순회하며 `<option>` 추가
 				response.forEach(function(item) {
-					if (item.id !== null && item.id !== '' && item.dept_name !== null && item.dept_name !== '') {
+					if (item.title !== null && item.title !== '' && item.dept_name !== null && item.dept_name !== '') {
 						var option = document.createElement('option');
-						option.value = item.id;
+						option.value = item.title;
 						option.textContent = item.dept_name;
 
 						console.log(userResult.old_department,'는');
 
-						if (item.parent === userResult.old_department) {
-							console.log('동일한 ', item.parent);
+						if (item.owner === userResult.username) {
+							option.setAttribute('data-owner', item.owner);
+						}
+						var ownerInput =
+								'<input type="hidden" name="owner_' + uniqueId + '_' + item.title + '" value="' + item.owner + '"/>';
+
+						$('#orgBodyTransfer').append(ownerInput);
+
+						if (item.title === userResult.old_position) {
+							console.log('동일한 ', item.dept_name);
 							option.setAttribute('selected', 'selected');
 						}
-
-						// 기본 선택값 설정 (old_department와 동일한 값)
-
-						deptSelect.appendChild(option);
-
+						positionSelect.appendChild(option);
 					}
-
 				});
 
-				console.log("부서 선택:", deptSelect.outerHTML);
+				console.log("부서 선택:", positionSelect.outerHTML);
 				var cencleUser = '<div onclick="chartTableDelete(this, \'' + userResult.person_num + '\')"><i class="bi bi-trash3"></i></div>';
 
-				var setUsetInfo = '<input type="hidden" name="old_position" value="'+userResult.old_position+'"/><input type="hidden" name="old_department" value="'+ userResult.old_department +'"/><input type="hidden" name="username" value="'+ userResult.username +'"/>' + userResult.person_num;
+				var content = '<tr>' +
+						'<td>' + userResult.person_num + '</td>' +
+						'<td>' + userResult.name + '</td>' +
+						'<td>' + deptResult.text + '</td>' +
+						'<td>' + positionSelect.outerHTML + '</td>' +
+						'<td>' + cencleUser + '</td>' +
+						'</tr>';
 
-				// 새로운 row 데이터 생성 outerHTML 이거를 추가해줘야 DOM 요소를 HTML 문자열로 변환해준다!
-				const newRow = [setUsetInfo, userResult.name, deptSelect.outerHTML, deptSelect.outerHTML, cencleUser];
-
-				// 기존 rows에 추가
-				exampleData.rows.push(newRow);
-
-				// 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
-				updateTableData('customTable', exampleData);
+				$('#orgBodyTransfer').append(content);
 
 			},error: function(e){
 				console.log(e);
@@ -661,39 +680,51 @@ function addSelectedIdToRows(selectedId) {
 		}
 
 
-	 function transferAdd(){
-		 
-		 const userDto = exampleData.rows.map(row => {
-			    const container = document.createElement('div');
-			    container.innerHTML = row[0]; // row[0]의 HTML 문자열을 DOM으로 변환
+function transferAdd() {
+	const userDto = [];
 
-			    const oldPosition = container.querySelector('input[name="old_position"]').value;
-			    const oldDepartment = container.querySelector('input[name="old_department"]').value;
-			    const userName = container.querySelector('input[name="username"]').value;
-			    const personNum = container.textContent.trim(); // HTML 외 텍스트 값(person_num)
-			    const transferDate = $('input[name="transfer_date"]').val();
+	$('#orgBodyTransfer tr').each(function () {
+		const personNum = $(this).find('td:eq(0)').text().trim();
+		const name = $(this).find('td:eq(1)').text().trim();
+		const newDepartment = $(this).find('td:eq(2) select').val();
+		const newPosition = $(this).find('td:eq(3) select').val();
 
-			    return {
-			        person_num: personNum,
-			        old_position: oldPosition,
-			        old_department: oldDepartment,
-			        transfer_date: transferDate,
-			        username: userName,
-			        name: row[1],
-			        new_department: $(row[2]).val(),
-			        new_position: $(row[3]).val(),
-			        type: lastClickedButtonId,
-			        create: 'admin',
-			    }; // todo - 나중에 로그인한 아이디로 create 넣기
-			});
-		 
-		 console.log('가공', userDto);
-		 
-		
-		 httpVariousAjax('PUT', '/ad/setEmployeeTransfer', JSON.stringify(userDto), 'application/json');
-		 //httpVariousAjax('DELETE', '/ad/userQuitDelete', JSON.stringify(userDto), 'application/json');
-		 
-	 }
+		const oldPosition = $('input[name="old_position_' + personNum + '"]').val(); // 숨겨진 old_position 값
+		const oldDepartment = $('input[name="old_department_' + personNum + '"]').val(); // 숨겨진 old_department 값
+		const username = $('input[name="username_' + personNum + '"]').val(); // 숨겨진 username 값
+		const transferDate = $('input[name="transfer_date"]').val(); // 발령일자
+		const create = 'admin'; // todo - 고정 값 (로그인 사용자 정보로 수정 가능)
+
+		const owner = $('input[name="owner_' + personNum + '_' + newPosition + '"]').val();
+
+
+
+		userDto.push({
+			person_num: personNum,
+			old_position: oldPosition,
+			old_department: oldDepartment,
+			transfer_date: transferDate,
+			username: username,
+			name: name,
+			new_department: newDepartment,
+			new_position: newPosition,
+			create: create,
+			owner: owner,
+		});
+	});
+
+	console.log('가공된 데이터:', userDto);
+
+	if (lastClickedButtonId === 'employee') {
+		httpVariousAjax('PUT', '/ad/setEmployeeTransfer', JSON.stringify(userDto), 'application/json');
+	} else if (lastClickedButtonId === 'store') {
+		console.log('여기');
+		httpVariousAjax('PUT', '/ad/setStoreTransfer', JSON.stringify(userDto), 'application/json');
+	} else {
+		httpVariousAjax('DELETE', '/ad/userQuitDelete', JSON.stringify(userDto), 'application/json');
+	}
+}
+
 </script>
 
 </html>

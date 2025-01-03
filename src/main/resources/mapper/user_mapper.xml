@@ -902,10 +902,6 @@
 		username = #{username} 
 	</update> 
 
-
-
-
-
 	<!-- 직원 퇴사 처리 -->
 	<update id="usrQuitDelete"
 		parameterType="kr.co.porkandspoon.dto.UserDTO">
@@ -918,18 +914,19 @@
 		resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT
 			u.name AS name,
+			u.person_num AS person_num,
 			u.username AS username,
-			u.parent AS old_department,
-			u.position AS old_position,
-			c2.content AS position,
-			NULL AS id,
+			ds.parent AS old_department,
+			ds.id AS old_position,
+			NULL AS title,
 			NULL AS dept_name,
 			NULL AS owner,
-			NULL AS parent
+			NULL AS parent,
+			NULL AS text
 			FROM
 				user u
 				LEFT JOIN
-				code c2 ON u.`position` = c2.name
+				direct_store ds ON u.parent = ds.id
 			WHERE
 				u.username = #{username}
 
@@ -937,16 +934,17 @@
 
 			SELECT
 				NULL AS name,
+				NULL AS person_num,
 				NULL AS username,
 				NULL AS old_department,
 				NULL AS old_position,
-				NULL AS position,
-				ds.id AS id,
+				ds.id AS title,
 				ds.name AS dept_name,
 				ds.owner AS owner,
-				ds.parent AS parent
+				ds.parent AS parent,
+				d.text AS text
 			FROM
-				direct_store ds
+				direct_store ds LEFT JOIN department d ON ds.parent =  d.id
 			WHERE
 				ds.parent IN (
 				SELECT
@@ -957,5 +955,34 @@
 				owner = #{username}
 				)
 	</select>
+
+	<!-- 직영점 인사이동 -->
+	<insert id="setStoreTransfer" parameterType="java.util.List">
+		INSERT INTO employee_transfer(username, transfer_date, old_department, new_department, old_position, new_position, creater, type)
+		    VALUES
+			<foreach collection="list" item="user" separator=",">
+			 	(#{user.username}, #{user.transfer_date}, #{user.old_department}, #{user.old_department}, #{user.old_position}, #{user.new_position}, #{user.creater}, 'S')
+			</foreach>
+	</insert>
+
+	<!-- 기존 직영점 주 변경 인사 히스토리 -->
+	<insert id="setExistingStoreTransfer" parameterType="java.util.List">
+		INSERT INTO employee_transfer(username, transfer_date, old_department, new_department, old_position, new_position, creater, type)
+			VALUES
+			<foreach collection="list" item="user" separator=",">
+				(#{user.owner}, #{user.transfer_date}, #{user.old_department}, #{user.old_department}, #{user.new_position}, #{user.old_position}, #{user.creater}, 'S')
+			</foreach>
+	</insert>
+
+	<!-- 직영점 이동 시 직원 테이블 업데이트 -->
+	<update id="updateStoreUser" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET parent = #{new_position} WHERE username = #{username}
+	</update>
+
+
+	<!-- 직영점 이동 시 직영점 테이블 업데이트 -->
+	<update id="updateStoreOwner" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE direct_store SET owner = #{username} WHERE id = #{new_position}
+	</update>
 
 </mapper>
