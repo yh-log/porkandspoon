@@ -1,5 +1,8 @@
 package kr.co.porkandspoon.service;
 
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +24,12 @@ public class AlarmService {
 	List<NoticeDTO> noticedto = new ArrayList<NoticeDTO>();
 
 	public void saveAlarm(NoticeDTO noticeDTO) {
-		// 보낸 사용자의 username 을 통해 name 가져오기
-		
+		ZoneId koreaZone = ZoneId.of("Asia/Seoul");
+	    ZonedDateTime  nowInKorea = ZonedDateTime.now(koreaZone);
+	    Timestamp currentTimestamp = Timestamp.valueOf(nowInKorea.toLocalDateTime());
+
+	    // 한국 시간으로 설정
+	    noticeDTO.setCreate_date(currentTimestamp);
 		// 대댓글 = 해당 게시글의 데이터 가져오기
 		if (noticeDTO.getCode_name() == "ml004") {
 			BoardDTO boarddto = new BoardDTO();
@@ -43,13 +50,13 @@ public class AlarmService {
 		
 		switch (noticeDTO.getCode_name()) {
 		case "ml003":
-			noticeDTO.setSubject("<b>" + sub + "</b>&nbsp; 게시물에 댓글이 달렸습니다.");
-			noticeDTO.setContent("<b>" + username + "</b> &nbsp;님이&nbsp; <b>" + sub + "</b> &nbsp;게시글에 댓글을 작성했습니다.");
+			noticeDTO.setSubject("댓글");
+			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;게시글에 댓글이 달렸습니다.");
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml004":
-			noticeDTO.setSubject("<b>" + sub + "</b>&nbsp; 게시물에 대댓글이 달렸습니다.");
-			noticeDTO.setContent("<b>" + username + "</b> &nbsp;님이&nbsp; <b>" + sub + "</b> &nbsp;게시물에 대댓글을 작성했습니다.");
+			noticeDTO.setSubject("대댓글");
+			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;게시물에 대댓글이 달렸습니다.");
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getBoard_idx());
 			break;
 		default:

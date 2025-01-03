@@ -123,7 +123,7 @@ setInterval(checkNewAlarms, 5000); */
 		white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */
 	    overflow: hidden; /* 넘치는 부분을 숨김 */
 	    text-overflow: ellipsis; /* 잘린 부분에 "..."을 표시 */
-	    width: 174px;
+	    width: 272px;
 	}
 	
 	#al_date{
@@ -265,29 +265,52 @@ setInterval(checkNewAlarms, 5000); */
 	});
 	
 	function drawAlarm(response) {
-		console.log('실행');
-	    console.log("전체 응답:", response); // 전체 데이터 확인
-	    const alarmListContainer = $('#alarmList');
-	    alarmListContainer.empty(); // 기존 내용 제거
+	    const alarmListContent = $('#alarmListContent');
+	    alarmListContent.empty(); // 기존 내용 제거
 
 	    if (response && response.length > 0) {
 	        response.forEach(function(alarm) {
+	            // 상대적 시간 계산
+	            const relativeTime = getRelativeTime(alarm.create_date);
+
+
+	            // 동적 HTML 생성
 	            const alarmHTML = 
 	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
-	                '    <div class="alarm-item" onclick="chatWindowSet(\'' + alarm.chatUrl + '\')">' +
-	                '        <span id="al_subject">' + alarm.subject + '</span>' +
-	                '        <span id="al_content">' + alarm.content + '</span>' +
-	                '        <span id="al_date">' + alarm.date + '</span>' +
+	                '    <div class="alarm-item">' +
+	                '        <a href="' + alarm.url + '">' + // href 속성으로 URL 처리
+	                '            <span id="al_subject">' + alarm.subject + '</span>' +
+	                '            <span id="al_content">' + alarm.content + '</span>' +
+	                '            <span id="al_date">' + relativeTime + '</span>' +
+	                '        </a>' +
 	                '    </div>' +
 	                '    <button style="background : #fff" class="alarmclose" data-alarm-idx="' + alarm.idx + '">×</button>' +
 	                '</div>';
 
-	            alarmListContainer.append(alarmHTML);
+	            alarmListContent.append(alarmHTML);
 	        });
 	    } else {
-	        alarmListContainer.append('<li>새로운 알림이 없습니다.</li>');
+	        alarmListContent.append('<div class="no-alarm">새로운 알림이 없습니다.</div>');
 	    }
 	}
+
+	function getRelativeTime(createDate) {
+	    const now = new Date(); // 현재 시간
+	    const past = new Date(createDate); // recreate_date를 Date 객체로 변환
+	    const diff = Math.floor((now - past) / 1000); // 시간 차이를 초 단위로 계산
+
+	    if (diff < 60) {
+	        return diff + "초 전";
+	    } else if (diff < 3600) {
+	        return Math.floor(diff / 60) + "분 전";
+	    } else if (diff < 86400) {
+	        return Math.floor(diff / 3600) + "시간 전";
+	    } else {
+	        return Math.floor(diff / 86400) + "일 전";
+	    }
+	}
+
+
 	
 	
 		

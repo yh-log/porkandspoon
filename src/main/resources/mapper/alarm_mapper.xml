@@ -6,7 +6,7 @@
 <mapper namespace="kr.co.porkandspoon.dao.AlarmDAO">
 	
 	<insert id="savaAlarm" parameterType="kr.co.porkandspoon.dto.NoticeDTO">
-		INSERT INTO notice(username, code_name, subject, content, from_id, from_idx, url) VALUES(#{username}, #{code_name}, #{subject}, #{content}, #{from_id}, #{from_idx}, #{url})
+		INSERT INTO notice(username, code_name, subject, content, from_id, from_idx, url, create_date) VALUES(#{username}, #{code_name}, #{subject}, #{content}, #{from_id}, #{from_idx}, #{url}, #{create_date})
 	</insert>
 	
 	<select id="getUsername" resultType="String">
