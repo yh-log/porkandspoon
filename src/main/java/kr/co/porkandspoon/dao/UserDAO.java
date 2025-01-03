@@ -260,7 +260,9 @@ public interface UserDAO{
 	 * 직원 정보 업데이트 (인사이동)
 	 */
 	int updateEmployeeUser(UserDTO user);
-
+	
+	
+	
 	/**
 	 * author yh.kim, (25.01.02)
 	 * 직영점 인사이동
@@ -272,6 +274,13 @@ public interface UserDAO{
 	 * 직원 퇴사 처리 
 	 */
 	int usrQuitDelete(UserDTO user);
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직영점 이동 시 직영점 name 조회
+	 */
+	List<DeptDTO> storeTransferInfo(String username);
+
 
 
 }
