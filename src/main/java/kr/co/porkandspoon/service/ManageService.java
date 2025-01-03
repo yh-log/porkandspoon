@@ -65,6 +65,7 @@ Logger logger = LoggerFactory.getLogger(getClass());
 		manageDAO.editPart(params);
 		String part_Idx = CommonUtil.toString(params.get("part_idx"));
         params.put("part_Idx", part_Idx);
+        
         manageDAO.deletePartTime(part_Idx);
         
 		for (int i = 0; i < workDates.size(); i++) {
