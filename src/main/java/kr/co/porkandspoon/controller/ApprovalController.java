@@ -44,7 +44,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.service.AlarmService;
 import kr.co.porkandspoon.service.ApprovalService;
 
 @RestController
@@ -53,6 +55,7 @@ public class ApprovalController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired ApprovalService approvalService;
+	@Autowired AlarmService alarmService;
 	
 	@Value("${upload.path}") String paths;
 	
@@ -477,6 +480,13 @@ public class ApprovalController {
 		approvalDTO.setUsername(userDetails.getUsername());
 		boolean success = approvalService.returnDraft(approvalDTO);
 		
+		// 결재 반려 알림
+		NoticeDTO noticedto = new NoticeDTO();
+		noticedto.setFrom_idx(approvalDTO.getDraft_idx());
+		noticedto.setUsername(approvalDTO.getUsername());
+		noticedto.setCode_name("ml009");
+		alarmService.saveAlarm(noticedto);
+		
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success",success);
 		return result;
@@ -495,6 +505,21 @@ public class ApprovalController {
 		if(approvalRow > 0 && statusRow > 0) {
 			success = true;
 		}
+		
+		// 다음 사람에게 요청 알림
+		NoticeDTO noticedto = new NoticeDTO();
+		noticedto.setFrom_idx(approvalDTO.getDraft_idx());
+		noticedto.setUsername(approvalDTO.getUsername());
+		noticedto.setCode_name("ml007");
+		alarmService.saveAlarm(noticedto);
+		
+		// 기안자에게 승인 요청 알림
+		NoticeDTO noticeForRequester = new NoticeDTO();
+	    noticeForRequester.setFrom_idx(approvalDTO.getDraft_idx());
+	    noticeForRequester.setUsername(approvalDTO.getUsername());
+	    noticeForRequester.setCode_name("ml008");
+	    alarmService.saveAlarm(noticeForRequester);
+	    
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success",success);
 		return result;
