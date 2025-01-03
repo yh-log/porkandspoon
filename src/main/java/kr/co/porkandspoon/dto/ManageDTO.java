@@ -7,6 +7,7 @@ public class ManageDTO extends ResponseDTO {
     
 	//part 테이블
 	private String name;
+	private String part_name;
 	private Date birth;
 	private Date join_date;
 	private Date quit_date;
@@ -58,6 +59,16 @@ public class ManageDTO extends ResponseDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	public String getPart_name() {
+		return part_name;
+	}
+
+
+	public void setPart_name(String part_name) {
+		this.part_name = part_name;
 	}
 
 

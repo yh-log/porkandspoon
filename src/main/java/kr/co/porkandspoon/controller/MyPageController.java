@@ -275,10 +275,7 @@ public class MyPageController {
 	@ResponseBody
 	public Map<String, Object> getBuyListView(
 	        @AuthenticationPrincipal UserDetails userDetails, 
-	        @RequestParam String page, 
-	        @RequestParam String cnt, 
-	        @RequestParam(required = false, defaultValue = "") String opt, 
-	        @RequestParam(required = false, defaultValue = "") String keyword) {
+	      String page,  String cnt, String opt, String keyword) {
 
 	    int page_ = Integer.parseInt(page);
 	    int cnt_ = Integer.parseInt(cnt);

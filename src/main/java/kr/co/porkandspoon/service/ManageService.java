@@ -78,10 +78,40 @@ Logger logger = LoggerFactory.getLogger(getClass());
             manageDAO.setPartTime(timeParams);
         }
 		
-		return   1; 
-		
+		return   1; 	
+	}
 
+
+	public int count(int cnt, String opt, String keyword) {
 		
+		return manageDAO.count(cnt,opt,keyword);
+	}
+
+
+	public List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset) {
+		
+		return manageDAO.getPartList(opt,keyword,limit,offset);
+	}
+
+
+
+	public int Quitcount(int cnt, String opt, String keyword) {
+		
+		return manageDAO.Quitcount(cnt,opt,keyword);
+	}
+
+
+
+	public List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset) {
+		
+		return manageDAO.getPartQuitList(opt,keyword,limit,offset);
+	}
+
+
+
+	public List<ManageDTO> getPartTime(String owner) {
+		
+		return manageDAO.getPartTime(owner);
 	}
 
 

@@ -52,30 +52,46 @@
      z-index: 10; /* z-index로 다른 요소 위로 올리기 */
   }
 
- .fc-event {
-    background-color: transparent !important; /* 배경색 투명 */
-    border: none !important; /* 테두리 제거 */
-    color: black !important; /* 글자색 검정 */
-    font-size: 14px; /* 글자 크기 */
-    white-space: pre-wrap; /* 줄바꿈 허용 */
-    text-align: center !important; /* 가로 중앙 정렬 */
-    line-height: 1.5; /* 줄 간격 */
-    display: flex; /* 플렉스박스 사용 */
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-}
+
 	
-	.fc-daygrid-event .fc-event-title {
-	    color: black !important; /* 제목 글자색 검정 */
-	}
-	
-	.fc-daygrid-event:hover {
-	    background-color: transparent !important; /* 호버 시에도 배경 투명 */
-	    color: black !important; /* 호버 시 글자색 유지 */
-	}
 #home,#schedule{
 		width: 200px;
 	}
+	/* 이벤트 폭 고정 */
+	.fc-event {
+    position: absolute !important;
+    z-index: 1 !important;
+    width: 90% !important; /* 이벤트 간 폭 좁히기 */
+    margin-left: 10px; /* 좌측 간격 */
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+    color: #fff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+
+	
+	/* 겹칠 때 폭 좁아지는 현상 제거 */
+	.fc-timegrid-event {
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 5px;
+}
+
+/* 텍스트 정렬 및 색상 */
+.fc-event-title {
+    color: #fff !important;
+    text-align: center;
+    font-weight: bold;
+}
+
+  .fc-toolbar-chunk:nth-child(3) {
+    display: none !important; /* 'week' 버튼을 포함한 오른쪽 상단 버튼 숨김 */
+  }
+	
 </style>
 </head>
 <body>
@@ -93,7 +109,7 @@
 					</div>
 	
 					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
 						<li><a href="/ad/rest/List">휴점신청</a></li>
 					</ul>
 				</section>
@@ -165,17 +181,29 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calender');
-    var mealTypeSelector = document.getElementById('mealTypeSelector');
-    var calendar;
+    var colorMap = {};
 
-    // 캘린더 데이터 로드 함수
-    function loadEvents(is_time) {
-        var url = '/ad/mealMenu/' + is_time; // 엔드포인트에 is_time 추가
+    // 이름별 고유 색상 설정
+    function getRandomColor(name) {
+        if (!colorMap[name]) {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            colorMap[name] = color;
+        }
+        return colorMap[name];
+    }
+
+    // 이벤트 데이터 로드
+    function loadEvents() {
         $.ajax({
-            url: url,
+            url: '/ad/getPartTime',
             method: 'GET',
+            dataType: 'json',
             success: function (data) {
-                updateCalendar(data); // 데이터 업데이트
+                updateCalendar(data);
             },
             error: function (err) {
                 console.error('Failed to load events:', err);
@@ -183,53 +211,69 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // 캘린더 업데이트 함수
+    // 캘린더 이벤트 업데이트
     function updateCalendar(events) {
-        var formattedEvents = events.map(function (item) {
-            return {
-                title: formatEventContent(item), // 포맷된 텍스트로 변환
-                start: item.start_date,
-                end: item.end_date
-            };
+        var formattedEvents = [];
+        var maxOverlap = 3; // 최대 겹칠 수 있는 이벤트 수
+        var eventWidth = 100 / maxOverlap; // 이벤트 폭 계산
+
+        events.forEach(function (item, index) {
+            formattedEvents.push({
+                title: item.title,
+                daysOfWeek: [item.daysOfWeek],
+                startTime: item.startTime,
+                endTime: item.endTime,
+                backgroundColor: getRandomColor(item.title),
+                borderColor: getRandomColor(item.title),
+                zIndex: index + 1, // z-index는 순서대로 설정
+                overlapIndex: index % maxOverlap, // 겹칠 때의 위치를 순환적으로 설정
+                eventWidth: eventWidth // 폭 설정
+            });
         });
 
-        calendar.removeAllEvents(); // 기존 이벤트 제거
-        calendar.addEventSource(formattedEvents); // 새로운 이벤트 추가
+        calendar.removeAllEvents();
+        calendar.addEventSource(formattedEvents);
     }
 
-    // 메뉴 데이터를 줄바꿈 포맷으로 변환
-    function formatEventContent(item) {
-        const meals = item.content.split(','); // 예: "흑미밥,두부조림" -> ["흑미밥", "두부조림"]
-        return meals.join('\n'); // 각 메뉴를 줄바꿈으로 연결
-    }
-
-    // FullCalendar 초기화
-    calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['dayGrid', 'interaction'], 
-        headerToolbar: {
-            left: 'prev,next today',
+    // 캘린더 초기화
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['timeGrid', 'interaction'],
+        header: {
+            left: 'prev,next',
             center: 'title',
             right: ''
         },
         locale: 'ko',
-        buttonText: {
-            today: '오늘'
+        initialView: 'timeGridWeek',
+        events: [],
+        eventDidMount: function (info) {
+            var zIndex = info.event.extendedProps.zIndex || 1;
+            var overlapIndex = info.event.extendedProps.overlapIndex || 0;
+            var eventWidth = info.event.extendedProps.eventWidth || 100;
+
+            // 스타일 적용
+            info.el.style.backgroundColor = info.event.extendedProps.backgroundColor;
+            info.el.style.borderColor = info.event.extendedProps.borderColor;
+            info.el.style.position = 'absolute';
+            info.el.style.zIndex = zIndex;
+
+            // 이벤트 폭과 위치 조정
+            info.el.style.width = `${eventWidth}%`;
+            info.el.style.left = `${overlapIndex * eventWidth}%`;
+
+            // 텍스트 중앙 정렬
+            info.el.style.display = 'flex';
+            info.el.style.alignItems = 'center';
+            info.el.style.justifyContent = 'center';
         },
-        initialView: 'dayGridMonth',
-        events: []
+        eventOverlap: true // 이벤트 겹침 허용
     });
 
     calendar.render();
-
-    // 초기값 설정 및 데이터 로드
-    var initialMealType = mealTypeSelector.value;
-    loadEvents(initialMealType);
-
-    // 셀렉트박스 변경 시 데이터 갱신
-    mealTypeSelector.addEventListener('change', function () {
-        var selectedMealType = mealTypeSelector.value;
-        loadEvents(selectedMealType);
-    });
+    loadEvents();
 });
+
+
 </script>
+
 </html>

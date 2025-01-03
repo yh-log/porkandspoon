@@ -51,6 +51,67 @@
     DELETE FROM part_time WHERE part_idx = #{part_idx}
 </delete>
 
+ 	<select id="count" resultType="int" parameterType="int">
+    SELECT CEIL(count(part_idx) / #{cnt}) AS pages
+    FROM part
+    <where>
+        is_quit = 'N' 
+        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+            AND name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+	</select>
    
+   <select id="getPartList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+    SELECT p.*, s.name as spotName
+    FROM part p
+    LEFT JOIN direct_store s ON p.id = s.id
+    <where>
+        p.is_quit = 'N'
+        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+            AND p.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+    ORDER BY p.join_date DESC
+    LIMIT #{limit} OFFSET #{offset}
+</select>
+
+
+ 	<select id="Quitcount" resultType="int" parameterType="int">
+    SELECT CEIL(count(part_idx) / #{cnt}) AS pages
+    FROM part
+    <where>
+        is_quit = 'Y' 
+        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+            AND name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+	</select>
+   
+   <select id="getPartQuitList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+    SELECT p.*, s.name as spotName
+    FROM part p
+    LEFT JOIN direct_store s ON p.id = s.id
+    <where>
+        p.is_quit = 'Y'
+        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+            AND p.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </where>
+    ORDER BY p.join_date DESC
+    LIMIT #{limit} OFFSET #{offset}
+</select>
+   
+<select id="getPartTime" resultType="kr.co.porkandspoon.dto.ManageDTO">
+    SELECT pt.*, p.name AS part_name, p.join_date
+    FROM part_time pt
+    JOIN part p ON pt.part_idx = p.part_idx
+    WHERE p.id IN (
+        SELECT ds.id 
+        FROM direct_store ds 
+        WHERE ds.owner = #{owner} AND p.is_quit = 'N'
+    )
+</select>
+
 
 </mapper>

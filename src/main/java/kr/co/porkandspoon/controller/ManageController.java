@@ -1,5 +1,14 @@
 package kr.co.porkandspoon.controller;
 
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.ManageDTO;
+import kr.co.porkandspoon.dto.MealDTO;
 import kr.co.porkandspoon.service.ManageService;
 
 @RestController
@@ -44,16 +54,61 @@ public class ManageController {
 	
 	
 	//아르바이트
-	
 	@GetMapping(value="/ad/part")
 	public ModelAndView partListView() {
 		return new ModelAndView("/manage/partList");
 	}
 	
 	@GetMapping(value="/ad/part/List")
-	public ModelAndView getPartList() {
-		return new ModelAndView("/manage/partList");
+	public Map<String, Object> getPartList(String pg,  String count, String opt, String keyword) {
+		int page = Integer.parseInt(pg);
+	    int cnt = Integer.parseInt(count);
+	    int limit = cnt;
+	    int offset = (page - 1) * cnt;
+	    int totalPages = manageService.count(cnt, opt, keyword);
+	    
+	    List<ManageDTO> list = manageService.getPartList(opt, keyword, limit, offset);
+
+	    // 로그 출력
+	    logger.info("opt: {}", opt);
+	    logger.info("keyword: {}", keyword);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("totalPages", totalPages);
+	    result.put("currpage", page);
+	    result.put("list", list);
+
+	    return result;
 	}
+	
+	@GetMapping(value="/ad/part/Quit")
+	public ModelAndView partQuitListView() {
+		return new ModelAndView("/manage/partQuitList");
+	}
+	
+	@GetMapping(value="/ad/part/QuitList")
+	public Map<String, Object> getPartQuitList(String pg,  String count, String opt, String keyword) {
+		int page = Integer.parseInt(pg);
+	    int cnt = Integer.parseInt(count);
+	    int limit = cnt;
+	    int offset = (page - 1) * cnt;
+	    int totalPages = manageService.Quitcount(cnt, opt, keyword);
+	    
+	    List<ManageDTO> list = manageService.getPartQuitList(opt, keyword, limit, offset);
+
+	    // 로그 출력
+	    logger.info("opt: {}", opt);
+	    logger.info("keyword: {}", keyword);
+
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("totalPages", totalPages);
+	    result.put("currpage", page);
+	    result.put("list", list);
+
+	    return result;
+	}
+	
+	
 	
 	@GetMapping(value="/ad/part/Write")
 	public ModelAndView partWriteView() {
@@ -126,12 +181,67 @@ public class ManageController {
 	    return new ModelAndView("redirect:/ad/part/Detail/" + part_idx);
 	}
 
-	
-	@GetMapping(value="/ad/partSchdule")
-	public ModelAndView partSchduleView() {
-		return new ModelAndView("/manage/partSchdule");
+	@GetMapping(value = "/ad/partSchedule")
+	public ModelAndView partScheduleView() {
+		return new ModelAndView("/manage/partSchedule");
 	}
 	
+	
+	@GetMapping(value = "/ad/getPartTime")
+	public List<Map<String, Object>> getPartTime(@AuthenticationPrincipal UserDetails userDetails) {
+	    String owner = userDetails.getUsername();
+	    List<ManageDTO> list = manageService.getPartTime(owner);
+
+	    List<Map<String, Object>> response = new ArrayList<>();
+
+	    for (ManageDTO schedule : list) {
+	        try {
+	            java.sql.Date joinDate = schedule.getJoin_date(); // 입사일
+	            if (joinDate == null) {
+	                System.err.println("Join Date is null for: " + schedule.getPart_name());
+	                continue;
+	            }
+
+	            LocalDate joinLocalDate = joinDate.toLocalDate(); // LocalDate로 변환
+	            DayOfWeek workDay = mapDayOfWeek(schedule.getWork_date()); // 요일 변환
+	            LocalDate workDate = joinLocalDate.with(TemporalAdjusters.nextOrSame(workDay)); // 입사일 기준으로 계산
+
+	            // 디버깅 로그
+	            System.out.println("Processing schedule for: " + schedule.getPart_name());
+	            System.out.println("Join Date: " + joinLocalDate);
+	            System.out.println("Calculated Work Date: " + workDate);
+
+	            if (!workDate.isBefore(joinLocalDate)) { // 조건 수정
+	                Map<String, Object> event = new HashMap<>();
+	                event.put("title", schedule.getPart_name());
+	                event.put("daysOfWeek", List.of(workDay.getValue() % 7));
+	                event.put("startTime", schedule.getStart_time().toString());
+	                event.put("endTime", schedule.getEnd_time().toString());
+	                response.add(event);
+	            }
+	        } catch (Exception e) {
+	            System.err.println("Error processing schedule for " + schedule.getPart_name() + ": " + e.getMessage());
+	            e.printStackTrace();
+	        }
+	    }
+	    return response;
+	}
+
+
+	// 요일 매핑 함수
+	private DayOfWeek mapDayOfWeek(String workDate) {
+	    switch (workDate) {
+	        case "월": return DayOfWeek.MONDAY;
+	        case "화": return DayOfWeek.TUESDAY;
+	        case "수": return DayOfWeek.WEDNESDAY;
+	        case "목": return DayOfWeek.THURSDAY;
+	        case "금": return DayOfWeek.FRIDAY;
+	        case "토": return DayOfWeek.SATURDAY;
+	        case "일": return DayOfWeek.SUNDAY;
+	        default: throw new IllegalArgumentException("Invalid work date: " + workDate);
+	    }
+	}
+
 	
 	
 	//휴점

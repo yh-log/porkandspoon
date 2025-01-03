@@ -93,8 +93,8 @@
 	
 					<ul>
 						<li ><a href="/ad/spotManage">매장관리 홈</a></li>
-						<li ><a href="/ad/partSchedule">스케줄관리</a></li>
-						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
+						<li ><a href="/ad/partSchdule">스케줄관리</a></li>
+						<li class="active"><a href="/ad/partQuit">아르바이트 관리</a></li>
 						<li><a href="/ad/rest/List">휴점신청</a></li>
 					</ul>
 					<div class="buttons">							
@@ -108,7 +108,7 @@
 						</div>
 						<div class="cont-body">
 							<div class="row">
-								<h5><a onclick="location.href='/ad/part/Quit'">퇴사자 리스트 보러가기</a></h5>
+								<h5><a onclick="location.href='/ad/part'">재직자 리스트 보러가기</a></h5>
 								<div class="col-5 col-lg-5"></div>
 								<div id="searchLayout"  class="col-7 col-lg-7">
 									<select id="searchOption" class="form-select selectStyle">
@@ -133,7 +133,7 @@
 										<th>이름</th>
 										<th >나이</th>
 										<th>직영점이름</th>
-										<th>입사일</th>
+										<th>퇴사일</th>
 										<th></th>
 									</tr>
 								</thead>
@@ -182,7 +182,7 @@
 <script>
 var show = 1;
 var count = 10; // 한 페이지당 항목 수
-var url = '/ad/part/List'; // 서버 요청 URL
+var url = '/ad/part/QuitList'; // 서버 요청 URL
 var paginationInitialized = false;
 
 $(document).ready(function () {
@@ -257,7 +257,7 @@ function renderList(list) {
             content += '<td><a href="/ad/part/Detail/'+view.part_idx + '" style="text-decoration: none; color: #000000; cursor: pointer;">' + view.name + '</a></td>';
             content += '<td>' + view.birth + '</td>';
             content += '<td>' + view.spotName + '</td>';
-            content += '<td>' + view.join_date + '</td>';
+            content += '<td>' + view.quit_date + '</td>';
             content += '<td><i class="bi bi-trash" ></i></td>';
             content += '</tr>';
         }
