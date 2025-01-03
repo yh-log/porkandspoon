@@ -59,5 +59,11 @@ public interface ResevationDAO {
 
 	void roomReservationWrite(CalenderDTO singleDto);
 
+	void insertAttendee(Map<String, Object> params);
+
+	CalenderDTO roomReservationDetail(int idx);
+
+	List<UserDTO> attendeesList(int idx);
+
 
 }

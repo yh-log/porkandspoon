@@ -359,10 +359,6 @@ public class ResevationController {
  	// 회의실 예약 등록 엔드포인트
     @PostMapping(value="/roomReservation")
     public Map<String, Object> roomReservation(@RequestBody CalenderDTO calenderDto, @AuthenticationPrincipal UserDetails userDetails) {
-        // 현재 로그인한 사용자의 ID 설정 (필요 시)
-        String currentUser = userDetails.getUsername();
-        // 선택된 사용자들 중에 작성자가 포함되지 않은 경우 작성자를 추가할지 결정 (옵션)
-        // 예시로 작성자를 포함하지 않고, 참석자 배열에 포함시키는 것으로 가정
 
         boolean success = resService.roomReservationWrite(calenderDto);
         Map<String, Object> response = new HashMap<>();
@@ -375,7 +371,15 @@ public class ResevationController {
         }
         return response;
     }
-	
+    
+    // 회의실 예약 상세보기
+    @GetMapping(value="/roomReservationDetail/{idx}")
+	public Map<String,Object> roomReservationDetail(@PathVariable int idx){
+    	
+    	Map<String,Object> result = resService.roomReservationDetail(idx);
+    	  	
+    	return result;
+    }
 
 
 }

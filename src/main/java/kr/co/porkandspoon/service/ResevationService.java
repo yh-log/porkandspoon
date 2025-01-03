@@ -1,8 +1,11 @@
 package kr.co.porkandspoon.service;
 
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,22 +117,61 @@ public class ResevationService {
 		return resDao.roomList();
 	}
 
-	public boolean roomReservationWrite(CalenderDTO calenderDto) {
-		List<String> attendees = calenderDto.getAttendees();
+	// 회의실 예약 작성 메서드
+    @Transactional
+    public boolean roomReservationWrite(CalenderDTO calenderDto) {
+        List<String> attendees = calenderDto.getAttendees();
         if(attendees == null || attendees.isEmpty()) {
             return false;
         }
-        for(String username : attendees) {
-            CalenderDTO singleDto = new CalenderDTO();
-            singleDto.setNo(calenderDto.getNo());
-            singleDto.setUsername(username);
-            singleDto.setStart_date(calenderDto.getStart_date());
-            singleDto.setEnd_date(calenderDto.getEnd_date());
-            singleDto.setSubject(calenderDto.getSubject());
-            singleDto.setContent(calenderDto.getContent());
-            resDao.roomReservationWrite(singleDto);
+
+        // 예약 정보 삽입
+        resDao.roomReservationWrite(calenderDto);
+
+        // 마지막 삽입된 schedule_idx 가져오기
+        String idx = calenderDto.getIdx();
+
+        if(idx == null) {
+            throw new RuntimeException("예약 정보를 삽입하는 데 실패했습니다.");
         }
+
+        // 참석자 삽입
+        for(String username : attendees) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("idx", idx);
+            params.put("username", username);
+            resDao.insertAttendee(params);
+        }
+
         return true;
+	}
+
+	public Map<String, Object> roomReservationDetail(int idx) {
+		
+		Map<String, Object> result = new HashMap<>();
+        
+		try {
+            // 예약 상세 정보 조회
+            CalenderDTO schedule = resDao.roomReservationDetail(idx);
+            if(schedule == null) {
+                logger.warn("예약 정보를 찾을 수 없습니다. idx: {}", idx);
+                return null;
+            }
+            
+            // 참석자 목록 조회
+            List<UserDTO> attendees = resDao.attendeesList(idx);
+            
+            // 결과 맵에 데이터 추가
+            result.put("schedule", schedule);
+            result.put("attendees", attendees);
+            result.put("success", true);
+            
+            return result;
+            
+        } catch(Exception e) {
+            logger.error("예약 상세 정보 조회 중 예외 발생: ", e);
+            throw e; // 트랜잭션 롤백을 위해 예외 재발생
+        }
 	}
 
 
