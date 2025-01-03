@@ -1106,4 +1106,17 @@ public class UserController {
 		
 	}
 	
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직영점 이동 시 직영점 name 조회
+	 */
+	@GetMapping(value="/ad/storeTransferInfo")
+	public List<DeptDTO> storeTransferInfo(@RequestParam String selectedId){
+		
+		logger.info(selectedId);
+		
+		List<DeptDTO> result = userService.storeTransferInfo(selectedId);
+		
+		return result;
+	}
 }
