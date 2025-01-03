@@ -333,6 +333,11 @@
 	<select id="roomList" resultType="kr.co.porkandspoon.dto.CalenderDTO">
 		SELECT * FROM room_schedule
 	</select>
+	
+	<insert id="roomReservationWrite" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
+        INSERT INTO room_schedule(no, username, start_date, end_date, subject, content)
+        VALUES(#{no}, #{username}, #{start_date}, #{end_date}, #{subject}, #{content})
+    </insert>
 		
 	
 </mapper>

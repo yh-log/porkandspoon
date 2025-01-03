@@ -748,9 +748,79 @@ var approvalLines = ['${userDTO.username}'];
 				        console.log("선택된 노드가 없습니다.");
 				    }
 		        });
+	            
+	            
+	            // 나의 결재라인 추가
+	            $('#approvalBtn').text('나의 결재라인');
+	            
+	            /* 조직도 버튼 클릭 시 조직도 버튼 show 나의 결재선 hide */
+	        	$('.chart-btn').on('click', function(){
+	        		$('#chartModalBox .tbody-style').show();
+	        		/* 조직도 전체 열기 */
+	        		/* $("#jstree").jstree("open_all");
+	        		
+	        		// 다른 td 스타일 초기화
+	        		$('td').css({
+	        	        'border-bottom': 'none', 
+	        	        'font-weight': 'normal'
+	        	    });
+	        		
+	        		$('#jstree').show();
+	        		
+	        		$('#myjstree').hide();
+	        		
+	        		// 클릭된 버튼의 td 스타일 변경 
+	        		$(this).closest('td').css({
+	        	        'border-bottom': '1px solid gray', 
+	        	    }); */
+	        	});
+	        	
+	        	/* 나의 결재선 버튼 클릭 시 나의 결재선 show 조직도 버튼 hide */
+	        	$('.chart-mybtn').on('click', function() {
+	        		alert('dd');
+	        		$('#chartModalBox .tbody-style').hide();
+	        		
+	        		
+	        		$.ajax({
+	        			type:'GET',
+	        			url:'/approval/list/line',
+	        			data:{
+	        			},
+	        			datatype:'JSON',
+	        			success:function(data){
+	        				console.log(data);
+	        				drawList(data.bookmarkList);
+	        			},
+	        			error:function(e){
+	        				console.log(e);
+	        			}
+	        		});
+	        		
+	        		/* 다른 td 스타일 초기화 */
+	        		/* $('td').css({
+	        	        'border-bottom': 'none', 
+	        	        'font-weight': 'normal'
+	        	    });
+	        		
+	        		$('#myjstree').show();
+	        		
+	        		$('#jstree').hide();
+	        		
+	        		//클릭된 버튼의 td 스타일 변경 
+	        		$(this).closest('td').css({
+	        	        'border-bottom': '1px solid gray', 
+	        	    }); */
+	        	});
 		        
 	}
  
+	// 조직도 노드 해당 사원 삭제
+	$(document).on('click', '.user-delete', function() {
+	    $(this).closest('tr').remove();
+	});
+	
+	
+	
  // 조직도노드 등록버튼 (결재라인 설정)
  var addBtn = document.getElementById('addModal');
 /*  addBtn.addEventListener("click", function () {

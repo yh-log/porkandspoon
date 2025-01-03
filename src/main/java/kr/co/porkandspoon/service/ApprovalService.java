@@ -411,13 +411,20 @@ public class ApprovalService {
 		public List<ApprovalDTO> getLineBookmark(Map<String, Object> params) {
 			logger.info("page : "+params.get("page"));
 			logger.info("cnt : "+params.get("cnt"));
-		    int page_ = Integer.parseInt((String) params.get("page"));
-		    int cnt_ = Integer.parseInt((String) params.get("cnt"));
-	        int limit = cnt_;
-	        int offset = (page_ - 1) * cnt_;
-	        params.put("limit", limit);
-	        params.put("offset", offset);
+			if(params.get("page")!=null && params.get("cnt") !=null) {
+				int page_ = Integer.parseInt((String) params.get("page"));
+			    int cnt_ = Integer.parseInt((String) params.get("cnt"));
+		        int limit = cnt_;
+		        int offset = (page_ - 1) * cnt_;
+		        params.put("limit", limit);
+		        params.put("offset", offset);
+			}
+		    
 			return approvalDAO.getLineBookmark(params);
+		}
+
+		public boolean deleteBookmark(String lineIdx, String loginId) {
+			return approvalDAO.deleteBookmark(lineIdx, loginId) > 0 ? true : false;
 		}
 
 

@@ -52,7 +52,11 @@ public class ApprovalDTO {
    // 결재라인 즐겨찾기 테이블
    private String line_name;
    private String order_user;
-   
+
+   // 결재라인 즐겨찾기시
+   private String approver_usernames;
+   private String approver_names;
+   private String approver_positions;
    
    private FileDTO fileDTO;
 
@@ -378,6 +382,30 @@ public class ApprovalDTO {
 
 	public void setOrder_user(String order_user) {
 		this.order_user = order_user;
+	}
+
+	public String getApprover_usernames() {
+		return approver_usernames;
+	}
+
+	public String getApprover_names() {
+		return approver_names;
+	}
+
+	public String getApprover_positions() {
+		return approver_positions;
+	}
+
+	public void setApprover_usernames(String approver_usernames) {
+		this.approver_usernames = approver_usernames;
+	}
+
+	public void setApprover_names(String approver_names) {
+		this.approver_names = approver_names;
+	}
+
+	public void setApprover_positions(String approver_positions) {
+		this.approver_positions = approver_positions;
 	}
 	   
    

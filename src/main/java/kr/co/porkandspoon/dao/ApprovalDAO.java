@@ -80,8 +80,9 @@ public interface ApprovalDAO {
 
 	int changeStatusToReturn(ApprovalDTO approvalDTO);
 
-	int saveExistingFiles(String[] new_filename, String draftIdx);
-
+	// check!!! 안쓰는거 같아서 일단 주석
+	//int saveExistingFiles(String[] new_filename, String draftIdx);
+	//여기서 오류가 난다면 위에거가 찐
 	int saveExistingFiles(String filename, String draftIdx);
 
 	int changeStatusToSend(String draft_idx);
@@ -95,5 +96,7 @@ public interface ApprovalDAO {
 	int getMaxBookmarkIdx();
 
 	List<ApprovalDTO> getLineBookmark(Map<String, Object> params);
+
+	int deleteBookmark(String lineIdx, String loginId);
 
 }

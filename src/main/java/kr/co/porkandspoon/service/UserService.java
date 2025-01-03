@@ -860,6 +860,7 @@ public class UserService {
 	        }
 	    }
 		
+		
 		return true;
 	}
 
@@ -902,6 +903,23 @@ public class UserService {
 		
 		return true;
 		
+	}
+
+	/**
+	 * author yh.kim, (25.01.02)
+	 * 직영점 이동 시 직영점 name 조회
+	 */
+	public List<DeptDTO> storeTransferInfo(String username) {
+		
+		List<DeptDTO> result = userDao.storeTransferInfo(username);
+	    
+		if(result.size() < 1) {
+			
+			result = new ArrayList<DeptDTO>();
+			return result;
+		}
+		
+		return result;
 	}
 
 

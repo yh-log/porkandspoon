@@ -57,5 +57,7 @@ public interface ResevationDAO {
 
 	List<CalenderDTO> roomList();
 
+	void roomReservationWrite(CalenderDTO singleDto);
+
 
 }

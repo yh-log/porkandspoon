@@ -48,7 +48,7 @@
 </update>
 
 <delete id="deletePartTime" parameterType="String">
-    DELETE FROM part WHERE part_idx = #{part_idx}
+    DELETE FROM part_time WHERE part_idx = #{part_idx}
 </delete>
 
    

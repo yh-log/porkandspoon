@@ -211,7 +211,7 @@
 
 	var section= 'room';
 	
-	 
+	
 
 	$(document).ready(function(){
 		
@@ -293,257 +293,6 @@
 	    console.log('populateCategoryItems 함수 종료');
 	}
 	
-	function handleAddSchedule() {
-		console.log('예약 등록 클릭');
-		
-		var selection = $('#calendar_type').val();
-	    var no = $('#category_items').val();
-	    console.log('선택된놈 no',no);
-	    var username = '${pageContext.request.userPrincipal.name}'; 
-	    var start_date = $('#calendar_start_date_input').val();
-	    var end_date = $('#calendar_end_date_input').val();
-	    var subject = $('#calendar_subject_input').val();
-	    var content = $('#calendar_content_input').val();
-	    
-	    var data = {
-	            no: no, // 물품 번호 (int 타입)
-	            username: username,
-	            start_date: start_date,
-	            end_date: end_date,
-	            subject: subject,
-	            content: content
-	        };
-	    
-	    // 서버 요청
-        httpAjax('POST', '/itemWrite', data);
-
-        // 모달 닫기 및 초기화
-        initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
-	}
-		
-	// 일정 등록 ajax
-	function httpAjax(type, url, data) {
-	    var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-	    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-
-	    $.ajax({
-	        type: type,
-	        url: url,
-	        data: JSON.stringify(data), // JSON 형식으로 변환
-	        contentType: 'application/json; charset=UTF-8', // Content-Type 설정
-	        dataType: 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
-	        },
-	        success: function(response) {
-	            httpSuccess(response); // 성공 콜백
-	        },
-	        error: function(e) {
-	            console.log(e); // 에러 로그 출력
-	        }
-	    });
-	}
-
-	function httpSuccess(response){
-	    loadCalender(section);    
-	    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
-	    initializeModal(arr);
-	}
-	
-	// 예약 상세보기
-	function scheduleDetail(idx) {
-	    $.ajax({
-	        type: 'GET',
-	        url: '/resDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
-	        dataType: 'JSON',
-	        success: function(response) {
-	            if (response.success) {
-	                var schedule = response.schedule;
-	                console.log('상세보기 파람스 주입 : ',schedule.idx);
-	                var params = {
-	                		idx: schedule.idx,
-	                		subject: schedule.subject,
-	 	                    content: schedule.content,
-	 	                    start_date: schedule.start_date,
-	 	                    end_date: schedule.end_date,
-	 	                    username: schedule.username,
-	 	                    selection: schedule.selection,
-	 	                    item_name: schedule.item_name,
-	 	                    name: schedule.name,
-	 	                    no: schedule.no
-	                };
-	
-	                // 모달 열기
-	                loadModal("item", "Info", params);
-	            } else {
-	                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
-	            }
-	        },
-	        error: function(xhr, status, error) {
-	            console.error("일정 상세 조회 실패:", error);
-	            alert("서버와 통신 중 문제가 발생했습니다.");
-	        }
-	    });
-	}
-	
-	// 데이터 주입 함수 수정
-    function setModalData(type, data) {
-        console.log('셋모달데이타 실행 : ',data);
-        fetchCategoryItems();
-        if (type === 'Input') {
-            // 일정 추가 모드: 입력 필드 초기화
-            console.log("일정 추가 모드: 데이터 없음");
-            document.getElementById("calendar_subject_input").value = '';
-            document.getElementById("calendar_content_input").value = '';
-            document.getElementById("calendar_start_date_input").value = '';
-            document.getElementById("calendar_end_date_input").value = '';          
-            document.getElementById("category_items_room").value = '';
-            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
-        } else if (type === 'Info') {
-            // 일정 상세 보기 모드: 데이터 주입
-            console.log("일정 상세 보기 모드: 데이터 주입", data);
-          
-            document.getElementById("subject").textContent = data.subject;
-            document.getElementById("content").textContent = data.content;
-            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
-            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
-            document.getElementById("username").textContent = data.name;
-            if(data.selection == 'car'){
-           		document.getElementById("select").textContent = '차량';
-            }else if(data.selection == 'note'){
-            	document.getElementById("select").textContent = '노트북';
-            }else{
-            	document.getElementById("select").textContent = '빔 프로젝터';
-            }
-            document.getElementById("model").textContent = data.item_name;
-            document.getElementById("event_id").value = data.idx;
-            document.getElementById("event_no").value = data.no;
-        } else if (type === 'Edit') {
-            // 일정 수정 모드: 데이터 주입
-            console.log("일정 수정 모드: 데이터 주입", data);       
-            document.getElementById("edit_calendar_event_id").value = data.idx;
-            document.getElementById("calendar_subject_edit").value = data.subject;
-            document.getElementById("calendar_content_edit").value = data.content;
-            document.getElementById("calendar_start_date_edit").value = data.start_date;
-            document.getElementById("calendar_end_date_edit").value = data.end_date;
-            document.getElementById("calendar_type").value = data.selection;
-            document.getElementById("category_items").value = data.item_name;
-            document.getElementById("calendar_username_edit").textContent = '${info.name}';
-            console.log("이름 받다", '${info.name}');  
-            fetchCategoryItems(data.no);
-        }
-    }
-	
-	function handleAmendSchedule() {
-   	// 현재 상세보기 모달에서 데이터 수집
-    	var eventId = $('#event_id').val();
-    	var eventNo = $('#event_no').val();
-   		console.log('수집할때 받아와?',eventId);
-       	var subject = $('#subject').text();
-       	var content = $('#content').text();
-       	var start_date = $('#start_date').text();
-       	var end_date = $('#end_date').text();
-       	var username = $('#username').text(); 
-    	var selection = $('#select').text(); 
-    	var item_name = $('#model').text();
-    	
-    	var categoryMap = {
-    	        '노트북': 'note',
-    	        '빔 프로젝터': 'project',
-    	        '차량': 'car'
-    	    };
-    	
-    	var categoryValue = categoryMap[selection] || '';
-
-       	// 수정 모달에 전달할 데이터 객체 생성
-       	var editData = {
-	    	idx: eventId,
-	    	no: eventNo,
-	        subject: subject,
-	        content: content,
-	        start_date: start_date,
-	        end_date: end_date,
-	        username: username,
-	        selection: categoryValue,
-	        item_name: item_name
-       	};
-
-       	// 현재 모달 닫기
-       	$('#modalBox').hide();
-       	$('#modalBox .modal-content').html('');
-
-	    // 수정 모달 열기
-	    loadModal('item', 'Edit', editData);
-	}
-	   
-   	function handleSaveEditSchedule() {
-		// 수정 모달에서 데이터 수집
-       	var idx = $('#edit_calendar_event_id').val();
-       	var selection = $('#calendar_type').val();
-	    var no = $('#category_items').val();
-	    console.log('선택된놈 no',no);
-	    var username = '${pageContext.request.userPrincipal.name}'; 
-	    var start_date = $('#calendar_start_date_edit').val();
-	    var end_date = $('#calendar_end_date_edit').val();
-	    var subject = $('#calendar_subject_edit').val();
-	    var content = $('#calendar_content_edit').val();
-	          	      	       		
-       	// 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
-       	var params = {
-       		idx: idx,
-       		username: username,
-           	subject: subject,
-           	content: content,
-           	start_date: start_date,
-           	end_date: end_date,
-           	selection: selection,
-           	no: no
-       	};
-	
-       	// AJAX PUT 요청을 통해 일정 수정 (Path Variable 사용)
-       	$.ajax({
-       		type: 'PUT',
-           	url: '/itemUpdate/' + idx, // 수정 엔드포인트에 id 포함
-           	data: JSON.stringify(params),
-           	contentType: 'application/json; charset=UTF-8',
-           	dataType: 'JSON',
-           	beforeSend: function(xhr) {
-               	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-               	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-               	xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
-           	},
-           	success: function(response) {
-               	if(response.success){
-                   	// 모달 닫기
-                   	$('#modalBox').hide();
-                   	$('#modalBox .modal-content').html('');
-	
-                   	// 캘린더 갱신
-                   	loadCalender(section);
-              	 }
-           	},
-           	error: function(e){
-               	console.log('수정 AJAX 에러 => ', e);
-               	alert("일정 수정에 실패했습니다.");
-           	}
-       	});
-	}
-
-	
-   	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-    // 삭제 버튼 클릭 시 삭제 실행
-    function handleDeleteSchedule() {
-    	var idx = $('#event_id').val();
-    	console.log('삭제할때 받아와?',idx);
-    	httpAjax('DELETE', '/itemDelete/'+idx);
-	}
-	
-	
 	// 조직도 부분
 	//초기 데이터
 	const initialData = {
@@ -559,9 +308,13 @@
 	var userName = "";
 	var userPosition = "";
 	var userDept = "";
+	// 선택된 직원 목록을 저장할 배열
+	var selectedEmployees = [];
 	 // 선택된 ID를 rows에 추가하는 함수
 	 function addSelectedIdToRows(selectedId) {
 	     console.log("가져온 ID:", selectedId);
+	     
+	     
 	     
 	     $.ajax({
 	         type: 'GET',
@@ -569,32 +322,316 @@
 	         data: {},
 	         dataType: "JSON",
 	         success: function(response) {
+	        	 console.log("전체: ",response);
 	        	 console.log("유저이름: ",response.name);
 	        	 console.log("유저정보: ",response.position_content);
 	        	 console.log("유저정보: ",response.dept.text);
 	        	 
+	        	 selectedEmployees.push(response);
 	        	 userName = response.name;
 	        	 userPosition = response.position_content;
 	        	 userDept = response.dept.text;
+	        	               	 
+			     // 새로운 row 데이터 생성
+			     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
 	
-	     // 새로운 row 데이터 생성
-	     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
-	
-	     // 기존 rows에 추가
-	     exampleData.rows.push(newRow);
-	
-	     // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
-	     updateTableData('customTable', exampleData);
-		 },
-	     error: function(e) {
-	         console.log(e);
-	     }
-	});
- }
+			     // 기존 rows에 추가
+			     exampleData.rows.push(newRow);
+			
+			     // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+			     updateTableData('customTable', exampleData);
+			},
+			error: function(e) {
+			         console.log(e);
+			}
+		});
+ 	}
 	 // 선택된 ID를 받아서 처리
 	 getSelectId(function (selectedId) {
 	     addSelectedIdToRows(selectedId);
 	 });
+	 
+	 function addBtnFn() {
+		console.log('조직도 인원 저장');
+		$('#selected_employees').empty();
+	    selectedEmployees.forEach(function(employee){
+	    	console.log('뭐지',employee);
+	        var employeeTag = $('<div class="employee-tag" data-id="' + employee.username + '"></div>');
+	        employeeTag.append('<span>' + employee.name + ' '+ employee.position_content + '</span>');
+	        employeeTag.append('<span class="remove-employee">&times;</span>');
+	        $('#selected_employees').append(employeeTag);
+	    });
+	    	    
+	    // 조직도 모달 닫기
+	    $('#chartModalBox').hide();
+	}
+	 
+	 
+	 
+	 function handleAddSchedule() {
+			console.log('예약 등록 클릭');
+						
+		    var no = $('#category_items_room').val();
+		    console.log('선택된놈 no',no);
+		    var username = '${info.username}'; 
+		    var start_date = $('#calendar_start_date_input').val();
+		    var end_date = $('#calendar_end_date_input').val();
+		    var subject = $('#calendar_subject_input').val();
+		    var content = $('#calendar_content_input').val();
+		    
+		 	// 참석자 유효성 검사
+		    if(selectedEmployees.length === 0){
+		        alert('참석자를 선택해주세요.');
+		        return;
+		    }
+		    
+		    var attendees = selectedEmployees.map(function(emp){
+		        return emp.username;
+		    });
+		    console.log('선택된놈 attendees',attendees);
+		    
+		    var data = {
+		            no: no, // 물품 번호 (int 타입)
+		            username: username,
+		            start_date: start_date,
+		            end_date: end_date,
+		            subject: subject,
+		            content: content,
+		            attendees: attendees // 참석자 ID 배열 추가
+		        };
+		    
+		    // 서버 요청
+	        httpAjax('POST', '/roomReservation', data);
+
+	        // 모달 닫기 및 초기화
+	        initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+		}
+			
+		// 일정 등록 ajax
+		function httpAjax(type, url, data) {
+		    var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+		    $.ajax({
+		        type: type,
+		        url: url,
+		        data: JSON.stringify(data), // JSON 형식으로 변환
+		        contentType: 'application/json; charset=UTF-8', // Content-Type 설정
+		        dataType: 'JSON',
+		        beforeSend: function(xhr) {
+		            xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
+		        },
+		        success: function(response) {
+		            httpSuccess(response); // 성공 콜백
+		        },
+		        error: function(e) {
+		            console.log(e); // 에러 로그 출력
+		        }
+		    });
+		}
+
+		function httpSuccess(response){
+		    loadCalender(section);    
+		    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
+		    initializeModal(arr);
+		}
+		
+		// 예약 상세보기
+		function scheduleDetail(idx) {
+		    $.ajax({
+		        type: 'GET',
+		        url: '/resDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
+		        dataType: 'JSON',
+		        success: function(response) {
+		            if (response.success) {
+		                var schedule = response.schedule;
+		                console.log('상세보기 파람스 주입 : ',schedule.idx);
+		                var params = {
+		                		idx: schedule.idx,
+		                		subject: schedule.subject,
+		 	                    content: schedule.content,
+		 	                    start_date: schedule.start_date,
+		 	                    end_date: schedule.end_date,
+		 	                    username: schedule.username,
+		 	                    selection: schedule.selection,
+		 	                    item_name: schedule.item_name,
+		 	                    name: schedule.name,
+		 	                    no: schedule.no
+		                };
+		
+		                // 모달 열기
+		                loadModal("item", "Info", params);
+		            } else {
+		                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
+		            }
+		        },
+		        error: function(xhr, status, error) {
+		            console.error("일정 상세 조회 실패:", error);
+		            alert("서버와 통신 중 문제가 발생했습니다.");
+		        }
+		    });
+		}
+		
+		// 데이터 주입 함수 수정
+	    function setModalData(type, data) {
+	        console.log('셋모달데이타 실행 : ',data);
+	        fetchCategoryItems();
+	        if (type === 'Input') {
+	            // 일정 추가 모드: 입력 필드 초기화
+	            console.log("일정 추가 모드: 데이터 없음");
+	            document.getElementById("calendar_subject_input").value = '';
+	            document.getElementById("calendar_content_input").value = '';
+	            document.getElementById("calendar_start_date_input").value = '';
+	            document.getElementById("calendar_end_date_input").value = '';          
+	            document.getElementById("category_items_room").value = '';
+	            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
+	        } else if (type === 'Info') {
+	            // 일정 상세 보기 모드: 데이터 주입
+	            console.log("일정 상세 보기 모드: 데이터 주입", data);
+	          
+	            document.getElementById("subject").textContent = data.subject;
+	            document.getElementById("content").textContent = data.content;
+	            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
+	            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
+	            document.getElementById("username").textContent = data.name;
+	            if(data.selection == 'car'){
+	           		document.getElementById("select").textContent = '차량';
+	            }else if(data.selection == 'note'){
+	            	document.getElementById("select").textContent = '노트북';
+	            }else{
+	            	document.getElementById("select").textContent = '빔 프로젝터';
+	            }
+	            document.getElementById("model").textContent = data.item_name;
+	            document.getElementById("event_id").value = data.idx;
+	            document.getElementById("event_no").value = data.no;
+	        } else if (type === 'Edit') {
+	            // 일정 수정 모드: 데이터 주입
+	            console.log("일정 수정 모드: 데이터 주입", data);       
+	            document.getElementById("edit_calendar_event_id").value = data.idx;
+	            document.getElementById("calendar_subject_edit").value = data.subject;
+	            document.getElementById("calendar_content_edit").value = data.content;
+	            document.getElementById("calendar_start_date_edit").value = data.start_date;
+	            document.getElementById("calendar_end_date_edit").value = data.end_date;
+	            document.getElementById("calendar_type").value = data.selection;
+	            document.getElementById("category_items").value = data.item_name;
+	            document.getElementById("calendar_username_edit").textContent = '${info.name}';
+	            console.log("이름 받다", '${info.name}');  
+	            fetchCategoryItems(data.no);
+	        }
+	    }
+		
+		function handleAmendSchedule() {
+	   	// 현재 상세보기 모달에서 데이터 수집
+	    	var eventId = $('#event_id').val();
+	    	var eventNo = $('#event_no').val();
+	   		console.log('수집할때 받아와?',eventId);
+	       	var subject = $('#subject').text();
+	       	var content = $('#content').text();
+	       	var start_date = $('#start_date').text();
+	       	var end_date = $('#end_date').text();
+	       	var username = $('#username').text(); 
+	    	var selection = $('#select').text(); 
+	    	var item_name = $('#model').text();
+	    	
+	    	var categoryMap = {
+	    	        '노트북': 'note',
+	    	        '빔 프로젝터': 'project',
+	    	        '차량': 'car'
+	    	    };
+	    	
+	    	var categoryValue = categoryMap[selection] || '';
+
+	       	// 수정 모달에 전달할 데이터 객체 생성
+	       	var editData = {
+		    	idx: eventId,
+		    	no: eventNo,
+		        subject: subject,
+		        content: content,
+		        start_date: start_date,
+		        end_date: end_date,
+		        username: username,
+		        selection: categoryValue,
+		        item_name: item_name
+	       	};
+
+	       	// 현재 모달 닫기
+	       	$('#modalBox').hide();
+	       	$('#modalBox .modal-content').html('');
+
+		    // 수정 모달 열기
+		    loadModal('item', 'Edit', editData);
+		}
+		   
+	   	function handleSaveEditSchedule() {
+			// 수정 모달에서 데이터 수집
+	       	var idx = $('#edit_calendar_event_id').val();
+	       	var selection = $('#calendar_type').val();
+		    var no = $('#category_items').val();
+		    console.log('선택된놈 no',no);
+		    var username = '${pageContext.request.userPrincipal.name}'; 
+		    var start_date = $('#calendar_start_date_edit').val();
+		    var end_date = $('#calendar_end_date_edit').val();
+		    var subject = $('#calendar_subject_edit').val();
+		    var content = $('#calendar_content_edit').val();
+		          	      	       		
+	       	// 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
+	       	var params = {
+	       		idx: idx,
+	       		username: username,
+	           	subject: subject,
+	           	content: content,
+	           	start_date: start_date,
+	           	end_date: end_date,
+	           	selection: selection,
+	           	no: no
+	       	};
+		
+	       	// AJAX PUT 요청을 통해 일정 수정 (Path Variable 사용)
+	       	$.ajax({
+	       		type: 'PUT',
+	           	url: '/itemUpdate/' + idx, // 수정 엔드포인트에 id 포함
+	           	data: JSON.stringify(params),
+	           	contentType: 'application/json; charset=UTF-8',
+	           	dataType: 'JSON',
+	           	beforeSend: function(xhr) {
+	               	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	               	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+	               	xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
+	           	},
+	           	success: function(response) {
+	               	if(response.success){
+	                   	// 모달 닫기
+	                   	$('#modalBox').hide();
+	                   	$('#modalBox .modal-content').html('');
+		
+	                   	// 캘린더 갱신
+	                   	loadCalender(section);
+	              	 }
+	           	},
+	           	error: function(e){
+	               	console.log('수정 AJAX 에러 => ', e);
+	               	alert("일정 수정에 실패했습니다.");
+	           	}
+	       	});
+		}
+
+		
+	   	function secondBtn1Act() {
+			// 두번째팝업 1번버튼 클릭시 수행할 내용
+			console.log('두번째팝업 1번 버튼 동작');
+			removeAlert(); // 팝업닫기
+		}
+		
+	    // 삭제 버튼 클릭 시 삭제 실행
+	    function handleDeleteSchedule() {
+	    	var idx = $('#event_id').val();
+	    	console.log('삭제할때 받아와?',idx);
+	    	httpAjax('DELETE', '/itemDelete/'+idx);
+		}	 
+	 
+	 
+	
+ 
 	
 	
 	
