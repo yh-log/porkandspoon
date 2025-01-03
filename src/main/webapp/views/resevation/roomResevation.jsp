@@ -253,7 +253,7 @@
 	}
 	
 	// 카테고리별 물품 목록을 서버에서 불러오는 함수
-	function fetchCategoryItems() {
+	function fetchCategoryItems(no) {
 	    // AJAX 요청을 통해 서버로부터 물품 목록을 가져옵니다.
 	    
 	    $.ajax({
@@ -268,7 +268,7 @@
 	        },
 	        success: function(response) {
 	        	 console.log('서버 응답:', response.list);
-	             populateCategoryItems(response.list);
+	             populateCategoryItems(response.list,no);
 
 	        },
 	        error: function(err) {
@@ -279,16 +279,22 @@
 	}
 	
 	// 물품 목록을 select 요소에 채우는 함수
-	function populateCategoryItems(items) {
+	function populateCategoryItems(items,no) {
 		console.log('여기? : ',items);
 	    var category_item = $('#category_items_room');
-	    //category_item.empty().append('<option value="">-- 선택하세요 --</option>');
+	    console.log('category_item? : ',category_item);
+	    category_item.empty().append('<option value="">-- 선택하세요 --</option>');
 	    console.log('옵션 초기화');
 	    
 	    items.forEach(function(item) {
 	    	console.log('포이치 돌아가?',item.no,item.room_name);
 	    	category_item.append('<option value="'+item.no+'">'+item.room_name+'</option>');
 	    });
+	    
+	    if(no){
+	    	console.log('조건 걸려?',no);
+	    	category_item.val(no);
+	    }
 	    
 	    console.log('populateCategoryItems 함수 종료');
 	}
@@ -297,8 +303,8 @@
 	//초기 데이터
 	const initialData = {
 	    headers: ['이름','부서','직위', '삭제'],
-	    rows: [
-	    	['${info.name}', '${info.dept.text}', '${info.position_content}', '<button class="btn btn-primary">삭제</button>'],
+	    rows: [	    	
+	    	
 	    ],
 	    footer: ''
 	};
@@ -311,11 +317,10 @@
 	// 선택된 직원 목록을 저장할 배열
 	var selectedEmployees = [];
 	 // 선택된 ID를 rows에 추가하는 함수
+	 
 	 function addSelectedIdToRows(selectedId) {
 	     console.log("가져온 ID:", selectedId);
-	     
-	     
-	     
+	          
 	     $.ajax({
 	         type: 'GET',
 	         url: '/getUserInfo/'+selectedId,
@@ -345,7 +350,8 @@
 			         console.log(e);
 			}
 		});
- 	}
+ 	} 
+ 		
 	 // 선택된 ID를 받아서 처리
 	 getSelectId(function (selectedId) {
 	     addSelectedIdToRows(selectedId);
@@ -357,7 +363,7 @@
 	    selectedEmployees.forEach(function(employee){
 	    	console.log('뭐지',employee);
 	        var employeeTag = $('<div class="employee-tag" data-id="' + employee.username + '"></div>');
-	        employeeTag.append('<span>' + employee.name + ' '+ employee.position_content + '</span>');
+	        employeeTag.append('<span>'+ employee.dept.text +' '+ employee.name + ' '+ employee.position_content + '</span>');
 	        employeeTag.append('<span class="remove-employee">&times;</span>');
 	        $('#selected_employees').append(employeeTag);
 	    });
@@ -439,13 +445,16 @@
 		// 예약 상세보기
 		function scheduleDetail(idx) {
 		    $.ajax({
+		    	
 		        type: 'GET',
-		        url: '/resDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
+		        url: '/roomReservationDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
 		        dataType: 'JSON',
 		        success: function(response) {
 		            if (response.success) {
 		                var schedule = response.schedule;
+		                var attendees = response.attendees
 		                console.log('상세보기 파람스 주입 : ',schedule.idx);
+		                console.log('상세보기 참석자 주입 : ',attendees);
 		                var params = {
 		                		idx: schedule.idx,
 		                		subject: schedule.subject,
@@ -453,14 +462,15 @@
 		 	                    start_date: schedule.start_date,
 		 	                    end_date: schedule.end_date,
 		 	                    username: schedule.username,
-		 	                    selection: schedule.selection,
-		 	                    item_name: schedule.item_name,
+		 	                   	room_name: schedule.room_name,
 		 	                    name: schedule.name,
-		 	                    no: schedule.no
+		 	                    count: schedule.count,
+		 	                    no: schedule.no,
+		 	                   	attendees: attendees
 		                };
 		
 		                // 모달 열기
-		                loadModal("item", "Info", params);
+		                loadModal("room", "Info", params);
 		            } else {
 		                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
 		            }
@@ -475,15 +485,17 @@
 		// 데이터 주입 함수 수정
 	    function setModalData(type, data) {
 	        console.log('셋모달데이타 실행 : ',data);
-	        fetchCategoryItems();
+	        //fetchCategoryItems();
 	        if (type === 'Input') {
 	            // 일정 추가 모드: 입력 필드 초기화
+	            fetchCategoryItems();
 	            console.log("일정 추가 모드: 데이터 없음");
 	            document.getElementById("calendar_subject_input").value = '';
 	            document.getElementById("calendar_content_input").value = '';
 	            document.getElementById("calendar_start_date_input").value = '';
 	            document.getElementById("calendar_end_date_input").value = '';          
 	            document.getElementById("category_items_room").value = '';
+	            document.getElementById("selected_employees").textContent = '';
 	            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
 	        } else if (type === 'Info') {
 	            // 일정 상세 보기 모드: 데이터 주입
@@ -494,34 +506,55 @@
 	            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
 	            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
 	            document.getElementById("username").textContent = data.name;
-	            if(data.selection == 'car'){
-	           		document.getElementById("select").textContent = '차량';
-	            }else if(data.selection == 'note'){
-	            	document.getElementById("select").textContent = '노트북';
-	            }else{
-	            	document.getElementById("select").textContent = '빔 프로젝터';
-	            }
-	            document.getElementById("model").textContent = data.item_name;
+	            document.getElementById("count").textContent = data.count+'명';
+	            document.getElementById("room_name").textContent = data.room_name;
 	            document.getElementById("event_id").value = data.idx;
 	            document.getElementById("event_no").value = data.no;
+	            
+	         	// 참석자 목록 표시
+	            var attendeesList = document.getElementById("people");
+	           
+	            if(data.attendees && data.attendees.length > 0){
+	                data.attendees.forEach(function(attendee) {
+	                	var cont = '<p style="margin: 0;" data-id="' + attendee.username + '">'+attendee.dept.text+' '+attendee.name+' '+attendee.position_content+'</p>';
+	                    attendeesList.insertAdjacentHTML('beforeend',cont);
+	                });
+	            } else {
+	                attendeesList.insertAdjacentHTML('beforeend','<p>참석자가 없습니다.</p>');
+	            }
+	            
+	            
 	        } else if (type === 'Edit') {
 	            // 일정 수정 모드: 데이터 주입
-	            console.log("일정 수정 모드: 데이터 주입", data);       
+	            console.log("일정 수정 모드: 데이터 주입", data); 
+	            fetchCategoryItems(data.no);
 	            document.getElementById("edit_calendar_event_id").value = data.idx;
 	            document.getElementById("calendar_subject_edit").value = data.subject;
 	            document.getElementById("calendar_content_edit").value = data.content;
 	            document.getElementById("calendar_start_date_edit").value = data.start_date;
 	            document.getElementById("calendar_end_date_edit").value = data.end_date;
-	            document.getElementById("calendar_type").value = data.selection;
-	            document.getElementById("category_items").value = data.item_name;
+	            document.getElementById("category_items_room").value = data.room_name;
 	            document.getElementById("calendar_username_edit").textContent = '${info.name}';
-	            console.log("이름 받다", '${info.name}');  
-	            fetchCategoryItems(data.no);
+	            console.log("이ㅏ건?",data.attendees);
+	            
+	            $('#selected_employees_edit').empty();
+	            selectedEmployees = [];
+	            if(data.attendees && data.attendees.length > 0){
+	                data.attendees.forEach(function(employee){
+	                	console.log("이ㅏ건?",data.attendees );
+	                    var employeeTag = $('<div class="employee-tag" data-id="' + employee.username + '"></div>');
+	                    employeeTag.append('<span>' + employee.dept.text + ' ' + employee.name + ' ' + employee.position_content + '</span>');
+	                    employeeTag.append('<span class="remove-employee">&times;</span>');
+	                    $('#selected_employees_edit').append(employeeTag);
+	                    selectedEmployees.push(employee.username);
+	                });
+	            }
+	            
 	        }
 	    }
 		
 		function handleAmendSchedule() {
-	   	// 현재 상세보기 모달에서 데이터 수집
+	   		// 현재 상세보기 모달에서 데이터 수집
 	    	var eventId = $('#event_id').val();
 	    	var eventNo = $('#event_no').val();
 	   		console.log('수집할때 받아와?',eventId);
@@ -529,18 +562,18 @@
 	       	var content = $('#content').text();
 	       	var start_date = $('#start_date').text();
 	       	var end_date = $('#end_date').text();
-	       	var username = $('#username').text(); 
-	    	var selection = $('#select').text(); 
-	    	var item_name = $('#model').text();
+	       	var username = $('#username').text();     	
+	    	var room_name = $('#room_name').text();
 	    	
-	    	var categoryMap = {
-	    	        '노트북': 'note',
-	    	        '빔 프로젝터': 'project',
-	    	        '차량': 'car'
-	    	    };
+	    	// 참석자 목록에서 data-id 값을 추출하여 배열에 저장
+	        var attendeesList = document.getElementById("people");
+	        var attendeeElements = attendeesList.querySelectorAll('p[data-id]');
+	        selectedEmployees = Array.from(attendeeElements).map(function(elem) {
+	            return elem.getAttribute('data-id');
+	        });
+	        
+	        console.log('Selected Attendee IDs:', selectedEmployees);
 	    	
-	    	var categoryValue = categoryMap[selection] || '';
-
 	       	// 수정 모달에 전달할 데이터 객체 생성
 	       	var editData = {
 		    	idx: eventId,
@@ -550,8 +583,8 @@
 		        start_date: start_date,
 		        end_date: end_date,
 		        username: username,
-		        selection: categoryValue,
-		        item_name: item_name
+		        room_name: room_name,
+		        attendees: selectedEmployees
 	       	};
 
 	       	// 현재 모달 닫기
@@ -559,7 +592,7 @@
 	       	$('#modalBox .modal-content').html('');
 
 		    // 수정 모달 열기
-		    loadModal('item', 'Edit', editData);
+		    loadModal('room', 'Edit', editData);
 		}
 		   
 	   	function handleSaveEditSchedule() {

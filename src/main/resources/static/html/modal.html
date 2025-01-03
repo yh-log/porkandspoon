@@ -457,7 +457,95 @@
 		</div>
 	</div>
 	
+	<!-- 회의실 예약 일정 상세보기 모달 -->
+	<div id="roomInfoModal" class="modal-template">
+		<input type="hidden" id="event_id">
+		<input type="hidden" id="event_no">
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">
+	    	<div class="form-group">
+            	<label for="room_name" class="form-label">회의실 이름</label>
+            	<p id="room_name"></p>	
+        	</div>
+        	<div class="form-group" id="category_items_group">
+	            <label for="count" class="form-label">수용인원</label>
+	            <p id="count"></p>	
+        	</div>
+	    	<label for="username" class="form-label" style="font-weight: 600; margin-bottom: 20px;">등록자</label>
+	    	<p id="username"></p>	    	
+	        <div class="form-group">
+	            <label for="start_date" class="form-label" >시작일</label>
+	            <span id="start_date"></span>
+	           	<label for="end_date" class="form-label" style="margin-top: 15px;">종료일</label>
+	            <span id="end_date"></span>
+	        </div>
+	       	<div class="form-group">
+	            <label for="subject" class="form-label">회의 제목</label>
+	            <span id="subject"></span>
+	        </div>
+	        <div class="form-group">
+	            <label for="content" class="form-label">회의 내용</label>
+	            <span id="content"></span>
+	        </div>
+	        <div class="form-group">
+	            <label for="people" class="form-label">참석 인원</label>
+	            <div id="people"></div>
+	        </div>
+	    	<div class="modal-footer">
+		        <button id="amendSchedule" class="btn btn-primary">수정</button>
+		        <button id="cancelModal" class="btn btn-secondary">취소</button>
+		        <button id="deleteSchedule" class="btn btn-secondary">삭제</button>
+	    	</div>
+		</div>
+	</div>
 	
+	<!-- 회의 예약 수정 모달 -->
+	<div id="roomEditModal" class="modal-template">	
+		<input type="hidden" id="edit_calendar_event_id">
+	    <input type="hidden" id="edit_calendar_event_username">
+	    <div class="modal-header">
+	        <span class="modal-close" id="closeModal">&times;</span>
+	    </div>
+	    <div class="modal-body">      	
+        	<div class="form-group" id="category_items_group">
+	            <label for="category_items_room" class="form-label">회의실</label>
+	            <select id="category_items_room" class="form-input1">	                
+	                <!-- 동적으로 물품 목록이 추가됩니다 -->
+	                <option value="">-- 선택하세요 --</option>
+	            </select>
+        	</div>
+	    	<label for="calendar_username_edit" class="form-label" style="font-weight: 600; margin-bottom: 20px;">등록자</label>
+	    	<p id="calendar_username_edit"></p>	    	
+	        <div class="form-group" style="display: flex; align-items: center;">
+	            <label for="calendar_start_date_edit" class="form-label" >시작일</label>
+	            <input type="datetime-local" id="calendar_start_date_edit" class="form-input" style="margin-left: 15px;">
+	           	<label for="calendar_end_date_edit" class="form-label" style="margin-left: 15px;">종료일</label>
+	            <input type="datetime-local" id="calendar_end_date_edit" class="form-input" style="margin-left: 15px;">
+	        </div>
+	       	<div class="form-group">
+	            <label for="calendar_subject_edit" class="form-label">회의 제목</label>
+	            <input type="text" id="calendar_subject_edit" class="form-input1" >
+	        </div>
+	        <div class="form-group">
+	            <label for="calendar_content_edit" class="form-label">회의 내용</label>
+	            <input type="text" id="calendar_content_edit" class="form-input1" >
+	    	</div>
+	    	 <div class="form-group">
+	            <button id="loadChartModal" class="btn btn-primary">조직도</button>
+	            <!-- 이 밑에 조직도로 추가한 인원 목록 -->
+				<label for="selected_employees_edit" class="form-label">참석자</label>
+				<div id="selected_employees_edit" class="selected-employees-list">
+				<!-- 선택된 직원들이 추가됩니다 -->
+				</div>	           
+	    	</div>
+	    	<div class="modal-footer">
+		        <button id="saveEditSchedule" class="btn btn-primary">저장</button>
+		        <button id="cancelModal" class="btn btn-secondary">취소</button>
+	    	</div>
+		</div>
+	</div>
 	
 	
 	

@@ -42,6 +42,8 @@ public class CalenderDTO extends ResponseDTO{
 	private List<String> attendees;
 	
 	
+	
+	
 	public List<String> getAttendees() {
 		return attendees;
 	}
