@@ -32,6 +32,7 @@ import kr.co.porkandspoon.dao.ApprovalDAO;
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
 @Service
@@ -40,7 +41,7 @@ public class ApprovalService {
 	Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
 	
 	@Autowired ApprovalDAO approvalDAO;
-	
+	@Autowired AlarmService alarmService;
     @Value("${upload.path}") String paths;
     @Value("${uploadTem.path}") String tem_path;
 	
@@ -124,7 +125,12 @@ public class ApprovalService {
         }
         
         if(status.equals("sd")) {
-        	logger.info("전송!!!!!sd!!!여기에 알림");
+        	// 알림 요청
+        	NoticeDTO noticedto = new NoticeDTO();
+    		noticedto.setFrom_idx(approvalDTO.getDraft_idx());
+    		noticedto.setUsername(approvalDTO.getUsername());
+    		noticedto.setCode_name("ml007");
+    		alarmService.saveAlarm(noticedto);
         }
         
         return draftIdx;
