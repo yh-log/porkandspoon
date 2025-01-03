@@ -55,9 +55,11 @@
 	.tit-area{
 		display: flex; 
 	}
-	
-	#home,#schedule{
+
+	#home, #schedule{
 		width: 200px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 	}
 	
 	h5 .count{

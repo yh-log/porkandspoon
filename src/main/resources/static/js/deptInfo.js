@@ -48,8 +48,7 @@
 	
 	function deptWrire(){
 		var isFormValid = validateForm();
-		removeAlert();
-		
+
 		if (isFormValid) {
             console.log('폼이 유효합니다.');
 

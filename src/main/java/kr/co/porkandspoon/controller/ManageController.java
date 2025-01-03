@@ -12,16 +12,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.porkandspoon.dto.RestDTO;
+import kr.co.porkandspoon.util.CommonUtil;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.ManageDTO;
@@ -253,14 +253,32 @@ public class ManageController {
 	
 	@GetMapping(value="/ad/rest/Write")
 	public ModelAndView restWriteView() {
-		return new ModelAndView("/manage/restWrite");
+
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		ModelAndView mav = new ModelAndView("/manage/restWrite");
+		mav.addObject("userName",userDetails.getName());
+		mav.addObject("userRole",userDetails.getAuthorities());
+
+		return mav;
 	}
 	
 	@GetMapping(value="/ad/rest/Update")
 	public ModelAndView restUpdateView() {
 		return new ModelAndView("/manage/restUpdate");
 	}
-	
-	
-	
+
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 휴점 등록
+	 */
+	@PostMapping(value = "/ma/rest/write")
+	public RestDTO restWrite(@ModelAttribute RestDTO restDTO){
+
+		logger.info(CommonUtil.toString(restDTO));
+
+		return null;
+	}
+
 }
