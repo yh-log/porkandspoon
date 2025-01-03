@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.dto;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class NoticeDTO extends ResponseDTO {
@@ -9,13 +10,27 @@ public class NoticeDTO extends ResponseDTO {
 	private String code_name;
 	private String subject;
 	private String content;
-	private LocalDateTime create_date;
+	private Timestamp create_date;
 	private String is_url;
 	private String url;
 	private String from_idx;
 	private String is_confirm;
 	private LocalDateTime check_date;
 	private String board_idx;
+	private String recreate_date;
+	private String state;
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getRecreate_date() {
+		return recreate_date;
+	}
+	public void setRecreate_date(String recreate_date) {
+		this.recreate_date = recreate_date;
+	}
 	public String getBoard_idx() {
 		return board_idx;
 	}
@@ -59,10 +74,10 @@ public class NoticeDTO extends ResponseDTO {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public LocalDateTime getCreate_date() {
+	public Timestamp getCreate_date() {
 		return create_date;
 	}
-	public void setCreate_date(LocalDateTime create_date) {
+	public void setCreate_date(Timestamp create_date) {
 		this.create_date = create_date;
 	}
 	public String getIs_url() {
