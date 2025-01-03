@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.BoardDTO;
 import kr.co.porkandspoon.dto.NoticeDTO;
 
@@ -24,5 +25,10 @@ public interface AlarmDAO {
 	BoardDTO getBoardUS(BoardDTO boarddto);
 
 	List<NoticeDTO> getAlarmList(NoticeDTO dto);
+
+	ApprovalDTO getDraftLine(NoticeDTO noticeDTO);
+
+	ApprovalDTO getDraft(ApprovalDTO appdto);
+
 
 }
