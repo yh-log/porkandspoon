@@ -281,6 +281,22 @@ public interface UserDAO{
 	 */
 	List<DeptDTO> storeTransferInfo(String username);
 
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 직영점 이동 시 기존 직염점주 변경
+	 */
+	int setExistingStoreTransfer(List<UserDTO> userDto);
 
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 직영점 이동 시 직원 테이블 업데이트
+	 */
+	int updateStoreUser(UserDTO user);
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 직영점 이동 시 직영점 테이블 업데이트
+	 */
+	int updateStoreOwner(UserDTO user);
 
 }
