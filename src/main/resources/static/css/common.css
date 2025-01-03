@@ -534,6 +534,20 @@ input[type="text"], input[type="password"], input[type="number"], input[type="da
     padding: 6px 10px;
 }
 
+.flex {
+	display: flex;
+}
+
+.between {
+	justify-content: space-between;
+}
+.float-l {
+	float: left;
+}
+.float-r {
+	float: right;
+}
+
 /* 뱃지 */
 .badge {
 	font-weight: 600;

@@ -34,8 +34,8 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 <!-- 부트스트랩 -->
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<!-- <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css"> -->
+<!-- <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css"> -->
 <link rel="stylesheet" href="/resources/css/chartModal.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
@@ -168,6 +168,25 @@
 		margin-top: 20px;
 	}
 	
+	/* 조직도 모달 */
+	#chartModalBox .chart-td.active {
+		border-bottom: 2px solid #333;
+	}
+	#chartModalBox .left thead {
+		margin-bottom: 10px;
+	}
+	#chartModalBox .bookmark {
+	    transform: translateY(10px);
+	}
+	#chartModalBox .bookmark tr {
+		border: none;
+	}
+	#chartModalBox .bookmark td {
+		padding: 8px 16px;
+	    text-align: left;
+   		font-weight: 500;
+   		cursor: pointer;
+	}
 	
 	
 	/* 모달 */
@@ -473,7 +492,7 @@
 <script src='/resources/js/approval.js'></script>
 
 <!-- 조직도 js -->
-<script src='/resources/js/common.js'></script>
+<!-- <script src='/resources/js/common.js'></script> -->
 <script src='/resources/js/charjstree.js'></script>
 
 <!-- select  -->
@@ -657,168 +676,199 @@ var approvalLines = ['${userDTO.username}'];
      addSelectedIdToRows(selectedId);
  });
  
- function chartPrint(response){
-	 // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
-	            response.sort(function (a, b) {
-	                if (a.menuDepth === b.menuDepth) {
-	                    return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
-	                }
-	                return a.menuDepth - b.menuDepth; // depth 기준 정렬
-	            });
-
-	            console.log("AJAX 응답 데이터 (정렬 후):", response);
-
-	            // jsTree 데이터 형식으로 변환
-	            var jsTreeData = response.map(function(item) {
-	                return {
-	                    id: item.id, // 고유 ID
-	                    parent: item.parent, // 부모 ID
-	                    text: item.text, // 노드에 표시할 텍스트
-	                    type: item.type, // 노드 유형
-	                    li_attr: { // HTML <li> 태그에 추가 속성
-	                        "data-menu-depth": item.menuDepth,
-	                        "data-menu-order": item.menuOrder
-	                    },
-	                    a_attr: { // HTML <a> 태그에 추가 속성
-	                        "data-menu-depth": item.menuDepth,
-	                        "data-menu-order": item.menuOrder
-	                    }
-	                };
-	            });
-
-	            console.log("jsTree 변환 데이터:", jsTreeData);
-
-	            // jsTree 초기화
-	            $('#jstree').jstree({
-	                'core': {
-	                    'themes': {
-	                        'dots': true,
-	                        'icons': true
-	                    },
-	                    'data': jsTreeData // 변환된 데이터
-	                },
-	                "plugins": ["types", "search"],
-	                "types": {
-	                    "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
-	                    "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
-	                },
-	                "search": {
-	                    "show_only_matches": true,
-	                    "show_only_matches_children": true
-	                }
-	            });
-	            
-	            
-	            // 이벤트 등록
-	            $('#jstree').on('loaded.jstree', function () {
-	                console.log("jsTree가 성공적으로 초기화되었습니다.");
-					$("#jstree").jstree("open_all");
-					
-					let searchTimeout = null;
-				    $('.input-test').on('input', function () {
-				        let search = $(this).val();
-				
-				        // 이전 타임아웃 제거
-				        if (searchTimeout) {
-				            clearTimeout(searchTimeout);
-				        }
-				
-				        // 입력 후 300ms 후에 검색 실행
-				        searchTimeout = setTimeout(function () {
-				            $('#jstree').jstree('search', search);
-				        }, 300);
-				    });
-					
-					
-	            }).on('changed.jstree', function (e, data) {
-		            console.log("선택된 노드:", data.selected);
-		            if (data.selected.length > 0) {
-		            	if(document.getElementById('orgBody').childNodes.length > 3){
-		            		layerPopup( "결재자는 최대3명까지 선택 가능합니다.","확인",false,removeAlert,removeAlert);
-					    	return false;
-					    } 
-				        var selectedId = data.selected[0]; // 선택된 노드의 ID
-				        console.log("선택된 노드 ID:", selectedId);
-				
-				        // 설정된 콜백 함수 호출
-				        if (typeof selectIdCallback === "function") {
-				            selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
-				        }
-				    } else {
-				        console.log("선택된 노드가 없습니다.");
-				    }
-		        });
-	            
-	            
-	            // 나의 결재라인 추가
-	            $('#approvalBtn').text('나의 결재라인');
-	            
-	            /* 조직도 버튼 클릭 시 조직도 버튼 show 나의 결재선 hide */
-	        	$('.chart-btn').on('click', function(){
-	        		$('#chartModalBox .tbody-style').show();
-	        		/* 조직도 전체 열기 */
-	        		/* $("#jstree").jstree("open_all");
-	        		
-	        		// 다른 td 스타일 초기화
-	        		$('td').css({
-	        	        'border-bottom': 'none', 
-	        	        'font-weight': 'normal'
-	        	    });
-	        		
-	        		$('#jstree').show();
-	        		
-	        		$('#myjstree').hide();
-	        		
-	        		// 클릭된 버튼의 td 스타일 변경 
-	        		$(this).closest('td').css({
-	        	        'border-bottom': '1px solid gray', 
-	        	    }); */
-	        	});
-	        	
-	        	/* 나의 결재선 버튼 클릭 시 나의 결재선 show 조직도 버튼 hide */
-	        	$('.chart-mybtn').on('click', function() {
-	        		alert('dd');
-	        		$('#chartModalBox .tbody-style').hide();
-	        		
-	        		
-	        		$.ajax({
-	        			type:'GET',
-	        			url:'/approval/list/line',
-	        			data:{
-	        			},
-	        			datatype:'JSON',
-	        			success:function(data){
-	        				console.log(data);
-	        				drawList(data.bookmarkList);
-	        			},
-	        			error:function(e){
-	        				console.log(e);
-	        			}
-	        		});
-	        		
-	        		/* 다른 td 스타일 초기화 */
-	        		/* $('td').css({
-	        	        'border-bottom': 'none', 
-	        	        'font-weight': 'normal'
-	        	    });
-	        		
-	        		$('#myjstree').show();
-	        		
-	        		$('#jstree').hide();
-	        		
-	        		//클릭된 버튼의 td 스타일 변경 
-	        		$(this).closest('td').css({
-	        	        'border-bottom': '1px solid gray', 
-	        	    }); */
-	        	});
-		        
-	}
  
-	// 조직도 노드 해당 사원 삭제
-	$(document).on('click', '.user-delete', function() {
-	    $(this).closest('tr').remove();
-	});
-	
+ function chartPrint(response) {
+	    console.log(response, '받아온 데이터');
+
+	    // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
+	    response.sort(function (a, b) {
+	        if (a.menuDepth === b.menuDepth) {
+	            return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+	        }
+	        return a.menuDepth - b.menuDepth; // depth 기준 정렬
+	    });
+
+	    console.log("AJAX 응답 데이터 (정렬 후):", response);
+
+	    // jsTree 데이터 형식으로 변환
+	    const processedData = processJsTreeData(response);
+
+	    console.log("jsTree 변환 데이터:", processedData);
+
+	    $('#jstree').jstree('destroy').empty();
+	    // jsTree 초기화
+	    $('#jstree').jstree({
+	        'core': {
+	            'data': function (node, callback) {
+	                // 루트 노드 (#) 또는 특정 노드의 children 반환
+	                if (node.id === "#") {
+	                    callback(processedData.filter(item => item.parent === "#"));
+	                } else {
+	                    callback(processedData.filter(item => item.parent === node.id));
+	                }
+	            },
+	            'themes': {
+	                'dots': true,
+	                'icons': true
+	            }
+	        },
+	        "plugins": ["types", "search"],
+	        "types": {
+	            "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
+	            "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
+	        },
+	        "search": {
+	            "show_only_matches": true,
+	            "show_only_matches_children": true
+	        }
+	    }).on('loaded.jstree', function () {
+	        console.log("jsTree가 성공적으로 초기화되었습니다.");
+	        $("#jstree").jstree("open_all");
+
+	        // 검색 이벤트 처리
+	        let searchTimeout = null;
+	        $('.input-test').on('input', function () {
+	            const search = $(this).val();
+
+	            // 이전 타임아웃 제거
+	            if (searchTimeout) {
+	                clearTimeout(searchTimeout);
+	            }
+
+	            // 입력 후 300ms 후에 검색 실행
+	            searchTimeout = setTimeout(function () {
+	                $('#jstree').jstree('search', search);
+	            }, 300);
+	        });
+
+	    }).on('changed.jstree', function (e, data) {
+	        console.log("선택된 노드:", data.selected);
+	        if (data.selected.length > 0) {
+	        	if(document.getElementById('orgBody').childNodes.length > 3){
+            		layerPopup( "결재자는 최대3명까지 선택 가능합니다.","확인",false,removeAlert,removeAlert);
+			    	return false;
+			    } 
+	            const selectedId = data.selected[0]; // 선택된 노드의 ID
+	            console.log("선택된 노드 ID:", selectedId);
+
+	            // 설정된 콜백 함수 호출
+	            if (typeof selectIdCallback === "function") {
+	                selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+	            }
+	        } else {
+	            console.log("선택된 노드가 없습니다.");
+	        }
+	    }).on("load_node.jstree", function (e, data) {
+	        console.log("노드 로드 완료:", data.node);
+	    });
+	    
+	    
+	    // 나의 결재라인 추가
+        $('#approvalBtn').text('나의 결재라인');
+        
+    	$('.chart-btn-style').on('click', function(){
+	        /* 조직도 버튼 클릭 시 조직도 버튼 show 나의 결재선 hide */
+	    	if($(this).hasClass('chart-btn')){
+	    		$('#chartModalBox .tbody-style').show();
+	    		/* 조직도 전체 열기 */
+	    		/* $("#jstree").jstree("open_all");
+	    		
+	    		// 다른 td 스타일 초기화
+	    		$('td').css({
+	    	        'border-bottom': 'none', 
+	    	        'font-weight': 'normal'
+	    	    });
+	    		
+	    		$('#jstree').show();
+	    		
+	    		$('#myjstree').hide();
+	    		
+	    		// 클릭된 버튼의 td 스타일 변경 
+	    		$(this).closest('td').css({
+	    	        'border-bottom': '1px solid gray', 
+	    	    }); */
+	    	}
+	        
+	    	if($(this).hasClass('chart-mybtn')){
+		    	/* 나의 결재선 버튼 클릭 시 나의 결재선 show 조직도 버튼 hide */
+		    	//$('.chart-mybtn').on('click', function() {
+		    		$('#chartModalBox .tbody-style').hide();
+		    		
+		    		$.ajax({
+		    			type:'GET',
+		    			url:'/approval/list/line',
+		    			data:{
+		    			},
+		    			datatype:'JSON',
+		    			success:function(data){
+		    				console.log(data);
+		    				drawList(data.bookmarkList);
+		    			},
+		    			error:function(e){
+		    				console.log(e);
+		    			}
+		    		});
+			}
+   		}); 
+   	}
+ 
+ 
+ 	// 즐겨찾기 
+	var thead ='';
+ 	function drawList(list) {
+		var content ='';
+		var approverNames = '';
+		content += '<tbody class="bookmark">';
+	 	for (var view of list) {
+	 		approverNames = view.approver_names.split(', ');
+	 		var approverPositions = view.approver_positions.split(', ');
+	 		console.log("approverNames : ", approverNames);
+	 		
+			content += '<tr>';
+			content += '<td class="line" data-view=\'' + JSON.stringify(view) + '\' colspan="2">'+view.line_name+'</td>';
+			// 결재자 수 만큼
+	 	 	for (var i=0; i<approverNames.length; i++) {
+	 	 		//content += '<td>'+ approverNames[i] +' '+ approverPositions[i] +'</td>';
+	 	 	}
+			content += '</tr>';
+	   } 
+		content += '</tbody>';
+		
+		$('#chartModalBox .bookmark').remove();
+	    $('#chartModalBox table.left').append(content);
+		
+	    // thead
+		thead += '<tr>';
+		thead += '<th>NO</th>';
+		thead += '<th class="align-l">결재라인명</th>';
+	 	//결재자 수만큼
+		for (var i=0; i<approverNames.length; i++) {
+			thead += '<th>결재자'+(i+1)+'</th>';
+		}
+		thead += '<th>삭제</th>';
+		thead += '</tr>';
+	    $('.list thead').html(thead);
+		
+		//console.log("bookmarkList:  ", '${bookmarkList}');
+	}
+ 	
+ 	
+ // 즐겨찾기 -> 결재라인 추가 
+ $(document).on('click', '.bookmark .line', function() {
+    //비우고
+    resetTableData();
+	var view = JSON.parse($(this).attr('data-view'));
+    var usernames = JSON.parse(view.approver_usernames);
+    for (var i=1; i<usernames.length; i++){
+  		addSelectedIdToRows(usernames[i]);
+    }
+});
+ 	
+ 	
+// 조직도 노드 해당 사원 삭제
+$(document).on('click', '.user-delete', function() {
+    $(this).closest('tr').remove();
+});
 	
 	
  // 조직도노드 등록버튼 (결재라인 설정)
@@ -847,6 +897,8 @@ function addBtnFn(){
     	saveApprvalLine();
     }
 });
+ 
+ 
 
 var csrfToken = document.querySelector('meta[name="_csrf"]').content;
 var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
@@ -877,6 +929,10 @@ function saveApprvalLine() {
     });
 	
 }
+
+
+
+
 
 </script>
 

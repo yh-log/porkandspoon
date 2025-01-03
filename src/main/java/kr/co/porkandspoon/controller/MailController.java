@@ -2,6 +2,7 @@ package kr.co.porkandspoon.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dto.ApprovalDTO;
@@ -53,5 +56,25 @@ public class MailController {
 		ModelAndView mav = new ModelAndView("/mail/mailDetail");  
 		return mav;
 	}
+	
+	// 메일작성시 수신자 자동완성
+	//@GetMapping(value = "/json", produces="text/plain;charset=UTF-8")
+	//public String json(Locale locale, Model model) {    
+		/*ObjectMapper objectMapper = new ObjectMapper();
+		String[] array = {"엽기떡볶이", "신전떡볶이", "걸작떡볶이", "신당동떡볶이"}; // 배열 생성
+	    
+	    String userList = "";
+		try {
+			userList = objectMapper.writeValueAsString(array);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+	    return userList; 
+	    */
+		
+		
+		
+	//}
 	
 }

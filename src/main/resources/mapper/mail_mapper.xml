@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+>
+
+<mapper namespace="kr.co.porkandspoon.dao.MailDAO">
+   <!-- 쿼리까지 작성해둠 => 컨트롤러서비스dao적용하기!!!(실시간 데이터 불러오기) -->
+	<!-- <select id="">
+		SELECT 
+			CONCAT(
+				u.name
+				, '/'
+				, c.content
+				, '/'
+				, IFNULL(d.text, '미발령')
+				, ' <'
+				, u.username
+				, '>') 
+		FROM 
+			user u
+		JOIN code c ON u.`position` = c.name 
+		LEFT JOIN department d ON u.parent = d.id;
+	</select> -->
+	
+</mapper>

@@ -191,6 +191,9 @@ public class ApprovalController {
 			mav.addObject("reapproval", true);
 		}
 		
+		// 기안 유저 정보
+		mav.addObject("UserInfo", approvalService.getUserInfo(loginId));
+		
 		// 상세페이지 리턴 여부
 		boolean returnValue = checkDraftPermission(draft_idx, response, mav, permission, message);
 		return returnValue ? mav : null;

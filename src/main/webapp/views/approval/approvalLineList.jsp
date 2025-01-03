@@ -137,7 +137,14 @@
 									<col>
 								</colgroup>
 								<thead>
-									
+									<tr>
+										<th>NO</th>
+										<th class="align-l">결재라인명</th>
+										<th>결재자1</th>
+										<th>결재자2</th>
+										<th>결재자3</th>
+										<th>삭제</th>
+									</tr>
 								</thead>
 								<tbody>
 									
@@ -239,22 +246,22 @@ function drawList(list) {
  	 	for (var i=0; i<approverNames.length; i++) {
  	 		content += '<td>'+ approverNames[i] +' '+ approverPositions[i] +'</td>';
  	 	}
+
+		// 결재자 수에 따라 달라지는 td갯수 맞추기
+	    var numColumns = approverNames.length;  
+	    var maxColumns = 3;  // 최대
+	    var missingColumns = maxColumns - numColumns; 
+        // <td> 추가
+	    if (missingColumns > 0) {
+	        for (var j = 0; j < missingColumns; j++) {
+	        	content += '<td></td>';
+	        }
+	    }
 		content += '<td class="delete" data-lineidx="'+view.line_idx+'" ><i class="bi bi-trash3"></i></td>';
 		content += '</tr>';
-	
-     $('.list tbody').html(content);
    } 
-	// thead
-	thead += '<tr>';
-	thead += '<th>NO</th>';
-	thead += '<th class="align-l">결재라인명</th>';
- 	//결재자 수만큼
-	for (var i=0; i<approverNames.length; i++) {
-		thead += '<th>결재자'+(i+1)+'</th>';
-	}
-	thead += '<th>삭제</th>';
-	thead += '</tr>';
-    $('.list thead').html(thead);
+ 	
+    $('.list tbody').html(content);
 	
 	console.log("bookmarkList:  ", '${bookmarkList}');
 }

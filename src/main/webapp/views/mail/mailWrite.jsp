@@ -21,35 +21,27 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-
 <!-- summernote bootstrap-->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 
 <!-- 부트스트랩 -->
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<!-- <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css"> -->
+<!-- <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css"> -->
+<link rel="stylesheet" href="/resources/css/chartModal.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-
-<!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
-
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- FilePond CSS -->
+<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
 <!-- summernote -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<!-- jstree -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 
+<!-- Autocomplete -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <style>
 .mailList .tit-area {
@@ -127,7 +119,7 @@
 }
 
 .mailList .cont-body {
-	padding: 0;
+    padding: 20px 40px;
 }
 
 .mailList .list-area .mail-item {
@@ -142,7 +134,25 @@
 .mailList .list-area .mail-item .name {
 	margin-right: 30px;
 }
+.mailList .line {
+	height: 60px;
+}
+.mailList .line label {
+	width: 72px;	
+}
+.mailList .btn {
+	margin: 0;
+}
+.mailList .note-editor {
+    width: 100% !important;
+}
 
+
+
+    .ui-autocomplete { position: absolute; max-height: 200px; margin: 0; padding: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; z-index: 1; list-style: none; overflow-y: auto; } 
+    .ui-autocomplete li { padding: 10px; cursor: pointer; font-size: 16px; color: #000; } 
+    .ui-autocomplete li strong { color: #0077cc; } 
+    .ui-helper-hidden-accessible { display: none; } 
 </style>
 
 </head>
@@ -181,33 +191,41 @@
 						</div>
 						<div class="util-area">
 							<div class="left">
-								<buttton>보내기</buttton>
-								<buttton>임시저장</buttton>
+								<buttton class="btn btn-primary">보내기</buttton>
+								<buttton class="btn btn-outline-primary">임시저장</buttton>
 							</div>
 						</div>
 
 						<div class="cont-body">
 							<div class="line">
-								<label class="fw-600">받는 사람</label> 
-								<input name="myself" type="checkbox" class="form-check-input" id="checkbox2">
-								<label for="myself">나에게</label>
-								<button>조직도</button>
+								<div class="flex between">
+									<div>
+										<label class="fw-600">받는 사람</label> 
+										<!-- <input name="myself" type="checkbox" class="form-check-input" id="checkbox2">
+										<label for="myself">나에게</label> -->
+										
+										<!-- 검색어를 입력할 input box 구현부 -->
+	    								<input id="searchBox">
+										<!-- <input type="text" id="autocomplete" class="autocomplete-input"> -->
+									</div>
+									<button class="btn btn-outline-primary btn-sm">조직도</button>
+								</div>
 							</div>
 							<div class="line">
 								<label class="fw-600">제목</label>
 								<input type="text" name="title"/>
 							</div>
-							<div class="line">
+							<div class="line clearfix">
 								<label class="fw-600">파일첨부</label> 
-								<button>파일첨부</button>
-								<p>
+								<button class="btn btn-outline-primary btn-sm">파일첨부</button>
+								<p class="float-r">
 									<span>0KB</span>
 									/
 									<span>10MB</span>
 								</p>
-								<input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB">
-								
 							</div>			
+							<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+							<!-- <input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB"> -->
 							<div class="editor-area">
 								<textarea name="content" id="summernote" maxlength="10000"></textarea>
 							</div>		
@@ -223,34 +241,144 @@
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- 파일업로더 -->
+<!-- select  -->
 <script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
+	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
+
+<!-- FilePond JavaScript -->
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+
+<!-- jQuery -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
+<!-- jstree -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+	
+<script src='/resources/js/common.js'></script>
+<script src='/resources/js/charjstree.js'></script>
 
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<script src='/resources/js/common.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
 
-<script>
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+<script>
+	//두 번째 FilePond에 다른 설정 적용
+	const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
+	    allowMultiple: true,
+	    maxFiles: 3,
+	    allowImagePreview: false,
+	    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
+	    instantUpload: false
+	});
+	
+	
+	
+	
+	// auto-complete
+$(function() {
+    $('#searchBox').autocomplete({
+        source : function(reuqest, response) {
+            $.ajax({
+                type : 'get',
+                url: '/json',
+                dataType : 'json',
+                success : function(data) {
+                    // 서버에서 json 데이터 response 후 목록 추가
+                    response(
+                        $.map(data, function(item) {
+                            return {
+                                label : item + 'label',
+                                value : item,
+                                //test : item + 'test'
+                            }
+                        })
+                    );
+                }
+            });
+        },
+        select : function(event, ui) {
+            console.log(ui);
+            console.log(ui.item.label);
+            console.log(ui.item.value);
+            console.log(ui.item.test);
+        },
+        focus : function(event, ui) {
+            return false;
+        },
+        minLength : 1,
+        autoFocus : true,
+        classes : {
+            'ui-autocomplete': 'highlight'
+        },
+        delay : 500,
+        position : { my : 'right top', at : 'right bottom' },
+        close : function(event) {
+            console.log("close: ",event);
+        }
+    });
+});
+	
+	
+	/* $(document).ready(function () {
+    const data = [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "jQuery",
+        "Ajax",
+        "React",
+        "Angular",
+        "Vue.js",
+        "Node.js",
+        "Express"
+    ];
+
+    // 자동 완성 셋업
+    $("#autocomplete").autocomplete({
+        // 입력 문자열에 대해 필터링된 제안을 반환하는 함수
+        source: function (request, response) {
+            const inputText = request.term.toLowerCase();
+            const filteredItems = data.filter(item => item.toLowerCase().includes(inputText));
+            response(filteredItems);
+        },
+        
+        // 자동 완성 위치 조정
+        position: { my: "left top+5" },
+
+        // 자동 완성 메뉴가 열렸을 때, 하이라이팅 로직
+        open: function () {
+            const inputText = $("#autocomplete").val().toLowerCase();
+            // 각 제안 아이템에 대한 하이라이팅
+            $(".ui-autocomplete li").each(function () {
+                let suggestion = $(this).text();
+                const index = suggestion.toLowerCase().indexOf(inputText);
+
+                if (index !== -1) {
+                    // 단어의 일부를 강조하는 HTML을 사용하여 새로운 제안 생성
+                    const highlightedPart = `<strong>${suggestion.substr(index, inputText.length)}</strong>`;
+                    suggestion = suggestion.substring(0, index) + highlightedPart + suggestion.substring(index + inputText.length);
+                    // 새로운 제안으로 항목 내용을 업데이트
+                    $(this).html(suggestion);
+                }
+            });
+        },
+        delay : 100, // 입력창에 글자가 써지고 나서 autocomplete 이벤트 발생될 떄 까지 지연 시간(ms)
+    });
+}); */
+	
+	
+	
+	
+	
+	
 </script>
 
 </html>
