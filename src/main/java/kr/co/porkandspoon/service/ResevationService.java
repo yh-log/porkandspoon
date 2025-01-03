@@ -1,7 +1,6 @@
 package kr.co.porkandspoon.service;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.ResevationDAO;
 import kr.co.porkandspoon.dto.CalenderDTO;
-import kr.co.porkandspoon.dto.DeptDTO;
-import kr.co.porkandspoon.dto.ResponseDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
 @Service
@@ -115,6 +112,24 @@ public class ResevationService {
 
 	public List<CalenderDTO> roomList() {
 		return resDao.roomList();
+	}
+
+	public boolean roomReservationWrite(CalenderDTO calenderDto) {
+		List<String> attendees = calenderDto.getAttendees();
+        if(attendees == null || attendees.isEmpty()) {
+            return false;
+        }
+        for(String username : attendees) {
+            CalenderDTO singleDto = new CalenderDTO();
+            singleDto.setNo(calenderDto.getNo());
+            singleDto.setUsername(username);
+            singleDto.setStart_date(calenderDto.getStart_date());
+            singleDto.setEnd_date(calenderDto.getEnd_date());
+            singleDto.setSubject(calenderDto.getSubject());
+            singleDto.setContent(calenderDto.getContent());
+            resDao.roomReservationWrite(singleDto);
+        }
+        return true;
 	}
 
 

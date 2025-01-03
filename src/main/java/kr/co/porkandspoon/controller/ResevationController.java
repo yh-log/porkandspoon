@@ -356,7 +356,25 @@ public class ResevationController {
  		return result;
  	}
 	
-	
+ 	// 회의실 예약 등록 엔드포인트
+    @PostMapping(value="/roomReservation")
+    public Map<String, Object> roomReservation(@RequestBody CalenderDTO calenderDto, @AuthenticationPrincipal UserDetails userDetails) {
+        // 현재 로그인한 사용자의 ID 설정 (필요 시)
+        String currentUser = userDetails.getUsername();
+        // 선택된 사용자들 중에 작성자가 포함되지 않은 경우 작성자를 추가할지 결정 (옵션)
+        // 예시로 작성자를 포함하지 않고, 참석자 배열에 포함시키는 것으로 가정
+
+        boolean success = resService.roomReservationWrite(calenderDto);
+        Map<String, Object> response = new HashMap<>();
+        if(success) {
+            response.put("success", true);
+            response.put("message", "회의실 예약이 성공적으로 등록되었습니다.");
+        } else {
+            response.put("success", false);
+            response.put("message", "회의실 예약에 실패했습니다.");
+        }
+        return response;
+    }
 	
 
 

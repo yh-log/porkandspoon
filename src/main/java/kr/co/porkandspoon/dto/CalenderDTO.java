@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CalenderDTO extends ResponseDTO{
 	
@@ -38,9 +39,15 @@ public class CalenderDTO extends ResponseDTO{
 	private String category;
 	private String is_active;
 	
+	private List<String> attendees;
 	
 	
-	
+	public List<String> getAttendees() {
+		return attendees;
+	}
+	public void setAttendees(List<String> attendees) {
+		this.attendees = attendees;
+	}
 	public String getSelection() {
 		return selection;
 	}
