@@ -117,7 +117,9 @@ h3, h4 {
   border-radius: 5px;
   color: #aaa;
 }
-
+#partlist {
+    justify-content: center; /* 페이지네이션 중앙 정렬 */
+}
 </style>
 </head>
 
@@ -164,7 +166,7 @@ h3, h4 {
 			          </tr>
 			        </tbody>
 			      </table>
-			      <h6><a href="/ad/part/List">아르바이트 리스트 더보러가기</a></h6>
+			      <h6 id="partlist"><a href="/ad/part">아르바이트 리스트 더보러가기</a></h6>
 			    </div>
 			  </div>
 			

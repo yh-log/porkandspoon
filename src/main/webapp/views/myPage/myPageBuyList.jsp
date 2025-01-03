@@ -183,7 +183,19 @@ var url = '/ad/myPageBuy/List'; // 서버 요청 URL
 var paginationInitialized = false;
 
 $(document).ready(function () {
-    pageCall(show);
+    pageCall(show); // 초기 페이지 호출
+
+    // 검색 버튼 클릭 이벤트 추가
+    $('.btn-primary').on('click', function () {
+        pageCall(1); // 첫 번째 페이지에서 검색 시작
+    });
+
+    // Enter 키로도 검색 가능하도록 처리
+    $('#searchKeyword').on('keypress', function (e) {
+        if (e.which === 13) { // Enter 키 코드
+            pageCall(1);
+        }
+    });
 });
 
 function pageCall(page) {

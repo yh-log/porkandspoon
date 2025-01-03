@@ -122,16 +122,13 @@
 			<div class="page-content">
 				<section id="menu">
 					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchdule'">스케줄 관리</button>
-					</div>
-					
 					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+						<li ><a href="/ad/spotManage">매장관리 홈</a></li>
+						<li ><a href="/ad/partSchedule">스케줄관리</a></li>
+						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
 						<li><a href="/ad/rest/List">휴점신청</a></li>
-						
 					</ul>
+					
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
