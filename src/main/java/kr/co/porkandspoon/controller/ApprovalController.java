@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -455,6 +456,14 @@ public class ApprovalController {
 		List<ApprovalDTO> bookmarkList = approvalService.getLineBookmark(params);
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("bookmarkList", bookmarkList);
+		return result;
+	}
+	
+	@DeleteMapping(value="/approval/DeleteBookmark/{lineIdx}")
+	public Map<String, Object> deleteBookmark(@PathVariable String lineIdx, @AuthenticationPrincipal UserDetails userDetails) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String loginId = userDetails.getUsername();
+		result.put("success", approvalService.deleteBookmark(lineIdx, loginId));
 		return result;
 	}
 	

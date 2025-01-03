@@ -29,55 +29,61 @@
 
 
 <style>
-.draftWrite table tr:hover {
-	background: #f7f7f7;
+.apprLineList table tr:hover {
+	background: #fbfbfb;
 }
-.draftWrite input {
+
+.apprLineList input {
 	width: 100%;
 	height: 100%;
 	border: none;
 }
 
-.draftWrite .search-area {
+.apprLineList .search-area {
 	display: flex;
 	gap: 4px;
 }
 
-.draftWrite input[name="search-data"] {
+.apprLineList input[name="search-data"] {
 	width: 300px;
 	height: 38px;
 	margin: 14px 0;
 	border: 1px solid #DFE3E7;
 }
 
-.draftWrite .search-area select {
+.apprLineList .search-area select {
 	margin: 14px 0;
 }
 
 
-.draftWrite .buttons {
+.apprLineList .buttons {
 	display: flex;
 	justify-content: space-between;
 	padding: 4px 40px;
 }
 
-.draftWrite .buttons .btn {
+.apprLineList .buttons .btn {
 	margin: 14px 0;
 }
 
-.draftWrite h4.doc-subject {
+.apprLineList h4.doc-subject {
 	margin: 20px 0 50px;
 	text-align: center;
 }
 
-.draftWrite .btm-area {
+.apprLineList .btm-area {
 	display: flex;
 	flex-wrap: wrap;
 	border-left: 1px solid #ddd;
 	border-top: 1px solid #ddd;
 	margin-top: 40px;
 }
-
+.apprLineList table {
+    table-layout: auto;
+}
+.apprLineList table td.delete:hover{
+    cursor: pointer;
+}
 
 </style>
 
@@ -95,7 +101,7 @@
 			<!-- 헤더 -->
 			<jsp:include page="../header.jsp" />
 
-			<div class="page-content draftWrite">
+			<div class="page-content apprLineList">
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
@@ -120,34 +126,21 @@
 						</div>
 						<div class="cont-body">
 
-							<table>
+							<table class="list">
 								<colgroup>
 									<col width="60px;">
+									<col width="20%;">
 									<col>
 									<col>
 									<col>
 									<col>
-									<col width=80px;">
+									<col>
 								</colgroup>
 								<thead>
-									<tr>
-										<th>NO</th>
-										<th class="align-l">결재라인명</th>
-										<th>결재자1</th>
-										<th>결재자2</th>
-										<th>결재자3</th>
-										<th>삭제</th>
-									</tr>
+									
 								</thead>
 								<tbody>
-									<tr>
-										<td>1</td>
-										<td class="align-l">브랜드 등록 결재라인</td>
-										<td>이진형 과장</td>
-										<td>김진형 차장</td>
-										<td>김지원 대표</td>
-										<td><i class="bi bi-trash3"></i></td>
-									</tr>
+									
 								</tbody>
 							</table>
 
@@ -181,7 +174,7 @@ var totalPage = 0;
 pageCall(show);
 
 function pageCall(page) {
-	console.log("page : ", page);
+	//console.log("page : ", page);
 	$.ajax({
 		type:'GET',
 		url:'/approval/list/line',
@@ -205,7 +198,7 @@ function pageCall(page) {
 			 /* 페이지네이션 */       
 
 			$('#pagination').twbsPagination({
-				startPage:1, 
+				startPage: 1, 
            		totalPages: totalPage, 
            		visiblePages:10,
            		onPageClick:function(evt,page){
@@ -224,22 +217,94 @@ function pageCall(page) {
 }
 
 function drawList(list) {
+	var thead ='';
 	var content ='';
 	if(totalCount == 0){
 		content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
 		$('.list tbody').html(content);
 		return false;
 	}
+	
+	var approverNames = '';
  	for (var view of list) {
+ 		approverNames = view.approver_names.split(', ');
+ 		var approverPositions = view.approver_positions.split(', ');
+ 		console.log("approverNames : ", approverNames);
+ 		
+ 	 	// tbody
 		content += '<tr>';
 		content += '<td>'+view.line_idx+'</td>';
-		content += '<td>'+view.line_name+'</td>';
-		content += '<td>'+view.name+'</td>';
+		content += '<td class="align-l">'+view.line_name+'</td>';
+		// 결재자 수 만큼
+ 	 	for (var i=0; i<approverNames.length; i++) {
+ 	 		content += '<td>'+ approverNames[i] +' '+ approverPositions[i] +'</td>';
+ 	 	}
+		content += '<td class="delete" data-lineidx="'+view.line_idx+'" ><i class="bi bi-trash3"></i></td>';
+		content += '</tr>';
 	
      $('.list tbody').html(content);
    } 
+	// thead
+	thead += '<tr>';
+	thead += '<th>NO</th>';
+	thead += '<th class="align-l">결재라인명</th>';
+ 	//결재자 수만큼
+	for (var i=0; i<approverNames.length; i++) {
+		thead += '<th>결재자'+(i+1)+'</th>';
+	}
+	thead += '<th>삭제</th>';
+	thead += '</tr>';
+    $('.list thead').html(thead);
 	
 	console.log("bookmarkList:  ", '${bookmarkList}');
+}
+$(document).on('click','.delete',function(){
+	var lineIdx = $(this).data('lineidx');
+	layerPopup('해당 결재라인을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
+
+	function deleteAct(){
+		$.ajax({
+	        type : 'DELETE',
+	        url : '/approval/DeleteBookmark/'+lineIdx,
+	        data : {},
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	 if(response.success){
+	     		 	removeAlert(); 
+	      			layerPopup('삭제 완료되었습니다.', '확인', false, reloadAct, btn1Act);
+	     		 }else{
+	     		 	removeAlert(); 
+	      			layerPopup('삭제 실패하였습니다.', '재시도', '취소', deleteAct, btn1Act);
+	     		 }
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+});
+
+/* $(document).on('click', '.td.delete', function() {
+	alert('dd');
+}); */
+
+// 삭제 팝업 (삭제버튼)
+var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+		
+
+
+// 삭제 팝업 (취소버튼)
+function btn1Act(){
+	removeAlert();
+}
+//삭제확인 후 팝업 (확인버튼)
+function reloadAct() {
+	location.reload();
+	removeAlert();
+	
 }
 </script>
 

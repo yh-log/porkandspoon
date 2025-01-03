@@ -33,7 +33,7 @@
 	padding-top: 10px;
 }
 .draftList table tr:hover {
-	background: #f7f7f7;
+	background: #fbfbfb;
 }
 .draftList input {
 	width: 100%;
