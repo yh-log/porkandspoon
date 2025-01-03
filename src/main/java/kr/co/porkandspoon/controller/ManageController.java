@@ -45,7 +45,7 @@ public class ManageController {
 	
 	//아르바이트
 	
-	@GetMapping(value="/ad/part/")
+	@GetMapping(value="/ad/part")
 	public ModelAndView partListView() {
 		return new ModelAndView("/manage/partList");
 	}
@@ -113,16 +113,16 @@ public class ManageController {
 	    @RequestParam("start_time[]") List<String> startTimes,
 	    @RequestParam("end_time[]") List<String> endTimes
 	) {
-	    if (workDates.isEmpty() || startTimes.isEmpty() || endTimes.isEmpty()) {
-	        throw new IllegalArgumentException("근무 요일 및 시간을 모두 입력해야 합니다.");
-	    }
-
+	   
+	    logger.info("params : {}",params);
+	    
 	    String updater = userDetails.getUsername();
 	    params.put("updater", updater);
+	    String part_idx = params.get("part_idx");
+	    logger.info(part_idx);
 
 	    manageService.editPart(params, workDates, startTimes, endTimes);
 
-	    String part_idx = params.get("part_idx");
 	    return new ModelAndView("redirect:/ad/part/Detail/" + part_idx);
 	}
 
