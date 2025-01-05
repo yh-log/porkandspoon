@@ -91,6 +91,73 @@
   .fc-toolbar-chunk:nth-child(3) {
     display: none !important; /* 'week' 버튼을 포함한 오른쪽 상단 버튼 숨김 */
   }
+  
+   #modalBox {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+    top: 0;
+    left: 0;
+	z-index: 996;
+	background: rgba(0,0,0,0.6);
+}
+#modal .close {
+    font-size: 40px;
+    font-weight: 300;
+    position: absolute;
+    z-index: 996;
+    top: 24px;
+    right: 24px;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 27px;
+    text-align: center;
+    cursor: pointer;
+}
+ .modal-content{
+	position: absolute;
+	left: 50%;
+	top: 40px;
+	transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    padding: 30px;
+    background: #fff;
+    border: none;
+   	border-radius: 8px;
+   }
+   #modal-body {
+   	background: #fff;
+   	border-radius: 10px;
+   }
+   
+   .modal-header{
+border-bottom: none;
+}
+
+/* 셀렉트 박스 나란히 배치 */
+.select {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px; /* 간격 조정 */
+}
+
+/* 버튼 중앙 정렬 */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* 버튼 간격 */
+}
+
+/* 모달 안 버튼 크기 및 위치 조정 */
+.modal-footer .btn {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
 	
 </style>
 </head>
@@ -104,8 +171,8 @@
 					<h4 class="menu-title">매장관리</h4>
 					<div class="buttons">							
 						<button class="btn btn-outline-primary" id="home"  onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchdule'">스케줄 관리</button> 
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/part/Write'">등록하기</button>
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchedule'">스케줄 관리</button> 
+						<button class="btn btn-primary" id="scheduleWrite" >등록하기</button>
 					</div>
 	
 					<ul>
@@ -123,46 +190,100 @@
       
                      <div id='calender'></div>
                   </div>
-                  <div id="modalBox" class="modal" style="display: none;">
-				    <div class="modal-content">
-				        <div class="modal-header">
-				            <h5>식단 수정</h5>
-				            <button type="button" id="closeModal" class="modal-close">X</button>
-				        </div>
-				        <div class="modal-body">
-				            <form id="editMenuForm">
-				            <div class="form-group">
-				            	<select class="form-select short" id="mealTypeSelector" name="is_time">
-		                           <option value="B" selected="selected">아침</option>
-		                           <option value="L">점심</option>
-		                           <option value="D">저녁</option>
-	                        	</select>
-				            </div>
-				                
-				                <div class="form-group">
-				                    <label for="menuStartDate">시작 날짜</label>
-				                    <input type="datetime-local" id="menuStartDate" class="form-input">
-				                </div>
-				                
-				                <div class="form-group">
-				                    <label for="menuEndDate">종료 날짜</label>
-				                    <input type="datetime-local" id="menuEndDate" class="form-input">
-				                </div>
-				                
-				                <div class="form-group">
-				                    <label for="menuContent">내용</label>
-				                    <textarea id="menuContent" class="form-input" rows="4" name="content"></textarea>
-				                </div>
-				                
-				            </form>
-				        </div>
-				        <div class="modal-footer">
-				            <button type="button" id="saveMenu" class="btn btn-primary">저장</button>
-				            <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
-				        </div>
-				    </div>
-				</div>
-                  
+				  <!-- 수정 모달 -->
+<div id="editModalBox" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>이벤트 수정</h5>
+            <button type="button" id="closeEditModal" class="modal-close">X</button>
+        </div>
+        <div class="modal-body">
+            <form id="editEventForm">
+                <table class="modal-table">
+                    <tr>
+                        <th>이벤트 제목</th>
+                        <td><input type="text" id="menuContent" class="form-control" placeholder="제목을 입력하세요" /></td>
+                    </tr>
+                    <tr>
+                        <th>일자</th>
+                        <td><input type="date" id="menuDate" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>시작 시간</th>
+                        <td><input type="time" id="menuStartTime" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>종료 시간</th>
+                        <td><input type="time" id="menuEndTime" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>급여</th>
+                        <td><input type="number" id="pay" class="form-control" placeholder="급여를 입력하세요" /></td>
+                    </tr>
+                    <tr>
+                        <th>상태</th>
+                        <td>
+                            <label><input type="radio" name="isDone" value="Y" id="isDoneYes" /> 완료</label>
+                            <label><input type="radio" name="isDone" value="N" id="isDoneNo" /> 미완료</label>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveEditMenu" class="btn btn-primary">저장</button>
+            <button type="button" id="cancelEditModal" class="btn btn-secondary">취소</button>
+        </div>
+    </div>
+</div>
+
+<!-- 등록 모달 -->
+<div id="registerModalBox" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5>이벤트 등록</h5>
+            <button type="button" id="closeRegisterModal" class="modal-close">X</button>
+        </div>
+        <div class="modal-body">
+            <form id="registerEventForm">
+                <table class="modal-table">
+                    <tr>
+                        <th>이벤트 제목</th>
+                        <td><input type="text" id="registerMenuContent" class="form-control" placeholder="제목을 입력하세요" /></td>
+                    </tr>
+                    <tr>
+                        <th>일자</th>
+                        <td><input type="date" id="registerMenuDate" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>시작 시간</th>
+                        <td><input type="time" id="registerMenuStartTime" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>종료 시간</th>
+                        <td><input type="time" id="registerMenuEndTime" class="form-control" /></td>
+                    </tr>
+                    <tr>
+                        <th>급여</th>
+                        <td><input type="number" id="registerPay" class="form-control" placeholder="급여를 입력하세요" /></td>
+                    </tr>
+                    <tr>
+                        <th>상태</th>
+                        <td>
+                            <label><input type="radio" name="registerIsDone" value="Y" id="registerIsDoneYes" /> 완료</label>
+                            <label><input type="radio" name="registerIsDone" value="N" id="registerIsDoneNo" checked /> 미완료</label>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="saveRegisterMenu" class="btn btn-primary">저장</button>
+            <button type="button" id="cancelRegisterModal" class="btn btn-secondary">취소</button>
+        </div>
+    </div>
+</div>
+
                   
                </div>
             </div>
@@ -171,71 +292,30 @@
    </div>
 </div>
 </body>
-<script src="resources/assets/static/js/components/dark.js"></script>
-<script src="resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-<script src="resources/assets/compiled/js/app.js"></script>
+<script src="/resources/assets/static/js/components/dark.js"></script>
+<script src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script src="/resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/calender.js'></script>
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+$(document).ready(function () {
+    // 캘린더 초기화
     var calendarEl = document.getElementById('calender');
-    var colorMap = {};
+    var colorMap = {}; // 이름별 색상 저장
 
-    // 이름별 고유 색상 설정
-    function getRandomColor(name) {
+    function getFixedColor(name) {
         if (!colorMap[name]) {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            colorMap[name] = color;
+            const hue = Math.floor(Math.random() * 360);
+            const saturation = 75;
+            const lightness = 55;
+            colorMap[name] = 'hsl(' + hue + ', ' + saturation + '%, ' + lightness + '%)';
         }
         return colorMap[name];
     }
 
-    // 이벤트 데이터 로드
-    function loadEvents() {
-        $.ajax({
-            url: '/ad/getPartTime',
-            method: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                updateCalendar(data);
-            },
-            error: function (err) {
-                console.error('Failed to load events:', err);
-            }
-        });
-    }
-
-    // 캘린더 이벤트 업데이트
-    function updateCalendar(events) {
-        var formattedEvents = [];
-        var maxOverlap = 3; // 최대 겹칠 수 있는 이벤트 수
-        var eventWidth = 100 / maxOverlap; // 이벤트 폭 계산
-
-        events.forEach(function (item, index) {
-            formattedEvents.push({
-                title: item.title,
-                daysOfWeek: [item.daysOfWeek],
-                startTime: item.startTime,
-                endTime: item.endTime,
-                backgroundColor: getRandomColor(item.title),
-                borderColor: getRandomColor(item.title),
-                zIndex: index + 1, // z-index는 순서대로 설정
-                overlapIndex: index % maxOverlap, // 겹칠 때의 위치를 순환적으로 설정
-                eventWidth: eventWidth // 폭 설정
-            });
-        });
-
-        calendar.removeAllEvents();
-        calendar.addEventSource(formattedEvents);
-    }
-
-    // 캘린더 초기화
+    // 캘린더 설정
     var calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: ['timeGrid', 'interaction'],
         header: {
@@ -246,33 +326,172 @@ document.addEventListener('DOMContentLoaded', function () {
         locale: 'ko',
         initialView: 'timeGridWeek',
         events: [],
-        eventDidMount: function (info) {
-            var zIndex = info.event.extendedProps.zIndex || 1;
-            var overlapIndex = info.event.extendedProps.overlapIndex || 0;
-            var eventWidth = info.event.extendedProps.eventWidth || 100;
-
-            // 스타일 적용
-            info.el.style.backgroundColor = info.event.extendedProps.backgroundColor;
-            info.el.style.borderColor = info.event.extendedProps.borderColor;
-            info.el.style.position = 'absolute';
-            info.el.style.zIndex = zIndex;
-
-            // 이벤트 폭과 위치 조정
-            info.el.style.width = `${eventWidth}%`;
-            info.el.style.left = `${overlapIndex * eventWidth}%`;
-
-            // 텍스트 중앙 정렬
-            info.el.style.display = 'flex';
-            info.el.style.alignItems = 'center';
-            info.el.style.justifyContent = 'center';
-        },
-        eventOverlap: true // 이벤트 겹침 허용
+        eventClick: function (info) {
+            openEditModal(info); // 수정 모달 열기
+        }
     });
 
     calendar.render();
-    loadEvents();
-});
 
+    // 이벤트 데이터 로드
+    function loadEvents() {
+        $.ajax({
+            url: '/ad/getPartTime',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                const formattedData = data.map(item => ({
+                    id: item.id,
+                    part_idx: item.part_idx,
+                    title: item.part_name,
+                    start: new Date(item.work_date + ' ' + item.start_time).toISOString(),
+                    end: new Date(item.work_date + ' ' + item.end_time).toISOString(),
+                    pay: item.pay,
+                    is_done: item.is_done,
+                    backgroundColor: getFixedColor(item.part_name),
+                    borderColor: getFixedColor(item.part_name),
+                }));
+                calendar.removeAllEvents();
+                calendar.addEventSource(formattedData);
+            },
+            error: function (err) {
+                console.error('이벤트 로드 실패:', err);
+            }
+        });
+    }
+
+    loadEvents();
+
+    // 등록 모달 열기 함수
+    function openRegisterModal() {
+        if ($('#editModalBox').is(':visible')) {
+            console.log('수정 모달 닫기');
+            $('#editModalBox').fadeOut();
+        }
+
+        console.log('등록 모달 열기');
+        $('#registerMenuContent').val('');
+        $('#registerMenuDate').val('');
+        $('#registerMenuStartTime').val('');
+        $('#registerMenuEndTime').val('');
+        $('#registerPay').val('');
+        $('#registerIsDoneNo').prop('checked', true);
+
+        $('#registerModalBox').fadeIn();
+    }
+
+    // 수정 모달 열기 함수
+    function openEditModal(info) {
+        if ($('#registerModalBox').is(':visible')) {
+            console.log('등록 모달 닫기');
+            $('#registerModalBox').fadeOut();
+        }
+
+        const eventData = {
+            id: info.event.id,
+            part_idx: info.event.extendedProps.part_idx,
+            title: info.event.title,
+            date: info.event.start.toISOString().slice(0, 10),
+            startTime: info.event.start.toISOString().slice(11, 16),
+            endTime: info.event.end.toISOString().slice(11, 16),
+            pay: info.event.extendedProps.pay,
+            is_done: info.event.extendedProps.is_done,
+        };
+
+        console.log('수정할 이벤트 데이터:', eventData);
+
+        $('#menuContent').val(eventData.title);
+        $('#menuDate').val(eventData.date);
+        $('#menuStartTime').val(eventData.startTime);
+        $('#menuEndTime').val(eventData.endTime);
+        $('#pay').val(eventData.pay);
+        $('#partIdx').val(eventData.id);
+
+        if (eventData.is_done === 'Y') {
+            $('#isDoneYes').prop('checked', true);
+        } else {
+            $('#isDoneNo').prop('checked', true);
+        }
+
+        $('#editModalBox').fadeIn();
+    }
+
+    // 등록 모달 닫기
+    $('#closeRegisterModal, #cancelRegisterModal').on('click', function () {
+        console.log('등록 모달 닫기');
+        $('#registerModalBox').fadeOut();
+    });
+
+    // 수정 모달 닫기
+    $('#closeEditModal, #cancelEditModal').on('click', function () {
+        console.log('수정 모달 닫기');
+        $('#editModalBox').fadeOut();
+    });
+
+    // 등록 버튼 클릭
+    $('#scheduleWrite').on('click', function () {
+        openRegisterModal();
+    });
+
+    // 등록 저장 버튼 클릭
+    $('#saveRegisterMenu').on('click', function () {
+        const newEventData = {
+            title: $('#registerMenuContent').val(),
+            date: $('#registerMenuDate').val(),
+            startTime: $('#registerMenuStartTime').val(),
+            endTime: $('#registerMenuEndTime').val(),
+            pay: $('#registerPay').val(),
+            is_done: $('input[name="registerIsDone"]:checked').val(),
+        };
+
+        console.log('등록된 데이터:', newEventData);
+
+        $.ajax({
+            url: '/ad/addPartHistory',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(newEventData),
+            success: function () {
+                console.log('등록 성공');
+                loadEvents();
+                $('#registerModalBox').fadeOut();
+            },
+            error: function (err) {
+                console.error('등록 실패:', err);
+            }
+        });
+    });
+
+    // 수정 저장 버튼 클릭
+    $('#saveEditMenu').on('click', function () {
+        const updatedData = {
+            id: $('#partIdx').val(),
+            title: $('#menuContent').val(),
+            date: $('#menuDate').val(),
+            startTime: $('#menuStartTime').val(),
+            endTime: $('#menuEndTime').val(),
+            pay: $('#pay').val(),
+            is_done: $('input[name="isDone"]:checked').val(),
+        };
+
+        console.log('수정된 데이터:', updatedData);
+
+        $.ajax({
+            url: '/ad/updatePartTime',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function () {
+                console.log('수정 성공');
+                loadEvents();
+                $('#editModalBox').fadeOut();
+            },
+            error: function (err) {
+                console.error('수정 실패:', err);
+            }
+        });
+    });
+});
 
 </script>
 

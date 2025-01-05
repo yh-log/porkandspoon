@@ -37,6 +37,10 @@ public interface ManageDAO {
 	//아르바이트 스케줄관리
 	List<ManageDTO> getPartTime(String owner);
 
+	void setPartHistory(Map<String, Object> historyParams);
+
+	void deletePartHistory(String part_Idx, String string);
+
 	
 	
 }
