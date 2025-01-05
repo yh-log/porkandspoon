@@ -128,4 +128,181 @@
 </delete>
 
 
+    <!-- author yh.kim, (25.01.03)
+        휴점 등록 페이지 이동 시 부서, 직영점명 조회 -->
+    <select id="getUserStoreInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
+        SELECT d.`text` AS parent , ds.name, c.content AS position, ds.id AS dept_name
+        FROM user u LEFT JOIN direct_store ds ON u.username = ds.owner
+                    LEFT JOIN  department d ON d.id = ds.parent
+                    LEFT JOIN code c ON u.`position`= c.name WHERE u.username = #{username}
+    </select>
+
+    <!-- author yh.kim, (25.01.03)
+        휴점 등록 -->
+    <insert id="restWrite"
+            useGeneratedKeys="true"
+            keyProperty="rest_idx"
+            keyColumn="rest_idx"
+            parameterType="kr.co.porkandspoon.dto.RestDTO">
+
+        INSERT INTO rest(id, content, start_date, end_date, creater, subject)
+            VALUES (#{id}, #{content}, #{start_date}, #{end_date}, #{username}, #{subject})
+
+    </insert>
+
+    <!-- author yh.kim, (25.01.03)
+    직영점 휴점 정보 업데이트 -->
+    <update id="storeRestUpdate" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE direct_store SET is_close = #{type} WHERE id = #{id}
+    </update>
+
+    <!-- author yh.kim, (25.01.03)
+        휴점 content 이미지 등록 -->
+    <insert id="restFileWrite" parameterType="kr.co.porkandspoon.dto.FileDTO">
+        INSERT INTO file (ori_filename, new_filename, type, code_name, pk_idx)
+            VALUES(#{ori_filename}, #{new_filename}, #{type}, #{code_name}, #{pk_idx})
+    </insert>
+
+    <!-- author yh.kim, (25.01.03)
+            휴점 등록 시 공지사항 등록 -->
+    <insert id="restBoardWrite"
+            useGeneratedKeys="true"
+            keyColumn="board_idx"
+            keyProperty="board_idx"
+            parameterType="kr.co.porkandspoon.dto.RestDTO">
+        INSERT INTO free_board (username, subject, content, board_state, department)
+            VALUES (#{username}, #{subject}, #{content},'0', #{id})
+    </insert>
+
+    <!-- author yh.kim, (25.01.03)
+            휴점 등록 시 전사 캘린더 등록 -->
+    <insert id="restCalenderWrite"
+            useGeneratedKeys="true"
+            keyProperty="idx"
+            keyColumn="idx"
+            parameterType="kr.co.porkandspoon.dto.RestDTO">
+        INSERT INTO schedule(username, start_date, end_date, subject, content, type, id)
+            VALUES(#{username}, #{start_date}, #{end_date}, #{subject}, #{content}, 'C', #{id})
+    </insert>
+
+    <!-- author yh.kim, (25.01.03)
+            휴점 상세보기 -->
+    <select id="getRestDetail" parameterType="String" resultType="kr.co.porkandspoon.dto.RestDTO">
+        SELECT r.rest_idx, r.id, r.subject, r.content, r.creater, r.start_date, r.end_date, u.name AS username, c.content AS position, ds.name AS store_name, d.`text` AS dept_name, r.board_idx, r.schedule_idx
+            FROM rest r LEFT JOIN `user` u ON r.creater = u.username
+                        LEFT JOIN code c ON u.`position` = c.name
+                        LEFT JOIN direct_store ds ON ds.id = r.id
+                        LEFT JOIN department d ON d.id = ds.parent
+            WHERE r.rest_idx = #{rest_idx}
+    </select>
+
+    <!-- author yh.kim, (25.01.03)
+            휴점 수정 -->
+    <update id="restUpdate" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE rest SET subject = #{subject}, content = #{content}, start_date = #{start_date}, end_date = #{end_date}, updater = #{username}
+            WHERE rest_idx = #{rest_idx}
+    </update>
+
+    <!-- author yh.kim, (25.01.03)
+            휴점 수정 시 캘린더 수정 -->
+    <update id="restCalenderUpdate" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE schedule SET start_date = #{start_date}, end_date = #{end_date}, subject = #{subject}, content = #{content}
+            WHERE idx = #{schedule_idx}
+    </update>
+
+    <!-- author yh.kim, (25.01.03)
+                휴점 수정 시 공지사항 수정 -->
+    <update id="restBoardUpdate" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE free_board SET subject = #{subject}, content = #{content}
+            WHERE board_idx = #{board_idx}
+    </update>
+
+    <!-- author yh.kim, (25.01.03)
+                휴점 등록 시 게시판, 스케쥴 idx Insert -->
+    <update id="restIdxWrite" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE rest SET board_idx = #{board_idx}, schedule_idx = #{schedule_idx} WHERE rest_idx = #{rest_idx}
+    </update>
+
+    <!-- author yh.kim, (25.01.04)
+                휴점 비활성화 -->
+    <update id="restDelete" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE rest SET use_yn = 'N' WHERE rest_idx = #{rest_idx}
+    </update>
+
+    <!-- author yh.kim, (25.01.04)
+                    휴점 비활성화 시 캘린더 삭제 -->
+    <delete id="restCalenderDelete" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        DELETE FROM schedule WHERE idx = #{schedule_idx}
+    </delete>
+
+    <!-- author yh.kim, (25.01.04)
+                        휴점 비활성화 시 공지사항 삭제 -->
+    <update id="restBoardDelete" parameterType="kr.co.porkandspoon.dto.RestDTO">
+        UPDATE free_board SET use_yn = 'N' WHERE board_idx = #{board_idx}
+    </update>
+
+    <!-- author yh.kim, (25.01.04)
+                        휴점 리스트 조회 -->
+    <select id="restList" parameterType="map" resultType="kr.co.porkandspoon.dto.RestDTO">
+        SELECT r.rest_idx, r.subject, r.start_date, r.end_date, u.name, d.`text` AS dept_name, ds.name AS store_name,
+        CASE
+            WHEN <![CDATA[ STR_TO_DATE(r.end_date, '%Y-%m-%d') < CURDATE() ]]>
+                THEN '운영중'
+                ELSE '휴점중'
+                END AS type,
+            (SELECT COUNT(*)
+            FROM rest r
+            LEFT JOIN `user` u ON r.creater = u.username
+            LEFT JOIN direct_store ds ON r.id = ds.id
+            LEFT JOIN department d ON d.id = ds.parent
+            WHERE 1=1
+            <if test="keyword != null and keyword.trim() != ''">
+                <choose>
+                    <when test="option == 'dept'">
+                        <![CDATA[ AND (ds.name LIKE CONCAT('%', #{keyword}, '%') OR d.text LIKE CONCAT('%', #{keyword}, '%')) ]]>
+                    </when>
+                    <when test="option == 'name'">
+                        <![CDATA[ AND u.name LIKE CONCAT('%', #{keyword}, '%') ]]>
+                    </when>
+                    <when test="option == 'subject'">
+                        <![CDATA[ AND r.subject LIKE CONCAT('%', #{keyword}, '%') ]]>
+                    </when>
+                    <otherwise>
+                        <![CDATA[ AND 1 = 0 ]]>
+                    </otherwise>
+                </choose>
+            </if>
+            ) AS totalpage
+        FROM rest r LEFT JOIN `user` u ON r.creater = u.username
+            LEFT JOIN direct_store ds ON r.id = ds.id
+            LEFT JOIN department d ON d.id = ds.parent
+        WHERE 1=1
+        <if test="keyword != null and keyword.trim() != ''">
+            <choose>
+                <when test="option == 'dept'">
+                    <![CDATA[ AND (ds.name LIKE CONCAT('%', #{keyword}, '%') OR d.text LIKE CONCAT('%', #{keyword}, '%')) ]]>
+                </when>
+                <when test="option == 'name'">
+                    <![CDATA[ AND u.name LIKE CONCAT('%', #{keyword}, '%') ]]>
+                </when>
+                <when test="option == 'subject'">
+                    <![CDATA[ AND r.subject LIKE CONCAT('%', #{keyword}, '%') ]]>
+                </when>
+                <otherwise>
+                    <![CDATA[ AND 1 = 0 ]]>
+                </otherwise>
+            </choose>
+        </if>
+        ORDER BY <![CDATA[ STR_TO_DATE(r.start_date, '%Y-%m-%d') DESC ]]>
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <!-- author yh.kim, (25.01.04)
+                        휴점 활성 여부 체크 스케쥴러 -->
+    <update id="restCheckScheduler">
+        UPDATE direct_store ds
+            JOIN rest r ON ds.id = r.id
+            SET ds.is_close = 'N'
+        WHERE DATE(r.end_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+    </update>
 </mapper>
