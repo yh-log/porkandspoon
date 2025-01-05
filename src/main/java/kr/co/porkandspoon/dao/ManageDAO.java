@@ -40,6 +40,14 @@ public interface ManageDAO {
 	//아르바이트 스케줄관리
 	List<ManageDTO> getPartTime(String owner);
 
+
+	void setPartHistory(Map<String, Object> historyParams);
+
+	void deletePartHistory(String part_Idx, String string);
+
+	
+	
+
 	/**
 	 * author yh.kim, (25.01.03)
 	 * 휴점 등록 페이지 이동 시 부서, 직영점명 조회
@@ -136,4 +144,5 @@ public interface ManageDAO {
 	 * 매일 00:05 실행
 	 */
 	int restCheckScheduler();
+
 }

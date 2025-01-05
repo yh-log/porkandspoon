@@ -14,6 +14,12 @@
 	 		VALUES(#{name},#{birth},#{gender},#{is_quit},#{id},#{phone},#{pay},#{address},#{creater},#{join_date})
  </insert> 
  
+ <insert id="setPartHistory">
+    INSERT INTO part_history (part_idx, pay, work_date, start_time, end_time, is_done)
+    VALUES (#{part_idx}, #{pay}, #{work_date}, #{start_time}, #{end_time}, #{is_done})
+</insert>
+ 
+ 
  <insert id="setPartTime" parameterType="Map">
  	INSERT INTO part_time(part_idx,work_date,start_time,end_time)
  		VALUES(#{part_idx},#{work_date},#{start_time},#{end_time})
@@ -103,15 +109,23 @@
 </select>
    
 <select id="getPartTime" resultType="kr.co.porkandspoon.dto.ManageDTO">
-    SELECT pt.*, p.name AS part_name, p.join_date
-    FROM part_time pt
-    JOIN part p ON pt.part_idx = p.part_idx
+    SELECT ph.start_time,ph.end_time,ph.pay,ph.is_done,ph.work_date, p.name AS part_name, p.join_date
+    FROM part_history ph
+    JOIN part p ON ph.part_idx = p.part_idx
     WHERE p.id IN (
         SELECT ds.id 
         FROM direct_store ds 
         WHERE ds.owner = #{owner} AND p.is_quit = 'N'
     )
 </select>
+
+<delete id="deletePartHistory" parameterType="map">
+    <![CDATA[
+    DELETE FROM part_history
+    WHERE part_idx = #{part_Idx}
+      AND work_date >= #{string}
+    ]]>
+</delete>
 
 
     <!-- author yh.kim, (25.01.03)
