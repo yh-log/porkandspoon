@@ -32,7 +32,7 @@ public class ChatController {
 	 */
 	@GetMapping(value="/chat/list")
 	public ModelAndView chatListView() {
-		return new ModelAndView("/chat/chatList");
+		return new ModelAndView("/chat/chatTest");
 	}
 
 	/**
