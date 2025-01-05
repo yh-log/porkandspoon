@@ -392,6 +392,29 @@
 		JOIN code c ON u.position = c.name
         WHERE a.idx = #{idx}
     </select>
-		
+    	
+	<!-- 모든 참석자 삭제 -->
+	<delete id="deleteAllAttendees" parameterType="String">
+	    DELETE FROM attendees WHERE idx = #{idx}
+	</delete>
+	
+	<!-- 회의실 예약 수정 -->
+	<update id="roomReservationUpdate" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
+		UPDATE room_schedule SET
+	        no = #{no},
+	        username = #{username},
+	        start_date = #{start_date},
+	        end_date = #{end_date},
+	        subject = #{subject},
+	        content = #{content},
+	        updater = #{username}
+    	WHERE idx = #{idx}
+	</update>
+	
+	<!-- 회의 예약 삭제 -->
+	<delete id="roomDelete">
+	    DELETE FROM room_schedule WHERE idx = #{idx}
+	</delete>
+			
 	
 </mapper>

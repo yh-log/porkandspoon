@@ -173,6 +173,42 @@ public class ResevationService {
             throw e; // 트랜잭션 롤백을 위해 예외 재발생
         }
 	}
+	
+	@Transactional
+	public boolean roomReservationUpdate(CalenderDTO calenderDto, String idx) {
+		
+		try {
+			calenderDto.setIdx(idx);
+	        // 예약 정보 업데이트
+	        int result = resDao.roomReservationUpdate(calenderDto);
+	        if(result <= 0) {
+	            return false; // 업데이트 실패
+	        }
+
+	        // 기존 참석자 삭제
+	        resDao.deleteAllAttendees(idx);
+
+	        // 새로운 참석자 추가
+	        List<String> newAttendees = calenderDto.getAttendees();
+	        if(newAttendees != null && !newAttendees.isEmpty()) {
+	            for(String username : newAttendees) {
+	            	Map<String, Object> params = new HashMap<String, Object>();
+	                params.put("idx", idx);
+	                params.put("username", username);
+	                resDao.insertAttendee(params);
+	            }
+	        }
+
+	        return true;
+	    } catch(Exception e) {
+	        logger.error("예약 수정 중 예외 발생: ", e);
+	        throw e; // 트랜잭션 롤백을 위해 예외 재발생
+	    }
+	}
+
+	public int roomDelete(String idx) {
+		return resDao.roomDelete(idx);
+	}
 
 
 

@@ -65,5 +65,12 @@ public interface ResevationDAO {
 
 	List<UserDTO> attendeesList(int idx);
 
+	int roomReservationUpdate(CalenderDTO calenderDto);
+
+	void deleteAllAttendees(String idx);
+
+	int roomDelete(String idx);
+
+
 
 }
