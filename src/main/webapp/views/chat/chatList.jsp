@@ -24,9 +24,6 @@
 <link rel="stylesheet" href="/resources/css/common.css">
 
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
 <style>
 	#profile-seachBox {
 		display: flex; /* 가로 정렬 */
@@ -255,9 +252,38 @@
 							<h5>채팅방 이름!</h5>
 						</div>
 						<div class="cont-body">  
-							<div id="no-chat-box">
-								<img src="/resources/img/chatIcon.png" height="100px"/><br/>
-								<p id="no-chat-font">채팅을 시작해보세요</p>
+<%--							<div id="no-chat-box">--%>
+<%--								<img src="/resources/img/chatIcon.png" height="100px"/><br/>--%>
+<%--								<p id="no-chat-font">채팅을 시작해보세요</p>--%>
+<%--							</div>--%>
+
+							<div id="chatRoomLayout">
+								<div class="sendMessageBox">
+									<div class="profile-container">
+										홍길동
+										<div class="profile-image"></div> <!-- 프로필 이미지 -->
+									</div>
+									<div class="sendMessageContent">
+										채팅 보내면 어떻게 뜨려나아아아
+									</div>
+									<span class="sendCheckNum">
+										1
+									</span>
+								</div>
+
+								<div class="receiveMessageBox">
+									<div class="profile-container">
+										받는자
+										<div class="profile-image"></div> <!-- 프로필 이미지 -->
+									</div>
+									<div class="receivMessageContent">
+										채팅 받는 사람 입장에서는 어떻게 뜨려나나
+									</div>
+									<span class="receiveCheckNum">
+										3
+									</span>
+
+								</div>
 							</div>
 							<div id="chat-input-box">
 								<textarea name="content" class="form-control chatInputText" rows="2"></textarea>
@@ -277,7 +303,6 @@
 
 
 <!-- 부트스트랩 -->
-
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- select  -->

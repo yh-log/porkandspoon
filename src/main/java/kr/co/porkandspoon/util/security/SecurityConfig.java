@@ -41,10 +41,10 @@ public class SecurityConfig {
 		http.authorizeHttpRequests()
 		.antMatchers("/resources/**").permitAll() // resources 하위 폴더 허용
 		.antMatchers("/", "/joinView", "/joinWrite", "/pageListCall", "/findUserId", "/sendMail", "/chackAuthCode", "/displayUserId/**", "/findPassword", "/changePassword", "/changePassword/**", "/timeoutAction").permitAll() // joinView, joinWrite 추후 제거
-		.antMatchers("/sa/**").hasRole("superadmin")
-		.antMatchers("/ad/**").hasAnyRole("superadmin", "admin")
-		.antMatchers("/ma/**").hasAnyRole("superadmin", "admin", "manager")
-		.antMatchers("/us/**").hasAnyRole("superadmin", "admin", "manager", "user")
+		.antMatchers("/sa/**").hasRole("SUPERADMIN")
+		.antMatchers("/ad/**").hasAnyRole("SUPERADMIN", "ADMIN")
+		.antMatchers("/ma/**").hasAnyRole("SUPERADMIN", "ADMIN", "MANAGER")
+		.antMatchers("/us/**").hasAnyRole("SUPERADMIN", "ADMIN", "MANAGER", "USER")
 		
 		.anyRequest().authenticated(); // 그 외 요청은 검토
 		
