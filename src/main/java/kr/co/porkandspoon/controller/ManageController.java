@@ -12,20 +12,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.porkandspoon.dao.UserDAO;
+import kr.co.porkandspoon.dto.*;
+import kr.co.porkandspoon.util.CommonUtil;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import kr.co.porkandspoon.dto.ManageDTO;
-import kr.co.porkandspoon.dto.MealDTO;
 import kr.co.porkandspoon.service.ManageService;
 
 @RestController
@@ -34,7 +36,9 @@ public class ManageController {
 	@Autowired ManageService manageService;
 
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
+    @Autowired
+    private UserDAO userDAO;
+
 	// 매장관리홈
 	@GetMapping(value="/ad/spotManage")
 	public ModelAndView spotManageView() {
@@ -246,21 +250,155 @@ public class ManageController {
 	
 	//휴점
 	
-	@GetMapping(value="/ad/rest/List")
+	@GetMapping(value="/us/rest/listView")
 	public ModelAndView restListView() {
 		return new ModelAndView("/manage/restList");
 	}
-	
-	@GetMapping(value="/ad/rest/Write")
-	public ModelAndView restWriteView() {
-		return new ModelAndView("/manage/restWrite");
-	}
-	
+
+
 	@GetMapping(value="/ad/rest/Update")
 	public ModelAndView restUpdateView() {
 		return new ModelAndView("/manage/restUpdate");
 	}
-	
-	
-	
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 휴점 등록 페이지 이동
+	 */
+	@GetMapping(value="/us/rest/write")
+	public ModelAndView restWriteView() {
+
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		UserDTO userDTO = manageService.getUserStoreInfo(username);
+
+		ModelAndView mav = new ModelAndView("/manage/restWrite");
+		mav.addObject("name",userDetails.getName());
+		mav.addObject("username", username);
+		mav.addObject("userDTO",userDTO);
+
+		return mav;
+	}
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 휴점 등록
+	 */
+	@PostMapping(value = "/us/rest/write")
+	public RestDTO restWrite(@ModelAttribute RestDTO restDTO, @RequestParam("imgsJson") String imgsJson){
+
+		logger.info(CommonUtil.toString(restDTO));
+		logger.info(CommonUtil.toString(imgsJson));
+
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+
+		try {
+			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			restDTO.setImgs(imgs);
+
+			restDTO = manageService.restWrite(restDTO);
+
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		return restDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 휴점 수정 페이지 이동
+	 */
+	@GetMapping(value="/us/rest/update/{rest_idx}")
+	public ModelAndView restUpdateView(@PathVariable String rest_idx) {
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		ModelAndView mav = new ModelAndView("/manage/restUpdate");
+		mav.addObject("getRest", manageService.getRestDetail(rest_idx));
+		mav.addObject("username", username);
+
+		return mav;
+	}
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 휴점 상세 페이지 이동
+	 */
+	@GetMapping(value="/us/rest/detail/{rest_idx}")
+	public ModelAndView restDetailView(@PathVariable String rest_idx) {
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		ModelAndView mav = new ModelAndView("/manage/restDetail");
+		mav.addObject("getRest", manageService.getRestDetail(rest_idx));
+		mav.addObject("username", username);
+
+		return mav;
+	}
+
+	/**
+	 * author yh.kim, (25.01.03)
+	 * 휴점 수정
+	 */
+	@PostMapping(value="/ma/rest/update")
+	public RestDTO restUpdate(@ModelAttribute RestDTO restDTO, @RequestParam("imgsJson") String imgsJson) {
+		logger.info(CommonUtil.toString(restDTO));
+		logger.info(CommonUtil.toString(imgsJson));
+
+		ObjectMapper obj = new ObjectMapper();
+		List<FileDTO> imgs = null;
+
+		try {
+			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
+			restDTO.setImgs(imgs);
+
+			restDTO = manageService.restUpdate(restDTO);
+
+		} catch (JsonMappingException e) {
+			logger.error("JsonMappingException 예외 발생", e);
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			logger.error("JsonProcessingException 예외 발생", e);
+			e.printStackTrace();
+		}
+		return restDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.04)
+	 * 휴점 비활성화
+	 */
+	@DeleteMapping(value="/us/rest/delete")
+	public RestDTO restDelete(@ModelAttribute RestDTO restDTO){
+
+		restDTO = manageService.restDelete(restDTO);
+
+		return restDTO;
+	}
+
+
+	/**
+	 * author yh.kim, (25.01.04)
+	 * 휴점 리스트 조회
+	 */
+	@GetMapping(value="/us/rest/list")
+	public List<RestDTO> restList(
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "cnt", defaultValue = "10") int cnt,
+			@RequestParam(defaultValue = "", value = "option") String option,
+			@RequestParam(defaultValue = "", value="keyword") String keyword){
+
+
+		List<RestDTO> restDTOS = manageService.restList(page, cnt, option, keyword);
+
+		return restDTOS;
+	}
+
 }

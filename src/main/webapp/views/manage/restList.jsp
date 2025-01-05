@@ -55,9 +55,11 @@
 	.tit-area{
 		display: flex; 
 	}
-	
-	#home,#schedule{
+
+	#home, #schedule{
 		width: 200px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 	}
 	
 	h5 .count{
@@ -117,37 +119,41 @@
 							<div class="row">
 								<div class="col-5 col-lg-5"></div>
 								<div id="searchLayout" class="col-7 col-lg-7">
-									<select class="form-select selectStyle">
-										<option id="dept">지점명</option>
-										<option id="name">직영점주</option>
+									<select class="form-select selectStyle" id="searchOption">
+										<option value="dept">부서</option>
+										<option value="name">이름</option>
+										<option value="subject">제목</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+									<button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button>
 								</div>
 							</div>
 							<div class="row">
-							<div class="col-12 col-lg-12">
-							<table>
+								<div class="col-12 col-lg-12">
+									<table>
 
-								<thead>
-									<tr>
-										<th>직영점명</th>
-										<th>직영점주</th>
-										<th>휴점 명</th>
-										<th >휴점기간</th>
-										<th></th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
+										<thead>
+											<tr>
+												<th style="width: 10%;">no</th>
+												<th colspan="2">직영점명</th>
+												<th>직영점주</th>
+												<th colspan="2">휴점 명</th>
+												<th colspan="2">휴점기간</th>
+												<th>상태</th>
+											</tr>
+										</thead>
+										<tbody id="restContent">
 
-									</tr>
-								</tbody>
-							</table>
-							
+										</tbody>
+									</table>
+									<div class="">
+										<nav aria-label="Page navigation">
+											<ul class="pagination justify-content-center" id="pagination"></ul>
+										</nav>
+									</div>
 						
 							
-							</div>
+								</div>
 							</div>
 						</div> 
 					</div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
@@ -171,8 +177,100 @@
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
+<script src='/resources/js/common.js'></script>
 <script>
+	var firstPage = 1;
+	var paginationInitialized = false;
 
+	// 페이지 로드 시 초기 데이터 호출
+	$(document).ready(function () {
+		pageCall(firstPage);
+	});
+
+	$('#searchBtn').on('click', function(event) {
+		event.preventDefault(); // 기본 동작 중지
+		firstPage = 1;
+		paginationInitialized = false;
+
+		pageCall(firstPage); // 저장된 currentUrl로 페이지 호출
+	});
+
+	function pageCall(page = 1) {
+		var option = $('#searchOption').val();
+		var keyword = $('input[name="search"]').val(); // 검색어
+
+		// 기본 데이터 설정
+		var requestData = {
+			page: page || 1,    // 현재 페이지
+			cnt: 10,            // 한 페이지당 항목 수
+			option: option,     // 검색 옵션
+			keyword: keyword    // 검색 키워드
+		};
+
+		$.ajax({
+			type: 'GET',
+			url: '/us/rest/list',
+			data: requestData,
+			datatype: 'JSON',
+			success: function(response) {
+				console.log("응답 데이터:", response);
+
+				// 데이터 처리
+				if (response && response.length > 0) {
+					getSuccess(response); // 검색 결과를 테이블에 렌더링
+				} else {
+					$('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+				}
+
+				// 페이지네이션 초기화
+				var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
+
+				var totalPage = Math.ceil(totalPages / 10);
+
+				console.log('총 페이지 수:', totalPage);
+
+				if (!paginationInitialized || keyword !== '') {
+					$('#pagination').twbsPagination('destroy');
+					$('#pagination').twbsPagination({
+						startPage: page,
+						totalPages: totalPage,
+						visiblePages: 5,
+						initiateStartPageClick: false,
+						onPageClick: function (evt, page) {
+							console.log('클릭된 페이지:', page);
+							pageCall(page);
+						}
+					});
+					paginationInitialized = true;
+				}
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		});
+	}
+
+
+	function getSuccess(response) {
+		console.log(response);
+
+		$('#restContent').empty();
+
+		var content = '';
+		response.forEach(function (item) {
+			content += '<tr>';
+			content += '<td>' + item.rest_idx + '</td>';
+			content += '<td colspan="2"><a href="/us/rest/detail/' + item.rest_idx + '">' + item.dept_name + item.store_name + '</a></td>';
+			content += '<td>' + item.name + '</td>';
+			content += '<td colspan="2"><a href="/us/rest/detail/' + item.rest_idx + '">' + item.subject + '</a></td>';
+			content += '<td colspan="2">' + item.start_date + ' ~ ' + item.end_date + '</td>';
+			content += '<td>' + item.type + '</td>';
+			content += '</tr>';
+		});
+
+		$('#restContent').append(content);
+
+	}
 
 </script>
 
