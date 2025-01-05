@@ -84,7 +84,7 @@ public class ApprovalController {
 //	}
 	
 	// 기안문 저장
-	@PostMapping(value="/draftWrite/{status}") //check!! 이거 status 사용안하고 있는듯??
+	@PostMapping(value="/draftWrite/{status}") 
 	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status, String[] new_filename) {
 //		해당부서에 속한사람만 직영점등록이 가능하도록하는 로직
 //		if(approvalDTO.getTarget_type().equals("df002")) {
@@ -278,12 +278,21 @@ public class ApprovalController {
 	private void getDetailInfo(String draft_idx, ModelAndView mav) {
 		ApprovalDTO DraftInfo = approvalService.getDraftInfo(draft_idx);
 		List<ApprovalDTO> ApprLine = approvalService.getApprLine(draft_idx);
+		// ObjectMapper를 사용해 ApprLine을 JSON으로 변환
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonApprLine = "";
+        try {
+			jsonApprLine = objectMapper.writeValueAsString(ApprLine);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 		mav.addObject("DraftInfo", DraftInfo);
 		mav.addObject("ApprLine", ApprLine);
+		mav.addObject("jsonApprLine", jsonApprLine);
 		mav.addObject("logoFile", approvalService.getLogoFile(draft_idx));
 		mav.addObject("attachedFiles", approvalService.getAttachedFiles(draft_idx));
 		mav.addObject("deptList", approvalService.getDeptList());
-		logger.info("ApprLine !!!!!!! : "+ApprLine.get(0));
+		//logger.info("ApprLine !!!!!!! : "+ApprLine.get(0));
 		//ogger.info("ApprLine !!!!!!! : "+ApprLine.get(1));
 		//logger.info("ApprLine !!!!!!! : "+ApprLine.get(1).getUsername());
 		//logger.info("DraftInfo getCreate_date!!!! : "+DraftInfo.getCreate_date());
@@ -362,11 +371,14 @@ public class ApprovalController {
 //		}
 		
 	@Transactional
-	@PostMapping(value="/draftUpdate")
-	public Map<String, Object> draftUpdate(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @RequestParam("deleteFiles") String deleteFilesJson, @ModelAttribute ApprovalDTO approvalDTO) {
+	@PostMapping(value="/draftUpdate/{reapproval}")
+	public Map<String, Object> draftUpdate(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @RequestParam("deleteFiles") String deleteFilesJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String reapproval) {
 		logger.info("연결!!!!!!");
 		//logger.info("deleteFiles : "+ deleteFiles);
 		logger.info("appr_user[0] : "+ appr_user[0]);
+		logger.info("appr_user[1] : "+ appr_user[1]);
+		logger.info("appr_user[1] : "+ appr_user[2]);
+		logger.info("appr_user[1] : "+ appr_user[3]);
 		
 		
 		 // deleteFilesJson을 List<FileDTO>로 변환
@@ -416,7 +428,7 @@ public class ApprovalController {
        // logger.info("체크!! : " + approvalDTO.getFileList().get(0).getNew_filename());
        // logger.info("체크 getUsername!! : " + approvalDTO.getUsername());
         
-        approvalService.updateDraft(appr_user, approvalDTO, files, logoFile);
+        approvalService.updateDraft(appr_user, approvalDTO, files, logoFile, reapproval);
 
         
 
@@ -553,8 +565,7 @@ public class ApprovalController {
 		// 기안자여부
 		boolean isDraftSender = approvalService.isDraftSender(draft_idx,loginId);
 		if(isDraftSender) {
-			approvalService.changeStatusToSend(draft_idx);
-			success = true;
+			success = approvalService.changeStatusToSend(draft_idx,loginId);
 		}
 		result.put("success", success);
 		return result;

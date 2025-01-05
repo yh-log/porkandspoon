@@ -1,8 +1,6 @@
 package kr.co.porkandspoon.dto;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -28,6 +26,9 @@ public class ApprovalDTO {
    // 부서이름
    private String dept_name;
    
+   // 이미지 리스트
+   private List<FileDTO> fileList;
+
    private String appr_user1;
    private String appr_user2;
    private String appr_user3;
@@ -115,9 +116,6 @@ public class ApprovalDTO {
    public void setComment(String comment) {
       this.comment = comment;
    }
-
-   // 이미지 리스트
-    public List<FileDTO> fileList;
 
    public String getDraft_idx() {
       return draft_idx;

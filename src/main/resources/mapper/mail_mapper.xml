@@ -4,10 +4,11 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.MailDAO">
-   <!-- 쿼리까지 작성해둠 => 컨트롤러서비스dao적용하기!!!(실시간 데이터 불러오기) -->
-	<!-- <select id="">
+	<select id="getUserList" resultType="map">
+		<![CDATA[
 		SELECT 
-			CONCAT(
+			u.username
+			,CONCAT(
 				u.name
 				, '/'
 				, c.content
@@ -16,10 +17,75 @@
 				, ' <'
 				, u.username
 				, '>') 
+				AS text
 		FROM 
 			user u
 		JOIN code c ON u.`position` = c.name 
 		LEFT JOIN department d ON u.parent = d.id;
-	</select> -->
+		]]>
+	</select>
+	
+	<insert id="saveMail" parameterType="kr.co.porkandspoon.dto.MailDTO">
+		INSERT INTO mail (
+			sender
+			,send_status
+			 <if test="idx != null">
+			 	,idx
+			 </if>
+			 <if test="title != null">
+			 	,title
+			 </if>
+			 <if test="content != null">
+			 	,content
+			 </if>
+			)
+		VALUES (
+			#{sender}
+			,#{send_status}
+			<if test="idx != null">
+				,#{idx}
+			</if>	
+			<if test="title != null">
+				,#{title}
+			</if>	
+			<if test="content != null">
+				,#{content}
+			</if>	
+		)
+		ON DUPLICATE KEY UPDATE
+			send_status = VALUES(send_status),
+			title = VALUES(title),
+			content = VALUES(content)
+	</insert>
+
+	<insert id="saveMailReceiver" parameterType="String">
+		INSERT INTO mail_receive 
+			(idx, username)
+		VALUES
+		<foreach collection="username" item="user" separator=",">
+			(#{mailIdx}, #{user})
+		</foreach>
+	</insert>
+	
+	<select id="getmailIdx" resultType="String">
+		SELECT 
+			IFNULL(MAX(idx),0) + 1 
+		FROM 
+			mail
+	</select>
+	
+	<select id="checkExistingFile" resultType="int">
+		SELECT COUNT(*) FROM file
+			WHERE code_name = 'ma001' 
+			AND pk_idx = #{mailIdx}
+			AND ori_filename = #{ori_filename}
+	</select>
+	
+	<insert id="fileSave" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		INSERT INTO file 
+			(code_name, ori_filename, new_filename, type, pk_idx)
+		VALUES 
+			(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
+	</insert>
 	
 </mapper>

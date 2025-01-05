@@ -72,7 +72,11 @@ public class ApprovalService {
 	    // 결재라인이 저장되지 않은 경우에만 저장
 	    int existingCount = approvalDAO.checkExistingApprovalLine(draftIdx);
 	    if (existingCount == 0) {
-	        approvalDAO.saveApprovalLine(draftIdx, appr_user);
+	        approvalDAO.saveApprovalLine(draftIdx, appr_user, status);
+	    }else {
+	    	for (int i = 0; i < appr_user.length; i++) {
+	    		approvalDAO.updateApprovalLine(draftIdx, appr_user[i], i);
+			}
 	    }
 		logger.info("row : "+ row);
 
@@ -255,14 +259,19 @@ public class ApprovalService {
 		}
 
 		@Transactional
-		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile) {
+		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile, String reapproval) {
 			
 			int row = approvalDAO.updateDraft(approvalDTO);
 			
 			String draftIdx = approvalDTO.getDraft_idx();
 			
 		    approvalDAO.removeApprovalLine(draftIdx);
-		    approvalDAO.saveApprovalLine(draftIdx, appr_user);
+		    logger.info("appr_user : "+appr_user);
+		    for (String user : appr_user) {
+		    	logger.info("!!!user : "+user);
+			}
+		    String status = reapproval.equals("true") ? "sd" : "sv";
+		    approvalDAO.saveApprovalLine(draftIdx, appr_user, status);
 		    
 			
 
@@ -380,8 +389,11 @@ public class ApprovalService {
 			return approvalDAO.changeStatusToApproved(draft_idx);
 		}
 
-		public int changeStatusToSend(String draft_idx) {
-			return approvalDAO.changeStatusToSend(draft_idx);
+		@Transactional
+		public boolean changeStatusToSend(String draft_idx, String loginId) {
+			int result2 = approvalDAO.changeStatusToSend(draft_idx);
+			int result = approvalDAO.changeSenderStatus(draft_idx,loginId);
+			return result > 0 && result2 > 0 ? true : false ;
 		}
 
 		public int changeStatusToDelete(String draft_idx) {

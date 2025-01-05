@@ -51,11 +51,17 @@
 	</select> -->
 	
 	<select id="getDeptList" resultType="kr.co.porkandspoon.dto.DeptDTO">
-		SELECT id, text FROM department
+		SELECT 
+			id, text 
+		FROM 
+			department
 	</select>
 	
 	<select id="getDraftIdx">
-		SELECT MAX(draft_idx) + 1 FROM draft
+		SELECT 
+			IFNULL(MAX(draft_idx),0) + 1 
+		FROM 
+			draft
 	</select>
 	
 	
@@ -149,7 +155,10 @@ content = VALUES(content); -->
 		values
 	    <foreach collection="appr_user" item="appritem" index="index" separator=",">
 	        <choose>
-	            <when test="index == 0">
+	            <when test="index == 0 and status == 'sv'">
+	                (#{draftIdx}, #{appritem}, #{index}, 'ap001', null)
+	            </when>
+	            <when test="index == 0 and status == 'sd'">
 	                (#{draftIdx}, #{appritem}, #{index}, 'ap004', NOW())
 	            </when>
 	            <otherwise>
@@ -158,6 +167,18 @@ content = VALUES(content); -->
 	        </choose>
 	    </foreach>
 	</insert>
+	
+	<update id="updateApprovalLine">
+		UPDATE 
+			approval_line 
+		SET
+			username = #{username},
+			status = 'ap001'
+		WHERE 
+			draft_idx = #{draftIdx}
+			AND
+			order_num = #{order_num}
+	</update>
 
 	<insert id="removeApprovalLine">
 		DELETE FROM approval_line WHERE draft_idx = #{draft_idx}
@@ -187,8 +208,10 @@ content = VALUES(content); -->
 	</insert>-->
 	
 	<insert id="fileSave" parameterType="kr.co.porkandspoon.dto.FileDTO">
-		insert into file (code_name, ori_filename, new_filename, type, pk_idx)
-			values (#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
+		INSERT INTO file 
+			(code_name, ori_filename, new_filename, type, pk_idx)
+		VALUES 
+			(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
 	</insert>
 	
 	<insert id="saveExistingFiles">
@@ -208,12 +231,14 @@ content = VALUES(content); -->
 	</select>
 	
 	<select id="getApprLine" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT a.*, c.name AS position, u.name AS user_name, f.new_filename AS sign, f.code_name FROM approval_line a 
+		SELECT a.*, c.content AS position, u.name AS user_name, d.text AS dept_name, f.new_filename AS sign, f.code_name FROM approval_line a 
 			JOIN user u ON a.username = u.username 
 			JOIN code c ON u.position = c.name
+			JOIN department d ON u.parent = d.id
 			LEFT JOIN file f ON a.username = f.pk_idx
 			WHERE draft_idx = #{draft_idx} 
 			AND (f.code_name = 'us100' OR f.code_name IS NULL)
+			ORDER BY order_num
 	</select>
 	
 	<select id="getLogoFile" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
@@ -344,6 +369,18 @@ content = VALUES(content); -->
 	<update id="changeStatusToSend" parameterType="String">
 		UPDATE draft SET status = 'sd' 
 			WHERE draft_idx = #{draft_idx}	
+	</update>
+
+	<update id="changeSenderStatus" parameterType="String">
+		UPDATE 
+			approval_line 
+		SET 
+			status = 'ap004'
+			,approval_date = NOW() 
+		WHERE 
+			draft_idx = #{draft_idx}
+			AND 
+			username = #{loginId}
 	</update>
 
 	<update id="changeStatusToDelete" parameterType="String">

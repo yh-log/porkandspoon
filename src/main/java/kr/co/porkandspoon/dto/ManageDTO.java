@@ -2,6 +2,7 @@ package kr.co.porkandspoon.dto;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDateTime;
 
 public class ManageDTO extends ResponseDTO {
     
@@ -17,11 +18,14 @@ public class ManageDTO extends ResponseDTO {
 	private String address;
 	private Time start_time;
 	private Time end_time;
+	
 	private String work_date;
 	
 	private String creater;
 	private int pay;
 	private int part_idx;
+	private String is_done;
+
 
 
 
@@ -142,6 +146,9 @@ public class ManageDTO extends ResponseDTO {
 	}
 
 
+	
+
+
 	public String getWork_date() {
 		return work_date;
 	}
@@ -202,6 +209,15 @@ public class ManageDTO extends ResponseDTO {
 	}
 	
 	
+	public String getIs_done() {
+		return is_done;
+	}
+	
+	
+	public void setIs_done(String is_done) {
+		this.is_done = is_done;
+	}
 	
 	
 }
+

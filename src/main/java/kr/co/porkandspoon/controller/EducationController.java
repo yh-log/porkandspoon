@@ -11,9 +11,14 @@ public class EducationController {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@GetMapping(value="/education")
+	@GetMapping(value="/ad/education")
 	public ModelAndView calenderView() {
-		return new ModelAndView("/education/education");
+		return new ModelAndView("/education/educationList");
+	}
+	
+	@GetMapping(value="/ad/educationWrite")
+	public ModelAndView calenderWriteView() {
+		return new ModelAndView("/education/educationWrite");
 	}
 
 }

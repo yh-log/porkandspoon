@@ -27,7 +27,7 @@ public interface ApprovalDAO {
 
 	int getDraftIdx();
 
-	int saveApprovalLine(String draftIdx, String[] appr_user);
+	int saveApprovalLine(String draftIdx, String[] appr_user, String status);
 
 	int checkExistingApprovalLine(String draftIdx);
 
@@ -41,7 +41,7 @@ public interface ApprovalDAO {
 
 	int updateDraft(ApprovalDTO approvalDTO);
 
-	int updateApprovalLine(String draftIdx, String[] appr_user);
+	int updateApprovalLine(String draftIdx, String username, int order_num);
 
 	int removeApprovalLine(String draftIdx);
 
@@ -98,5 +98,7 @@ public interface ApprovalDAO {
 	List<ApprovalDTO> getLineBookmark(Map<String, Object> params);
 
 	int deleteBookmark(String lineIdx, String loginId);
+
+	int changeSenderStatus(String draft_idx, String loginId);
 
 }

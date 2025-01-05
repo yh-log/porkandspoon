@@ -380,6 +380,35 @@ public class ResevationController {
     	  	
     	return result;
     }
+    
+    // 회의실 예약 수정
+    @PutMapping(value="/roomUpdate/{idx}")
+    public Map<String,Object> roomUpdate(@RequestBody CalenderDTO calenderDto,@PathVariable String idx){
+    	
+    	logger.info("수정 파람 : "+CommonUtil.toString(calenderDto));
+    	
+    	 boolean success = resService.roomReservationUpdate(calenderDto,idx);
+         Map<String, Object> response = new HashMap<>();
+         if(success) {
+             response.put("success", true);
+             response.put("message", "회의실 예약이 성공적으로 수정되었습니다.");
+         } else {
+             response.put("success", false);
+             response.put("message", "회의실 예약 수정에 실패했습니다.");
+         }
+         return response;
+    	
+    }
+    
+    // 물품 예약 삭제 ajax
+    @DeleteMapping(value="/roomDelete/{idx}")
+    public Map<String,Object> roomDelete(@PathVariable String idx){
+    	
+    	Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("success", resService.roomDelete(idx));
+		
+    	return resultMap;
+    }
 
 
 }

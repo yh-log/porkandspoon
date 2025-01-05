@@ -265,7 +265,7 @@ function drawList(list) {
 	
 	console.log("bookmarkList:  ", '${bookmarkList}');
 }
-$(document).on('click','.delete',function(){
+$(document).on('click','.list td.delete',function(){
 	var lineIdx = $(this).data('lineidx');
 	layerPopup('해당 결재라인을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
 
