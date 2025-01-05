@@ -332,13 +332,14 @@
 	        	 console.log("유저정보: ",response.position_content);
 	        	 console.log("유저정보: ",response.dept.text);
 	        	 
-	        	 selectedEmployees.push(response);
+	        	 selectedEmployees.push(response.username);
+	        	 console.log('담겨? : ',selectedEmployees);
 	        	 userName = response.name;
 	        	 userPosition = response.position_content;
 	        	 userDept = response.dept.text;
 	        	               	 
 			     // 새로운 row 데이터 생성
-			     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
+			     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'];
 	
 			     // 기존 rows에 추가
 			     exampleData.rows.push(newRow);
@@ -357,7 +358,7 @@
 	     addSelectedIdToRows(selectedId);
 	 });
 	 
-	 function addBtnFn() {
+	/*  function addBtnFn() {
 		console.log('조직도 인원 저장');
 		$('#selected_employees').empty();
 	    selectedEmployees.forEach(function(employee){
@@ -370,12 +371,82 @@
 	    	    
 	    // 조직도 모달 닫기
 	    $('#chartModalBox').hide();
-	}
+	} */
+	
+	function addBtnFn() {
+        console.log('조직도 인원 저장');
+        $('#selected_employees').empty();
+        exampleData.rows = []; // 테이블 데이터 초기화
+    
+        // 선택된 직원 ID 배열을 이용하여 직원 정보를 다시 가져오기
+        selectedEmployees.forEach(function(employeeId){
+            console.log('뭐지', employeeId);
+            $.ajax({
+                type: 'GET',
+                url: '/getUserInfo/' + employeeId,
+                dataType: 'JSON',
+                success: function(response) {
+                    var deptText = (response.dept && response.dept.text) ? response.dept.text : '부서 없음';
+                    var employeeTag = $('<div class="employee-tag" data-id="' + response.username + '"></div>');
+                    employeeTag.append('<span>' + deptText + ' ' + response.name + ' ' + response.position_content + '</span>');
+                    employeeTag.append('<span class="remove-employee">&times;</span>');
+                    $('#selected_employees').append(employeeTag);
+    
+                    // 테이블에 참석자 정보 추가
+                    const newRow = [
+                        response.name, 
+                        deptText, 
+                        response.position_content, 
+                        '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'
+                    ];
+                    exampleData.rows.push(newRow);
+                    updateTableData('customTable', exampleData);
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
+        });
+            
+        // 조직도 모달 닫기
+        $('#chartModalBox').hide();
+    }
+	 
+/* 	// 참석자 삭제 기능 추가
+	$(document).on('click', '.remove-employee', function(){
+		var parentDiv = $(this).parent('.employee-tag');
+	    var employeeId = parentDiv.data('id');
+	    // 배열에서 제거
+	    selectedEmployees = selectedEmployees.filter(function(id){
+	    	return id !== employeeId;
+	    });
+	    // UI에서 제거
+	    parentDiv.remove();
+	    // 조직도에서 선택 해제
+	    $('#jstree').jstree('deselect_node', employeeId);
+	}); */
+	
+	$(document).on('click', '.remove-employee', function(){
+	    var employeeId = $(this).data('id'); // 버튼의 data-id에서 employeeId 추출
+	    console.log('삭제할 직원 ID:', employeeId);
+
+	    // 배열에서 제거
+	    selectedEmployees = selectedEmployees.filter(function(id){
+	        return id !== employeeId;
+	    });
+
+	    // 테이블에서 해당 행 제거
+	    $(this).closest('tr').remove();
+
+	    // 조직도에서 선택 해제
+	    $('#jstree').jstree('deselect_node', employeeId);
+	}); 
+
 	 
 	 
 	 
 	 function handleAddSchedule() {
-			console.log('예약 등록 클릭');
+			console.log('예약 등록 클릭',selectedEmployees);
 						
 		    var no = $('#category_items_room').val();
 		    console.log('선택된놈 no',no);
@@ -385,16 +456,11 @@
 		    var subject = $('#calendar_subject_input').val();
 		    var content = $('#calendar_content_input').val();
 		    
-		 	// 참석자 유효성 검사
-		    if(selectedEmployees.length === 0){
-		        alert('참석자를 선택해주세요.');
-		        return;
-		    }
-		    
-		    var attendees = selectedEmployees.map(function(emp){
+		 			    
+		    /* var attendees = selectedEmployees.map(function(emp){
 		        return emp.username;
-		    });
-		    console.log('선택된놈 attendees',attendees);
+		    }); */
+		    console.log('선택된놈 attendees',selectedEmployees);
 		    
 		    var data = {
 		            no: no, // 물품 번호 (int 타입)
@@ -403,7 +469,7 @@
 		            end_date: end_date,
 		            subject: subject,
 		            content: content,
-		            attendees: attendees // 참석자 ID 배열 추가
+		            attendees: selectedEmployees // 참석자 ID 배열 추가
 		        };
 		    
 		    // 서버 요청
@@ -447,7 +513,7 @@
 		    $.ajax({
 		    	
 		        type: 'GET',
-		        url: '/roomReservationDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
+		        url: '/roomReservationDetail/'+idx, // 컨트롤러의 상세 조회
 		        dataType: 'JSON',
 		        success: function(response) {
 		            if (response.success) {
@@ -497,6 +563,8 @@
 	            document.getElementById("category_items_room").value = '';
 	            document.getElementById("selected_employees").textContent = '';
 	            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
+	            
+	            
 	        } else if (type === 'Info') {
 	            // 일정 상세 보기 모드: 데이터 주입
 	            console.log("일정 상세 보기 모드: 데이터 주입", data);
@@ -513,19 +581,26 @@
 	            
 	         	// 참석자 목록 표시
 	            var attendeesList = document.getElementById("people");
-	           
+	            attendeesList.innerHTML = ''; // 기존 내용 초기화
+	            selectedEmployees = [];
+
 	            if(data.attendees && data.attendees.length > 0){
 	                data.attendees.forEach(function(attendee) {
-	                	var cont = '<p style="margin: 0;" data-id="' + attendee.username + '">'+attendee.dept.text+' '+attendee.name+' '+attendee.position_content+'</p>';
-	                    attendeesList.insertAdjacentHTML('beforeend',cont);
+	                    var cont = '<p style="margin: 0;" data-id="' + attendee.username + '">'
+	                             + attendee.dept.text + ' ' 
+	                             + attendee.name + ' ' 
+	                             + attendee.position_content + '</p>';
+	                    attendeesList.insertAdjacentHTML('beforeend', cont);
+	                    selectedEmployees.push(attendee.username); // 참석자 ID 배열에 저장
 	                });
 	            } else {
-	                attendeesList.insertAdjacentHTML('beforeend','<p>참석자가 없습니다.</p>');
+	                attendeesList.insertAdjacentHTML('beforeend', '<p>참석자가 없습니다.</p>');
 	            }
 	            
 	            
 	        } else if (type === 'Edit') {
 	            // 일정 수정 모드: 데이터 주입
+	            console.log("이ㅏ건?",data.attendees);
 	            console.log("일정 수정 모드: 데이터 주입", data); 
 	            fetchCategoryItems(data.no);
 	            document.getElementById("edit_calendar_event_id").value = data.idx;
@@ -535,19 +610,45 @@
 	            document.getElementById("calendar_end_date_edit").value = data.end_date;
 	            document.getElementById("category_items_room").value = data.room_name;
 	            document.getElementById("calendar_username_edit").textContent = '${info.name}';
-	            console.log("이ㅏ건?",data.attendees);
-	            
+	                  
+	            // 기존 참석자 로드 및 selectedEmployees 설정
 	            $('#selected_employees_edit').empty();
 	            selectedEmployees = [];
+	            exampleData.rows = []; // 테이블 데이터 초기화
+	            var editList = document.getElementById("selected_employees_edit");
 	            if(data.attendees && data.attendees.length > 0){
-	                data.attendees.forEach(function(employee){
-	                	console.log("이ㅏ건?",data.attendees );
-	                    var employeeTag = $('<div class="employee-tag" data-id="' + employee.username + '"></div>');
-	                    employeeTag.append('<span>' + employee.dept.text + ' ' + employee.name + ' ' + employee.position_content + '</span>');
-	                    employeeTag.append('<span class="remove-employee">&times;</span>');
-	                    $('#selected_employees_edit').append(employeeTag);
-	                    selectedEmployees.push(employee.username);
+	                data.attendees.forEach(function(attendeeUsername) {
+	                    $.ajax({
+	                        type: 'GET',
+	                        url: '/getUserInfo/' + attendeeUsername,
+	                        dataType: 'JSON',
+	                        success: function(response) {
+	                            var deptText = (response.dept && response.dept.text) ? response.dept.text : '부서 없음';
+	                            var cont = '<p style="margin: 0;" data-id="' + response.username + '">'
+	                                     + deptText + ' ' 
+	                                     + response.name + ' ' 
+	                                     + response.position_content + '</p>';
+	                            editList.insertAdjacentHTML('beforeend', cont);
+	                            selectedEmployees.push(response.username); // 참석자 ID 배열에 저장
+	                            
+	                         	// 테이블에 참석자 정보 추가
+	                            const newRow = [
+	                                response.name, 
+	                                deptText, 
+	                                response.position_content, 
+	                                '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'
+	                            ];
+	                            exampleData.rows.push(newRow);
+	                                                                                  
+	                        },
+	                        error: function(e) {
+	                            console.log(e);
+	                           
+	                        }
+	                    });
 	                });
+	            } else {
+	                attendeesList.insertAdjacentHTML('beforeend', '<p>참석자가 없습니다.</p>');
 	            }
 	            
 	        }
@@ -597,15 +698,17 @@
 		   
 	   	function handleSaveEditSchedule() {
 			// 수정 모달에서 데이터 수집
-	       	var idx = $('#edit_calendar_event_id').val();
-	       	var selection = $('#calendar_type').val();
-		    var no = $('#category_items').val();
+	       	var idx = $('#edit_calendar_event_id').val();	       	
+		    var no = $('#category_items_room').val();
 		    console.log('선택된놈 no',no);
 		    var username = '${pageContext.request.userPrincipal.name}'; 
 		    var start_date = $('#calendar_start_date_edit').val();
 		    var end_date = $('#calendar_end_date_edit').val();
 		    var subject = $('#calendar_subject_edit').val();
 		    var content = $('#calendar_content_edit').val();
+		    
+		    var attendees = selectedEmployees; // 올바르게 사용
+		    console.log('수정자',attendees);
 		          	      	       		
 	       	// 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
 	       	var params = {
@@ -615,14 +718,14 @@
 	           	content: content,
 	           	start_date: start_date,
 	           	end_date: end_date,
-	           	selection: selection,
-	           	no: no
+	           	no: no,
+	           	attendees: attendees
 	       	};
 		
-	       	// AJAX PUT 요청을 통해 일정 수정 (Path Variable 사용)
+	       	// 요청을 통해 일정 수정
 	       	$.ajax({
 	       		type: 'PUT',
-	           	url: '/itemUpdate/' + idx, // 수정 엔드포인트에 id 포함
+	           	url: '/roomUpdate/' + idx, // 수정 엔드포인트에 id 포함
 	           	data: JSON.stringify(params),
 	           	contentType: 'application/json; charset=UTF-8',
 	           	dataType: 'JSON',
@@ -659,7 +762,7 @@
 	    function handleDeleteSchedule() {
 	    	var idx = $('#event_id').val();
 	    	console.log('삭제할때 받아와?',idx);
-	    	httpAjax('DELETE', '/itemDelete/'+idx);
+	    	httpAjax('DELETE', '/roomDelete/'+idx);
 		}	 
 	 
 	 
