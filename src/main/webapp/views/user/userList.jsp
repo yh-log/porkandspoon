@@ -235,7 +235,7 @@ function pageCall(page = 1, extraData = {}) {
                 $('#pagination').twbsPagination({
                     startPage: page,
                     totalPages: totalPages,
-                    visiblePages: 10,
+                    visiblePages: 5,
                     initiateStartPageClick: false,
                     onPageClick: function (evt, page) {
                         console.log('클릭된 페이지:', page);

@@ -87,6 +87,11 @@
 		margin-top: 10px;
 		margin-bottom: 10px;
 	}
+
+	#nameTableTd{
+		float: left;
+		margin-left: 10px;
+	}
 	
 </style>
 </head>
@@ -122,17 +127,13 @@
 						</div>
 							<div class="cont-body">
 								<div class="row">
-
-									<p>Welcome, ${userName}</p>
-									<p>Your role: ${userRole}</p>
-
 								 <div class="col-12 col-lg-12">
 									 <form>
-										 <input type="hidden" name="create" value="<sec:authentication property='username'/>"/>
+										 <input type="hidden" name="username" value="${username}"/>
 										 <table>
 											 <tr class="table-sun" id="user-name-insert">
 												 <th>작성자</th>
-												 <td colspan="3"></td>
+												 <td colspan="3" id="nameTableTd">${name} ${userDTO.position}</td>
 											 </tr>
 											 <tr class="table-sun">
 												 <th>휴점명<span class="required-value">*</span> </th>
@@ -140,9 +141,12 @@
 											 </tr>
 											 <tr>
 												 <th>브랜드</th>
-												 <td></td>
+												 <td>${userDTO.parent}</td>
 												 <th>직영점 명</th>
-												 <td></td>
+												 <td>
+													 ${userDTO.name}
+													 <input type="hidden" name="id" value="${userDTO.dept_name}"/>
+												 </td>
 											 </tr>
 											 <tr>
 												 <th class="table-text table-text-text" style="vertical-align: top;">휴점일정</th>
@@ -156,7 +160,7 @@
 											 <tr>
 												 <td colspan="4">
 													 <div class="editor-area">
-														 <textarea name="contentss" id="summernote" maxlength="10000"></textarea>
+														 <textarea name="contents" id="summernote" maxlength="10000"></textarea>
 													 </div>
 												 </td>
 											 </tr>
@@ -166,7 +170,7 @@
 								 <div class="row">
 									 <div class="col-sm-5"></div>
 									 <div class="col-sm-2">
-										 <button type="button" class="btn btn-primary btn-write" onclick="layerPopup('브랜드를 등록하시겠습니까?','등록','취소', restWrite, removeAlert)">등록</button>
+										 <button type="button" class="btn btn-primary btn-write" onclick="layerPopup('휴점을 등록하시겠습니까?','등록','취소', restWrite, removeAlert)">등록</button>
 										 <button type="button" class="btn btn-outline-primary btn-delete">취소</button>
 									 </div>
 									 <div class="col-sm-5"></div>
@@ -194,6 +198,8 @@
 
 <script>
 
+	console.log(('input[name="hidden"]').val());
+
 	function validateForm(){
 		const requireFidlds = document.querySelectorAll('[data-required="true"]');
 		let isValid = true;
@@ -216,13 +222,28 @@
 
 		if(isFormValid){
 			// 함수 실행
-			textEaditorWrite('/ma/rest/write');
-			removeAlert();
+			textEaditorWrite('/us/rest/write');
 
 		}else{
 			layerPopup("필수값을 입력해주세요.", "확인", false, removeAlert, removeAlert);
 		}
 
+	}
+
+	function fileSuccess(response){
+		removeAlert();
+
+		console.log(response);
+		if(response.status == 200){
+			layerPopup(response.message, "확인", false, function() {
+				location.href = '/us/rest/detail/' + response.rest_idx;
+			});
+
+		}else{
+			layerPopup(response.message, "확인", false, function() {
+				location.href = '/us/rest/list'
+			});
+		}
 	}
 
 </script>

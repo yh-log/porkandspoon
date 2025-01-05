@@ -1,308 +1,264 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+		 pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
-<!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-<link rel="shortcut icon"
-	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
-	type="image/png">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>휴점 등록</title>
+	<!-- 부트스트랩 -->
+	<link rel="shortcut icon"
+		  href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+	<link rel="shortcut icon"
+		  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBA
+	AAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPS
+	JXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpucz
+	ptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHR
+	wOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0a
+	W9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEu
+	MC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5z
+	OnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtc
+	D0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYW
+	RvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwL
+	zEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmO
+	lBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoP
+	SIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZm
+	Y6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xv
+	ck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGl
+	meURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFU
+	MTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgI
+	CAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWd
+	uZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZ
+	jpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1
+	ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9ma
+	ORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec
+	8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCz
+	eo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBg
+	nRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v
+	+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L
+	/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVI
+	Y1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9u
+	Q04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1en
+	MYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYi
+	nwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3t
+	E3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12Eg
+	jPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7
+	us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+O
+	Neqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
+		  type="image/png">
 
-<!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/toastify-js/src/toastify.css">
+	<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
+	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
+	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+	<link rel="stylesheet" href="/resources/css/common.css">
 
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
 
-<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
-<link rel="stylesheet" href="/resources/css/common.css">
+	<style >
 
+		.tit-area{
+			display: flex;
+		}
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<style >
-#home,#schedule{
-		width: 200px;
-	}
+		td div.inline-layout{
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			white-space: nowrap;
+			gap: 10px;
+		}
 
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 230px;
-	}
+		.required-value{
+			color: var(--bs-danger);
+		}
 
-	.tit-area{
-		display: flex; 
-	}
-	h5 .count{
-		text-align: right;
-		margin-right: 10px;
-	}
-	.card-body{
-		display: flex;	
-	}
-	#flexRadioDefault2{
-		margin-left: 20px;
-	}
-	td div.inline-layout{
-		display: flex;
-	    align-items: center;
-	    flex-wrap: nowrap;
-	    white-space: nowrap;
-	    gap: 10px;
-	}
-	
-	.content{
-		display: flex; 
-		align-content: cetner;
-		border: 1px solid black;
-	}
-	buttons{
-		align-content: cetner;
-	}
-	.art{
-		height: 280px;
-	}
-	.align-l{
-		width: 300px;
-		text-align: center
-	}
-	#btn-gap{
-		display: flex;
-		gap: 30px;
-		align-items: center;
-		justify-content: center;
-	}
-	.short{
-		width: 200px;
-	}
-	#start_date{
-		margin-left: 800px;
-	}
-	
-</style>
+		.dateFont{
+			font-weight: 500;
+		}
+
+		td div input[type="date"]{
+			width: 150px;
+		}
+
+		#home, #schedule{
+			width: 200px;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+
+		#nameTableTd{
+			float: left;
+			margin-left: 10px;
+		}
+
+	</style>
 </head>
 
 <body>
-	<!-- 부트스트랩 -->
-	<script src="/resources/assets/static/js/initTheme.js"></script>
-	<div id="app">
+<!-- 부트스트랩 -->
+<script src="/resources/assets/static/js/initTheme.js"></script>
+<div id="app">
 
-		<!-- 사이드바 -->
-		<jsp:include page="../sidebar.jsp" />
+	<!-- 사이드바 -->
+	<jsp:include page="../sidebar.jsp" />
 
-		<div id="main">
-			<!-- 헤더 -->
-			<jsp:include page="../header.jsp" />
+	<div id="main">
+		<!-- 헤더 -->
+		<jsp:include page="../header.jsp" />
 
-			<div class="page-content">
-				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home">매장관리 홈</button>
-					</div>
-					
-					<ul>
-						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
-						<li><a href="/ad/rest/List">휴점신청</a></li>
-						
-					</ul>
-				</section>
-				<section class="cont">
-					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
-						<div class="tit-area">
-							<h5>휴점 등록</h5>
+		<div class="page-content">
+			<section id="menu">
+				<h4 class="menu-title">매장관리</h4>
+				<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
+				<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/rest/Write'">휴점 등록</button>
+
+				<ul>
+					<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
+					<li><a href="/ad/rest/List">휴점수정</a></li>
+
+				</ul>
+			</section>
+			<section class="cont">
+				<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
+				<div class="tit-area">
+					<h5>휴점 등록</h5>
+				</div>
+				<div class="cont-body">
+					<div class="row">
+						<div class="col-12 col-lg-12">
+							<form>
+								<input type="hidden" name="username" value="${username}"/>
+								<input type="hidden" name="rest_idx" value="${getRest.rest_idx}"/>
+								<input type="hidden" name="creater" value="${getRest.creater}"/>
+								<input type="hidden" name="board_idx" value="${getRest.board_idx}">
+								<input type="hidden" name="schedule_idx" value="${getRest.schedule_idx}"/>
+								<table>
+									<tr class="table-sun" id="user-name-insert">
+										<th>작성자</th>
+										<td colspan="3" id="nameTableTd">${getRest.username} ${getRest.position}</td>
+									</tr>
+									<tr class="table-sun">
+										<th>휴점명<span class="required-value">*</span> </th>
+										<td colspan="3"><input class="form-control" name="subject" type="text" value="${getRest.subject}" data-required="true"></td>
+									</tr>
+									<tr>
+										<th>브랜드</th>
+										<td>${getRest.dept_name}</td>
+										<th>직영점 명</th>
+										<td>
+											${getRest.store_name}
+											<input type="hidden" name="id" value="${getRest.id}"/>
+										</td>
+									</tr>
+									<tr>
+										<th class="table-text table-text-text" style="vertical-align: top;">휴점일정</th>
+										<td colspan="3">
+											<div class="inline-layout">
+												<span class="dateFont">시작일</span><span class="required-value">*</span> <input class="form-control" type="date" id="start_date" name="start_date" value="${getRest.start_date}" data-required="true"/> <span class="dateFont"> ~ </span>
+												<span class="dateFont">종료일</span><span class="required-value">*</span> <input class="form-control" type="date" id="end_date" name="end_date" value="${getRest.end_date}" data-required="true"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="4">
+											<div class="editor-area">
+												<textarea name="contents" id="summernote" maxlength="10000"></textarea>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</form>
 						</div>
-						<div class="cont-body">
 						<div class="row">
-
-			         <div class="col-12 col-lg-12">
-                     <table>
-                        <tr>
-                           <th class="align-l">지점명</th>
-                           	<td>돼미남 강남점</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">직영점주 이름</th>
-                           	<td>이경언</td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">휴점일정</th>
-                           <td >
-	                           <div id="searchLayout" class="col-7 col-lg-7">
-		                           	<input class="form-control sor-1 short"  id="start_date" type="date"  required="required"/>
-		                           	~
-		                           	<input class="form-control sor-1 short"  type="date"  required="required"/>
-	                           </div>
-                           </td>
-                        </tr>
-                        <tr>
-                           <th class="align-l">휴점 사유</th>
-                           <td><textarea class="form-control art"></textarea></td>
-                        </tr>
-                        
-                       
-                     </table>
-                     
-                  </div>
-			
-			
-							
-							<div id="btn-gap">							
-								<button class="btn btn-primary">등록</button>
-								<button class="btn btn-outline-primary">취소</button>
+							<div class="col-sm-5"></div>
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary btn-write" onclick="layerPopup('휴점 정보를 수정하시겠습니까?','등록','취소', restUpdate, removeAlert)">등록</button>
+								<button type="button" class="btn btn-outline-primary btn-delete">취소</button>
 							</div>
+							<div class="col-sm-5"></div>
+						</div>
 
-							</div>
-						</div> 
-				</section>
-			</div>
+					</div>
+				</div>
+			</section>
 		</div>
 	</div>
+</div>
 </body>
 
 
-
-
-
-
 <!-- 부트스트랩 -->
-<script src="/resources/assets/static/js/components/dark.js"></script>
-<script
-	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
+<script src='/resources/js/textEaditor.js'></script>
+<script src='/resources/js/common.js'></script>
 
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
+<!-- summernote -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
-
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
+
+	$(document).ready(function (){
+		$('#summernote').summernote({
+			height: 300
+		});
+
+		const content = '${getRest.content}';
+
+		$('#summernote').summernote('code', content);
 	});
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
+	console.log(('input[name="hidden"]').val());
 
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+	function validateForm(){
+		const requireFidlds = document.querySelectorAll('[data-required="true"]');
+		let isValid = true;
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
+		requireFidlds.forEach(function (field){
+			if(!field.value.trim()){
+				field.classList.add('is-invalid');
+				isValid = false;
+			}else {
+				field.classList.remove('is-invalid');
+			}
+		});
+
+		return isValid;
 	}
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
+	function restUpdate(){
+
+		let isFormValid = validateForm();
+
+		if(isFormValid){
+			// 함수 실행
+			textEaditorWrite('/ma/rest/update');
+
+		}else{
+			layerPopup("필수값을 입력해주세요.", "확인", false, removeAlert, removeAlert);
+		}
+
 	}
 
+	function fileSuccess(response){
+		removeAlert();
+
+		console.log(response);
+		if(response.status == 200){
+			layerPopup(response.message, "확인", false, function() {
+				location.href = '/us/rest/detail/' + response.idx;
+			});
+
+		}else{
+			layerPopup(response.message, "확인", false, function() {
+				location.href = '/us/rest/list'
+			});
+		}
+	}
 
 </script>
 
