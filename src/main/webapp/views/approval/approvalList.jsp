@@ -343,7 +343,7 @@
 				content += '<td>'+view.create_date+'</td>';
 	            content += '<td class="align-l elipsis cursor-pt" onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">'+view.subject+'</td>';
 	            content += '<td>'+type1+' '+type2+'</td>';
-	            content += '<td class="cursor-pt" onclick="layerPopup(\'기안문을 삭제하시겠습니까?\', \'삭제\', \'취소\', deleteAct('+view.draft_idx+'), btn1Act)">삭제</td>';
+	            content += '<td class="cursor-pt delete" data-draftidx="'+view.draft_idx+'" >삭제</td>';
 			}
 			if(listType != 'sv'){
 	            content += '<td>'+view.document_number+'</td>';
@@ -381,28 +381,12 @@
 	     $('.list tbody').html(content);
 	   }
 	
-	
-		// 검색이벤트
-		$('#searchBtn').on('click', function() {
-		    show = 1;
-		    paginationInitialized = false;
-		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
-		});
-	
-		// 필터링
-		$('.filter-btns .btn').on('click', function() {
-			$(this).siblings().removeClass('selected');
-			$(this).addClass('selected');
-			show = 1;
-		    paginationInitialized = false;
-		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
-		});
-		
-		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
-		var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+	$(document).on('click','.list td.delete',function(){
+		var draftIdx = $(this).data('draftidx');
+		layerPopup('해당 기안문을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
 		
 		// 기안문 삭제
-		function deleteAct(draftIdx) {
+		function deleteAct() {
 			console.log("draftIdx값좀 받아와라 : "+draftIdx);
 			$.ajax({
 		        type : 'PUT',
@@ -425,7 +409,27 @@
 		        }
 		    });
 		}
-
+	});
+	
+		// 검색이벤트
+		$('#searchBtn').on('click', function() {
+		    show = 1;
+		    paginationInitialized = false;
+		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
+		});
+	
+		// 필터링
+		$('.filter-btns .btn').on('click', function() {
+			$(this).siblings().removeClass('selected');
+			$(this).addClass('selected');
+			show = 1;
+		    paginationInitialized = false;
+		    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
+		});
+		
+		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+		
 		function btn1Act() {
 			location.reload();
 			removeAlert(); 

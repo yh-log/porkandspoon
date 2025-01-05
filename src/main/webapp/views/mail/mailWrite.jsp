@@ -84,29 +84,6 @@
 	background: #f7f7f7;
 }
 
-
-.mailList .search-area {
-	display: flex;
-	gap: 4px;
-}
-
-.mailList input[name="search-data"] {
-	width: 300px;
-	height: 38px;
-	margin: 14px 0;
-	border: 1px solid #DFE3E7;
-}
-
-.mailList .search-area select {
-	margin: 14px 0;
-    height: 38px;
-}
-
-.mailList .search-area .btn-sch {
-	margin: 14px 0;
-    height: 38px;
-}
-
 .mailList .util-area {
 	display: flex;
 	justify-content: space-between;
@@ -135,10 +112,13 @@
 	margin-right: 30px;
 }
 .mailList .line {
-	height: 60px;
+	margin-bottom: 30px;
 }
 .mailList .line label {
 	width: 72px;	
+}
+.mailList .line .filepond--drop-label label {
+	width: auto;	
 }
 .mailList .btn {
 	margin: 0;
@@ -146,8 +126,113 @@
 .mailList .note-editor {
     width: 100% !important;
 }
-
-
+ .mailList .receivers-area {
+     flex-grow: 1;
+     margin-right: 10px;
+}
+ .mailList .receivers-area label {
+     flex-shrink: 0;
+ 	 margin-right: 5px;
+ }
+ .mailList #receivers {
+ 	display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+ 	width: 100%;
+ 	min-height: 40px;
+    padding: 4px;
+    line-height: 1.5;
+    border: 1px solid #dce7f1;
+    border-radius: .25rem;
+    cursor: text;
+ }
+ .mailList #receivers .search-area {
+ 	position: relative;
+    display: inline-block;
+    width: 160px;
+ }
+ .mailList #receivers .search-area span{
+ 	position: absolute;
+ 	top: 50%;
+ 	transform: translateY(-50%);
+ 	display: inline-block;
+	width: 18px;
+	height: 18px;
+	box-sizing: border-box;
+ 	opacity:0.8;
+ 	cursor: pointer;
+ 	display:none;
+ }
+ .mailList #receivers .search-area span:hover{
+ 	opacity: 1;
+ }
+ .mailList #receivers .search-area span.btn-edit{
+ 	right: 22px;
+	background: url('/resources/img/ico/ico_edit_s.png') no-repeat center/cover;
+ }
+ .mailList #receivers .search-area .btn-close{
+	right: 4px;
+	background: url('/resources/img/ico/ico_close_s.png') no-repeat center/cover;
+ }
+ 
+ .mailList #receivers input {
+ 	width: 100%;
+ 	height: 30px;
+ 	padding: 6px 50px 6px 10px;
+ 	display: inline-block;
+ 	font-size: 14px;
+ }
+ .mailList #receivers input:focus {
+ 	box-shadow: 0 0 0 .145rem rgba(67,94,190,.2);
+ }
+/* .mailList #receivers input {
+    display: block;
+    height: 34px;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #607080;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #dce7f1;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+} */
+/* .mailList #receivers input:focus{
+    color: #607080;
+    background-color: #fff;
+    border-color: #a1afdf;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(67, 94, 190, .25);
+} */
+.mailList #receivers input[readonly],
+.mailList #receivers input.invalid {
+	cursor: default;
+	outline: none;
+	box-shadow: none;
+	background-color: var(--bs-bg);
+	border: 1px solid #dae0eb;
+}
+.mailList #receivers input.invalid {
+	background-color: var(--bs-light-danger);
+}
+.mailList #receivers input[readonly] + span, 
+.mailList #receivers input[readonly] + span + span,
+.mailList #receivers input.invalid + span, 
+.mailList #receivers input.invalid + span + span {
+	display: block;
+}
+.mailList .form-control{
+	display: inline-block;
+    width: calc(100% - 77px);
+	padding: 19px 10px;
+}
+.mailList #filepond {
+	width: 100%;
+}
 
     .ui-autocomplete { position: absolute; max-height: 200px; margin: 0; padding: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; z-index: 1; list-style: none; overflow-y: auto; } 
     .ui-autocomplete li { padding: 10px; cursor: pointer; font-size: 16px; color: #000; } 
@@ -186,50 +271,58 @@
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<div class="left">
-								<h5>메일쓰기 <buttton>임시보관 메일</buttton><span class="mail-count">21</span></h5>
+								<h5>메일쓰기 <button>임시보관 메일</button><span class="mail-count">21</span></h5>
 							</div>
 						</div>
 						<div class="util-area">
 							<div class="left">
-								<buttton class="btn btn-primary">보내기</buttton>
-								<buttton class="btn btn-outline-primary">임시저장</buttton>
+								<button class="btn btn-primary" onclick="sendMail()">보내기</button>
+								<button class="btn btn-outline-primary" onclick="saveMail()">임시저장</button>
 							</div>
 						</div>
 
 						<div class="cont-body">
-							<div class="line">
-								<div class="flex between">
-									<div>
-										<label class="fw-600">받는 사람</label> 
-										<!-- <input name="myself" type="checkbox" class="form-check-input" id="checkbox2">
-										<label for="myself">나에게</label> -->
-										
-										<!-- 검색어를 입력할 input box 구현부 -->
-	    								<input id="searchBox">
-										<!-- <input type="text" id="autocomplete" class="autocomplete-input"> -->
+							<form id="mailWriteForm">
+								<input type="hidden" name="idx"/>
+								<div class="line">
+									<div class="flex between">
+										<div class="flex receivers-area">
+											<label class="fw-600">받는 사람</label> 
+											<!-- <input name="myself" type="checkbox" class="form-check-input" id="checkbox2">
+											<label for="myself">나에게</label> -->
+											
+											<!-- 검색어를 입력할 input box 구현부 -->
+		    								<div id="receivers">
+		    									<div class="search-area">
+		    										<input class="searchBox form-control" name="username" required/>
+		    										<span class="btn-edit"></span>
+		    										<span class="btn-close"></span>
+		    									</div>
+	    									</div>
+											<!-- <input type="text" id="autocomplete" class="autocomplete-input"> -->
+										</div>
+										<button class="btn btn-outline-primary btn-sm">조직도</button>
 									</div>
-									<button class="btn btn-outline-primary btn-sm">조직도</button>
 								</div>
-							</div>
-							<div class="line">
-								<label class="fw-600">제목</label>
-								<input type="text" name="title"/>
-							</div>
-							<div class="line clearfix">
-								<label class="fw-600">파일첨부</label> 
-								<button class="btn btn-outline-primary btn-sm">파일첨부</button>
-								<p class="float-r">
-									<span>0KB</span>
-									/
-									<span>10MB</span>
-								</p>
-							</div>			
-							<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
-							<!-- <input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB"> -->
-							<div class="editor-area">
-								<textarea name="content" id="summernote" maxlength="10000"></textarea>
-							</div>		
-							
+								<div class="line">
+									<label class="fw-600">제목</label>
+									<input class="form-control" type="text" name="title" required/>
+								</div>
+								<div class="line clearfix">
+									<label class="fw-600">파일첨부</label> 
+									<!-- <button class="btn btn-outline-primary btn-sm">파일첨부</button> -->
+									<p class="float-r">
+										<span>0KB</span>
+										/
+										<span>10MB</span>
+									</p>
+									<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+								</div>			
+								<!-- <input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB"> -->
+								<div class="editor-area">
+									<textarea name="content" id="summernote" maxlength="10000"></textarea>
+								</div>		
+							</form>
 						</div>
 					</div>
 				</section>
@@ -282,50 +375,94 @@
 	
 	
 	
-	// auto-complete
-$(function() {
-    $('#searchBox').autocomplete({
-        source : function(reuqest, response) {
-            $.ajax({
-                type : 'get',
-                url: '/json',
-                dataType : 'json',
-                success : function(data) {
-                    // 서버에서 json 데이터 response 후 목록 추가
-                    response(
-                        $.map(data, function(item) {
-                            return {
-                                label : item + 'label',
-                                value : item,
-                                //test : item + 'test'
-                            }
-                        })
-                    );
-                }
-            });
-        },
-        select : function(event, ui) {
-            console.log(ui);
-            console.log(ui.item.label);
-            console.log(ui.item.value);
-            console.log(ui.item.test);
-        },
-        focus : function(event, ui) {
-            return false;
-        },
-        minLength : 1,
-        autoFocus : true,
-        classes : {
-            'ui-autocomplete': 'highlight'
-        },
-        delay : 500,
-        position : { my : 'right top', at : 'right bottom' },
-        close : function(event) {
-            console.log("close: ",event);
-        }
-    });
-});
+// auto-complete
+	setAutoComplete();
+	function setAutoComplete(){
 	
+	    $('.searchBox').autocomplete({
+	        source : function(request, response) {
+	            $.ajax({
+	                type : 'get',
+	                url: '/json',
+	                dataType : 'json',
+	                success : function(cont) {
+	                	const inputText = request.term.toLowerCase();
+	                    // 서버에서 json 데이터 response 후 목록 추가
+	                    response(
+	                        $.map(cont.filter(item => item.text.toLowerCase().includes(inputText)), function(item) {
+	                            return {
+	                                label : item.text,
+	                                value : item.username,
+	                                //test : item + 'test'
+	                            }
+	                        })
+	                    );
+	                    
+	                    
+	                    /* const filteredItems = data.filter(item => item.toLowerCase().includes(inputText));
+		                response(filteredItems); */
+	                }
+	            });
+	        },
+	        select : function(event, ui) {
+	        	// 현재 input 입력못하게
+	        	event.target.setAttribute("readonly", true);
+	        	event.target.blur();
+	        	//event.target.parentElement.classList.add("readonly");
+	        	event.target.classList.remove("invalid");
+	        	
+	        	addNewInput();
+	        	
+	            //var clonedElement = e.target.cloneNode();
+	            //clonedElement.setAttribute("readonly", false);
+	            //document.getElementById("receivers").appendChild(clonedElement);
+	            //var inputElement = document.createElement("input");
+	            //inputElement.setAttribute("name", "username");
+	            //inputElement.setAttribute("autofocus", true);
+				//inputElement.classList.add("searchBox");
+	            //document.getElementById("receivers").appendChild(inputElement);
+	           
+				//inputElement.focus();
+	        	
+	            console.log("ui: ", ui);
+	            console.log(ui.item.label);
+	            console.log(ui.item.value);
+	            console.log(ui.item.test);
+	        },
+	        focus : function(event, ui) {
+	            return false;
+	        },
+	        minLength : 1,
+	        autoFocus : true,
+	        classes : {
+	            'ui-autocomplete': 'highlight'
+	        },
+	        delay : 500,
+	        position : { my : 'right top', at : 'right bottom' },
+	        close : function(e) {
+	            console.log("close: ",e);
+	            
+	        }
+    	});
+	}
+
+// 새로운 input 생성
+function addNewInput(){
+   	var inputCont = '<div class="search-area">';
+   	inputCont += '<input class="searchBox form-control" name="username" required/>';
+   	inputCont += '<span class="btn-edit"></span>';
+   	inputCont += '<span class="btn-close"></span>';
+   	inputCont += '</div>';
+ 	$('#receivers').append(inputCont);
+ 	$('#receivers input:not([readonly])').focus();
+    setAutoComplete();									
+}
+	
+	// input 편집버튼 클릭시
+	$(document).on('click','#searchBox .btn-edit',function(){
+		alert('dd');
+		$(this).siblings('input').attr('readonly', false);
+	});
 	
 	/* $(document).ready(function () {
     const data = [
@@ -374,9 +511,84 @@ $(function() {
     });
 }); */
 	
+// 메일전송
+function sendMail(){
+	const form = document.getElementById("mailWriteForm");
+    const inputs = form.querySelectorAll("input[required]");
+	let isValid = true;
+	let missingFields = [];
 	
-	
-	
+    // input 필드 유효성 검사
+    inputs.forEach(input => {
+    	console.log("input.value.trim() :" ,input.value.trim());
+    	console.log("input.value :" ,input.value);
+        if (!input.value.trim()) {
+            isValid = false;
+            let text = $(input).parents('.line').find('label').text();
+            console.log("text!!!!",$(input).parents('.line'));
+            missingFields.push(text);
+            return; 
+        }
+    });
+    // 받는사람 input
+    var existReceiver = $('#receivers input[readonly]').length >= 1;
+    var invalidReceiver = $('#receivers input.invalid').length >= 1;
+    //console.log("$('#receivers input[readonly]')",$('#receivers input[readonly]'));
+    //console.log("existReceiver",existReceiver);
+    if (isValid && existReceiver && !invalidReceiver) {
+    	textEaditorWrite('/mail/write/sd');
+    }else {
+    	if(!existReceiver){
+    		missingFields.push('받는 사람');
+    	}
+    	if(invalidReceiver){
+    		layerPopup("받는 사람이 유효하지 않습니다.",'확인',false,removeAlert,removeAlert);
+			return;
+    	}else{
+	    	let missingText = missingFields.join(', ');
+	    	layerPopup("필수 값을 모두 입력하세요: "+missingText,'확인',false,removeAlert,removeAlert);
+    	}
+    }
+}	
+
+// 임시저장
+function saveMail(){
+	textEaditorWrite('/mail/write/sv');
+}
+
+//1분마다 자동 임시저장 check!!! 나중에 풀기
+//setInterval(saveMail, 60000);
+
+function fileSuccess(response){
+	if(response.status == 'sd'){
+		location.href='/mail/detail/'+response.mailIdx;
+	}else{
+		$('input[name="idx"]').val(response.mailIdx);
+		layerPopup("임시저장 되었습니다.",'확인',false,removeAlert,removeAlert);
+	}
+}
+
+// 받는 사람 영역 클릭시 새로운 input생성
+$(document).on('click','#receivers',function(e){
+	e.stopPropagation();
+	// 마지막 input 요소
+	var lastInput = $(this).find('.search-area:last-child input');
+	console.log("lastInput : : :",lastInput);
+	console.log("lastInput : readonly: :",$(lastInput).attr("readonly"));
+	if($(lastInput).attr('readonly') == 'readonly' || lastInput.length < 1){
+		addNewInput();
+	}else{
+		$(lastInput).focus();
+	}
+});
+$(document).on('focusout','.searchBox',function(e){
+	if($(this).val() == ''){
+		$(this).parent().remove();
+	}
+	if(!$(this).attr('readonly')){
+		$(this).addClass('invalid');
+	}
+});
 	
 	
 </script>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -331,57 +332,69 @@
 												<col width="22%"></col>
 											</colgroup>
 										</thead>
-										<tr>
+										<tr class="position">
 											<th rowspan="3">결재</th>
 											<td>사원</td>
 											<td>차장</td>
 											<td>부장</td>
 											<td>대표</td>
 										</tr>
-										<tr>
+										<tr class="name">
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[0].username}"/>
 												<div class="sign-area">
-													<c:if test="${ApprLine[0].approval_date != null}">
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[0].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[0].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>																	
 												</div>
 												<p>${ApprLine[0].user_name}</p>
 											</td>
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[1].username}"/>
 												<div class="sign-area">
-													<c:if test="${ApprLine[1].approval_date != null}">
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[1].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[1].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>
 												</div>
 												<p>${ApprLine[1].user_name}</p>
 											</td>
 											<td>
 												<input type="hidden" name="appr_user" value="${ApprLine[2].username}"/>
 												<div class="sign-area">
-	 												<c:if test="${ApprLine[2].approval_date != null}">
+	 												<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[2].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[2].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>
 												</div>
 												<p>${ApprLine[2].user_name}</p>
 											</td>
 											<td>
+												<input type="hidden" name="appr_user" value="${ApprLine[3].username}"/>
 												<div class="sign-area">
-													<c:if test="${ApprLine[3].approval_date != null}">
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[3].sign}" alt="서명"/>
 													</c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap003'}"><span class="status return">반려</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap002'}"><span class="status ing">결재중</span></c:if>
+													<c:if test="${DraftInfo.status !='sv' and ApprLine[3].status == 'ap001'}"><span class="status no-read">미확인</span></c:if>
 												</div>
-												<input type="hidden" name="appr_user" value="${ApprLine[3].username}"/>
 												<p>${ApprLine[3].user_name}</p>
 											</td>
 										</tr>
 										
 										<tr class="date">
-											<td>${ApprLine[0].approval_date}</td>
-											<td>${ApprLine[1].approval_date}</td>
-											<td>${ApprLine[2].approval_date}</td>
-											<td>${ApprLine[3].approval_date}</td>
+											<td><c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[0].approval_date} </c:if></td>
+											<td><c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[1].approval_date} </c:if></td>
+											<td><c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[2].approval_date} </c:if></td>
+											<td><c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[3].approval_date} </c:if></td>
 										</tr>
 										
 									</table>
@@ -419,7 +432,7 @@
 									
 								</div>
 								<div class="editor-area">
-									<textarea name="content" id="summernote" maxlength="10000">${DraftInfo.content}</textarea>
+									<textarea id="summernote" maxlength="10000">${DraftInfo.content}</textarea>
 								</div>
 								<br/>
 
@@ -705,7 +718,7 @@ function updateDraft(){
   }else {
   	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
   } */
-	textEaditorWrite('/draftUpdate');	
+	textEaditorWrite('/draftUpdate/${reapproval}');	
   
   
 	//최종 글 작성
@@ -790,21 +803,37 @@ function updateDraft(){
  //초기 데이터
 const initialData = {
     headers: ['이름', '부서', '직급', '구분', '삭제'],
-    rows: [
-        ['${UserInfo.name}', '${DraftInfo.dept_name}', '${UserInfo.position_content}', '기안', '<button class="btn btn-primary">삭제</button>'],
-    ],
+    rows: [ 
+    	['${ApprLine[0].user_name}', '${ApprLine[0].dept_name}', '${ApprLine[0].position}', '기안', '<button class="btn btn-primary">삭제</button>'],
+   	],
     footer: '<button class="btn btn-outline-secondary btn-line-write" onclick="loadModal(\'ApprLine\',\'Bookmark\')">라인저장</button>'
 };
-
+ 
+//서버에 넘길 결재자 id배열
+var approvalLines = [];
+ 
+//초기데이터, approvalLines[]에 기존 결재라인 삽입
+var jsonApprLine = '${jsonApprLine}'; 
+var apprLine = JSON.parse(jsonApprLine);
+for(i=0;i<apprLine.length; i++){
+	if(i>0){
+		console.log("초기apprLine[i].user_name!!!!",apprLine[i].username);
+		//addSelectedIdToRows(apprLine[i].username);
+		var initApprover = [apprLine[i].user_name, apprLine[i].dept_name, apprLine[i].position, '결재', '<button class="btn btn-primary">삭제</button>']
+    	initialData.rows.push(initApprover);
+	}
+  	approvalLines.push(apprLine[i].username);
+}
+ 
 var exampleData = JSON.parse(JSON.stringify(initialData));
 
-var userName = "";
-var userPosition = "";
-var userDept = "";
-var approvalLines = ['${userDTO.username}'];
  // 선택된 ID를 rows에 추가하는 함수
  function addSelectedIdToRows(selectedId) {
      console.log("가져온 ID:", selectedId);
+     if(approvalLines.includes(selectedId)){
+    	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
+     	 return false;
+     }
      approvalLines.push(selectedId);
      console.log("approvalLines:", approvalLines);
      $.ajax({
@@ -817,14 +846,15 @@ var approvalLines = ['${userDTO.username}'];
         	 console.log("유저정보: ",response.position_content);
         	 console.log("유저정보: ",response.dept.text);
         	 
-        	 userName = response.name;
-        	 userPosition = response.position_content;
-        	 userDept = response.dept.text;
+        	 var userName = response.name;
+        	 var userPosition = response.position_content;
+        	 var userDept = response.dept.text;
         	 
              // 새로운 row 데이터 생성
              const newRow = [userName, userDept, userPosition, '결재', '<button class="btn btn-primary">삭제</button>'];
 
              // 기존 rows에 추가
+             initialData.rows.push(newRow);
              exampleData.rows.push(newRow);
 
              // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
@@ -840,6 +870,8 @@ var approvalLines = ['${userDTO.username}'];
  getSelectId(function (selectedId) {
      addSelectedIdToRows(selectedId);
  });
+ 
+
  
  
  function chartPrint(response) {
@@ -1031,8 +1063,17 @@ var approvalLines = ['${userDTO.username}'];
  	
  	
 // 조직도 노드 해당 사원 삭제
-$(document).on('click', '.user-delete', function() {
-    $(this).closest('tr').remove();
+$(document).on('click', '#chartModalBox #orgBody .btn', function() {
+    var idx = $(this).closest('tr').index();
+    if(idx != 0){
+	    $(this).closest('tr').remove();
+	    initialData.rows.splice(idx, 1);
+	    exampleData.rows.splice(idx, 1);
+	    approvalLines.splice(idx, 1);
+	    console.log("approvalLines 수정 : ",approvalLines);
+    }else{
+    	layerPopup( "기안자는 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
+    }
 });
 	
 	
@@ -1049,9 +1090,15 @@ function addBtnFn(){
 		 userPosition = lineNodes[i].childNodes[2].innerText;
 		 document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText = userName;
 		 document.querySelectorAll('.appr_line tr.position > td')[i].innerText = userPosition;
-		 document.querySelectorAll('input[name="appr_user"')[i].defaultValue = approvalLines[i];
+		 document.querySelectorAll('input[name="appr_user"]')[i].value = approvalLines[i];
 	 	 document.getElementById('chartModalBox').style.display = "none"; 
 	 	 console.log("approvalLines",approvalLines[i]);
+	 	 
+	 	 console.log("###appr_line tr.name ",document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText );
+		 console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
+		 console.log("###appr_user ",document.querySelectorAll('input[name="appr_user"]'));
+		 console.log("###appr_user.value ",document.querySelectorAll('input[name="appr_user"]')[i].value);
+		 console.log("$$$$exampleData.rows ",exampleData.rows);
 	 }
 }
  

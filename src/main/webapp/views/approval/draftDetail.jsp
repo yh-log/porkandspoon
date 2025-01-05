@@ -411,8 +411,8 @@
 							<c:if test="${DraftInfo.status == 're'}">
 								<button class="btn btn-outline-primary" onclick="loadModal('draft','CkRefusal',this)">반려내용</button>
 							</c:if>
-							<!-- 결재/반려: 내가 결재자이면서 결재하지 않은 경우 이면서 이전결재자들이 결재완료한경우 -->
-							<c:if test="${(approverStatus == 'ap001' or approverStatus == 'ap002') and approverTurn}">
+							<!-- 결재/반려: 내가 결재자이면서 결재하지 않은 경우 이면서 이전결재자들이 결재완료한경우 + 기안 진행중인 경우 -->
+							<c:if test="${(approverStatus == 'ap001' or approverStatus == 'ap002') and approverTurn and DraftInfo.status == 'sd'}">
 								<button class="btn btn-primary"  onclick="loadModal('draft','Approval')">결재</button>
 								<button class="btn btn-outline-primary" onclick="loadModal('draft','Refusal')">반려</button>
 							</c:if>

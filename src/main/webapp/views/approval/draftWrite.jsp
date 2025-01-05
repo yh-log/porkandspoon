@@ -630,16 +630,18 @@ const initialData = {
     ],
     footer: '<button class="btn btn-outline-secondary btn-line-write" onclick="loadModal(\'ApprLine\',\'Bookmark\')">라인저장</button>'
 };
-
 var exampleData = JSON.parse(JSON.stringify(initialData));
 
-var userName = "";
-var userPosition = "";
-var userDept = "";
+//서버에 넘길 결재자 id배열
 var approvalLines = ['${userDTO.username}'];
+
  // 선택된 ID를 rows에 추가하는 함수
  function addSelectedIdToRows(selectedId) {
      console.log("가져온 ID:", selectedId);
+     if(approvalLines.includes(selectedId)){
+    	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
+     	 return false;
+     }
      approvalLines.push(selectedId);
      console.log("approvalLines:", approvalLines);
      $.ajax({
@@ -652,14 +654,15 @@ var approvalLines = ['${userDTO.username}'];
         	 console.log("유저정보: ",response.position_content);
         	 console.log("유저정보: ",response.dept.text);
         	 
-        	 userName = response.name;
-        	 userPosition = response.position_content;
-        	 userDept = response.dept.text;
+        	 var userName = response.name;
+        	 var userPosition = response.position_content;
+        	 var userDept = response.dept.text;
         	 
              // 새로운 row 데이터 생성
              const newRow = [userName, userDept, userPosition, '결재', '<button class="btn btn-primary">삭제</button>'];
 
              // 기존 rows에 추가
+             initialData.rows.push(newRow);
              exampleData.rows.push(newRow);
 
              // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
@@ -865,10 +868,19 @@ var approvalLines = ['${userDTO.username}'];
 });
  	
  	
-// 조직도 노드 해당 사원 삭제
-$(document).on('click', '.user-delete', function() {
-    $(this).closest('tr').remove();
-});
+//조직도 노드 해당 사원 삭제
+ $(document).on('click', '#chartModalBox #orgBody .btn', function() {
+     var idx = $(this).closest('tr').index();
+     if(idx != 0){
+ 	    $(this).closest('tr').remove();
+ 	    initialData.rows.splice(idx, 1);
+ 	    exampleData.rows.splice(idx, 1);
+ 	    approvalLines.splice(idx, 1);
+ 	    console.log("approvalLines 수정 : ",approvalLines);
+     }else{
+     	layerPopup( "기안자는 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
+     }
+ });
 	
 	
  // 조직도노드 등록버튼 (결재라인 설정)
@@ -884,9 +896,13 @@ function addBtnFn(){
 		 userPosition = lineNodes[i].childNodes[2].innerText;
 		 document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText = userName;
 		 document.querySelectorAll('.appr_line tr.position > td')[i].innerText = userPosition;
-		 document.querySelectorAll('input[name="appr_user"')[i].defaultValue = approvalLines[i];
+		 document.querySelectorAll('input[name="appr_user"]')[i].value = approvalLines[i];
 	 	 document.getElementById('chartModalBox').style.display = "none"; 
 	 	 console.log("approvalLines",approvalLines[i]);
+
+	 	 //console.log("###appr_line tr.name ",document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText );
+	 	// console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
+	 	 //console.log("###appr_user ",document.querySelectorAll('.input[name="appr_user"]'));
 	 }
 }
  
