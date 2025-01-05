@@ -192,60 +192,21 @@ public class ManageController {
 	
 	
 	@GetMapping(value = "/ad/getPartTime")
-	public List<Map<String, Object>> getPartTime(@AuthenticationPrincipal UserDetails userDetails) {
+	public List<ManageDTO> getPartTime(@AuthenticationPrincipal UserDetails userDetails) {
 	    String owner = userDetails.getUsername();
 	    List<ManageDTO> list = manageService.getPartTime(owner);
 
-	    List<Map<String, Object>> response = new ArrayList<>();
-
-	    for (ManageDTO schedule : list) {
-	        try {
-	            java.sql.Date joinDate = schedule.getJoin_date(); // 입사일
-	            if (joinDate == null) {
-	                System.err.println("Join Date is null for: " + schedule.getPart_name());
-	                continue;
-	            }
-
-	            LocalDate joinLocalDate = joinDate.toLocalDate(); // LocalDate로 변환
-	            DayOfWeek workDay = mapDayOfWeek(schedule.getWork_date()); // 요일 변환
-	            LocalDate workDate = joinLocalDate.with(TemporalAdjusters.nextOrSame(workDay)); // 입사일 기준으로 계산
-
-	            // 디버깅 로그
-	            System.out.println("Processing schedule for: " + schedule.getPart_name());
-	            System.out.println("Join Date: " + joinLocalDate);
-	            System.out.println("Calculated Work Date: " + workDate);
-
-	            if (!workDate.isBefore(joinLocalDate)) { // 조건 수정
-	                Map<String, Object> event = new HashMap<>();
-	                event.put("title", schedule.getPart_name());
-	                event.put("daysOfWeek", List.of(workDay.getValue() % 7));
-	                event.put("startTime", schedule.getStart_time().toString());
-	                event.put("endTime", schedule.getEnd_time().toString());
-	                response.add(event);
-	            }
-	        } catch (Exception e) {
-	            System.err.println("Error processing schedule for " + schedule.getPart_name() + ": " + e.getMessage());
-	            e.printStackTrace();
-	        }
-	    }
-	    return response;
+	   
+	    return list;
 	}
 
 
 	// 요일 매핑 함수
-	private DayOfWeek mapDayOfWeek(String workDate) {
-	    switch (workDate) {
-	        case "월": return DayOfWeek.MONDAY;
-	        case "화": return DayOfWeek.TUESDAY;
-	        case "수": return DayOfWeek.WEDNESDAY;
-	        case "목": return DayOfWeek.THURSDAY;
-	        case "금": return DayOfWeek.FRIDAY;
-	        case "토": return DayOfWeek.SATURDAY;
-	        case "일": return DayOfWeek.SUNDAY;
-	        default: throw new IllegalArgumentException("Invalid work date: " + workDate);
-	    }
+	@PostMapping(value = "ad/addPartHistory")
+	public void addPartHistory(@RequestParam Map<String, String> params) {
+		manageService.addPartHistory(params);
+		
 	}
-
 	
 	
 	//휴점

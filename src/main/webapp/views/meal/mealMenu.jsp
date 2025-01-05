@@ -135,7 +135,7 @@
 	top: 40px;
 	transform: translateX(-50%);
     width: 700px;
-    height: 425px;
+    height: 750px;
     padding: 30px;
     background: #fff;
     border: none;
@@ -184,6 +184,10 @@ border-bottom: none;
 	display: flex;
 
 }
+.art{
+		height: 280px;
+		resize: none;
+	}
 </style>
 </head>
 <body>
@@ -220,54 +224,56 @@ border-bottom: none;
                   </div>
                </div>
                
-                <div id="modalBox" class="modal modal-template" style="display: none;">
-                 <input type="hidden" id="calendar_event_id">
-                 <div class="modal-header">
-			        <span class="modal-close" id="closeModal">&times;</span>
+                <div id="modalBox" class="modal" style="display: none;">
+			    <div class="modal-content">
+			        <div class="modal-header">
+			            <h3>식단 수정</h3>
+			            <button type="button" id="closeModal" class="modal-close">X</button>
+			        </div>
+			        <form action="/ad/mealMenu/Update" method="post">
+			            <input type="hidden" name="_method" value="put">
+			            <input type="hidden" name="_csrf" value="${_csrf.token}" />
+			            <input type="hidden" id="idx" name="menu_idx" />
+			            <div class="modal-body">
+			                <table class="modal-table">
+			                    <tr>
+			                        <th>식단 종류</th>
+			                        <td>
+			                            <select class="form-select short" id="mealType" name="is_time">
+			                                <option value="B">아침</option>
+			                                <option value="L">점심</option>
+			                                <option value="D">저녁</option>
+			                            </select>
+			                        </td>
+			                    </tr>
+			                    <tr>
+			                        <th>시작 날짜</th>
+			                        <td>
+			                            <input type="datetime-local" class="form-control" id="start" name="start_date" required />
+			                        </td>
+			                    </tr>
+			                    <tr>
+			                        <th>종료 날짜</th>
+			                        <td>
+			                            <input type="datetime-local" class="form-control" id="end" name="end_date" />
+			                        </td>
+			                    </tr>
+			                    <tr>
+						            <th >내용</th>
+						            <td>
+						                <textarea id="content" class="form-control art" name="content" placeholder="메뉴 입력시 , 를구분좌로 사용하여야 됩니다." required="required"></textarea>
+						            </td>
+						        </tr>
+			                </table>
+			            </div>
+			            <div class="modal-footer">
+			                <button type="submit" id="saveModal" class="btn btn-primary">저장</button>
+			                <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
+			            </div>
+			        </form>
 			    </div>
-			     <div class="modal-content ">
-                    <h3>식단 수정</h3>
-                    <form action="/ad/mealMenu/Update" method="post">
-                    	<input type="hidden" name="_method" value="put"> 
-                    		
-                     	<input type="hidden" name="_csrf" value="${_csrf.token}" />
-                        <div class="modal-body">
-                        
-                        <div class="form-group">           
-	                        <label for="title" class="form-label">내용:</label>
-	                        <input type="text" class="form-input" id="title" name="content" required />
-	                        <input type="text" id="idx" name="menu_idx"  hidden=""/>
-                        </div>
-						
-						<div class="form-group select">
-	                        <label for="mealType" class="form-label">식단 종류:</label>
-	                        <select class="form-select short form-input1" id="mealType" name="is_time">
-	                           <option value="B">아침</option>
-	                           <option value="L">점심</option>
-	                           <option value="D">저녁</option>
-	                        </select>
-						</div>
-						<div class="form-group">
-	                        <label for="start" class="form-label">시작 날짜:</label>
-	                        <input type="datetime-local" class="form-input" id="start" name="start_date" required />
-						</div>	
-						<div class="form-group">
-	                        <label for="end" class="form-label">종료 날짜:</label>
-	                        <input type="datetime-local" class="form-input" id="end" name="end_date" />						
-						</div>
-						
-						
-                        </div>
-                        
-                        
+			</div>
 
-                        <div class="modal-footer">
-                            <button type="submit" id="saveModal" class="btn btn-primary">저장</button>
-                            <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
-                        </div>
-                    </form>
-                 </div>
-			  </div>
             </div>
          </section>
       </div>
@@ -367,23 +373,16 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // 모달 열기 함수
-function loadModal(section, type, data) {
-    var modal = document.getElementById("modalBox");
-    var modalContent = modal.querySelector(".modal-content");
-
-    // 모달 HTML이 이미 설정되어 있으므로 데이터만 주입
-    modal.style.display = "block";
-
-    // 데이터 주입
-    setModalData(data);
-}
-
-//모달 데이터 주입 함수
+// 모달 데이터 주입 함수
 function setModalData(data) {
     console.log("Setting modal data:", data); // 디버깅 로그
 
-    // 제목 설정
-    document.getElementById('title').value = data.title ? data.title.replace(/\n/g, ',') : ''; // 줄바꿈을 콤마로 변환
+    // 식단 종류 설정
+    if (data.is_time) {
+        document.getElementById('mealType').value = data.is_time;
+    } else {
+        document.getElementById('mealType').value = '';
+    }
 
     // 시작 날짜 설정
     if (data.start) {
@@ -399,25 +398,36 @@ function setModalData(data) {
         document.getElementById('end').value = '';
     }
 
-    // 식단 종류 설정
-    if (data.is_time) {
-        document.getElementById('mealType').value = data.is_time;
+    // 내용 설정 (줄바꿈을 콤마로 변환)
+    if (data.title) {
+        document.getElementById('content').value = data.title.replace(/\n/g, ',');
     } else {
-        document.getElementById('mealType').value = '';
+        document.getElementById('content').value = '';
     }
-    
+
     // idx 설정 (hidden input에 값 주입)
     if (data.idx) {
         document.getElementById('idx').value = data.idx;
     } else {
         document.getElementById('idx').value = ''; // 없을 경우 빈 값 설정
     }
-
 }
+
 // 로컬 시간대를 유지하며 datetime-local 형식으로 변환
 function formatLocalDateTime(date) {
     let localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
     return localDate.toISOString().slice(0, 16);
+}
+
+// 모달 열기 함수
+function loadModal(section, type, data) {
+    var modal = document.getElementById("modalBox");
+
+    // 모달 표시
+    modal.style.display = "block";
+
+    // 데이터 주입
+    setModalData(data);
 }
 
 // 모달 닫기
@@ -427,6 +437,7 @@ document.addEventListener('click', function (event) {
         modal.style.display = "none";
     }
 });
+
 
 </script>
 </html>
