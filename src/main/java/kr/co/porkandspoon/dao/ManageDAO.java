@@ -13,6 +13,7 @@ import kr.co.porkandspoon.dto.ManageDTO;
 @Mapper
 public interface ManageDAO {
 
+	//아르바이트 등록
 	int setPartWrite(Map<String, String> params);
 
 	int setPartTime(Map<String, String> params);
@@ -27,16 +28,19 @@ public interface ManageDAO {
 
 	int deletePartTime(String part_Idx);
 
+	
 	//아르바이트 재직자 리스트
-	int count(int cnt, String opt, String keyword);
+	int count(int cnt, String opt, String keyword, String owner);
 
-	List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset);
+	List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset, String owner);
 
+	
 	//아르바이트 퇴직자 리스트
-	int Quitcount(int cnt, String opt, String keyword);
+	int Quitcount(int cnt, String opt, String keyword, String owner);
 
-	List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset);
+	List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset, String owner);
 
+	
 	//아르바이트 스케줄관리
 	List<ManageDTO> getPartTime(String owner);
 
@@ -45,6 +49,13 @@ public interface ManageDAO {
 
 	void deletePartHistory(String part_Idx, String string);
 
+	void editPartHistory(Map<String, String> params);
+	
+	// 직영점에 해당하는 아르바이트 이름 정보 
+	List<ManageDTO> getPartNames(String owner);
+    
+	 
+	void OneDelPartHistory(Map<String, String> params);
 	
 	
 
@@ -144,5 +155,15 @@ public interface ManageDAO {
 	 * 매일 00:05 실행
 	 */
 	int restCheckScheduler();
+
+	List<ManageDTO> getBrandList();
+
+	List<ManageDTO> getPartList5(String owner);
+
+	
+
+	
+
+	
 
 }

@@ -95,7 +95,7 @@
 						<li ><a href="/ad/spotManage">매장관리 홈</a></li>
 						<li ><a href="/ad/partSchdule">스케줄관리</a></li>
 						<li class="active"><a href="/ad/partQuit">아르바이트 관리</a></li>
-						<li><a href="/ad/rest/List">휴점신청</a></li>
+						<li><a href="/us/rest/listView">휴점신청</a></li>
 					</ul>
 					<div class="buttons">							
 						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/part/Write'">등록하기</button>

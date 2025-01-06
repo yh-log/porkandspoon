@@ -130,7 +130,7 @@
 					
 					<ul>
 						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
-						<li><a href="/ad/rest/List">휴점신청</a></li>
+						<li><a href="/us/rest/listView">휴점신청</a></li>
 						
 					</ul>
 				</section>

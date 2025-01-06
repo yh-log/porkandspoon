@@ -5,22 +5,39 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.ManageDAO">
  
- <insert 
-    useGeneratedKeys="true"
-    keyColumn="part_idx"
-    keyProperty="part_idx"
-	id="setPartWrite" parameterType="Map">
-	 	INSERT INTO part(name,birth,gender,is_quit,id,phone,pay,address,creater,join_date)
-	 		VALUES(#{name},#{birth},#{gender},#{is_quit},#{id},#{phone},#{pay},#{address},#{creater},#{join_date})
- </insert> 
+	 <insert 
+	    useGeneratedKeys="true"
+	    keyColumn="part_idx"
+	    keyProperty="part_idx"
+		id="setPartWrite" parameterType="Map">
+		 	INSERT INTO part(name,birth,gender,is_quit,id,phone,pay,address,creater,join_date)
+		 		VALUES(#{name},#{birth},#{gender},#{is_quit},#{id},#{phone},#{pay},#{address},#{creater},#{join_date})
+	 </insert> 
  
- <insert id="setPartHistory">
-    INSERT INTO part_history (part_idx, pay, work_date, start_time, end_time, is_done)
-    VALUES (#{part_idx}, #{pay}, #{work_date}, #{start_time}, #{end_time}, #{is_done})
-</insert>
+	 <insert id="setPartHistory" parameterType="Map">
+	    INSERT INTO part_history (part_idx, pay, work_date, start_time, end_time, is_done)
+	    VALUES (#{part_idx}, #{pay}, #{work_date}, #{start_time}, #{end_time}, #{is_done})
+	</insert>
+	 
+ 	<update id="editPartHistory" parameterType="Map">
+	 	UPDATE part_history
+		    SET 
+		        part_idx = #{part_idx}, 
+		        pay = #{pay}, 
+		        work_date = #{work_date}, 
+		        start_time = #{start_time}, 
+		        end_time = #{end_time}, 
+		        is_done = #{is_done}
+		    WHERE history_idx = #{history_idx}
+ 	</update>
+ 	
+ 	
+ 	<delete id="OneDelPartHistory" parameterType="Map">
+ 		DELETE FROM part_history WHERE history_idx = #{history_idx}
+ 	</delete>
  
  
- <insert id="setPartTime" parameterType="Map">
+  <insert id="setPartTime" parameterType="Map">
  	INSERT INTO part_time(part_idx,work_date,start_time,end_time)
  		VALUES(#{part_idx},#{work_date},#{start_time},#{end_time})
  </insert> 
@@ -51,17 +68,17 @@
 	                      ELSE quit_date
 	                    END
 	    WHERE part_idx = #{part_idx}
-</update>
-
-<delete id="deletePartTime" parameterType="String">
-    DELETE FROM part_time WHERE part_idx = #{part_idx}
-</delete>
+	</update>
+	
+	<delete id="deletePartTime" parameterType="String">
+	    DELETE FROM part_time WHERE part_idx = #{part_idx}
+	</delete>
 
  	<select id="count" resultType="int" parameterType="int">
     SELECT CEIL(count(part_idx) / #{cnt}) AS pages
     FROM part
     <where>
-        is_quit = 'N' 
+        is_quit = 'N' AND id = (select id from direct_store where owner = #{owner})
         <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
             AND name LIKE CONCAT('%', #{keyword}, '%')
         </if>
@@ -73,7 +90,7 @@
     FROM part p
     LEFT JOIN direct_store s ON p.id = s.id
     <where>
-        p.is_quit = 'N'
+        p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})
         <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
             AND p.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
@@ -87,7 +104,7 @@
     SELECT CEIL(count(part_idx) / #{cnt}) AS pages
     FROM part
     <where>
-        is_quit = 'Y' 
+        is_quit = 'Y' AND id = (select id from direct_store where owner = #{owner})
         <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
             AND name LIKE CONCAT('%', #{keyword}, '%')
         </if>
@@ -99,33 +116,51 @@
     FROM part p
     LEFT JOIN direct_store s ON p.id = s.id
     <where>
-        p.is_quit = 'Y'
+        p.is_quit = 'Y' AND p.id = (select id from direct_store where owner = #{owner})
         <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
             AND p.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
     </where>
     ORDER BY p.join_date DESC
     LIMIT #{limit} OFFSET #{offset}
-</select>
-   
-<select id="getPartTime" resultType="kr.co.porkandspoon.dto.ManageDTO">
-    SELECT ph.start_time,ph.end_time,ph.pay,ph.is_done,ph.work_date, p.name AS part_name, p.join_date
-    FROM part_history ph
-    JOIN part p ON ph.part_idx = p.part_idx
-    WHERE p.id IN (
-        SELECT ds.id 
-        FROM direct_store ds 
-        WHERE ds.owner = #{owner} AND p.is_quit = 'N'
-    )
-</select>
+	</select>
+	   
+	<select id="getPartTime" resultType="kr.co.porkandspoon.dto.ManageDTO">
+	    SELECT ph.history_idx,ph.start_time,ph.end_time,ph.pay,ph.is_done,ph.work_date, p.name AS part_name, p.join_date,p.part_idx
+	    FROM part_history ph
+	    JOIN part p ON ph.part_idx = p.part_idx
+	    WHERE p.id IN (
+	        SELECT ds.id 
+	        FROM direct_store ds 
+	        WHERE ds.owner = #{owner} AND p.is_quit = 'N'
+	    )
+	</select>
 
-<delete id="deletePartHistory" parameterType="map">
-    <![CDATA[
-    DELETE FROM part_history
-    WHERE part_idx = #{part_Idx}
-      AND work_date >= #{string}
-    ]]>
-</delete>
+	<select id="getPartNames" resultType="kr.co.porkandspoon.dto.ManageDTO">
+		SELECT part_idx,name FROM part WHERE id = (select id from direct_store where owner = #{owner})
+	</select>
+
+
+	<delete id="deletePartHistory" parameterType="map">
+	    <![CDATA[
+	    DELETE FROM part_history
+	    WHERE part_idx = #{part_Idx}
+	      AND work_date >= #{string}
+	    ]]>
+	</delete>
+
+	<!-- 브랜드 리스트 불러오기 -->
+	<select id="getBrandList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+	    SELECT text,create_date FROM department WHERE id LIKE 'BD%'
+	    ORDER BY create_date ASC LIMIT 5
+	</select>
+	
+	<select id="getPartList5" resultType="kr.co.porkandspoon.dto.ManageDTO">
+		SELECT p.*, s.name as spotName FROM part p LEFT JOIN direct_store s ON p.id = s.id
+	    WHERE p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})
+	    ORDER BY p.join_date ASC LIMIT 5
+	</select>
+	
 
 
     <!-- author yh.kim, (25.01.03)
