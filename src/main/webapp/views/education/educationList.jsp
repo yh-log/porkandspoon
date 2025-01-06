@@ -50,6 +50,11 @@
 	    gap: 20px;
 	    margin-bottom: 10px;
 	}
+	.btn-trip{
+		display: flex;
+    	justify-content: flex-end;
+    	transform: translateY(-77px);
+	}
 </style>
 
 
@@ -86,14 +91,14 @@
 								<table>
 									<thead>
 										<tr>
-											<th>등록자</th>
-											<th>이수 시간</th>
+											<th>브랜드</th>
+											<th>교육 분류</th>
 											<th>제목</th>
-											<th>수강상태</th>
+											<th>이수 시간</th>
 											<th>등록일</th>
 										</tr>
 									</thead>
-									<tbody id="List">
+									<tbody id="list">
 										
 									</tbody>
 								</table>
@@ -101,7 +106,7 @@
 							<nav aria-label="Page navigation" style="margin-top: 35px;">
 								<ul class="pagination justify-content-center" id="pagination"></ul>
 							</nav>
-							<div class="btn-trip"><a href="#" class="btn btn-primary">등록</a></div>			
+							<div class="btn-trip"><a href="/ad/educationWrite" class="btn btn-primary">등록</a></div>			
 						</div> <!-- cont-body -->
 					</div>
 				</section>	
@@ -131,28 +136,94 @@
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/menu.js'></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+	var show = 1;
+	var paginationInitialized = false;
+	var totalCount = 0;
+    var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
+    var totalPage = 0;
+    
+	pageCall(show);
 	
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
+	function pageCall(page) {
+		
+		$.ajax({
+			type:'GET',
+			url:'/educationList',
+			data:{
+				'page':page,
+				'cnt':15,
+			},
+			datatype:'JSON',
+			success:function(data){
+				console.log(data);
+				drawList(data.list);
+
+				if(data.list.length > 0){
+					totalCount = data.list[0].total_count;  // 총 게시글 수
+		            totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+				}
+				console.log("totalCount",totalCount,"totalPage",totalPage);
+	            
+	            
+				 /* 페이지네이션 */       
+				 if(!paginationInitialized){
+						$('#pagination').twbsPagination('destroy');
+						$('#pagination').twbsPagination({
+							startPage:1, 
+			           		totalPages: totalPage, 
+			           		visiblePages:10,
+			           		onPageClick:function(evt,page){
+			           			console.log('evt',evt); 
+			           			console.log('page',page); 
+			           			pageCall(page);
+			           		}
+						});
+						paginationInitialized = true;
+		            }
+			},
+			error:function(e){
+				console.log(e);
+			}
+		});
+	}
+	
+	function drawList(list) {
+		
+		var content ='';
+		var createDate = '';
+		if(totalCount == 0){
+			content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
+			$('#list').html(content);
+			return false;
+		}
+		
+		for (var view of list) {
+
+			content += '<tr>';
+			content += '<td>'+view.text+'</td>';
+			if(view.category == 'duty'){
+				content += '<td>의무 교육</td>';
+			}else if(view.category == 'job'){
+				content += '<td>직무 교육</td>';
+			}else if(view.category == 'hygiene'){
+				content += '<td>위생 교육</td>';
+			}else{
+				content += '<td>운영 교육</td>';
+			}
+			
+			content += '<td>'+view.subject+'</td>';
+			content += '<td>'+view.total_time+'</td>';
+			
+			var dateOnly = view.create_date.split('T')[0];
+	        content += '<td>' + dateOnly + '</td>';
+	        content += '</tr>';
+			content += '</tr>';
+		}
+		$('#list').html(content);
+	}
+	
+	
+	
 
 
 
