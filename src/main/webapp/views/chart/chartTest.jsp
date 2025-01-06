@@ -135,8 +135,6 @@ var exampleData = JSON.parse(JSON.stringify(initialData));
  function addSelectedIdToRows(selectedId) {
      console.log("가져온 ID:", selectedId);
      
-     // ajax();
-
      // 새로운 row 데이터 생성
      const newRow = [selectedId, '선택된 부서', '선택된 테스트', '<button class="btn btn-primary">삭제</button>'];
 

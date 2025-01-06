@@ -62,7 +62,9 @@ public class SecurityConfig {
         .invalidateHttpSession(true)
         .deleteCookies("JSESSIONID");
 		
-		http.csrf(); // 개발 시 비활성화, 운영 시 활성화 검토
+		http.csrf().ignoringAntMatchers("/wsConnect/**");
+		// WebSocket 엔드포인트 제외
+		// 개발 시 비활성화, 운영 시 활성화 검토
 		//http.httpBasic().disable().csrf().disable();
 		
 		http.authenticationProvider(authenticationProvider);
