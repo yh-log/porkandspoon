@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+>
+
+<mapper namespace="kr.co.porkandspoon.dao.EducationDAO">
+	
+	<select id="dept" resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT * FROM department
+	</select>
+	
+	<insert id="educationWrite" parameterType="map">
+		INSERT INTO education(category,subject,content,url,username,id,total_time)
+							  VALUES(#{category},#{subject},#{content},#{url},#{username},#{id},#{total_time})
+	</insert>
+	
+	<select id="educationList" parameterType="map" resultType="kr.co.porkandspoon.dto.EducationDTO">
+		SELECT 
+            e.*, 
+            d.text, 
+            COUNT(*) OVER() AS total_count
+        FROM education e
+        JOIN department d ON e.id = d.id
+        ORDER BY e.education_no DESC
+        LIMIT #{limit} 
+        OFFSET #{offset}
+	</select>
+	
+	
+</mapper>

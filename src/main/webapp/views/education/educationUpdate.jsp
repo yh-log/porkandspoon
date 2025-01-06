@@ -212,7 +212,7 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>교육 등록</h5>
+                  <h5>교육 수정</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -250,7 +250,7 @@
 	                  	<tr>
 	                  		<th>영상 첨부</th>
 							<td>
-		                        <input id="youtube-url" class="form-control sor-1" type="text" name="url" placeholder="예: https://www.youtube.com/watch?v=kzVXRYjWsAo"/>
+		                        <input value="" id="youtube-url" class="form-control sor-1" type="text" name="url" placeholder="예: https://www.youtube.com/watch?v=kzVXRYjWsAo"/>
 			                    <div id="error-message" style="color: red; margin-top: 5px;"></div>
 			                    <div id="video-preview" style="margin-top: 15px;">
 			                        <!-- 유튜브 동영상이 여기에 표시됩니다 -->
@@ -363,7 +363,7 @@
 		
 		console.log('데이터',data);
 		
-		httpAjax('POST','/educationWrite',data);
+		httpAjax('PUT','/educationUpdate',data);
 
 	}
 	
