@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,7 +39,7 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-	.page-content {
+ .page-content {
   padding: 20px;
   background-color: #f9f9f9;
   max-width: 1430px; /* 중앙 정렬을 위한 최대 너비 설정 */
@@ -47,76 +48,99 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
+	}
+	
+	/* 상단 영역 (전체 컨테이너) */
+	.top-section {
+	  display: flex;
+	  gap: 20px;
+	  align-items: stretch; /* 자식 요소의 높이를 동일하게 맞춤 */
+	  min-height: 300px; /* 최소 높이 설정 */
+	}
+	
+	/* 왼쪽 박스 */
+	.top-left {
+	  flex: 2; /* 비율로 크기 조정 */
+	  background-color: #ffffff;
+	  text-align: center;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: center; /* 내용 가운데 정렬 */
+	}
+	
+	/* 오른쪽 박스 (리스트 포함) */
+	.top-right {
+	  flex: 3; /* 비율로 크기 조정 */
+	  background-color: #ffffff;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	  overflow: auto; /* 내용이 많아지면 스크롤 활성화 */
+	  max-height: 500px; /* 최대 높이 제한 (스크롤 활성화) */
+	}
 
-/* 상단 영역 */
-.top-section {
-  display: flex;
-  gap: 20px;
-  height: 300px; /* 고정된 높이 설정 */
-}
-
-/* 상단 왼쪽 */
-.top-left {
-  flex: 2;
-  background-color: #ffffff;
-  text-align: center;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 상단 오른쪽 */
-.top-right {
-  flex: 3;
-  background-color: #ffffff;
-  padding: 20px;
-  
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 하단 영역 */
-.bottom-section {
-  display: flex;
-  gap: 20px;
-  height: 400px; /* 고정된 높이 설정 */
-}
-
-/* 하단 왼쪽 */
-.bottom-left {
-  flex: 1;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 하단 오른쪽 */
-.bottom-right {
-  flex: 3.5;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 공통 스타일 */
-h3, h4 {
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-
-.chart-placeholder {
-  width: 100%;
-  height: 80%;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  color: #aaa;
-}
+	#partlist {
+  	text-align: center; /* 텍스트 중앙 정렬 */
+  	margin-top: 10px; /* 위아래 간격 추가 */
+	}
+	
+	#partlist a {
+	  text-decoration: none; /* 링크 밑줄 제거 */
+	  color: #007bff; /* 원하는 텍스트 색상 지정 */
+	  font-weight: bold; /* 텍스트 굵게 */
+	}
+	
+	#partlist a:hover {
+	  color: #0056b3; /* 링크에 마우스를 올렸을 때 색상 변경 */
+	  text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
+	}
+	
+	
+	/* 하단 영역 */
+	.bottom-section {
+	  display: flex;
+	  gap: 20px;
+	  height: 400px; /* 고정된 높이 설정 */
+	}
+	
+	/* 하단 왼쪽 */
+	.bottom-left {
+	  flex: 1;
+	  background-color: #ffffff;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	}
+	
+	/* 하단 오른쪽 */
+	.bottom-right {
+	  flex: 3.5;
+	  background-color: #ffffff;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	}
+	
+	
+	/* 공통 스타일 */
+	h3, h4 {
+	  margin-bottom: 10px;
+	  font-weight: bold;
+	}
+	
+	.chart-placeholder {
+	  width: 100%;
+	  height: 80%;
+	  background-color: #f0f0f0;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  border-radius: 5px;
+	  color: #aaa;
+	}
 
 </style>
 </head>
@@ -155,14 +179,17 @@ h3, h4 {
 			          </tr>
 			        </thead>
 			        <tbody>
-			          <tr>
-			            <td>이경언</td>
-			            <td>25</td>
-			            <td>돼미남 강남점</td>
-			            <td>2024.04.06</td>
-			          </tr>
+			           <c:forEach var="brand" items="${list}">
+			            <tr>
+			                <td>로고 이미지?</td>
+			                <td>${brand.text}</td>
+			                <td>주소?</td>
+			                <td>${brand.create_date}</td>
+			            </tr>
+			        	</c:forEach>
 			        </tbody>
 			      </table>
+			      <h6 id="partlist"><a href="/ad/dept/listView">브랜드 리스트 더보러가기</a></h6>
 			    </div>
 			  </div>
 			

@@ -112,8 +112,6 @@
 				<section id="menu">
 					<h4 class="menu-title">매장관리</h4>
 					<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-					<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/rest/Write'">휴점 등록</button>
-					
 					<ul>
 						<li class="active"><a href="/ad/part/List">아르바이트 관리</a></li>
 						<li><a href="/ad/rest/List">휴점신청</a></li>
