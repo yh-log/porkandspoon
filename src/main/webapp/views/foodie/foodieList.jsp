@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+	<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,7 +22,6 @@
 	<!-- rating.js(별점) -->
 	<link rel="stylesheet"
 		href="/resources/assets/extensions/rater-js/lib/style.css">
-	
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
@@ -30,6 +30,8 @@
 	
 	<!-- 카카오맵 키 -->
 	<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=d1b7cd884610b0da5809195298922af8&libraries=services"></script>
+	<meta name="_csrf" content="${_csrf.token}">
+ 	<meta name="_csrf_header" content="${_csrf.headerName}"> 
 </head>
 <style>
 	.btn-write {
@@ -41,7 +43,7 @@
 	
 	#modal .foodie-write {
 	    width: 600px;
-	    height: 500px;
+	    height: 530px;
 	    top: 200px;
 	}
 	
@@ -50,6 +52,8 @@
 	    cursor: pointer;          /* 클릭 가능한 상태 */
 	    transition: background-color 0.2s ease; /* 부드러운 색상 변화 효과 */
 	}
+	
+	
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -61,18 +65,6 @@
 	      <div class="page-content">
 	         <section id="menu">
 	            <h4 class="menu-title">맛집 지도</h4>
-	            <div class="form-check">
-					<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked="">
-					<label class="form-check-label" for="flexRadioDefault2">점심</label>
-				</div>
-	            <div class="form-check">
-					<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-					<label class="form-check-label" for="flexRadioDefault1">저녁</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-					<label class="form-check-label" for="flexRadioDefault1">회식</label>
-				</div>
 				<a onclick="foodie-write()" class="btnModal btn btn-primary btn-write">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit">
 						<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -107,51 +99,57 @@
 										<h4 class="menu-title" style="text-align: center;">맛집 등록</h4>
 									</div>
 									<div>
-										<table>
-											<colgroup>
-												<col width="20%" />
-												<col width="80%" />
-											</colgroup>
-											<tbody>
-											
-												<tr style="margin-bottom: 10px; display: block;">
-													<th>카테고리</th>
-													<td style="text-align: center;">
-														<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked="">&nbsp;점심
-														&nbsp;&nbsp;
-														<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >&nbsp;저녁
-														&nbsp;&nbsp;
-														<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >&nbsp;회식
-													</td>
-												</tr>
-												<tr style="margin-bottom: 10px; display: block;">
-													<th>상호명</th>
-													<td style="position: relative;">
-												        <input type="text" class="form-control" id="keyword" placeholder="상호명을 입력하세요.">
-												        <div id = "placesList" style="position: absolute; height: auto; max-height: 200px; overflow-y: auto; border: 1px solid gray; background: white; width: 400px; border-radius: 3px; display: none;"></div>
-												    	<input type="hidden" id="placeName">
-														<input type="hidden" id="roadAddress">
-														<input type="hidden" id="jibunAddress">
-														<input type="hidden" id="longitude">
-														<input type="hidden" id="latitude">
-												    </td>
-												</tr>
-												<tr style="margin-bottom: 10px; display: block;">
-													<th>작성자</th>
-													<td style="text-align: left;">${userName}</td>
-												</tr>
-												<tr style="margin-bottom: 10px; display: block;">
-													<td colspan="2">
-														<input type="text" class="form-control" id="basicInput" placeholder="후기를 등록하세요.">
-													</td>
-												</tr>
-											</tbody>
-										</table>
+										<form id="foodie-write-form">
+											<table class="table-style-table">
+												<colgroup>
+													<col width="20%" />
+													<col width="80%" />
+												</colgroup>
+												<tbody>
+													<tr>
+														<th>카테고리</th>
+														<td style="text-align: left;">
+															<input class="form-check-input" type="radio" name="flexRadioDefault" checked value="점심">&nbsp;점심
+															&nbsp;&nbsp;
+															<input class="form-check-input" type="radio" name="flexRadioDefault" value="저녁">&nbsp;저녁
+															&nbsp;&nbsp;
+															<input class="form-check-input" type="radio" name="flexRadioDefault" value="회식">&nbsp;회식
+														</td>
+													</tr>
+													<tr>
+														<th>상호명</th>
+														<td style="position: relative;">
+													        <input type="text" class="form-control" id="keyword" placeholder="상호명을 입력하세요.">
+													        <div id = "placesList" style="position: absolute; height: auto; max-height: 200px; overflow-y: auto; border: 1px solid gray; background: white; width: 400px; border-radius: 3px; display: none;"></div>
+													    	<input type="hidden" id="store_name">
+															<input type="hidden" id="store_address">
+															<input type="hidden" id="store_longitude">
+															<input type="hidden" id="store_latitude">
+													    </td>
+													</tr>
+													<tr>
+														<th>작성자</th>
+														<td style="text-align: left;">${userName}</td>
+													</tr>
+												</tbody>
+											</table>
+											<div style="padding: 10px 0px;">
+												<input type="text" class="form-control" id="content" placeholder="후기를 등록하세요." style="height: 50px;">
+											</div>
+											<div style="text-align: center; padding: 20px 0px;"><h3>당신의 별점은?</h3></div>
+											<div style="text-align: center;">
+												<div id="basic"></div>
+											</div>
+											<div style="text-align: center;">
+										    	<button type="button" class="btn btn btn-primary" onclick="storeWrite()">등록</button>
+												<button class="btn btn-outline-primary">취소</button>
+											</div>
+										</form>
+										<sec:authentication var="loggedInUser" property="principal.username" />
 									</div>
 								</div>
 							</div>
 						</div>
-	                     
 	               </div>
 	            </div>
 	         </section>   
@@ -160,46 +158,77 @@
 	</div>
 </body>
 <!-- 부트스트랩 -->
+
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
 	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
-<script src='/resources/js/daumApi.js'></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- rating.js(별점)  -->
+<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
+<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 <script>
-
 	
-	var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
-	var options = { //지도를 생성할 때 필요한 기본 옵션
-		center: new kakao.maps.LatLng(37.47650, 126.8799), //지도의 중심좌표.
-		level: 3 //지도의 레벨(확대, 축소 정도)
-	};
+	$(document).ready(function () {
+	    var url = '/foodie/list'; // 서버에서 여러 매장의 정보를 가져오는 URL
 	
-	var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
-	
-	var markerPosition  = new kakao.maps.LatLng(37.47650, 126.8799); 
-
-	// 마커를 생성합니다
-	var marker = new kakao.maps.Marker({
-	    position: markerPosition
+	    // getAjax 함수 호출 (여러 매장의 데이터를 받아올 때 'JSON' 형식으로 받음)
+	    getAjax(url, 'JSON');
 	});
 	
-	// 마커가 지도 위에 표시되도록 설정합니다
-	marker.setMap(map);
-		
+	// AJAX 성공 시 호출되는 함수
+	function getSuccess(response) {
+	    displayMap(response);  // 받아온 데이터를 지도에 표시
+	}
 	
-	var iwContent = '<div style="width: auto;">현 위치<br></div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-    iwPosition = new kakao.maps.LatLng(markerPosition); //인포윈도우 표시 위치입니다
-
-	// 인포윈도우를 생성합니다
-	var infowindow = new kakao.maps.InfoWindow({
-	    position : iwPosition, 
-	    content : iwContent 
-	});
-	  
-	// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-	infowindow.open(map, marker); 
-
+	// 지도에 마커를 표시하는 함수
+	function displayMap(data) {
+	    console.log('받은 데이터:', data);
+	
+	    var container = document.getElementById('map');
+	    var options = { // 지도를 생성할 때 필요한 기본 옵션
+	        center: new kakao.maps.LatLng(37.47650, 126.8799), // 지도의 중심좌표 (초기값)
+	        level: 3 // 지도의 레벨(확대, 축소 정도)
+	    };
+	
+	    // 지도 생성
+	    var map = new kakao.maps.Map(container, options); // 지도 생성
+	    
+	    // 매장별 마커 생성
+	    data.forEach(function(store) {
+	        var markerPosition = new kakao.maps.LatLng(store.store_latitude, store.store_longitude); 
+	
+	        // 마커 생성
+	        var marker = new kakao.maps.Marker({
+	            position: markerPosition
+	        });
+	
+	        // 마커를 지도에 표시
+	        marker.setMap(map);
+	
+	        // 인포윈도우 표시 내용 (매장 이름)
+	        var iwContent = '<div style="width: auto;">' + store.store_name + '</div>';
+	        var iwPosition = marker.getPosition(); // 마커의 위치
+	
+	        // 인포윈도우 생성
+	        var infowindow = new kakao.maps.InfoWindow({
+	            position: iwPosition,
+	            content: iwContent
+	        });
+	
+	        // 마커 위에 인포윈도우를 표시
+	        infowindow.open(map, marker);
+	        kakao.maps.event.addListener(marker, 'click', function() {
+	            openModal(store.store_idx); // 마커 클릭 시 store_idx를 이용해 모달 띄우기
+	        });
+	    });
+	}
+	
+	function openModal(data) {
+		console.log(data);
+	}
+	
+	
 	$('.btnModal').on('click', function () {
 	    $('#modal').show();
 	});
@@ -263,16 +292,13 @@
 	                key.value = name;
 
 	                // ✅ hidden input에 저장
-	                document.getElementById('placeName').value = name;
-	                document.getElementById('roadAddress').value = roadAddress || '';
-	                document.getElementById('jibunAddress').value = addressName || '';
-	                document.getElementById('longitude').value = longitude;
-	                document.getElementById('latitude').value = latitude;
-
+	                document.getElementById('store_name').value = name;
+	                document.getElementById('store_address').value = roadAddress || '';
+	                document.getElementById('store_longitude').value = longitude;
+	                document.getElementById('store_latitude').value = latitude;
 	                // ✅ 콘솔에 값 출력
 	                console.log('✅ 장소 이름:', name);
 	                console.log('✅ 도로명 주소:', roadAddress);
-	                console.log('✅ 지번 주소:', addressName);
 	                console.log('✅ 위도:', latitude);
 	                console.log('✅ 경도:', longitude);
 
@@ -297,11 +323,10 @@
 	                '   <span class = "info-title"><b>' + places.place_name + '</b></span>';
 
 	    if (places.road_address_name) {
-	        itemStr += '    <br><span class = "info-address"><small>' + places.road_address_name + '</small></span>'
+	        itemStr += '    <br><span class = "info-address"><small>' + places.road_address_name + '</small></span><hr style="margin: 0px;">'
 	    } else {
-	        itemStr += '    <br><span class = "info-address"><small>' +  places.address_name  + '</small></span>'; 
+	        itemStr += '    <br><span class = "info-address"><small>' +  places.address_name  + '</small></span><hr style="margin: 0px;">'; 
 	    }        
-
 	    el.innerHTML = itemStr;
 	    el.className = 'item';
 
@@ -314,6 +339,67 @@
 	    }
 	}
 
+	function storeWrite() {
+	    // ✅ 값 수집 (document.getElementById 사용)
+	    var category = document.querySelector('input[name="flexRadioDefault"]:checked').value;
+	    var storename = document.getElementById('store_name').value;
+	    var storeAddress = document.getElementById('store_address').value;
+	    var storeLongitude = document.getElementById('store_longitude').value;
+	    var storeLatitude = document.getElementById('store_latitude').value;
+	    var content = document.getElementById('content').value;
+	    var starElement = document.querySelector("#basic .star-value");
+	    var starWidth = parseFloat(starElement.style.width); // 'px' 제거 후 숫자만 추출
+	    var ratingValue = Math.round((starWidth / 100) * 5);
+	    var loggedInUser = '${loggedInUser}';
+	    
+	    if (ratingValue <= 0) {
+	    	layerPopup(
+		            '별점을 선택해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+	    }
+
+	    var url = '/foodie/write';
+	    var params = {
+	    	store_category: category,
+	    	store_name: storename,
+	        store_address: storeAddress,
+	        store_longitude: storeLongitude,
+	        store_latitude: storeLatitude,
+	        content: content,
+	        review_star: ratingValue,
+	        username: loggedInUser
+	    };
+	    console.log(JSON.stringify(params, null, 2));
+		httpAjax('POST', url, params);
+	}
+	
+	function httpSuccess(response) {
+		console.log(response);
+		if (response.message === '매장등록') {
+			alert('성공');
+		}
+		
+		if(response.message === '매장중복') {
+			layerPopup(
+	            '이미 등록된 매장입니다!',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+		}
+	}
+	
 
 
 	
