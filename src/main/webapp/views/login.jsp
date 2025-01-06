@@ -149,7 +149,7 @@
 									</div>
 								</div>
 								<div class="form-group position-relative has-icon-left">
-									<input type="password" name="password" class="form-control" placeholder="Password"/>
+									<input type="password" name="password" class="form-control" placeholder="Password" value="test"/>
 									<div class="form-control-icon">
 										<i class="bi bi-shield-lock"></i>
 									</div>
