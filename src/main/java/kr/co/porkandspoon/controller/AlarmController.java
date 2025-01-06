@@ -54,8 +54,12 @@ public class AlarmController {
     	return noticedto;
     }
     
-    
-    
+    @PostMapping("/updateIsurl")
+    public NoticeDTO setUpdateUrl(@ModelAttribute NoticeDTO dto) {
+    	alarmService.setUpdateUrl(dto);
+    	dto.setStatus(200);
+    	return dto;
+    }
     
     
 }

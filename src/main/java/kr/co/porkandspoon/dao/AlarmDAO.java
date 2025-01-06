@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.BoardDTO;
+import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.dto.NoticeDTO;
 
 @Mapper
@@ -29,6 +30,10 @@ public interface AlarmDAO {
 	ApprovalDTO getDraftLine(NoticeDTO noticeDTO);
 
 	ApprovalDTO getDraft(ApprovalDTO appdto);
+
+	NoticeDTO getRoomUser(NoticeDTO noticeDTO);
+
+	void setUpdateUrl(NoticeDTO dto);
 
 
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import kr.co.porkandspoon.dao.AlarmDAO;
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.BoardDTO;
+import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.dto.NoticeDTO;
 
 @Service
@@ -75,6 +76,12 @@ public class AlarmService {
 			noticeDTO.setSubject(appdto.getSubject());
 		}
 		
+		if(noticeDTO.getCode_name() == "ml001") {
+			NoticeDTO ndto = alarmDAO.getRoomUser(noticeDTO);
+			noticeDTO.setFrom_id(ndto.getFrom_id());
+			noticeDTO.setSubject(ndto.getSubject());
+		}
+		
 		
 		
 		// 보낸 사람의 아이디를 통해 user 테이블의 name 가져오기
@@ -88,6 +95,11 @@ public class AlarmService {
 		String sub = noticeDTO.getSubject();
 		
 		switch (noticeDTO.getCode_name()) {
+		case "ml001":
+			noticeDTO.setSubject("회의실");
+			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;회의실에서 회의 예약이 있습니다.");
+			noticeDTO.setUrl("마이페이지 자기 캘린더로 이동 url");
+			break;
 		case "ml003":
 			noticeDTO.setSubject("댓글");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;에 댓글이 달렸습니다.");
@@ -137,6 +149,11 @@ public class AlarmService {
 
 	public List<NoticeDTO> getAlarmList(NoticeDTO dto) {
 		return alarmDAO.getAlarmList(dto);
+	}
+
+
+	public void setUpdateUrl(NoticeDTO dto) {
+		alarmDAO.setUpdateUrl(dto);
 	}
 	
 

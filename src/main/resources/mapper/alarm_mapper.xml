@@ -65,8 +65,24 @@
 	        AND al.order_num = #{order_num}
 	</select>
 	
+	<select id="getRoomUser" resultType="kr.co.porkandspoon.dto.NoticeDTO">
+		SELECT 
+	        rs.no, 
+	        rs.username AS from_id, 
+	        r.room_name AS subject
+	    FROM 
+	        room_schedule rs
+	    JOIN 
+	        room r 
+	        ON rs.no = r.no
+	    WHERE 
+	        rs.idx = #{from_idx}
+	</select>
 	
-	
+	<!-- 알림 리스트에서 url 이동, x 행동 시 -->
+	<update id="setUpdateUrl">
+		UPDATE notice SET is_url = 'Y' WHERE alarm_idx = #{alarm_idx}
+	</update>
 	
 	
 	

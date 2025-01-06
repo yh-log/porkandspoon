@@ -526,11 +526,11 @@ public class ApprovalController {
 		alarmService.saveAlarm(noticedto);
 		
 		// 기안자에게 승인 요청 알림
-		NoticeDTO noticeForRequester = new NoticeDTO();
-	    noticeForRequester.setFrom_idx(approvalDTO.getDraft_idx());
-	    noticeForRequester.setUsername(approvalDTO.getUsername());
-	    noticeForRequester.setCode_name("ml008");
-	    alarmService.saveAlarm(noticeForRequester);
+		NoticeDTO noticedto2 = new NoticeDTO();
+		noticedto2.setFrom_idx(approvalDTO.getDraft_idx());
+		noticedto2.setUsername(approvalDTO.getUsername());
+		noticedto2.setCode_name("ml008");
+	    alarmService.saveAlarm(noticedto2);
 	    
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success",success);

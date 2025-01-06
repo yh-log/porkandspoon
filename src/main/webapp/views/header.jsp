@@ -178,6 +178,34 @@ setInterval(checkNewAlarms, 5000); */
 	    align-items: center;
 	    justify-content: center;
 	}
+	
+	.allAlarm {
+		position: fixed;
+    	width: 800px;
+    	background: white;
+    	padding: 20px;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	    border-radius: 10px;
+	    z-index: 1000;
+	    display: none;
+        top: 80px;
+    	right: 128px;
+    	border: 1px solid #ddd;
+	}
+	
+	.unAlarmList {
+	    height: 500px;
+	    overflow: auto;
+	    padding: 3px;
+    	margin: 3px;
+	}
+	
+	.readAlarmList {
+	    height: 500px;
+	    overflow: auto;
+	    padding: 3px;
+    	margin: 3px;
+	}
 </style>
 
 <header>
@@ -197,7 +225,7 @@ setInterval(checkNewAlarms, 5000); */
      <div class="utils">
      	<a id="alarm">
      		<i class="bi bi-bell-fill">
-      		<span class="num">6</span>
+      		<span class="num"></span>
      		</i>
      	</a>
      	<a id="chat">
@@ -208,28 +236,49 @@ setInterval(checkNewAlarms, 5000); */
 </header>
 <div class="alarm-msg" id="alarmMessage" style="display: none;"></div>
 <div id="alarmPopup" class="popup">
-	    <div class="popup-content">
-	        <span class="btn-close"></span> <!-- onclick="closeAlarmPopup(event)" -->
-	        <div id="alarmHeader">
-	        	<span id="alarmSubject">알림</span>
-	        </div>
-	        <div id="alarmListContent">
-	        	<div class="alarm-item" id="alarmBox" data-alarm-idx="569">
-	        		<div class="alarm-item" onclick="chatWindowSet('/chat/100')">
-	        			<span id="al_subject">1:1 채팅</span>
-	        			<span id="al_content">kuk</span>
-	        			<span id="al_date">2024-12-03</span>
-        			</div>
-       				<button style="background : #fff" class="alarmclose" data-alarm-idx="569">×</button>
-      			</div>
+    <div class="popup-content">
+        <span class="btn-close"></span> <!-- onclick="closeAlarmPopup(event)" -->
+        <div id="alarmHeader">
+        	<span id="alarmSubject">알림</span>
+        </div>
+        <div id="alarmListContent">
+        
+		</div><!-- alarmListContent -->
+		<div style="text-align: right;">
+       		<span class="allView" style="color: gray; font-size: 13px; cursor: pointer;" >전체보기</span>
+		</div>
+    </div><!-- popup-content -->
+</div><!-- alarmPopup -->
 
+<div class="allAlarm">
+	<div class="col-12 col-lg-12 row">
+		<div class="col-sm-11">
+			<div id="alarmHeader"><span id="alarmSubject">알림</span></div>
+		</div>
+		<div class="col-sm-1"><span class="btn-close" style="position: absolute; font-size: 16px; margin-left: 30px; cursor: pointer;"></span></div>
+	</div>
 
-				
-			</div><!-- alarmListContent -->
+	<div class="col-12 col-lg-12 row">
+		<div class="col-sm-6">
+			<div class="unreadAlarm">안읽은 알림</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="readAlarm">읽은 알림</div>
+		</div>
+	</div>
+	<div class="col-12 col-lg-12 row">
+		<div class="col-sm-6">
+			<div class="unAlarmList">
 			
-	    </div><!-- popup-content -->
-	</div><!-- alarmPopup -->
-
+           </div>
+		</div>
+		<div class="col-sm-6">
+			<div class="readAlarmList">
+				
+			</div>
+		</div>
+	</div>
+</div>
 
 
 
@@ -241,6 +290,38 @@ setInterval(checkNewAlarms, 5000); */
 <script>
 	var loggedInUser = '${loggedInUser}';
 	$(document).ready(function() {
+		
+		 const url = '/getAlarmList';
+		 const data = {username: loggedInUser};
+		 $.ajax({
+		        type: 'GET',
+		        url: url,
+		        data: data,
+		        datatype: 'JSON',
+		        success: function(response) {
+		            const unreadCount = response.filter(alarm => alarm.is_url === 'N').length;
+		            const alarmIcon = $('#alarm .num');
+		            if (unreadCount > 0) {
+		                if (alarmIcon.length === 0) {
+		                    $('#alarm i').append('<span class="num">' + (unreadCount > 9 ? '9+' : unreadCount) + '</span>');
+		                } else {
+		                    alarmIcon.text(unreadCount > 9 ? '9+' : unreadCount).show();
+		                }
+		            } else {
+		                alarmIcon.remove(); // 'N' 알람이 없을 경우 span 제거
+		            }
+		        },
+		        error: function(xhr, status, error) {
+		            console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+		        }
+		    });
+		
+		
+		
+		
+		
+		
+		
 	    $('#alarm').on('click', function() {
 	    	const url = '/getAlarmList';
 	    	const data = {username: loggedInUser};
@@ -262,37 +343,44 @@ setInterval(checkNewAlarms, 5000); */
 	    $('#alarmPopup .btn-close').on('click', function() {
 	        $('#alarmPopup').hide();
 	    });
+	    
 	});
+	
+	
+	
+	
 	
 	function drawAlarm(response) {
 	    const alarmListContent = $('#alarmListContent');
+	    
 	    alarmListContent.empty(); // 기존 내용 제거
 
-	    if (response && response.length > 0) {
-	        response.forEach(function(alarm) {
-	            // 상대적 시간 계산
+	    const filteredAlarms = response.filter(alarm => alarm.is_url === 'N');
+
+	    if (filteredAlarms.length > 0) {
+	        // 필터링된 알람이 있을 때만 렌더링
+	        filteredAlarms.forEach(function(alarm) {
 	            const relativeTime = getRelativeTime(alarm.create_date);
 
-
-	            // 동적 HTML 생성
 	            const alarmHTML = 
-	                '<div class="alarm-item" id="alarmBox" onclick="deleteAlarm('+ alarm.alarm_idx +')" data-alarm-idx="' + alarm.idx + '">' +
+	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 	                '    <div class="alarm-item">' +
-	                '        <a href="' + alarm.url + '">' + // href 속성으로 URL 처리
-	                '            <span id="al_subject">' + alarm.subject + '</span>' +
+	                '        <a onclick="deleteAlarm2(' + alarm.alarm_idx + ')" href="' + alarm.url + '">' +
 	                '            <span id="al_content">' + alarm.content + '</span>' +
 	                '            <span id="al_date">' + relativeTime + '</span>' +
 	                '        </a>' +
 	                '    </div>' +
-	                '    <button style="background : #fff" class="alarmclose" onclick="deleteAlarm('+ alarm.alarm_idx +')" data-alarm-idx="' + alarm.idx + '">×</button>' +
+	                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
 	                '</div>';
-
 	            alarmListContent.append(alarmHTML);
 	        });
 	    } else {
+	        // 'N'인 알람이 없을 때 메시지 표시
 	        alarmListContent.append('<div class="no-alarm">새로운 알림이 없습니다.</div>');
 	    }
 	}
+	
+	
 
 	function getRelativeTime(createDate) {
 	    const now = new Date(); // 현재 시간
@@ -311,9 +399,154 @@ setInterval(checkNewAlarms, 5000); */
 	}
 
 	function deleteAlarm(data) {
-		console.log(data);
-	}
- 	
+		const url = '/updateIsurl';
+		const params = {alarm_idx: data};
+		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	    $.ajax({
+	        type : 'POST',
+	        url : url,
+	        data : params,
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	if(response.status === 200) {
+					console.log('성공');	        		
+					if ($('#alarmPopup').is(':visible')) {
+		                $('#alarm').trigger('click'); // 알림 팝업일 경우
+		            } else if ($('.allAlarm').is(':visible')) {
+		                $('.allView').trigger('click'); // 전체보기 팝업일 경우
+		            }
+					$('[data-alarm-idx="' + data + '"]').remove();
+
+	                // 알림 개수 업데이트
+	                const alarmIcon = $('#alarm .num');
+	                let currentCount = parseInt(alarmIcon.text().replace('+', ''), 10); // 9+ 처리 대비
 	
+	                if (currentCount > 1) {
+	                    currentCount--; // 알람 1 감소
+	                    if (currentCount > 9) {
+	                        alarmIcon.text('9+'); // 10개 이상이면 9+ 표시
+	                    } else {
+	                        alarmIcon.text(currentCount); // 9개 이하일 때 실제 수 표시
+	                    }
+	                } else {
+	                    alarmIcon.remove(); // 알람이 0개면 <span> 제거
+	                }
+		        	}
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+    }
+	
+	function deleteAlarm2(data) {
+		const url = '/updateIsurl';
+		const params = {alarm_idx: data};
+		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	    $.ajax({
+	        type : 'POST',
+	        url : url,
+	        data : params,
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	if(response.status === 200) {
+					console.log('성공');	  
+	        	}
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+    }
+	
+	$(document).on('click', '.allView', function() {
+	    const url = '/getAlarmList';
+	    const data = {username: loggedInUser};
+	    $.ajax({
+	        type: 'GET',
+	        url: url,
+	        data: data,
+	        success: function(response) {
+	            $('#alarmPopup').hide();
+	            $('.allAlarm').show();
+	            drawAlarms(response);
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("데이터 불러오기 실패:", error);
+	        }
+	    });
+	    
+	    
+	    function drawAlarms(response) {
+		    const unreadAlarmList = $('.unAlarmList');
+		    const readAlarmList = $('.readAlarmList');
+		    
+		    // 알람 리스트 비우기
+		    unreadAlarmList.empty();
+		    readAlarmList.empty();
+
+		    // 알람을 각각 분류
+		    const unreadAlarms = response.filter(function(alarm) { return alarm.is_url === 'N'; });
+		    const readAlarms = response.filter(function(alarm) { return alarm.is_url === 'Y'; });
+
+		    // 안읽은 알람 렌더링
+		    if (unreadAlarms.length > 0) {
+		        unreadAlarms.forEach(function(alarm) {
+		            const relativeTime = getRelativeTime(alarm.create_date);
+		            const alarmHTML = 
+		                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
+		                '    <div class="alarm-item">' +
+		                '        <a href="' + alarm.url + '" onclick="deleteAlarm2(' + alarm.alarm_idx + ')">' +
+		                '            <span id="al_content">' + alarm.content + '</span>' +
+		                '            <span id="al_date">' + relativeTime + '</span>' +
+		                '        </a>' +
+		                '    </div>' +
+		                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
+		                '</div>';
+		            unreadAlarmList.append(alarmHTML);
+		        });
+		    } else {
+		        unreadAlarmList.append('<div class="no-alarm">새로운 알림이 없습니다.</div>');
+		    }
+
+		    // 읽은 알람 렌더링
+		    if (readAlarms.length > 0) {
+		        readAlarms.forEach(function(alarm) {
+		            const relativeTime = getRelativeTime(alarm.create_date);
+		            const alarmHTML = 
+		                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
+		                '    <div class="alarm-item">' +
+		                '        <a href="' + alarm.url + '" onclick="deleteAlarm2(' + alarm.alarm_idx + ')">' +
+		                '            <span id="al_content">' + alarm.content + '</span>' +
+		                '            <span id="al_date">' + relativeTime + '</span>' +
+		                '        </a>' +
+		                '    </div>' +
+		                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
+		                '</div>';
+		            readAlarmList.append(alarmHTML);
+		        });
+		    } else {
+		        readAlarmList.append('<div class="no-alarm">읽은 알림이 없습니다.</div>');
+		    }
+		}
+	    
+	    $('.allAlarm .btn-close').on('click', function() {
+	        $('.allAlarm').hide();
+	    });
+	});
+	
+	
+
+	
+
+
 		
 </script>
