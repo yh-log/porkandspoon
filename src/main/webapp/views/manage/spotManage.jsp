@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>		
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,32 +50,54 @@
   gap: 20px;
 }
 
-/* 상단 영역 */
-.top-section {
-  display: flex;
-  gap: 20px;
-  height: 300px; /* 고정된 높이 설정 */
-}
+/* 상단 영역 (전체 컨테이너) */
+	.top-section {
+	  display: flex;
+	  gap: 20px;
+	  align-items: stretch; /* 자식 요소의 높이를 동일하게 맞춤 */
+	  min-height: 300px; /* 최소 높이 설정 */
+	}
+	
+	/* 왼쪽 박스 */
+	.top-left {
+	  flex: 2; /* 비율로 크기 조정 */
+	  background-color: #ffffff;
+	  text-align: center;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: center; /* 내용 가운데 정렬 */
+	}
+	
+	/* 오른쪽 박스 (리스트 포함) */
+	.top-right {
+	  flex: 3; /* 비율로 크기 조정 */
+	  background-color: #ffffff;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	  overflow: auto; /* 내용이 많아지면 스크롤 활성화 */
+	  max-height: 500px; /* 최대 높이 제한 (스크롤 활성화) */
+	}
 
-/* 상단 왼쪽 */
-.top-left {
-  flex: 2;
-  background-color: #ffffff;
-  text-align: center;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 상단 오른쪽 */
-.top-right {
-  flex: 3;
-  background-color: #ffffff;
-  padding: 20px;
-  
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+	#partlist {
+  	text-align: center; /* 텍스트 중앙 정렬 */
+  	margin-top: 10px; /* 위아래 간격 추가 */
+	}
+	
+	#partlist a {
+	  text-decoration: none; /* 링크 밑줄 제거 */
+	  color: #007bff; /* 원하는 텍스트 색상 지정 */
+	  font-weight: bold; /* 텍스트 굵게 */
+	}
+	
+	#partlist a:hover {
+	  color: #0056b3; /* 링크에 마우스를 올렸을 때 색상 변경 */
+	  text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
+	}
+	
 
 /* 하단 영역 */
 .bottom-section {
@@ -117,9 +140,7 @@ h3, h4 {
   border-radius: 5px;
   color: #aaa;
 }
-#partlist {
-    justify-content: center; /* 페이지네이션 중앙 정렬 */
-}
+
 </style>
 </head>
 
@@ -143,7 +164,7 @@ h3, h4 {
 			      <p>직영점주: 박준규</p>
 			      <p>주소: 서울 강남구 강남대로 27 1층</p>
 			      <button class="btn btn-primary" >매출 등록하기</button>
-			      <button class="btn btn-outline-primary" onclick="location.href='/ad/rest/Write'">휴점 신청</button>
+			      <button class="btn btn-outline-primary" onclick="location.href='/us/rest/write'">휴점 신청</button>
 			    </div>
 			    
 			    <div class="top-right">
@@ -158,12 +179,14 @@ h3, h4 {
 			          </tr>
 			        </thead>
 			        <tbody>
-			          <tr>
-			            <td>이경언</td>
-			            <td>25</td>
-			            <td>돼미남 강남점</td>
-			            <td>2024.04.06</td>
-			          </tr>
+			          <c:forEach var="part" items="${list}">
+			            <tr>
+			                <td>${part.name}</td>
+			                <td>${part.birth}</td>
+			                <td>${part.spotName}</td>
+			                <td>${part.join_date}</td>
+			            </tr>
+			        </c:forEach>
 			        </tbody>
 			      </table>
 			      <h6 id="partlist"><a href="/ad/part">아르바이트 리스트 더보러가기</a></h6>
