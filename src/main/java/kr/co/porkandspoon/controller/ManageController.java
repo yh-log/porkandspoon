@@ -1,34 +1,39 @@
 package kr.co.porkandspoon.controller;
 
-import java.sql.Date;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.co.porkandspoon.dao.UserDAO;
-import kr.co.porkandspoon.dto.*;
-import kr.co.porkandspoon.util.CommonUtil;
-import kr.co.porkandspoon.util.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import kr.co.porkandspoon.dao.UserDAO;
+import kr.co.porkandspoon.dto.FileDTO;
+import kr.co.porkandspoon.dto.ManageDTO;
+import kr.co.porkandspoon.dto.RestDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.ManageService;
+import kr.co.porkandspoon.util.CommonUtil;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @RestController
 public class ManageController {
@@ -41,8 +46,13 @@ public class ManageController {
 
 	// 매장관리홈
 	@GetMapping(value="/ad/spotManage")
-	public ModelAndView spotManageView() {
-		return new ModelAndView("/manage/spotManage");
+	public ModelAndView spotManageView(@AuthenticationPrincipal UserDetails userDetails) {
+		String owner = userDetails.getUsername();
+		List<ManageDTO> list = manageService.getPartList5(owner);
+		ModelAndView mav = new ModelAndView("/manage/spotManage");
+		mav.addObject("list",list);
+		
+		return mav;
 	}
 	
 	@GetMapping(value="/ad/directManage")
@@ -52,7 +62,12 @@ public class ManageController {
 	
 	@GetMapping(value="/ad/brandManage")
 	public ModelAndView brandManageView() {
-		return new ModelAndView("/manage/brandManage");
+		List<ManageDTO> list = manageService.getBrandList();
+		ModelAndView mav = new ModelAndView("/manage/brandManage");
+		mav.addObject("list",list);
+		
+		
+		return mav;
 	}
 	
 	
@@ -64,14 +79,16 @@ public class ManageController {
 	}
 	
 	@GetMapping(value="/ad/part/List")
-	public Map<String, Object> getPartList(String pg,  String count, String opt, String keyword) {
+	public Map<String, Object> getPartList(@AuthenticationPrincipal UserDetails userDetails,
+			String pg,  String count, String opt, String keyword) {
+		String owner = userDetails.getUsername();
 		int page = Integer.parseInt(pg);
 	    int cnt = Integer.parseInt(count);
 	    int limit = cnt;
 	    int offset = (page - 1) * cnt;
-	    int totalPages = manageService.count(cnt, opt, keyword);
+	    int totalPages = manageService.count(cnt, opt, keyword,owner);
 	    
-	    List<ManageDTO> list = manageService.getPartList(opt, keyword, limit, offset);
+	    List<ManageDTO> list = manageService.getPartList(opt, keyword, limit, offset,owner);
 
 	    // 로그 출력
 	    logger.info("opt: {}", opt);
@@ -91,14 +108,16 @@ public class ManageController {
 	}
 	
 	@GetMapping(value="/ad/part/QuitList")
-	public Map<String, Object> getPartQuitList(String pg,  String count, String opt, String keyword) {
+	public Map<String, Object> getPartQuitList(@AuthenticationPrincipal UserDetails userDetails,
+			String pg,  String count, String opt, String keyword) {
+		String owner = userDetails.getUsername();
 		int page = Integer.parseInt(pg);
 	    int cnt = Integer.parseInt(count);
 	    int limit = cnt;
 	    int offset = (page - 1) * cnt;
-	    int totalPages = manageService.Quitcount(cnt, opt, keyword);
+	    int totalPages = manageService.Quitcount(cnt, opt, keyword,owner);
 	    
-	    List<ManageDTO> list = manageService.getPartQuitList(opt, keyword, limit, offset);
+	    List<ManageDTO> list = manageService.getPartQuitList(opt, keyword, limit, offset,owner);
 
 	    // 로그 출력
 	    logger.info("opt: {}", opt);
@@ -113,7 +132,7 @@ public class ManageController {
 	}
 	
 	
-	
+	//아르바이트 등록
 	@GetMapping(value="/ad/part/Write")
 	public ModelAndView partWriteView() {
 		return new ModelAndView("/manage/partWrite");
@@ -140,6 +159,7 @@ public class ManageController {
 	    return new ModelAndView("/manage/partWrite");
 	}
 	
+	//아르바이트 상세페이지
 	@GetMapping(value="/ad/part/Detail/{part_idx}")
 	public ModelAndView partDetail(@PathVariable int part_idx) {
 		ManageDTO dto =  manageService.partDetail(part_idx);
@@ -152,6 +172,7 @@ public class ManageController {
 		return mav;
 	}
 	
+	//아르바이트 수정
 	@GetMapping(value="/ad/part/Update/{part_idx}")
 	public ModelAndView partUpdateView(@PathVariable int part_idx) {
 		ManageDTO dto =  manageService.partDetail(part_idx);
@@ -185,28 +206,63 @@ public class ManageController {
 	    return new ModelAndView("redirect:/ad/part/Detail/" + part_idx);
 	}
 
+	
+	// 아르바이트 스케줄 뷰 이동
 	@GetMapping(value = "/ad/partSchedule")
 	public ModelAndView partScheduleView() {
 		return new ModelAndView("/manage/partSchedule");
 	}
 	
-	
+	// 아르바이트 스케줄 리스트 정보
 	@GetMapping(value = "/ad/getPartTime")
 	public List<ManageDTO> getPartTime(@AuthenticationPrincipal UserDetails userDetails) {
 	    String owner = userDetails.getUsername();
 	    List<ManageDTO> list = manageService.getPartTime(owner);
-
+	   
 	   
 	    return list;
 	}
 
+	// 모달창 직원 선택 정보 가져오기
+	@GetMapping(value = "/ad/getPartNames")
+	@ResponseBody
+	public List<ManageDTO> getPartNames(@AuthenticationPrincipal UserDetails userDetails
+			) {
+	    // 예: part 테이블에서 id와 name을 가져오는 로직
+		String owner = userDetails.getUsername();
+	    List<ManageDTO> partNames = manageService.getPartNames(owner); 
+	    return partNames;
+	}
+	
+	//아르바이트 스케줄 삭제 
+	@DeleteMapping(value = "ad/PartHistory/Delete")
+	public void OneDelPartHistory(@RequestBody Map<String,String> params) {
 
-	// 요일 매핑 함수
-	@PostMapping(value = "ad/addPartHistory")
-	public void addPartHistory(@RequestParam Map<String, String> params) {
-		manageService.addPartHistory(params);
+		manageService.OneDelPartHistory(params);
 		
 	}
+	
+	
+	@PostMapping(value = "ad/PartHistory/Write")
+	public void setPartHistory(@RequestBody Map<String, Object> params) {
+		logger.info("받은 데이터: {}", params);
+		manageService.setPartHistory(params);
+		
+	}
+	
+	@PutMapping(value = "ad/PartHistory/Update")
+	public void editPartHistory(@RequestBody Map<String, String> params) {
+		logger.info("받은 데이터: {}", params);
+		
+		manageService.editPartHistory(params);
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	//휴점

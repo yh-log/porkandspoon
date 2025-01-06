@@ -3,30 +3,26 @@ package kr.co.porkandspoon.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import java.io.File;
-import java.util.*;
+import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 import javax.transaction.Transactional;
 
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.RestDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.ManageDAO;
+import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.ManageDTO;
+import kr.co.porkandspoon.dto.RestDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 @Service
@@ -169,29 +165,29 @@ Logger logger = LoggerFactory.getLogger(getClass());
 
 
 
-	public int count(int cnt, String opt, String keyword) {
+	public int count(int cnt, String opt, String keyword, String owner) {
 		
-		return manageDAO.count(cnt,opt,keyword);
+		return manageDAO.count(cnt,opt,keyword,owner);
 	}
 
 
-	public List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset) {
+	public List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset, String owner) {
 		
-		return manageDAO.getPartList(opt,keyword,limit,offset);
-	}
-
-
-
-	public int Quitcount(int cnt, String opt, String keyword) {
-		
-		return manageDAO.Quitcount(cnt,opt,keyword);
+		return manageDAO.getPartList(opt,keyword,limit,offset,owner);
 	}
 
 
 
-	public List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset) {
+	public int Quitcount(int cnt, String opt, String keyword, String owner) {
 		
-		return manageDAO.getPartQuitList(opt,keyword,limit,offset);
+		return manageDAO.Quitcount(cnt,opt,keyword,owner);
+	}
+
+
+
+	public List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset, String owner) {
+		
+		return manageDAO.getPartQuitList(opt,keyword,limit,offset,owner);
 	}
 
 
@@ -202,15 +198,31 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	}
 
 
-	public void addPartHistory(Map<String, String> params) {
 	
+
+	public void editPartHistory(Map<String, String> params) {
+		
+		params.get("part_name");
+		
+		manageDAO.editPartHistory(params);
+
+	}
+	
+	public void setPartHistory(Map<String, Object> params) {
+		manageDAO.setPartHistory(params);
 		
 	}
+	
 
+	public List<ManageDTO> getPartNames(String owner) {
+		
+		return manageDAO.getPartNames(owner);
+	}
 
-
-
-
+	
+	
+	
+	
 	/**
 	 * author yh.kim, (25.01.03)
 	 * 휴점 등록 페이지 이동 시 부서, 직영점명 조회
@@ -519,4 +531,30 @@ Logger logger = LoggerFactory.getLogger(getClass());
 		int updateRow = manageDAO.restCheckScheduler();
 		logger.info("엄데이트 된 로우 => " + updateRow);
 	}
+
+
+	public void OneDelPartHistory(Map<String, String> params) {
+		manageDAO.OneDelPartHistory(params);
+	}
+
+
+	public  List<ManageDTO> getBrandList() {
+		
+		return manageDAO.getBrandList();
+	}
+
+
+	public List<ManageDTO> getPartList5(String owner) {
+		
+		return manageDAO.getPartList5(owner);
+	}
+
+
+
+	
+
+
+	
+		
+	
 }
