@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +40,7 @@ public class MailService {
 	}
 
 	@Transactional
-	public String saveMail(HashSet<String> username, MailDTO mailDTO, MultipartFile[] files) {
+	public String saveMail(HashSet<String> username, MailDTO mailDTO, MultipartFile[] attachedFiles, String status) {
 		// summernote 이미지 서버 저장 (이미지가 있을 경우 반복문 사용)
         List<FileDTO> imgs = mailDTO.getFileList();
         if (imgs != null && !imgs.isEmpty()) {
@@ -60,12 +63,19 @@ public class MailService {
  			mailDTO.setIdx(mailIdx);
         }
         mailDAO.saveMail(mailDTO);
+        
+		//기존 메일수신 정보 삭제
+		if(status.equals("sv")) {
+			mailDAO.removeMailReceiver(mailIdx);
+		}
+		// 메일수신 정보저장
+	    mailDAO.saveMailReceiver(mailIdx, username);
+	    
 
         // 첨부파일 저장
-        saveFile(files, mailIdx);
+        saveFile(attachedFiles, mailIdx);
         
         // 메일수신 정보저장
-        mailDAO.saveMailReceiver(mailIdx, username);
         
         return mailIdx;
 	}
@@ -92,9 +102,9 @@ public class MailService {
         }
     }
     
-private void saveFile(MultipartFile[] files, String mailIdx) {
+private void saveFile(MultipartFile[] attachedFiles, String mailIdx) {
 		
-		for(MultipartFile file : files) {
+		for(MultipartFile file : attachedFiles) {
 			try {
 				
 				logger.info("mailIdx 3 @@@ : "+mailIdx);
@@ -141,6 +151,77 @@ private void saveFile(MultipartFile[] files, String mailIdx) {
 			}
 		}
 	}
+
+public MailDTO getMailInfo(String idx) {
+	return mailDAO.getMailInfo(idx);
+}
+
+public boolean isBookmarked(String idx, String loginId) {
+	return mailDAO.isBookmarked(idx,loginId) > 0 ? true : false;
+}
+
+public List<FileDTO> getAttachedFiles(String idx) {
+	return mailDAO.getAttachedFiles(idx);
+}
+
+public boolean updateBookmark(Map<String, String> params) {
+	int result = 0;
+	if(params.get("isBookmarked").equals("true")) {
+		result = mailDAO.deleteBookmark(params);
+	}else {
+		result = mailDAO.setBookmark(params);
+	}
+	return result > 0 ? true : false;
+}
+
+public List<MailDTO> getMailListData(Map<String, Object> params) {
+	int page_ = Integer.parseInt((String)params.get("page"));
+    int cnt_ = Integer.parseInt((String)params.get("cnt"));
+    int limit = cnt_;
+    int offset = (page_ - 1) * cnt_;
+    params.put("limit", limit);
+    params.put("offset", offset);
+    
+    List<MailDTO> result = new ArrayList<MailDTO>();
+    switch (params.get("listType").toString()) {
+	case "sd":
+		result = mailDAO.getSendList(params);
+		break;
+	case "recv":
+		result = mailDAO.getReceiveList(params);
+		break;
+	case "sv":
+		result = mailDAO.getSaveList(params);
+		break;
+	case "bk":
+		result = mailDAO.getBookMark(params);
+		break;
+	case "del":
+		result = mailDAO.getDeleteMark(params);
+		break;
+	}
+    
+    for (MailDTO mailDTO : result) {
+		LocalDateTime sendDate = mailDTO.getSend_date();
+
+		// 현재 날짜
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yy-MM-dd HH:mm");
+        String formattedDate = "";
+        // 날짜가 오늘이면 시간만 출력
+        if (sendDate.toLocalDate().equals(now.toLocalDate())) {
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            formattedDate = sendDate.format(timeFormatter);
+        } else {
+            // 오늘이 아닌 경우 날짜+시간 출력
+        	formattedDate = sendDate.format(dateFormatter);
+        }
+        mailDTO.setSend_date_str(formattedDate);
+        
+        //logger.info(""+mailDTO.get)
+	}
+	return result;
+}
 
 
 

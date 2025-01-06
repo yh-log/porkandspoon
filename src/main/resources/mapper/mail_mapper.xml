@@ -57,10 +57,17 @@
 			title = VALUES(title),
 			content = VALUES(content)
 	</insert>
+	
+	<delete id="removeMailReceiver">
+		DELETE 
+			FROM mail_receive
+		WHERE 
+			idx = #{mailIdx}
+	</delete>
 
 	<insert id="saveMailReceiver" parameterType="String">
-		INSERT INTO mail_receive 
-			(idx, username)
+		INSERT 
+			INTO mail_receive (idx, username)
 		VALUES
 		<foreach collection="username" item="user" separator=",">
 			(#{mailIdx}, #{user})
@@ -87,5 +94,141 @@
 		VALUES 
 			(#{code_name}, #{ori_filename}, #{new_filename}, #{type}, #{pk_idx})
 	</insert>
+	
+	<select id="getMailInfo" resultType="kr.co.porkandspoon.dto.MailDTO">
+		<![CDATA[
+		SELECT 
+			m.*
+			,u.name
+			,c.content AS position_name
+			,d.text AS dept_name
+			,(SELECT 
+				GROUP_CONCAT(
+					u.name
+					,'/'
+					,c.content
+					,'/'
+					,IFNULL(d.`text`,'미발령')
+					,' <'
+					,mr.username
+					,'>'
+				)
+			FROM 
+				mail_receive mr
+			LEFT JOIN 
+				user u 
+				ON mr.username = u.username 
+			LEFT JOIN 
+				department d 
+				ON u.parent = d.id 
+			LEFT JOIN 
+				code c 
+				ON u.position = c.name 
+			WHERE mr.idx = #{idx}
+			) AS username
+		FROM 
+			mail m 
+		LEFT JOIN 
+				user u 
+				ON m.sender = u.username 
+		LEFT JOIN 
+			department d 
+			ON u.parent = d.id 
+		LEFT JOIN 
+			code c 
+			ON u.position = c.name 
+		WHERE 
+			m.idx = #{idx}
+		]]>
+	</select>
+	
+<!-- 	<select id="getMailInfo" resultType="kr.co.porkandspoon.dto.MailDTO">
+		SELECT 
+			m.*
+			,mr.username 
+		FROM 
+			mail m 
+		LEFT JOIN 
+			mail_receive mr 
+			ON m.idx = mr.idx 
+		WHERE 
+			m.idx = #{idx}
+	</select> -->
+	
+	<select id="isBookmarked" resultType="int">
+		SELECT 
+			COUNT(idx) 
+		FROM 
+			mail_bookmark 
+		WHERE 
+			idx = #{idx} 
+			AND 
+			username = #{loginId}
+	</select>
+	
+	<delete id="deleteBookmark" parameterType="map">
+		DELETE 
+			FROM mail_bookmark
+		WHERE 
+			idx = #{idx} 
+			AND 
+			username = #{username}
+	</delete>
+	
+	<insert id="setBookmark" parameterType="map">
+		INSERT 
+			INTO mail_bookmark
+		(idx, username)
+		VALUES ( 
+			#{idx}
+			,#{username}
+		) 
+	</insert>
+	
+	<select id="getAttachedFiles" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
+		SELECT ori_filename, new_filename, type FROM file 
+			WHERE code_name = 'ma001' 
+			AND pk_idx = #{idx}
+	</select>
+	
+	<select id="getSendList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
+		SELECT m.idx
+			,m.title
+			,m.is_bookmark
+			,m.send_date
+			,(SELECT 
+					MIN(idx) 
+				FROM 
+					file 
+				WHERE 
+					pk_idx = m.idx 
+				AND 
+					code_name = 'ma001'
+			) AS fileYn
+			,(SELECT 
+					MIN(username) 
+				FROM 
+					mail_receive mr 
+				WHERE 
+					m.idx = mr.idx 
+				GROUP BY idx
+			) AS username
+			, u.name
+			,COUNT(*) OVER() AS total_count
+		FROM 
+			mail m
+		JOIN user u 
+			ON m.username = u.username
+		WHERE 
+			sender = 'smpark'
+		AND
+			m.send_status = 'sd'
+		<if test="search != null and !search.equals('') and option == 'subject'"> 
+			AND d.subject LIKE CONCAT('%',#{search},'%')		
+		</if>
+		ORDER BY m.idx DESC
+		LIMIT #{limit} 
+		OFFSET #{offset}	
+	</select>
 	
 </mapper>

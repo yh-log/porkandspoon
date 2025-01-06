@@ -7,8 +7,9 @@ public class FileDTO extends ResponseDTO{
 	private String new_filename;
 	private String type;
 	private String pk_idx;
+
+	private long file_size;
 	
-	 
 	
 	// 생성자
 	public FileDTO(String ori_filename, String new_filename, String type) {
@@ -61,6 +62,14 @@ public class FileDTO extends ResponseDTO{
 
 	public void setPk_idx(String pk_idx) {
 		this.pk_idx = pk_idx;
+	}
+
+	public long getFile_size() {
+		return file_size;
+	}
+
+	public void setFile_size(long file_size) {
+		this.file_size = file_size;
 	}
 	
 	

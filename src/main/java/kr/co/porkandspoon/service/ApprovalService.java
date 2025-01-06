@@ -54,7 +54,7 @@ public class ApprovalService {
 	}
 
 	@Transactional
-	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile, String status, String[] new_filename) {
+	public String saveDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] attachedFiles, MultipartFile[] logoFile, String status, String[] new_filename) {
 		approvalDTO.setDocument_number(generateDocumentNumber(approvalDTO.getTarget_type()));
 		logger.info("docNumber : "+ approvalDTO.getDocument_number());
 		logger.info("getUsername : "+ approvalDTO.getUsername());
@@ -69,15 +69,27 @@ public class ApprovalService {
 		}
 		int row = approvalDAO.saveDraft(approvalDTO);
 		
-	    // 결재라인이 저장되지 않은 경우에만 저장
-	    int existingCount = approvalDAO.checkExistingApprovalLine(draftIdx);
-	    if (existingCount == 0) {
-	        approvalDAO.saveApprovalLine(draftIdx, appr_user, status);
-	    }else {
-	    	for (int i = 0; i < appr_user.length; i++) {
-	    		approvalDAO.updateApprovalLine(draftIdx, appr_user[i], i);
-			}
-	    }
+		//기존 결재라인 삭제
+		if(status.equals("sv")) {
+			approvalDAO.removeApprovalLine(draftIdx);
+		}
+		// 결재라인 저장
+	    approvalDAO.saveApprovalLine(draftIdx, appr_user, status);
+	    
+//	    // 결재라인 저장 or 업데이트
+//		for(int order_num = 0; order_num < appr_user.length; order_num++) {
+//			approvalDAO.saveApprovalLine(draftIdx, appr_user[order_num], order_num, status);
+//		}
+//		// 결재라인 인원수보다 큰 order_num의 기존 데이터 삭제
+		
+	  //  int existingCount = approvalDAO.checkExistingApprovalLine(draftIdx);
+	    //if (existingCount == 0) {
+	   // }
+//	    else {
+//	    	for (int i = 0; i < appr_user.length; i++) {
+//	    		approvalDAO.updateApprovalLine(draftIdx, appr_user[i], i);
+//			}
+//	    }
 		logger.info("row : "+ row);
 
 		
@@ -118,7 +130,7 @@ public class ApprovalService {
         
         saveFile(logoFile, draftIdx, true);
         
-        saveFile(files, draftIdx, false);
+        saveFile(attachedFiles, draftIdx, false);
         
         // 재상신의 경우
         logger.info("new_filename: "+new_filename);
@@ -131,7 +143,8 @@ public class ApprovalService {
         if(status.equals("sd")) {
         	// 알림 요청
         	NoticeDTO noticedto = new NoticeDTO();
-    		noticedto.setFrom_idx(approvalDTO.getDraft_idx());
+        	noticedto.setFrom_idx(draftIdx); //여기바꿈
+        	//noticedto.setFrom_idx(approvalDTO.getDraft_idx());
     		noticedto.setUsername(approvalDTO.getUsername());
     		noticedto.setCode_name("ml007");
     		alarmService.saveAlarm(noticedto);
@@ -259,7 +272,7 @@ public class ApprovalService {
 		}
 
 		@Transactional
-		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] files, MultipartFile[] logoFile, String reapproval) {
+		public void updateDraft(String[] appr_user, ApprovalDTO approvalDTO, MultipartFile[] attachedFiles, MultipartFile[] logoFile, String reapproval) {
 			
 			int row = approvalDAO.updateDraft(approvalDTO);
 			
@@ -290,7 +303,7 @@ public class ApprovalService {
 	        }
 	        
 	        saveFile(logoFile, draftIdx, true);
-	        saveFile(files, draftIdx, false);
+	        saveFile(attachedFiles, draftIdx, false);
 			
 		}
 

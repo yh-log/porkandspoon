@@ -150,6 +150,27 @@ content = VALUES(content); -->
 	    WHERE draft_idx = #{draftIdx}
 	</select>
 	
+	<!-- <insert id="saveApprovalLine">
+		INSERT INTO 
+			approval_line (draft_idx, username, order_num, status, approval_date) 
+		VALUES
+        <choose>
+            <when test="order_num == 0 and status == 'sv'">
+                (#{draftIdx}, #{username}, #{order_num}, 'ap001', null)
+            </when>
+            <when test="order_num == 0 and status == 'sd'">
+                (#{draftIdx}, #{username}, #{order_num}, 'ap004', NOW())
+            </when>
+            <otherwise>
+                (#{draftIdx}, #{username}, #{order_num}, 'ap001', null)
+            </otherwise>
+        </choose>
+	    ON DUPLICATE KEY UPDATE 
+            username = VALUES(username),
+            status = VALUES(status),
+            approval_date = VALUES(approval_date)
+	</insert> -->
+	<!-- upsert로 변경전 -->
 	<insert id="saveApprovalLine">
 		INSERT INTO approval_line (draft_idx, username, order_num, status, approval_date) 
 		values
@@ -168,7 +189,7 @@ content = VALUES(content); -->
 	    </foreach>
 	</insert>
 	
-	<update id="updateApprovalLine">
+<!-- 	<update id="updateApprovalLine">
 		UPDATE 
 			approval_line 
 		SET
@@ -178,7 +199,7 @@ content = VALUES(content); -->
 			draft_idx = #{draftIdx}
 			AND
 			order_num = #{order_num}
-	</update>
+	</update> -->
 
 	<insert id="removeApprovalLine">
 		DELETE FROM approval_line WHERE draft_idx = #{draft_idx}

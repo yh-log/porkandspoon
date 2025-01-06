@@ -26,12 +26,6 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 
 <style>
 .mailList .tit-area {
@@ -166,11 +160,11 @@
 								</div>
 							</div>
 							<div class="search-area">
-								<select name="seach-title" class="form-select" id="basicSelect">
+								<select name="search" class="form-select">
 									<option value="subject">제목</option>
 								</select> <input type="text" name="search-data" class="form-control"
 									placeholder="검색내용을 입력하세요" width="80%" />
-								<button class="btn btn-primary btn-sch">
+								<button id="searchBtn" class="btn btn-primary">
 									<i class="bi bi-search"></i>
 								</button>
 							</div>
@@ -213,36 +207,177 @@
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
 <script src='/resources/js/common.js'></script>
 
+<!-- 페이지네이션 -->
+<script src="/resources/js/jquery.twbsPagination.js"
+	type="text/javascript"></script>
+
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
+var listType = '${listType}';
+console.log("listType : ",listType);
+var show = 1;
+var paginationInitialized = false;
+var option = '';
+var search = '';
+var filter = '';
+
+var totalCount = 0;
+var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
+var totalPage = 0;
+//var filterElem = '';
+
+pageCall(show, listType);
+
+function pageCall(page, listType) {
+	option = document.querySelector('select[name="search"]').value;
+	search = document.querySelector('input[name="search-data"]').value;
+	//filterElem = document.querySelector('.filter-btns .btn.selected');
+	//if(filterElem){		
+	//	filter = filterElem.getAttribute('data-filter');
+	//	console.log("filter!!!! ",filter );
+	//}
+	console.log("option",option);
+	console.log("search",search);
+	
+	$.ajax({
+		type:'GET',
+		url:'/mail/list/'+listType,
+		data:{
+			'page':page,
+			'cnt':15,
+			'search' : search,
+			'option' : option,
+		//	'filter': filter,
+			'listType': listType
+		},
+		datatype:'JSON',
+		success:function(data){
+			console.log(data);
+			drawList(data.mailList);
+
+			if(data.mailList.length > 0){
+				totalCount = data.mailList[0].total_count;  // 총 게시글 수
+	            totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+			}
+			console.log("totalCount",totalCount,"totalPage",totalPage);
+            
+            
+			 /* 페이지네이션 */       
+			 if(!paginationInitialized){
+					$('#pagination').twbsPagination('destroy');
+					$('#pagination').twbsPagination({
+						startPage:1, 
+		           		totalPages: totalPage, 
+		           		visiblePages:10,
+		           		onPageClick:function(evt,page){
+		           			console.log('evt',evt); 
+		           			console.log('page',page); 
+		           			pageCall(page, listType);
+		           		}
+					});
+					paginationInitialized = true;
+	            }
+		},
+		error:function(e){
+			console.log(e);
+		}
+	});
+}
+
+function drawList(list) {
+	var content ='';
+	var approvalDate = '';
+	if(totalCount == 0){
+		content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
+		$('.list tbody').html(content);
+		return false;
+	}
+	for (var view of list) {
+		/* if(view.approval_date != null){
+			approvalDate = view.approval_date.split(' ')[0];
+		}else{
+			approvalDate = '-';
+		} */
+		
+		
+		content +='<div class="mail-item">';
+		content +='<div class="left">';
+		content +='<input type="checkbox" class="form-check-input" id="checkbox2">';
+		if(view.is_bookmark == 'N'){
+			content +='<i class="bi bi-star"></i>';
+		}else{
+			content +='<i class="bi bi-star-fill"></i>';
+		}
+		content +='<span class="name">'+view.username+'</span>';
+		content +='<span onclick="location.href=\'/mail/detail/'+view.idx+'\'">'+view.title;
+		if(view.fileYn != null){
+			content +='<i class="bi bi-paperclip"></i>';
+		}	
+		content +='</span>';
+		content +='</div>';
+		content +='<span>'+view.send_date+'</span>';
+		content +='</div>';
+		
+	  }
+     $('.list-area').html(content);
+     console.log("content :::",content);
+}
+
+$(document).on('click','.list td.delete',function(){
+	var draftIdx = $(this).data('draftidx');
+	layerPopup('해당 기안문을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
+	
+	// 기안문 삭제
+	function deleteAct() {
+		console.log("draftIdx값좀 받아와라 : "+draftIdx);
+		$.ajax({
+	        type : 'PUT',
+	        url : '/approval/changeStatusToDelete/'+draftIdx,
+	        data : {},
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	 if(response.success){
+	     		 	removeAlert(); 
+	      			layerPopup('삭제 완료되었습니다.', '확인', false, btn1Act, btn1Act);
+	     		 }else{
+	     		 	removeAlert(); 
+	      			layerPopup('삭제 실패하였습니다.', '재시도', '취소', deleteAct, btn1Act);
+	     		 }
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+});
+
+	// 검색이벤트
+	$('#searchBtn').on('click', function() {
+	    show = 1;
+	    paginationInitialized = false;
+	    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
 	});
 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
+	// 필터링
+/* 	$('.filter-btns .btn').on('click', function() {
+		$(this).siblings().removeClass('selected');
+		$(this).addClass('selected');
+		show = 1;
+	    paginationInitialized = false;
+	    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
+	}); */
+	
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+	
+	function btn1Act() {
+		location.reload();
+		removeAlert(); 
+	}
+	
 </script>
 
 </html>

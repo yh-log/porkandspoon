@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -141,22 +142,47 @@
 }
 
 /* file */
-div.attach_file {
+#attachView {
+	width: 100%;
+	margin: 6px 0;
 	border:1px solid #ddd;
-	border-top: none;
+	border-radius: 4px;
+}
+div.attach_file {
 }
 div.attach_file ul.file_wrap {
-	margin-top:0; 
+	margin:0; 
+	padding: 0;
 	background:#f5f5f5;
 }
 div.attach_file ul.file_wrap > li {
-	padding: 8px; 
-	border-top:1px solid #e6e6e6;
+	display: flex;
+    padding: 5px 14px;
+}
+div.attach_file ul.file_wrap > li > span {
+	margin-right: 6px;
+}
+div.attach_file .preview {
+	display: inline-block;
+	width: 26px;
+	height: 26px;
+	margin-right: 8px;
+	border-radius: 4px;
+	overflow: hidden;
+}
+div.attach_file .size {
+	color: var(--bs-grayfont-color);
+}
+div.attach_file .bi-download {
+	margin-left: 4px;
+	cursor: pointer;
+	color: var(--bs-grayfont-color);
 }
 div.attach_file div.attach_file_header {
 	position:relative; 
 	background:#f7f7f7; 
-	padding:8px;
+	border-bottom:1px solid #e6e6e6;
+	padding: 8px 14px;
 }
 div.attach_file div.attach_file_header span.subject span.ic_file_s {
 	vertical-align:top; 
@@ -188,6 +214,41 @@ div.attach_file span.btn_area span.btn_wrap {
 
 .mailDetail .mail-cont {
 	margin: 30px 0 80px;
+}
+.mailDetail .line {
+	display: flex;
+	margin-bottom: 16px;
+}
+.mailDetail .line label {
+	width : 72px;
+    flex-shrink: 0;
+}
+.mailDetail .title {
+	margin-top: 10px;
+	margin-bottom: 24px;
+	font-size: 24px;
+	font-weight: 600;
+}
+.mailDetail .line .tag {
+	display: inline-block;
+	margin: 0px 6px 6px 0;
+    padding: 2px 4px;
+    background-color: var(--bs-bg);
+    border: 1px solid #dae0eb;
+    border-radius: 4px;
+    font-size: 14px;
+}
+.mailDetail #bookmark {
+	font-size: 22px;
+	margin-right: 2px;
+	margini-top: -4px;
+	cursor: pointer;
+}
+.mailDetail .bi-star {
+	color: #8D959F;
+}
+.mailDetail .bi-star-fill{
+	color: var(--bs-warning);
 }
 
 </style>
@@ -236,20 +297,22 @@ div.attach_file span.btn_area span.btn_wrap {
 						</div>
 
 						<div class="cont-body">
-							<p class="title"><i class="bi bi-star"></i> [경영지원본부] 연장근무신청-근태관리연동 전달의 건</p>
+							<p class="title">
+							 <c:if test="${isBookmarked eq 'true'}"><i id="bookmark" class="bi bi-star-fill"></i></c:if> 
+							 <c:if test="${isBookmarked eq 'false'}"><i id="bookmark" class="bi bi-star"></i></c:if> 
+								${mailInfo.title}
+							</p>
 							<div class="line">
 								<label class="fw-600">보낸 사람</label>
-								<span class="tag">김상현/과장/마케팅팀 &lt;sanghyeonkim&gt;</span>
+								<span class="tag">${mailInfo.sender}/${mailInfo.position_name}/${mailInfo.dept_name} &lt;${mailInfo.name}&gt;</span>
 							</div>
-							<div class="line">
+							<div class="line receivers">
 								<label class="fw-600">받는 사람</label>
-								<span class="tag">김상현/과장/마케팅팀 &lt;sanghyeonkim&gt;</span>
-								<span class="tag">김상현/과장/마케팅팀 &lt;sanghyeonkim&gt;</span>
-								<span class="tag">김상현/과장/마케팅팀 &lt;sanghyeonkim&gt;</span>
+								<div class="tag-area"></div>
 							</div>
 							<div class="line">
 								<label class="fw-600">전송 일시</label>
-								<span>2024년 12월 09일 (월) 오전 11:09</span>
+								<span>${mailInfo.send_date_str}</span>
 							</div>
 							<div class="line">
 								<div id="attachView">
@@ -262,15 +325,21 @@ div.attach_file span.btn_area span.btn_wrap {
 												<span class="size">(0.0Byte)</span>
 											</span>
 										</div>
-										<ul class="file_wrap" id="file_wrap"></ul>
-										<ul class="img_wrap" id="img_wrap" style="margin-bottom: 10px; margin-left: 10px; margin-right: 10px; margin-top: 0px;"></ul>
+										<ul class="file_wrap" id="file_wrap">
+<%-- 										<c:forEach items="${fileList}" var="file">
+											<li>
+												<span class="preview"></span>
+												<span>${file.ori_filename}</span>
+												<span class="size">${file.file_size}</span>
+												<i class="bi bi-download"></i>
+											</li> 
+										</c:forEach> --%>
+										</ul>
 									</div>
 								</div>					
 							</div>
 							<div class="mail-cont">
-								안녕하세요 경영지원본부 과장 김상현입니다.<br/>
-								휴일 근무 예정 자료 송부드립니다.<br/>
-								업무에 참고하시기 바랍니다.<br/>
+								${mailInfo.content}
 							</div>
 					</div>
 				</section>
@@ -310,6 +379,67 @@ div.attach_file span.btn_area span.btn_wrap {
 
 <script>
 
+	var receivers = '${mailInfo.username}';
+	var receiverArray = receivers.split(',');
+	var receiverCont = '';
+	for (var receiver of receiverArray) {
+	  	var encodedReceiver = receiver.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+		receiverCont += '<span class="tag">'+encodedReceiver+'</span>';
+	}
+	//console.log("receivers",receivers);
+	//console.log("receiverCont",receiverCont);
+	$('.receivers .tag-area').append(receiverCont);
+	
+	// 파일
+	var fileCont = "";
+	<c:forEach items="${fileList}" var="file">
+		//파일 사이즈 표시(1MB보다크면 MB단위 아니면 KB단위)
+		var fileSizeMB = '${file.file_size/1024/1024}';
+		var fileSizeKB = '${file.file_size/1024}' ;
+		var fileSize;
+        if (fileSizeMB > 1) {
+            fileSize = Math.round(fileSizeMB * 10) / 10  + " MB"; 
+        } else {
+            fileSize = Math.round(fileSizeKB * 10) / 10  + " KB";
+        }
+        
+        //미리보기 아이콘(이미지인경우/아닌경우)
+        var imgPath;
+        if('${file.type}'.includes('image')){
+        	imgPath = '/photo/${file.new_filename}';
+        }else{
+        	imgPath = '/resources/img/ico/ico_file.png';
+        }
+		fileCont += '<li>';
+		fileCont += '<span class="preview" style="background: url('+imgPath+') no-repeat center/cover"></span>';
+		fileCont += '<span>${file.ori_filename}</span>';
+		fileCont += '<span class="size">('+fileSize+')</span>';
+		fileCont += '<i class="bi bi-download" onclick="download(\'${file.ori_filename}\', \'${file.new_filename}\')"></i>';
+		fileCont += '</li> ';
+	</c:forEach> 
+	$('#file_wrap').append(fileCont);
+	console.log("fileList","${fileList}");
+	console.log("fileCont",fileCont);
+
+	// 즐겨찾기
+	var isBookmark='${isBookmarked}';
+	console.log("[첫]isBookmark : ",isBookmark);
+	console.log("bookel",document.getElementById('bookmark'));
+	document.getElementById('bookmark').addEventListener('click', function() {
+		console.log("[전송직전]isBookmark : ",isBookmark);
+		var params = {
+				'idx' : '${mailInfo.idx}',
+				'isBookmarked' : isBookmark
+		}
+		httpAjax('POST','/mail/bookmark',params);
+    });
+
+	function httpSuccess(response){
+		$('#bookmark').toggleClass('bi-star-fill bi-star');
+		console.log("[success1]isBookmark : ",isBookmark);
+		isBookmark = isBookmark == 'false' ? 'true' : 'false';
+		console.log("[success2]isBookmark : ",isBookmark);
+	}
 </script>
 
 </html>

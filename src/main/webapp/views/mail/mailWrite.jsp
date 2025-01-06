@@ -170,7 +170,7 @@
  	right: 22px;
 	background: url('/resources/img/ico/ico_edit_s.png') no-repeat center/cover;
  }
- .mailList #receivers .search-area .btn-close{
+ .mailList #receivers .search-area .btn-delete{
 	right: 4px;
 	background: url('/resources/img/ico/ico_close_s.png') no-repeat center/cover;
  }
@@ -296,7 +296,7 @@
 		    									<div class="search-area">
 		    										<input class="searchBox form-control" name="username" required/>
 		    										<span class="btn-edit"></span>
-		    										<span class="btn-close"></span>
+		    										<span class="btn-delete"></span>
 		    									</div>
 	    									</div>
 											<!-- <input type="text" id="autocomplete" class="autocomplete-input"> -->
@@ -311,16 +311,16 @@
 								<div class="line clearfix">
 									<label class="fw-600">파일첨부</label> 
 									<!-- <button class="btn btn-outline-primary btn-sm">파일첨부</button> -->
-									<p class="float-r">
+								<!-- 	<p class="float-r">
 										<span>0KB</span>
 										/
 										<span>10MB</span>
-									</p>
-									<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+									</p> -->
+									<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="5" id="filepond" multiple="" name="attachedFiles" type="file"/>
 								</div>			
 								<!-- <input type="file" class="with-validation-filepond" required multiple data-max-file-size="10MB"> -->
 								<div class="editor-area">
-									<textarea name="content" id="summernote" maxlength="10000"></textarea>
+									<textarea id="summernote" maxlength="10000"></textarea>
 								</div>		
 							</form>
 						</div>
@@ -366,7 +366,7 @@
 	//두 번째 FilePond에 다른 설정 적용
 	const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
 	    allowMultiple: true,
-	    maxFiles: 3,
+	    maxFiles: 5,
 	    allowImagePreview: false,
 	    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
 	    instantUpload: false
@@ -451,18 +451,22 @@ function addNewInput(){
    	var inputCont = '<div class="search-area">';
    	inputCont += '<input class="searchBox form-control" name="username" required/>';
    	inputCont += '<span class="btn-edit"></span>';
-   	inputCont += '<span class="btn-close"></span>';
+   	inputCont += '<span class="btn-delete"></span>';
    	inputCont += '</div>';
  	$('#receivers').append(inputCont);
  	$('#receivers input:not([readonly])').focus();
     setAutoComplete();									
 }
-	
-	// input 편집버튼 클릭시
-	$(document).on('click','#searchBox .btn-edit',function(){
-		alert('dd');
-		$(this).siblings('input').attr('readonly', false);
-	});
+
+// 받는 사람 input 편집버튼 클릭시
+$(document).on('click','#receivers .btn-edit',function(e){
+	$(this).siblings('input').attr('readonly', false);
+});
+
+// 받는 사람 input 삭제버튼 클릭시
+$(document).on('click','#receivers .btn-delete',function(e){
+	$(this).parents('.search-area').remove();
+});
 	
 	/* $(document).ready(function () {
     const data = [
@@ -559,6 +563,50 @@ function saveMail(){
 //1분마다 자동 임시저장 check!!! 나중에 풀기
 //setInterval(saveMail, 60000);
 
+
+function textEaditorWrite(url, after){
+	console.log('approval.js textEaditorWrite실행');
+	// check!!! 이거두줄
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+	var formData = new FormData($('form')[0]); // formData
+	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
+	console.log("content!!@@##",content);
+	formData.append('content', content);
+    
+    //첨부 파일 추가
+    const attachedFiles = attachedFilesPond.getFiles();
+    if (attachedFiles.length > 0) {
+    	attachedFiles.forEach(function(file, index) {
+    	    formData.append('attachedFiles', file.file); 
+    	});
+    }
+	
+	var tempDom = $('<div>').html(content);
+    var imgsInEditor = []; // 최종 파일을 담을 배열
+ 
+ 	 tempDom.find('img').each(function () {
+            var src = $(this).attr('src');
+            if (src && src.includes('/photoTem/')) {  // 경로 검증
+                var filename = src.split('/').pop();  // 파일명 추출
+                imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
+            }
+    });
+ 
+	 // new_filename과 일치하는 항목만 필터링
+    var finalImgs = tempImg.filter(function (temp) {
+        return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
+    });
+ 
+ 	formData.append('imgsJson', JSON.stringify(finalImgs));
+ 
+ 	 fileAjax('POST', url, formData);
+     console.log("textEaditorWrite 실행완료");
+     console.log("textEaditorWrite after : "+after);
+}
+
+
 function fileSuccess(response){
 	if(response.status == 'sd'){
 		location.href='/mail/detail/'+response.mailIdx;
@@ -570,7 +618,6 @@ function fileSuccess(response){
 
 // 받는 사람 영역 클릭시 새로운 input생성
 $(document).on('click','#receivers',function(e){
-	e.stopPropagation();
 	// 마지막 input 요소
 	var lastInput = $(this).find('.search-area:last-child input');
 	console.log("lastInput : : :",lastInput);

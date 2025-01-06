@@ -1,15 +1,24 @@
 package kr.co.porkandspoon.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +41,7 @@ import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MailDTO;
 import kr.co.porkandspoon.service.MailService;
+import kr.co.porkandspoon.util.CommonUtil;
 
 @RestController
 public class MailController {
@@ -39,12 +49,29 @@ public class MailController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MailService mailService;
-
-	// 받은 메일함 view
-	@GetMapping(value="/mail/list/receive")
-	public ModelAndView receiveMailListView() {
+	@Value("${upload.path}") String paths;
+	
+	// 메일리스트 view
+	@GetMapping(value="/mail/listView/{listType}")
+	public ModelAndView mailListView(@PathVariable String listType) {
 		ModelAndView mav = new ModelAndView("/mail/mailList");  
+		mav.addObject("listType", listType);
 		return mav;
+	}
+	
+	// 메일리스트 데이터가져오기
+	@GetMapping(value="/mail/list/{listType}")
+	public Map<String,Object> getMailListData(@PathVariable String listType, @RequestParam Map<String, Object> params, @AuthenticationPrincipal UserDetails userDetails) {
+		//ModelAndView mav = new ModelAndView("/approval/approvalList");  
+		//logger.info("filter!!@@@@@@ : "+params.get("filter") );
+		logger.info("filter!!@@@@@@ : "+params.get("listType") );
+		String loginId = userDetails.getUsername();
+		Map<String,Object> result = new HashMap<String, Object>();
+        params.put("loginId", loginId);
+        params.put("listType", listType);
+		result.put("mailList", mailService.getMailListData(params));
+			
+		return result;
 	}
 
 	// 메일작성 view
@@ -56,7 +83,7 @@ public class MailController {
 
 	@Transactional
 	@PostMapping(value="/mail/write/{status}")
-	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart("files") MultipartFile[] files, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
+	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		mailDTO.setSender(userDetails.getUsername());
@@ -87,7 +114,7 @@ public class MailController {
             }
         }
         
-        String mailIdx = mailService.saveMail(username, mailDTO, files);
+        String mailIdx = mailService.saveMail(username, mailDTO, attachedFiles, status);
         logger.info("여기서도 idx가져오기 가능??? : "+ mailDTO.getIdx());
         result.put("mailIdx", mailIdx);
         result.put("status", status);
@@ -95,28 +122,73 @@ public class MailController {
 	}
 	
 	// 메일 상세페이지 view
-	@GetMapping(value="/mail/detail")
-	public ModelAndView MailDetailView() {
-		ModelAndView mav = new ModelAndView("/mail/mailDetail");  
-		return mav;
+	@GetMapping(value="/mail/detail/{idx}")
+	public ModelAndView MailDetailView(@PathVariable String idx, @AuthenticationPrincipal UserDetails userDetails, HttpServletResponse response) {
+		ModelAndView mav = null;
+		String loginId = userDetails.getUsername();
+		MailDTO mailInfo = mailService.getMailInfo(idx);
+		
+		// 받는사람 <> 괄호 안의 값을 추출
+		String regex = "<([^>]+)>";  
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(mailInfo.getUsername());
+
+        List<String> usernames = new ArrayList<>();
+        while (matcher.find()) {
+        	usernames.add(matcher.group(1));
+        }
+		
+		// 권한체크
+		boolean isReceiver = false;
+		for (String user : usernames) {
+			logger.info("user: {} / loginId: {}",user,loginId);
+			if(user.equals(loginId)) {
+				isReceiver = true;
+				break;
+			}
+		}
+		
+		boolean isSender = mailInfo.getSender().equals(loginId);
+		
+		if(isReceiver || isSender) {
+			List<FileDTO> fileList = mailService.getAttachedFiles(idx);
+			// 파일 크기 가져오기
+			for (FileDTO fileDTO : fileList) {
+				String fileName = fileDTO.getNew_filename();
+				
+		        File file = new File(paths + fileName);
+		        if (file.exists()) {
+		            long fileSize = file.length();
+		            fileDTO.setFile_size(fileSize);
+				}
+			}
+			
+			// 전송일시 
+			LocalDateTime sendDate = mailInfo.getSend_date();
+			 // 요일
+	        String dayOfWeek = sendDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN); 
+			String send_date = CommonUtil.formatDateTime(sendDate, "yyyy년 MM월 dd일 (" + dayOfWeek + ") a hh:mm");
+			mailInfo.setSend_date_str(send_date);
+			
+			mav = new ModelAndView("/mail/mailDetail"); 
+			mav.addObject("mailInfo", mailInfo);
+			mav.addObject("isBookmarked", mailService.isBookmarked(idx, loginId));
+			mav.addObject("fileList", fileList);
+		}else {
+			try {
+				// 메시지를 URL 인코딩
+				response.setContentType("text/html;charset=UTF-8");
+				response.getWriter().write("<script>alert('열람 권한이 없습니다.'); history.back();</script>");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+			return mav;
 	}
 	
 	// 메일작성시 수신자 자동완성
 	@GetMapping(value = "/json", produces="text/plain;charset=UTF-8")
 	public String json(Locale locale, Model model) {    
-		/*ObjectMapper objectMapper = new ObjectMapper();
-		String[] array = {"엽기떡볶이", "신전떡볶이", "걸작떡볶이", "신당동떡볶이"}; // 배열 생성
-	    
-	    String userList = "";
-		try {
-			userList = objectMapper.writeValueAsString(array);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-
-	    return userList; 
-	    */
-		
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<Map<String, String>> userList = mailService.getUserList();
 		String userListStr = "";
@@ -126,6 +198,19 @@ public class MailController {
 			e.printStackTrace();
 		}
 		return userListStr;
+	}
+	
+	// 북마크 상태 변경
+	@PostMapping(value = "/mail/bookmark")
+	public Map<String, Object> updateBookmark(@RequestParam Map<String, String> params, @AuthenticationPrincipal UserDetails userDetails) {    
+		Map<String, Object> result = new HashMap<String, Object>();
+		String loginId = userDetails.getUsername();
+		params.put("username", loginId);
+		String isBookmarked = params.get("isBookmarked");
+		logger.info("bookmark? : "+params.get("isBookmarked"));
+		logger.info("idx? : "+params.get("idx"));
+		boolean success = mailService.updateBookmark(params);
+		return result;
 	}
 	
 }

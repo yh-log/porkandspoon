@@ -85,7 +85,7 @@ public class ApprovalController {
 	
 	// 기안문 저장
 	@PostMapping(value="/draftWrite/{status}") 
-	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status, String[] new_filename) {
+	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status, String[] new_filename) {
 //		해당부서에 속한사람만 직영점등록이 가능하도록하는 로직
 //		if(approvalDTO.getTarget_type().equals("df002")) {
 //			
@@ -128,7 +128,7 @@ public class ApprovalController {
        // logger.info("체크 getUsername!! : " + approvalDTO.getUsername());
         
         // 이거 살려 check!!!
-        String draftIdx = approvalService.saveDraft(appr_user, approvalDTO, files, logoFile, status, new_filename);
+        String draftIdx = approvalService.saveDraft(appr_user, approvalDTO, attachedFiles, logoFile, status, new_filename);
         
 		/*
 		 * if(!logoFile.isEmpty()) { logger.info("로고파일 있음"); }
@@ -372,13 +372,13 @@ public class ApprovalController {
 		
 	@Transactional
 	@PostMapping(value="/draftUpdate/{reapproval}")
-	public Map<String, Object> draftUpdate(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("files") MultipartFile[] files, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @RequestParam("deleteFiles") String deleteFilesJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String reapproval) {
+	public Map<String, Object> draftUpdate(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @RequestParam("deleteFiles") String deleteFilesJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String reapproval) {
 		logger.info("연결!!!!!!");
 		//logger.info("deleteFiles : "+ deleteFiles);
-		logger.info("appr_user[0] : "+ appr_user[0]);
-		logger.info("appr_user[1] : "+ appr_user[1]);
-		logger.info("appr_user[1] : "+ appr_user[2]);
-		logger.info("appr_user[1] : "+ appr_user[3]);
+		//logger.info("appr_user[0] : "+ appr_user[0]);
+		//logger.info("appr_user[1] : "+ appr_user[1]);
+		//logger.info("appr_user[1] : "+ appr_user[2]);
+		//logger.info("appr_user[1] : "+ appr_user[3]);
 		
 		
 		 // deleteFilesJson을 List<FileDTO>로 변환
@@ -428,7 +428,7 @@ public class ApprovalController {
        // logger.info("체크!! : " + approvalDTO.getFileList().get(0).getNew_filename());
        // logger.info("체크 getUsername!! : " + approvalDTO.getUsername());
         
-        approvalService.updateDraft(appr_user, approvalDTO, files, logoFile, reapproval);
+        approvalService.updateDraft(appr_user, approvalDTO, attachedFiles, logoFile, reapproval);
 
         
 
@@ -455,7 +455,7 @@ public class ApprovalController {
 		String loginId = userDetails.getUsername();
 		Map<String,Object> result = new HashMap<String, Object>();
         params.put("loginId", loginId);
-        params.put("listType", listType);
+        params.put("listType", listType); // check!!! 이거빼도 될듯 jsp에서 보내주는듯
 		result.put("approvalList", approvalService.getApprovalMyListData(params));
 			
 		return result;

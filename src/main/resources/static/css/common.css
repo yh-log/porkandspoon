@@ -13,6 +13,7 @@
 
 :root { 
 	--bs-body-color: #333;
+	--bs-grayfont-color: #7D8187;
 	--bs-heading-color: #404f78;
 	--bs-heading-color2: #465275; 
 	--border-radius: .7rem; 

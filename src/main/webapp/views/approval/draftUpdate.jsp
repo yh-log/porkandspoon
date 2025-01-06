@@ -334,10 +334,10 @@
 										</thead>
 										<tr class="position">
 											<th rowspan="3">결재</th>
-											<td>사원</td>
-											<td>차장</td>
-											<td>부장</td>
-											<td>대표</td>
+											<td>${ApprLine[0].position}</td>
+											<td>${ApprLine[1].position}</td>
+											<td>${ApprLine[2].position}</td>
+											<td>${ApprLine[3].position}</td>
 										</tr>
 										<tr class="name">
 											<td>
@@ -718,6 +718,7 @@ function updateDraft(){
   }else {
   	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
   } */
+    checkApprLineNull();
 	textEaditorWrite('/draftUpdate/${reapproval}');	
   
   
@@ -795,7 +796,24 @@ function updateDraft(){
 	
 }
 
- 
+//결재라인 각 결재자가 공백이거나 null일 경우 해당 요소 삭제
+ function checkApprLineNull() {
+ 	$('.appr_line tr.name > td > p').each(function() {
+ 	    if ($(this).text().trim() === '' || $(this).text() === null) {
+ 	        $(this).remove();
+ 	    }
+ 	});
+ 	$('.appr_line tr.position > td').each(function() {
+ 	    if ($(this).text().trim() === '' || $(this).text() === null) {
+ 	        $(this).remove();
+ 	    }
+ 	});
+ 	$('input[name="appr_user"]').each(function() {
+ 	    if ($(this).val().trim() === '' || $(this).val() === null) {
+ 	        $(this).remove();
+ 	    }
+ 	});
+ } 
  
  
  /* 조직도 */
@@ -1085,20 +1103,25 @@ $(document).on('click', '#chartModalBox #orgBody .btn', function() {
  
 function addBtnFn(){
 	var lineNodes = document.getElementById('orgBody').childNodes;
-	 for(var i = 0; i <= lineNodes.length ; i++){
+	// 기안문 기존 결재라인 설정 초기화 
+	$('.appr_line tr.name > td > p').text('');
+	$('.appr_line tr.position > td').text('');
+	$('input[name="appr_user"]').val('');
+	// 기안문 결재라인 설정
+	for(var i = 0; i <= lineNodes.length ; i++){
 		 userName = lineNodes[i].childNodes[0].innerText;
 		 userPosition = lineNodes[i].childNodes[2].innerText;
 		 document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText = userName;
 		 document.querySelectorAll('.appr_line tr.position > td')[i].innerText = userPosition;
 		 document.querySelectorAll('input[name="appr_user"]')[i].value = approvalLines[i];
 	 	 document.getElementById('chartModalBox').style.display = "none"; 
-	 	 console.log("approvalLines",approvalLines[i]);
+	 	 //console.log("approvalLines",approvalLines[i]);
 	 	 
-	 	 console.log("###appr_line tr.name ",document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText );
-		 console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
-		 console.log("###appr_user ",document.querySelectorAll('input[name="appr_user"]'));
-		 console.log("###appr_user.value ",document.querySelectorAll('input[name="appr_user"]')[i].value);
-		 console.log("$$$$exampleData.rows ",exampleData.rows);
+	 	 //console.log("###appr_line tr.name ",document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText );
+		 //console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
+		 //console.log("###appr_user ",document.querySelectorAll('input[name="appr_user"]'));
+		 //console.log("###appr_user.value ",document.querySelectorAll('input[name="appr_user"]')[i].value);
+		 //console.log("$$$$exampleData.rows ",exampleData.rows);
 	 }
 }
  

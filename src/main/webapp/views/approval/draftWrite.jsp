@@ -191,6 +191,9 @@
 	
 	/* 모달 */
 	/* 기본 모달 스타일 */
+	.modal-dialog {
+    	position: static;
+    }
 	.modal {
 	    display: none;
 	    position: fixed;
@@ -351,9 +354,9 @@
 										<tr class="position">
 											<th rowspan="3">결재</th>
 											<td>${userDTO.position_content}</td>
-											<td>차장</td>
-											<td>부장</td>
-											<td>대표</td>
+											<td></td>
+											<td></td>
+											<td></td>
 										</tr>
 										<tr class="name">
 											<td>
@@ -420,7 +423,7 @@
 								<input type="file" class="filepond" data-max-file-size="10MB" name="logoFile" type="file" required/>
 
 								<h5>파일 첨부</h5>
-								<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="files" type="file"/>
+								<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" id="filepond" multiple="" name="attachedFiles" type="file"/>
 								
 								<input type="hidden" name="status"/>
 							</form>
@@ -890,7 +893,12 @@ var approvalLines = ['${userDTO.username}'];
  }); */
  
 function addBtnFn(){
-	var lineNodes = document.getElementById('orgBody').childNodes;
+	 var lineNodes = document.getElementById('orgBody').childNodes;
+	 // 기안문 기존 결재라인 설정 초기화 
+	 $('.appr_line tr.name > td > p').text('');
+	 $('.appr_line tr.position > td').text('');
+	 $('input[name="appr_user"]').val('');
+	 // 기안문 결재라인 설정
 	 for(var i = 0; i <= lineNodes.length ; i++){
 		 userName = lineNodes[i].childNodes[0].innerText;
 		 userPosition = lineNodes[i].childNodes[2].innerText;
@@ -898,7 +906,7 @@ function addBtnFn(){
 		 document.querySelectorAll('.appr_line tr.position > td')[i].innerText = userPosition;
 		 document.querySelectorAll('input[name="appr_user"]')[i].value = approvalLines[i];
 	 	 document.getElementById('chartModalBox').style.display = "none"; 
-	 	 console.log("approvalLines",approvalLines[i]);
+	 	 //console.log("approvalLines",approvalLines[i]);
 
 	 	 //console.log("###appr_line tr.name ",document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText );
 	 	// console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
