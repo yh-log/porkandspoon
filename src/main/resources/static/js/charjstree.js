@@ -222,7 +222,7 @@ function chartPrint(response) {
 
     console.log("jsTree 변환 데이터:", processedData);
 
-    $('#jstree').jstree('destroy').empty();
+    //$('#jstree').jstree('destroy').empty();
     // jsTree 초기화
     $('#jstree').jstree({
         'core': {
@@ -282,7 +282,7 @@ function chartPrint(response) {
             console.log("선택된 노드가 없습니다.");
         }
     }).on("load_node.jstree", function (e, data) {
-        console.log("노드 로드 완료:", data.node);
+        // console.log("노드 로드 완료:", data.node);
     });
 }
 
