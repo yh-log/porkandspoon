@@ -474,10 +474,10 @@
 										</thead>
 										<tr>
 											<th rowspan="3">결재</th>
-											<td>사원</td>
-											<td>차장</td>
-											<td>부장</td>
-											<td>대표</td>
+											<td>${ApprLine[0].position}</td>
+											<td>${ApprLine[1].position}</td>
+											<td>${ApprLine[2].position}</td>
+											<td>${ApprLine[3].position}</td>
 										</tr>
 										<tr class="status-area">
 											<td>

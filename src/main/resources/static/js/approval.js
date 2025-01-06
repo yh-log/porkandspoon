@@ -120,7 +120,7 @@ function textEaditorWrite(url, after){
     const attachedFiles = attachedFilesPond.getFiles();
     if (attachedFiles.length > 0) {
     	attachedFiles.forEach(function(file, index) {
-    	    formData.append('files', file.file); 
+    	    formData.append('attachedFiles', file.file); 
     	});
     }
 	
@@ -210,6 +210,7 @@ function sendApproval(){
     });
     
     if (isValid) {
+		checkApprLineNull();
 		textEaditorWrite('/draftWrite/sd',true);	
     }else {
     	 layerPopup("필수 값을 모두 입력하세요.",'확인',false);
@@ -227,6 +228,7 @@ function btn2Act() {
 
 // 임시 저장
 function saveTemp(){
+	checkApprLineNull();
 	document.querySelector('input[name="status"]').value = "sv";
 	textEaditorWrite('/draftWrite/sv',false);	
 	
@@ -235,6 +237,24 @@ function saveTemp(){
 //1분마다 자동 임시저장 check!!! 나중에 풀기
 //setInterval(saveTemp, 60000);
 
+// 결재라인 각 결재자가 공백이거나 null일 경우 해당 요소 삭제
+function checkApprLineNull() {
+	$('.appr_line tr.name > td > p').each(function() {
+	    if ($(this).text().trim() === '' || $(this).text() === null) {
+	        $(this).remove();
+	    }
+	});
+	$('.appr_line tr.position > td').each(function() {
+	    if ($(this).text().trim() === '' || $(this).text() === null) {
+	        $(this).remove();
+	    }
+	});
+	$('input[name="appr_user"]').each(function() {
+	    if ($(this).val().trim() === '' || $(this).val() === null) {
+	        $(this).remove();
+	    }
+	});
+}
 
 
 // 저장 성공 후 상세페이지 이동 혹은 레이어 팝업
