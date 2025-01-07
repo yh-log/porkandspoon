@@ -6,7 +6,7 @@
 * url : 이동 url
 * type : dataType
 */
-function getAjax(url, type, data = null) { // data 매개변수 추가, 기본값 null
+window.getAjax = function(url, type, data = null) { // data 매개변수 추가, 기본값 null
 
     $.ajax({
         type: 'GET',
