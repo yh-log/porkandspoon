@@ -96,32 +96,32 @@ public class AlarmService {
 		
 		switch (noticeDTO.getCode_name()) {
 		case "ml001":
-			noticeDTO.setSubject("회의실");
+			noticeDTO.setSubject("회의실 예약 알림이 왔습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;회의실에서 회의 예약이 있습니다.");
 			noticeDTO.setUrl("마이페이지 자기 캘린더로 이동 url");
 			break;
 		case "ml003":
-			noticeDTO.setSubject("댓글");
+			noticeDTO.setSubject("게시글에 댓글이 달렸습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;에 댓글이 달렸습니다.");
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml004":
-			noticeDTO.setSubject("대댓글");
+			noticeDTO.setSubject("댓글에 답변이 달렸습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;에 대댓글이 달렸습니다.");
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getBoard_idx());
 			break;
 		case "ml007":
-			noticeDTO.setSubject("결재");
+			noticeDTO.setSubject("결재요청이 왔습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문에 결재 요청이 왔습니다.");
 			noticeDTO.setUrl("/approval/detail/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml008":
-			noticeDTO.setSubject("결재");
+			noticeDTO.setSubject("결재가 승인되었습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문 결재가 승인되었습니다.");
 			noticeDTO.setUrl("/approval/detail/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml009":
-			noticeDTO.setSubject("결재");
+			noticeDTO.setSubject("결재가 반려되었습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문 결재가 반려되었습니다.");
 			noticeDTO.setUrl("/approval/detail/" + noticeDTO.getFrom_idx());
 			break;
