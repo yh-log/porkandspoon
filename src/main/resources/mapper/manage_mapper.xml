@@ -5,12 +5,49 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.ManageDAO">
  		
+ <!-- 대표 정보 불러오기 -->
+ <select id="getCEOInfo" resultType="String">
+ 	SELECT name FROM user where position = 'po0'
+ </select>
+ 
+ 
+ <!-- 브랜드 리스트 불러오기 -->
+	<select id="getBrandList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+	    SELECT id,text,create_date FROM department WHERE id LIKE 'B%'
+	    ORDER BY create_date ASC LIMIT 5
+	</select>
+	
+	<select id="getFile" resultType="kr.co.porkandspoon.dto.FileDTO">
+		SELECT * FROM file WHERE code_name = #{code_name} AND pk_idx = #{id}
+	</select>
+	
+	<!-- 브랜드 정보 가져오기 -->
+	<select id="getBrandInfo">
+		SELECT u.name,u.parent,d.text FROM user u
+		JOIN department d ON u.parent = d.id
+   		WHERE u.parent = (SELECT parent FROM user WHERE username = #{id}) AND u.title = 'T' limit 1;
+	</select>
+	
+	<!-- 직영점 리스트 불러오기 -->
+	<select id="getDirectList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+	   SELECT ds.name as spotName,ds.owner,ds.address,ds.create_date,u.name FROM direct_store ds
+ 		LEFT JOIN user u ON u.username = ds.owner 
+ 		WHERE ds.parent = (select parent from direct_store ds where parent = (select parent from user where username = #{id}) limit 1)
+	    ORDER BY create_date ASC LIMIT 5;
+	</select>
+	
+	<!-- 직영점 정보 가져오기 -->
  	<select id="getDirectInfo" resultType="kr.co.porkandspoon.dto.ManageDTO">
  		SELECT ds.address,ds.address_detail,ds.name as spotName,u.name FROM direct_store ds
  		 LEFT JOIN user u ON ds.owner = u.username WHERE ds.owner = #{owner}
  	</select>	
- 
- 
+ 	
+	<!-- 직원 리스트 불러오기 -->
+	<select id="getPartList5" resultType="kr.co.porkandspoon.dto.ManageDTO">
+		SELECT p.*, s.name as spotName FROM part p LEFT JOIN direct_store s ON p.id = s.id
+	    WHERE p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})
+	    ORDER BY p.join_date ASC LIMIT 5
+	</select>
  
 	 <insert 
 	    useGeneratedKeys="true"
@@ -156,26 +193,7 @@
 	    ]]>
 	</delete>
 
-	<!-- 브랜드 리스트 불러오기 -->
-	<select id="getBrandList" resultType="kr.co.porkandspoon.dto.ManageDTO">
-	    SELECT text,create_date FROM department WHERE id LIKE 'BD%'
-	    ORDER BY create_date ASC LIMIT 5
-	</select>
 	
-	<!-- 직영점 리스트 불러오기 -->
-	<select id="getDirectList" resultType="kr.co.porkandspoon.dto.ManageDTO">
-	    SELECT ds.name as spotName,ds.owner,ds.address,ds.create_date,u.name FROM direct_store ds
- 		LEFT JOIN user u ON u.username = ds.owner 
- 		WHERE id LIKE 'BY%'
-	    ORDER BY create_date ASC LIMIT 5;
-	</select>
-	
-	<!-- 직원 리스트 불러오기 -->
-	<select id="getPartList5" resultType="kr.co.porkandspoon.dto.ManageDTO">
-		SELECT p.*, s.name as spotName FROM part p LEFT JOIN direct_store s ON p.id = s.id
-	    WHERE p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})
-	    ORDER BY p.join_date ASC LIMIT 5
-	</select>
 	
 
 

@@ -556,11 +556,31 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	}
 
 
-	public List<ManageDTO> getDirectList() {
+	public List<ManageDTO> getDirectList(String id) {
 		
-		return manageDAO.getDirectList();
+		return manageDAO.getDirectList(id);
 	}
 
+
+	public ManageDTO getBrandInfo(String id) {
+		
+		return manageDAO.getBrandInfo(id);
+	}
+
+
+	public String getCEOInfo() {
+		// TODO Auto-generated method stub
+		return manageDAO.getCEOInfo();
+	}
+
+
+	public FileDTO getFile(String code_name, String id ) {
+		
+		return manageDAO.getFile(code_name,id);
+	}
+
+
+	
 
 
 	
