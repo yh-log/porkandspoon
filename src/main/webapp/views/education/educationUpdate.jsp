@@ -217,19 +217,20 @@
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
+                  	<input type="hidden" name="no" value="${info.no}"/>
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">${info}</td>
+	                  		<td class="align-l">${info.name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>카테고리</th>
 	                  		<td>
 	                  			<select class="form-input1" name="category">
-	                  				<option value="duty">의무 교육</option>
-	                  				<option value="job">직무 교육</option>
-	                  				<option value="hygiene">위생 교육</option>
-	                  				<option value="operate">운영 교육</option>
+	                  				<option value="duty" <c:if test="${info.category == 'duty'}">selected</c:if>>의무 교육</option>
+           							<option value="job" <c:if test="${info.category == 'job'}">selected</c:if>>직무 교육</option>
+            						<option value="hygiene" <c:if test="${info.category == 'hygiene'}">selected</c:if>>위생 교육</option>
+            						<option value="operate" <c:if test="${info.category == 'operate'}">selected</c:if>>운영 교육</option>
 	                  			</select>
 	                  		</td>
 	                  	</tr>
@@ -238,19 +239,19 @@
 	                  		<td class="coutn-dis">
 	                  			<select class="form-input1" name="dept">
 	                  				<c:forEach items="${dept}" var="dept">
-										<option value="${dept.id}">${dept.text}</option>	                  				
+										<option value="${dept.id}" <c:if test="${dept.id == info.id}">selected</c:if>>${dept.text}</option>                 				
 	                  				</c:forEach>
 	                  			</select>
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>제목</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
+	                  		<td><input class="form-control sor-1" type="text" name="subject" value="${info.subject}"/></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>영상 첨부</th>
 							<td>
-		                        <input value="" id="youtube-url" class="form-control sor-1" type="text" name="url" placeholder="예: https://www.youtube.com/watch?v=kzVXRYjWsAo"/>
+		                        <input value="${info.url}" id="youtube-url" class="form-control sor-1" type="text" name="url" placeholder="영상 주소를 입력 해주세요."/>
 			                    <div id="error-message" style="color: red; margin-top: 5px;"></div>
 			                    <div id="video-preview" style="margin-top: 15px;">
 			                        <!-- 유튜브 동영상이 여기에 표시됩니다 -->
@@ -259,18 +260,18 @@
 	                  	</tr>
 	                  	<tr>
 	                  		<th>영상 시간</th>
-	                  		<td><input class="form-control sor-1" type="number" name="time"/></td>
+	                  		<td><input class="form-control sor-1" type="text" name="time" value="${info.total_time}"/></td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content"></textarea></td>
+	                  		<td><textarea class="form-control art" name="content">${info.content}</textarea></td>
 	                  	</tr>
 	                  </table>
                   </div>
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-		           		<div class="btn btn-primary" onclick="eduWrite()">등록하기</div>
+		           		<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
 		                <div class="btn btn-primary" onclick="back()">돌아가기</div>
 	           		</div>
            		</div>
@@ -292,35 +293,7 @@
 <script>
 
 	$(document).ready(function(){
-	    $('#youtube-url').on('input', function() {
-	        var url = $(this).val().trim();
-	        console.log("입력된 URL:", url); // 디버깅용 로그
-	
-	        var videoId = getYouTubeVideoID(url);
-	        console.log("추출된 동영상 ID:", videoId); // 디버깅용 로그
-	
-	        if(videoId){
-	            var embedUrl = 'https://www.youtube.com/embed/' + videoId;
-	            var iframe = '<div class="responsive-iframe">' +
-	             '    <iframe src="' + embedUrl + '" ' +
-	             '            title="유튜브 동영상" ' +
-	             '            frameborder="0" ' +
-	             '            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-	             '            referrerpolicy="strict-origin-when-cross-origin" ' +
-	             '            allowfullscreen>' +
-	             '    </iframe>' +
-	             '</div>';
-	            $('#video-preview').html(iframe);
-	            $('#error-message').text('');
-	        } else if(url !== ''){
-	            $('#video-preview').html('');
-	            $('#error-message').text('유효한 유튜브 URL을 입력해주세요.');
-	        } else {
-	            $('#video-preview').html('');
-	            $('#error-message').text('');
-	        }
-	    });
-	
+	    // YouTube 비디오 ID 추출 함수
 	    function getYouTubeVideoID(url){
 	        var regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
 	        var match = url.match(regex);
@@ -333,10 +306,46 @@
 	        }
 	    }
 	
-	    
+	    // YouTube 동영상 임베드 함수
+	    function embedYouTubeVideo(url){
+	        var videoId = getYouTubeVideoID(url);
+	        if(videoId){
+	            var embedUrl = 'https://www.youtube.com/embed/' + videoId;
+	            var iframe = '<div class="responsive-iframe">' +
+	                         '    <iframe src="' + embedUrl + '" ' +
+	                         '            title="유튜브 동영상" ' +
+	                         '            frameborder="0" ' +
+	                         '            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+	                         '            referrerpolicy="strict-origin-when-cross-origin" ' +
+	                         '            allowfullscreen>' +
+	                         '    </iframe>' +
+	                         '</div>';
+	            $('#video-preview').html(iframe);
+	            $('#error-message').text('');
+	        } else if(url !== ''){
+	            $('#video-preview').html('');
+	            $('#error-message').text('유효한 유튜브 URL을 입력해주세요.');
+	        } else {
+	            $('#video-preview').html('');
+	            $('#error-message').text('');
+	        }
+	    }
+	
+	    // 입력 필드 변경 시 동영상 임베드
+	    $('#youtube-url').on('input', function() {
+	        var url = $(this).val().trim();
+	        console.log("입력된 URL:", url); // 디버깅용 로그
+	        embedYouTubeVideo(url);
+	    });
+	
+	    // 페이지 로드 시 기존 URL로 동영상 임베드
+	    var initialUrl = $('#youtube-url').val().trim();
+	    if(initialUrl){
+	        embedYouTubeVideo(initialUrl);
+	    }
 	});
 	
-	function eduWrite() {
+	function eduUpdate() {
 		
 		var category = $('select[name="category"]').val();
 		var dept = $('select[name="dept"]').val();
@@ -344,6 +353,7 @@
 		var content = $('textarea[name="content"]').val();
 		var time = $('input[name="time"]').val();		
 		var url = $('input[name="url"]').val();
+		var no = $('input[name="no"]').val();
 		
 				
 	    if (!category || !dept || !subject || !content || !time || !url) {
@@ -358,7 +368,8 @@
 				subject: subject,
 				content: content,
 				total_time: time,
-				url: url
+				url: url,
+				no: no
 		}
 		
 		console.log('데이터',data);
@@ -369,7 +380,7 @@
 	
 	function httpSuccess(response) {
 		console.log('성공',response);
-		location.href="/ad/education"
+		location.href="/ad/educationDetail/${info.no}"
 	}
 	
 	function secondBtn1Act() {
@@ -379,7 +390,7 @@
 	}
 	
 	function back(){
-		location.href="/ad/education"
+		location.href="/ad/educationDetail/${info.no}"
     }
 	
 	

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class EducationDTO {
 	
 	// 교육 등록 테이블
-	private int education_no;
+	private int no;
 	private String category;
 	private String subject;
 	private String content;
@@ -19,11 +19,18 @@ public class EducationDTO {
 	
 	// 부서정보
 	private String text;
+	private String name;
 	
 	// 글 개수 카운트
 	private int total_count;
 	
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public int getTotal_count() {
 		return total_count;
 	}
@@ -36,11 +43,11 @@ public class EducationDTO {
 	public void setText(String text) {
 		this.text = text;
 	}
-	public int getEducation_no() {
-		return education_no;
+	public int getNo() {
+		return no;
 	}
-	public void setEducation_no(int education_no) {
-		this.education_no = education_no;
+	public void setNo(int no) {
+		this.no = no;
 	}
 	public String getCategory() {
 		return category;
