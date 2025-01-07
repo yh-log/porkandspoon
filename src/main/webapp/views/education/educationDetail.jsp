@@ -309,7 +309,8 @@
     
     function onPlayerStateChange(event) {
         if (event.data === YT.PlayerState.ENDED) {
-        	console.log("다봤다");          
+        	console.log("다봤다");
+        	console.log(YT.PlayerState.ENDED);
             educationHistory();
         }
     }
@@ -370,6 +371,8 @@
 		removeAlert(); // 팝업닫기
 		location.href="/ad/education"
 	}
+	
+	
 	
 	
 </script>

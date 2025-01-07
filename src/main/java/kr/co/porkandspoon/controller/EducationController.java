@@ -23,6 +23,7 @@ import kr.co.porkandspoon.dto.EducationDTO;
 import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.service.AlarmService;
 import kr.co.porkandspoon.service.EducationService;
+import kr.co.porkandspoon.util.CommonUtil;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @RestController
@@ -144,6 +145,7 @@ public class EducationController {
 	    return null;
     }
 	
+	// 교육 이수이력 등록
 	@PostMapping(value="/educationHistory")
 	public Map<String,Object> educationHistory(@RequestParam Map<String, Object> params, @AuthenticationPrincipal CustomUserDetails user){
 		
@@ -163,6 +165,7 @@ public class EducationController {
 		return result;
 	}
 	
+	// 교육 삭제
 	@DeleteMapping(value="/eduDelete")
 	public Map<String,Object> eduDelete(@RequestParam int no){
 		
@@ -171,6 +174,26 @@ public class EducationController {
 		
 		return result;
 	}
+	
+	//수강 이력 히스토리
+	@GetMapping(value="/eduHistory")
+	public Map<String,Object> eduHistory(@RequestParam int no,@RequestParam String id){	
+		Map<String,Object> result = new HashMap<String, Object>();
+		List<EducationDTO> list = eduService.historyList(no,id);
+		logger.info("수강 이력 : "+CommonUtil.toString(list));
+		result.put("list", list);
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 }
