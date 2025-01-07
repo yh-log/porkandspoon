@@ -27,4 +27,6 @@ public interface EducationDAO {
 
 	int eduDelete(int no);
 
+	List<EducationDTO> historyList(int no, String id);
+
 }

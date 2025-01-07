@@ -20,7 +20,8 @@
 	<select id="educationList" parameterType="map" resultType="kr.co.porkandspoon.dto.EducationDTO">
 		SELECT 
             e.*, 
-            d.text, 
+            d.text,
+            d.id, 
             COUNT(*) OVER() AS total_count
         FROM education e
         JOIN department d ON e.id = d.id
@@ -63,6 +64,25 @@
 	<delete id="eduDelete">
 		DELETE FROM education WHERE no=#{no}
 	</delete>
+	
+	<!-- 교육 이력 리스트 -->
+	<select id="historyList" resultType="kr.co.porkandspoon.dto.EducationDTO">
+		SELECT 
+		    ds.parent,
+		    ds.name AS dept_name,
+		    u.name,
+		    eh.education_date,
+		    e2.`no`
+		FROM direct_store ds 
+		LEFT JOIN `user` u 
+		    ON ds.owner = u.username 
+		LEFT JOIN education_history eh 
+		    ON ds.owner = eh.username 
+		    AND eh.`no` = #{no}
+		LEFT JOIN education e2 
+		    ON eh.`no` = e2.`no` 
+		WHERE ds.parent = #{id}
+	</select>
 	
 	
 	

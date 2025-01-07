@@ -16,15 +16,45 @@ public class EducationDTO {
 	private String updater;
 	private String id;
 	private String total_time;
+	private LocalDateTime education_date;
 	
 	// 부서정보
 	private String text;
 	private String name;
+	private String parent;
 	
 	// 글 개수 카운트
 	private int total_count;
 	
+	// 가상 컬럼
+	private String dept_name;
+	private String filter;
 	
+	
+	public String getFilter() {
+		return filter;
+	}
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+	public String getDept_name() {
+		return dept_name;
+	}
+	public void setDept_name(String dept_name) {
+		this.dept_name = dept_name;
+	}
+	public LocalDateTime getEducation_date() {
+		return education_date;
+	}
+	public void setEducation_date(LocalDateTime education_date) {
+		this.education_date = education_date;
+	}
+	public String getParent() {
+		return parent;
+	}
+	public void setParent(String parent) {
+		this.parent = parent;
+	}
 	public String getName() {
 		return name;
 	}

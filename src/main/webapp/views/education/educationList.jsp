@@ -55,6 +55,55 @@
     	justify-content: flex-end;
     	transform: translateY(-77px);
 	}
+	 #calendarBox{
+        width: 80%;
+        padding-left: 15%;
+    }
+
+    /* 기본 모달 스타일 */
+	.modal {
+	    display: none;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5);
+	    z-index: 1100;
+	}
+	
+	/* 모달 내부 콘텐츠 */
+	.modal-content {
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    background: #fff;
+	    padding: 20px;
+	    border-radius: 8px;
+	    width: 800px;
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	/* 모달 헤더 */
+	.modal-header {
+	    display: flex;
+	    justify-content: end;
+	    align-items: center;
+	    border-bottom: 1px none #ddd;
+	    margin-bottom: 15px;
+	}
+
+	/* 닫기(x) 버튼 */
+	.modal-close {
+	    font-size: 20px;
+	    cursor: pointer;
+	}
+	
+	/* 모달 바디 */
+	.modal-body .form-group {
+	    margin-bottom: 15px;
+	}
 </style>
 
 
@@ -107,7 +156,11 @@
 							<nav aria-label="Page navigation" style="margin-top: 35px;">
 								<ul class="pagination justify-content-center" id="pagination"></ul>
 							</nav>
-							<div class="btn-trip"><a href="/ad/educationWrite" class="btn btn-primary">등록</a></div>			
+							<div class="btn-trip"><a href="/ad/educationWrite" class="btn btn-primary">등록</a></div>
+							
+							<div id="modalBox" class="modal" style="display: none;">
+					   			<div class="modal-content"></div>
+							</div>			
 						</div> <!-- cont-body -->
 					</div>
 				</section>	
@@ -199,9 +252,12 @@
 		}
 		
 		for (var view of list) {
-
+			// onclick="loadModal(\'edu\',\'Info\')"			
+			var id = view.id;
+			var no = view.no;
+			console.log('부서,넘버 : ',id,no);
 			content += '<tr>';
-			content += '<td>'+view.text+'</td>';
+			content += '<td onclick="eduHistory(\'' + id + '\',' + no + ')">'+view.text+'</td>';
 			if(view.category == 'duty'){
 				content += '<td>의무 교육</td>';
 			}else if(view.category == 'job'){
@@ -223,7 +279,49 @@
 		$('#list').html(content);
 	}
 	
+	function eduHistory(id,no) {
+		var data = {
+				id: id,
+				no: no
+		}
+		
+		getAjax('/eduHistory','JSON',data);	
+		//loadModal('edu','Info');
+	}
 	
+	function getSuccess(response){		
+		console.log('수강 리스트 가져왔니?',response);
+		loadModal('edu','Info',response);
+	}
+	
+	
+	function setModalData(type, data) {
+		console.log('실행',data.list);
+		var content = '';
+		for (var view of data.list) {
+			content += '<tr>';
+			content += '<td>'+view.name+'</td>';			
+			content += '<td>'+view.dept_name+'</td>';
+			
+			if(view.education_date){
+				content += '<td>수강완료</td>';	
+			}else{
+				content += '<td>미수강</td>';						
+			}
+			
+			var dateOnly = '';        
+	        if (view.education_date) {	            
+	            dateOnly = view.education_date.split('T')[0];
+	        } else {
+	            dateOnly = '-';
+	        }
+	        
+	        content += '<td>' + dateOnly + '</td>';
+	        content += '</tr>';
+		}
+		$('#history').html(content);
+				
+	}
 	
 
 

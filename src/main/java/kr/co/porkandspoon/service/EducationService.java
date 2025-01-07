@@ -64,4 +64,8 @@ public class EducationService {
 		return eduDao.eduDelete(no);
 	}
 
+	public List<EducationDTO> historyList(int no, String id) {
+		return eduDao.historyList(no,id);
+	}
+
 }
