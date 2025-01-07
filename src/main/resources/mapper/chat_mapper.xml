@@ -29,13 +29,13 @@
                 ELSE NULL
                 END AS parent,
             c.content AS position,
-    u.username,
-    u.name AS name
-        FROM user u
-            LEFT JOIN direct_store ds ON u.parent = ds.id
-            LEFT JOIN department d ON u.parent = d.id
-            LEFT JOIN code c ON u.`position` = c.name
-        WHERE u.username = #{username}
+        u.username,
+        u.name AS name
+            FROM user u
+                LEFT JOIN direct_store ds ON u.parent = ds.id
+                LEFT JOIN department d ON u.parent = d.id
+                LEFT JOIN code c ON u.`position` = c.name
+            WHERE u.username = #{username}
 
     </select>
 

@@ -17,17 +17,27 @@
 
 
 	function getSuccess(response){
-		if(response.status == 200){
+		if(response.status === 202){
 			deptCodeOverlay = true;
 			$('#overlayMessage').show();
         	$('#overlayMessage').text(response.message);
         	$('#overlayMessage').css('color', 'var(--bs-primary)');
-		}else{
+		}else if(response.status === 400 || response.status === 500){
 			deptCodeOverlay = false;
 			$('#overlayMessage').show();
         	$('#overlayMessage').text(response.message);
         	$('#overlayMessage').css('color', 'var(--bs-danger)');
+		}else if(response.status === 200){
+			let newRow = [response.name, response.dept_name, response.position,  '<div onclick="chartTableDelete(this, \'' + response.username + '\', \'' + response.name + '\', \'' + response.parent + '\')"><i class="bi bi-trash3"></i></div>'];
+
+			// 기존 rows에 추가
+			exampleData.rows.push(newRow);
+
+			// 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+			updateTableData('customTable', exampleData);
+
 		}
+
 	}
 	
 	function validateForm() {
@@ -48,7 +58,6 @@
 	
 	function deptWrire(){
 		var isFormValid = validateForm();
-
 		if (isFormValid) {
             console.log('폼이 유효합니다.');
 
@@ -66,7 +75,7 @@
 		        deptCode.classList.remove('is-invalid');
 		        
 		        textEaditorWrite('/ad/dept/write');
-		        removeAlert();
+
 	        }
             
 		}
@@ -149,5 +158,11 @@
 	}
 	
 	function fileSuccess(response){
-		console.log('결과');
+		removeAlert();
+		console.log('결과', response);
+		if(response.status === 200){
+			layerPopup(response.message, '확인', false, function() {
+				location.href = '/ad/dept/detail/' + response.id;
+			});
+		}
 	}

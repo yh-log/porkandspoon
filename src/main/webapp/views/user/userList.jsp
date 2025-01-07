@@ -163,7 +163,7 @@ $('#firstMenu').on('click', function() {
     paginationInitialized = false;
     pageCall(firstPage, { userYn: '' }); // userYn 기본값 비움
     $('input[name="search"]').val(''); 
-    $('#subMenuSubject').text($('#firstMenu').html());
+    $('#subMenuSubject').text($('#firstMenu').text());
 });
 
 // 퇴사자 리스트 클릭 이벤트
@@ -178,7 +178,7 @@ $('#secondMenu').on('click', function() {
     paginationInitialized = false;
     pageCall(firstPage, { userYn: 'Y' }); // userYn 값 전달
     $('input[name="search"]').val(''); 
-    $('#subMenuSubject').text($('#secondMenu').html());
+    $('#subMenuSubject').text($('#secondMenu').text());
 });
 
 // 검색 버튼 클릭 이벤트
