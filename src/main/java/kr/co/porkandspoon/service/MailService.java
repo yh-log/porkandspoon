@@ -197,7 +197,7 @@ public List<MailDTO> getMailListData(Map<String, Object> params) {
 		result = mailDAO.getBookMark(params);
 		break;
 	case "del":
-		result = mailDAO.getDeleteMark(params);
+		result = mailDAO.getDeleteList(params);
 		break;
 	}
     
@@ -221,6 +221,39 @@ public List<MailDTO> getMailListData(Map<String, Object> params) {
         //logger.info(""+mailDTO.get)
 	}
 	return result;
+}
+
+public boolean changeToRead(List<String> idxList, String loginId) {
+	return mailDAO.changeToRead(idxList, loginId) > 0 ? true : false;
+}
+
+public boolean isSender(Map<String, String> params) {
+	return mailDAO.isSender(params)  > 0 ? true : false;
+}
+
+public boolean isReceiver(Map<String, String> params) {
+	return mailDAO.isReceiver(params)  > 0 ? true : false;
+}
+
+public int toggleSentMailBookmark(Map<String, String> params) {
+	return mailDAO.toggleSentMailBookmark(params);
+}
+
+public int toggleReceivedMailBookmark(Map<String, String> params) {
+	//params.put("is_bookmark", params.get("is_bookmark").equals("Y") ? "N" : "Y");
+	return mailDAO.toggleReceivedMailBookmark(params);
+}
+
+public String getSentMailBookmark(String idx, String loginId) {
+	return mailDAO.getSentMailBookmark(idx,loginId);
+}
+
+public String getReceivedMailBookmark(String idx, String loginId) {
+	return mailDAO.getReceivedMailBookmark(idx,loginId);
+}
+
+public boolean chageAllToRead(Map<String, String> params) {
+	return mailDAO.chageAllToRead(params) > 0 ? true : false ;
 }
 
 

@@ -416,6 +416,8 @@
 
 
 
+<script src='/resources/js/common.js'></script>
+<script src='/resources/js/charjstree.js'></script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
@@ -428,8 +430,6 @@
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<script src='/resources/js/common.js'></script>
-<script src='/resources/js/charjstree.js'></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
@@ -596,7 +596,7 @@
 
 		// 원하는 동작 수행
 		const roomName = 'test';
-		const username = $('input[name="username"').val();
+		const username = $('input[name="username"]').val();
 
 		// 1. 채팅 룸 생성 (id 리턴)
 		// AJAX 요청으로 채팅방 생성

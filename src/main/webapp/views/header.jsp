@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <sec:authentication var="loggedInUser" property="principal.username" />
 <script>
 function checkNewAlarms() {
@@ -30,13 +32,13 @@ function checkNewAlarms() {
 }
 
 function displayAlarmMessage(alarm) {
-    var alarmMessage = document.getElementById('alarmMessage');
-    alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>'+ alarm.subject;
+	var alarmMessage = document.getElementById('alarmMessage');
+	alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
 
-    // 메시지 표시
-    alarmMessage.style.display = 'flex';
-    alarmMessage.style.opacity = '1'; // 천천히 나타나기
-
+	// 메시지 표시
+	alarmMessage.style.display = 'flex';
+	alarmMessage.style.opacity = '1';  // 천천히 나타나기
+}
     // 3초 후 메시지 천천히 사라짐
     /* setTimeout(function () {
         alarmMessage.style.opacity = '0'; // 점점 사라지기
@@ -239,10 +241,10 @@ setInterval(checkNewAlarms, 5000); */
     <div class="popup-content">
         <span class="btn-close"></span> <!-- onclick="closeAlarmPopup(event)" -->
         <div id="alarmHeader">
-        	<span id="alarmSubject">알림</span>
+        	<span id="alarmSubjectaa">알림</span>
         </div>
         <div id="alarmListContent">
-        
+
 		</div><!-- alarmListContent -->
 		<div style="text-align: right;">
        		<span class="allView" style="color: gray; font-size: 13px; cursor: pointer;" >전체보기</span>
@@ -253,7 +255,7 @@ setInterval(checkNewAlarms, 5000); */
 <div class="allAlarm">
 	<div class="col-12 col-lg-12 row">
 		<div class="col-sm-11">
-			<div id="alarmHeader"><span id="alarmSubject">알림</span></div>
+			<div id="alarmHeaderdd"><span id="alarmSubject">알림</span></div>
 		</div>
 		<div class="col-sm-1"><span class="btn-close" style="position: absolute; font-size: 16px; margin-left: 30px; cursor: pointer;"></span></div>
 	</div>
@@ -290,7 +292,7 @@ setInterval(checkNewAlarms, 5000); */
 <script>
 	var loggedInUser = '${loggedInUser}';
 	$(document).ready(function() {
-		
+
 		 const url = '/getAlarmList';
 		 const data = {username: loggedInUser};
 		 $.ajax({
@@ -315,13 +317,13 @@ setInterval(checkNewAlarms, 5000); */
 		            console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
 		        }
 		    });
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
 	    $('#alarm').on('click', function() {
 	    	const url = '/getAlarmList';
 	    	const data = {username: loggedInUser};
@@ -343,7 +345,7 @@ setInterval(checkNewAlarms, 5000); */
 	    $('#alarmPopup .btn-close').on('click', function() {
 	        $('#alarmPopup').hide();
 	    });
-	    
+
 	});
 	
 	

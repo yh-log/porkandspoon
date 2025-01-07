@@ -298,8 +298,8 @@ div.attach_file span.btn_area span.btn_wrap {
 
 						<div class="cont-body">
 							<p class="title">
-							 <c:if test="${isBookmarked eq 'true'}"><i id="bookmark" class="bi bi-star-fill"></i></c:if> 
-							 <c:if test="${isBookmarked eq 'false'}"><i id="bookmark" class="bi bi-star"></i></c:if> 
+							 <c:if test="${is_bookmark eq 'Y'}"><i id="bookmark" class="bi bi-star-fill"></i></c:if> 
+							 <c:if test="${is_bookmark eq 'N'}"><i id="bookmark" class="bi bi-star"></i></c:if> 
 								${mailInfo.title}
 							</p>
 							<div class="line">
@@ -422,24 +422,25 @@ div.attach_file span.btn_area span.btn_wrap {
 	console.log("fileCont",fileCont);
 
 	// 즐겨찾기
-	var isBookmark='${isBookmarked}';
+	var isBookmark='${is_bookmark}';
 	console.log("[첫]isBookmark : ",isBookmark);
 	console.log("bookel",document.getElementById('bookmark'));
 	document.getElementById('bookmark').addEventListener('click', function() {
 		console.log("[전송직전]isBookmark : ",isBookmark);
 		var params = {
 				'idx' : '${mailInfo.idx}',
-				'isBookmarked' : isBookmark
+				'is_bookmark' : isBookmark
 		}
-		httpAjax('POST','/mail/bookmark',params);
-    });
+		httpAjax('PUT','/mail/bookmark',params);
+		//location.reload();
+	});
 
 	function httpSuccess(response){
 		$('#bookmark').toggleClass('bi-star-fill bi-star');
 		console.log("[success1]isBookmark : ",isBookmark);
-		isBookmark = isBookmark == 'false' ? 'true' : 'false';
+		isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
 		console.log("[success2]isBookmark : ",isBookmark);
-	}
+	} 
 </script>
 
 </html>

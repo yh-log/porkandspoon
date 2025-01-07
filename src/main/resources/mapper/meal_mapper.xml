@@ -11,8 +11,8 @@
     </select>
     
     <insert id="setmealMenu" parameterType="Map">
-    	insert into meal_menu(start_date,end_date,is_time,content,creater)
-    		values(#{start_date},#{end_date},#{is_time},#{content},#{creater})
+    	INSERT INTO meal_menu(start_date,end_date,is_time,content,creater)
+    		VALUES(#{start_date},#{end_date},#{is_time},#{content},#{creater})
     </insert>
     
     <update id="editmealMenu" parameterType="Map">
@@ -70,7 +70,11 @@
     
     
     <select id="getmealTicket" resultType="kr.co.porkandspoon.dto.MealDTO" >
-    	select * from meal where use_yn = 'Y'
+    	SELECT * FROM meal WHERE use_yn = 'Y'
+    </select>
+    
+    <select id="getmealList" resultType="kr.co.porkandspoon.dto.MealDTO" >
+    	SELECT * FROM meal 
     </select>
     
    <select id="menuOverlay" resultType="int">
