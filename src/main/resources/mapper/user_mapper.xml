@@ -896,4 +896,11 @@
 		UPDATE direct_store SET owner = #{username} WHERE id = #{new_position}
 	</update>
 
+	<!-- author yh.kim (25. 01. 07)
+		부서(브랜드) 등록 시 발령 직원 부서, 사번 업데이트 -->
+	<update id="userDeptUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET person_num = #{person_num}, parent = #{parent} WHERE username = #{username}
+	</update>
+
+
 </mapper>

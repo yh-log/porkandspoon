@@ -376,12 +376,16 @@ public class UserService {
 		// 브랜드 등록
 		int deptRow = userDao.deptWrite(dto);
 
-//		String[] usernameArr = dto.getUser_name().split(" ");
-//		for (String username : usernameArr) {
-//			dto.setUser_name(username);
-//			int userUpdateRow = userDao.userDeptUpdate(dto);
-//			logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
-//		}
+		String[] usernameArr = dto.getUser_name().split(" ");
+		UserDTO userDTO = new UserDTO();
+		for (String username : usernameArr) {
+			userDTO.setUsername(username);
+			userDTO.setParent(dto.getId());
+			String person_num = generateCompanyNumber(userDTO);
+			userDTO.setPerson_num(person_num);
+			int userUpdateRow = userDao.userDeptUpdate(userDTO);
+			logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
+		}
 
 
 

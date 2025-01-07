@@ -271,4 +271,9 @@ public interface UserDAO{
 	 */
 	int updateStoreOwner(UserDTO user);
 
+	/**
+	 * author yh.kim (25. 01. 07)
+	 * 부서(브랜드) 등록 시 발령 직원 부서, 사번 업데이트
+	 */
+	int userDeptUpdate(UserDTO userDTO);
 }
