@@ -8,50 +8,50 @@
 
 <sec:authentication var="loggedInUser" property="principal.username" />
 <script>
-function checkNewAlarms() {
-    var loggedInUser = '${loggedInUser}';
+	function checkNewAlarms() {
+	    var loggedInUser = '${loggedInUser}';
+	
+	    if (!loggedInUser) {
+	        console.warn('로그인 정보가 없습니다.');
+	        return;
+	    }
+	
+	   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
+	        method: 'GET',
+	        headers: { 'Content-Type': 'application/json' }
+	    })
+	    .then(response => response.json())
+	    .then(alarms => {
+	        if (alarms.length > 0) {
+	            alarms.forEach(alarm => {
+	                displayAlarmMessage(alarm);
+	            });
+	        }
+	    })
+	    .catch(error => console.error('알림 조회 실패:', error));
+	}
+	
+	function displayAlarmMessage(alarm) {
+		var alarmMessage = document.getElementById('alarmMessage');
+		alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
+	
+		// 메시지 표시
+		alarmMessage.style.display = 'flex';
+	    setTimeout(function () {
+	        alarmMessage.style.opacity = '1';  // 천천히 나타나기
+	    }, 10);
+	    // 3초 후 메시지 천천히 사라짐
+	    setTimeout(function () {
+	        alarmMessage.style.opacity = '0'; // 점점 사라지기
+	        setTimeout(function () {
+	            alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
+	        }, 1000); // 사라지는 애니메이션 지속 시간 (1초)
+	    }, 3000); // 알림이 유지되는 시간 (3초)
+	}
 
-    if (!loggedInUser) {
-        console.warn('로그인 정보가 없습니다.');
-        return;
-    }
 
-   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(alarms => {
-        if (alarms.length > 0) {
-            alarms.forEach(alarm => {
-                displayAlarmMessage(alarm);
-            });
-        }
-    })
-    .catch(error => console.error('알림 조회 실패:', error));
-}
-
-function displayAlarmMessage(alarm) {
-	var alarmMessage = document.getElementById('alarmMessage');
-	alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
-
-	// 메시지 표시
-	alarmMessage.style.display = 'flex';
-    setTimeout(function () {
-        alarmMessage.style.opacity = '1';  // 천천히 나타나기
-    }, 10);
-    // 3초 후 메시지 천천히 사라짐
-    /* setTimeout(function () {
-        alarmMessage.style.opacity = '0'; // 점점 사라지기
-        setTimeout(function () {
-            alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
-        }, 1000); // 사라지는 애니메이션 지속 시간 (1초)
-    }, 3000); // 알림이 유지되는 시간 (3초) */
-}
-
-
-// 5초마다 알림 확인
-/* setInterval(checkNewAlarms, 3000); */
+	// 5초마다 알림 확인
+	setInterval(checkNewAlarms, 3000);
 </script> 
 <style>
 	#alarmPopup {
@@ -171,7 +171,7 @@ function displayAlarmMessage(alarm) {
 	}
 	.alarm-msg {
 		width: auto; /* 텍스트에 따라 유동적으로 크기 조정 */ /* 최대 너비 설정 */
-	    height: 80px; /* 텍스트 크기에 따라 높이 조정 */
+	    height: 50px; /* 텍스트 크기에 따라 높이 조정 */
 	    position: absolute;
 	    right: 100px;
 	    top: 85px;
@@ -184,9 +184,11 @@ function displayAlarmMessage(alarm) {
 	    opacity: 0;
 	    transition: opacity 1s ease-in-out;
 	    font-size: 16px;
+	    font-weight: bold;
 	    white-space: nowrap; 
-	    border: 1px solid gray;
+	    border: 1px solid #bbbbb;
 	    z-index: 1000;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	}
 	
 	.alarm-icon-style {
@@ -208,7 +210,7 @@ function displayAlarmMessage(alarm) {
 	    display: none;
         top: 80px;
     	right: 128px;
-    	border: 1px solid #ddd;
+    	border: 1px solid #e5e5e5;
 	}
 	
 	.unAlarmList {

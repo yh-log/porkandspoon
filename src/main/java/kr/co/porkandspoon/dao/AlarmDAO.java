@@ -35,5 +35,7 @@ public interface AlarmDAO {
 
 	void setUpdateUrl(NoticeDTO dto);
 
+	List<NoticeDTO> getEdu(NoticeDTO noticeDTO);
+
 
 }

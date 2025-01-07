@@ -66,6 +66,7 @@ public class AlarmService {
 			noticeDTO.setSubject(appdto.getSubject());
 		}
 		
+		// 기안자에게 반려 알림
 		if (noticeDTO.getCode_name() == "ml009") {
 			ApprovalDTO appdto =  alarmDAO.getDraftLine(noticeDTO);
 			noticeDTO.setFrom_id(appdto.getUsername());
@@ -76,13 +77,21 @@ public class AlarmService {
 			noticeDTO.setSubject(appdto.getSubject());
 		}
 		
+		// 회의실 예약 알림
 		if(noticeDTO.getCode_name() == "ml001") {
 			NoticeDTO ndto = alarmDAO.getRoomUser(noticeDTO);
 			noticeDTO.setFrom_id(ndto.getFrom_id());
 			noticeDTO.setSubject(ndto.getSubject());
 		}
 		
-		
+		// 교육 시청 알림
+		if(noticeDTO.getCode_name() == "ml005") {
+			List<NoticeDTO> dto = alarmDAO.getEdu(noticeDTO);
+			for(NoticeDTO noticedto : dto) {
+				noticedto.setUsername(null);
+			}
+		}
+	
 		
 		// 보낸 사람의 아이디를 통해 user 테이블의 name 가져오기
 		String username = noticeDTO.getFrom_id();
@@ -98,7 +107,12 @@ public class AlarmService {
 		case "ml001":
 			noticeDTO.setSubject("회의 예약 알림이 왔습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;회의실에서 회의 예약이 있습니다.");
-			noticeDTO.setUrl("마이페이지 자기 캘린더로 이동 url");
+			noticeDTO.setUrl("/calender");
+			break;
+		case "ml002":
+			noticeDTO.setSubject("메일이 왔습니다.");
+			noticeDTO.setContent("<b>" + sub + "</b> &nbsp; 메일이 왔습니다.");
+			noticeDTO.setUrl("/mail/detail/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml003":
 			noticeDTO.setSubject("게시글에 댓글이 달렸습니다.");
@@ -109,6 +123,11 @@ public class AlarmService {
 			noticeDTO.setSubject("댓글에 답변이 달렸습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;에 대댓글이 달렸습니다.");
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getBoard_idx());
+			break;
+		case "ml005":
+			noticeDTO.setSubject("교육 시청 알림이 왔습니다.");
+			noticeDTO.setContent("<b>" + sub + "</b> &nbsp; 교육 시청 알림이 왔습니다.");
+			noticeDTO.setUrl("/u/educationDetail/" + noticeDTO.getBoard_idx());
 			break;
 		case "ml007":
 			noticeDTO.setSubject("결재요청이 왔습니다.");

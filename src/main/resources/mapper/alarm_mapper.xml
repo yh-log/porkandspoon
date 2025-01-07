@@ -84,7 +84,20 @@
 		UPDATE notice SET is_url = 'Y' WHERE alarm_idx = #{alarm_idx}
 	</update>
 	
-	
+	<select id="getEdu" resultType="kr.co.porkandspoon.dto.NoticeDTO">
+	    SELECT 
+	        e.no AS from_idx,                   
+	        e.subject AS subject,             
+	        e.username AS from_id,            
+	        u.username AS username           
+	    FROM education e
+	    LEFT JOIN direct_store ds 
+	        ON e.id = ds.parent
+	    LEFT JOIN user u
+	        ON ds.id = u.parent
+	        AND u.position = 'po7'
+	    WHERE e.url = #{content}
+	</select>
 	
 	
 	

@@ -20,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.EducationDTO;
+import kr.co.porkandspoon.dto.NoticeDTO;
+import kr.co.porkandspoon.service.AlarmService;
 import kr.co.porkandspoon.service.EducationService;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
 
@@ -28,6 +30,7 @@ public class EducationController {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired EducationService eduService;
+	@Autowired AlarmService alarmService;
 	
 	// 등록 리스트
 	@GetMapping(value="/ad/education")
@@ -55,8 +58,15 @@ public class EducationController {
 	@PostMapping(value="/educationWrite")
 	public Map<String,Object> educationWrite(@RequestParam Map<String,Object> params){
 		
+		
 		Map<String,Object> result = new HashMap<String, Object>();
 		result.put("success", eduService.educationWrite(params));
+		
+		// 교육 알림
+		NoticeDTO dto = new NoticeDTO();
+		dto.setContent((String) params.get("url"));
+		dto.setCode_name("ml005");
+		alarmService.saveAlarm(dto);
 		
 		return result;
 	}
