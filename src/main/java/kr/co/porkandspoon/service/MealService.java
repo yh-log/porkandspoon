@@ -117,6 +117,11 @@ public class MealService {
 		return mealDAO.getTicketCount(username);
 	}
 
+	public List<MealDTO> getmealList() {
+		
+		return mealDAO.getmealList();
+	}
+
 	
 
 	

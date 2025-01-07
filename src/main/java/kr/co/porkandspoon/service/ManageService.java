@@ -550,6 +550,18 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	}
 
 
+	public ManageDTO getDirectInfo(String owner) {
+		
+		return manageDAO.getDirectInfo(owner);
+	}
+
+
+	public List<ManageDTO> getDirectList() {
+		
+		return manageDAO.getDirectList();
+	}
+
+
 
 	
 
