@@ -314,7 +314,7 @@ public class MealController {
 	    return mav;
 	}
 			
-	
+	//식단표 시간필터 기능
 	@GetMapping(value = "/ad/mealMenu/{is_time}")
 	public ResponseEntity<List<MealDTO>> getMealMenu(@PathVariable String is_time) {
 	    logger.info("Requested is_time: {}", is_time);
@@ -329,12 +329,13 @@ public class MealController {
 	}
 	 
 	
-	// 식단표 등록 - 등록되어있는게 있으면 어떻게 처리할지 작업해야 함.
+	// 식단표 등록 뷰이동
 	@GetMapping(value="/ad/mealMenu/Write")
 	public ModelAndView mealMenuWriteView() {
 		return new ModelAndView("/meal/mealMenuWrite");
 	}
 	
+	// 식단표 등록 기능
 	@PostMapping(value = "/ad/mealMenu/Write")
 	public ModelAndView setmealMenuWrite(@RequestParam Map<String, String> params,HttpSession session) {
 		
@@ -348,6 +349,7 @@ public class MealController {
 		return new ModelAndView("/meal/mealMenuWrite");
 	}
 	
+	//식단표 중복기능
 	@GetMapping(value = "/ad/mealMenu/Overlay")
 	@ResponseBody
 	public Map<String, Integer> menuOverlay(String start, String end) {
@@ -393,7 +395,7 @@ public class MealController {
 	@GetMapping(value="/ad/meal/List")
 	public ModelAndView mealListView() {
 	
-		List<MealDTO> list = mealService.getmealTicket();
+		List<MealDTO> list = mealService.getmealList();
 	    
 		 list.forEach(ticket -> {
 		        System.out.println("Ticket Name: " + ticket.getName());

@@ -43,6 +43,8 @@ public interface MealDAO {
 
 	int editmealFile(FileDTO dto);
 
+	List<MealDTO> getmealList();
+
 	
 
 	

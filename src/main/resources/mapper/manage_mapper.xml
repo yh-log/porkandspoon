@@ -4,6 +4,13 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.ManageDAO">
+ 		
+ 	<select id="getDirectInfo" resultType="kr.co.porkandspoon.dto.ManageDTO">
+ 		SELECT ds.address,ds.address_detail,ds.name as spotName,u.name FROM direct_store ds
+ 		 LEFT JOIN user u ON ds.owner = u.username WHERE ds.owner = #{owner}
+ 	</select>	
+ 
+ 
  
 	 <insert 
 	    useGeneratedKeys="true"
@@ -155,6 +162,15 @@
 	    ORDER BY create_date ASC LIMIT 5
 	</select>
 	
+	<!-- 직영점 리스트 불러오기 -->
+	<select id="getDirectList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+	    SELECT ds.name as spotName,ds.owner,ds.address,ds.create_date,u.name FROM direct_store ds
+ 		LEFT JOIN user u ON u.username = ds.owner 
+ 		WHERE id LIKE 'BY%'
+	    ORDER BY create_date ASC LIMIT 5;
+	</select>
+	
+	<!-- 직원 리스트 불러오기 -->
 	<select id="getPartList5" resultType="kr.co.porkandspoon.dto.ManageDTO">
 		SELECT p.*, s.name as spotName FROM part p LEFT JOIN direct_store s ON p.id = s.id
 	    WHERE p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})

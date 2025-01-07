@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,38 +50,42 @@
   gap: 20px;
 }
 
-/* 상단 영역 */
+/* 상단 영역 (전체 컨테이너) */
 .top-section {
   display: flex;
   gap: 20px;
-  height: 300px; /* 고정된 높이 설정 */
+  align-items: stretch; /* 자식 요소의 높이를 동일하게 맞춤 */
+  min-height: 300px; /* 최소 높이 설정 */
 }
 
-/* 상단 왼쪽 */
+/* 왼쪽 박스 */
 .top-left {
-  flex: 2;
+  flex: 2; /* 비율로 크기 조정 */
   background-color: #ffffff;
   text-align: center;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 내용 가운데 정렬 */
 }
 
-/* 상단 오른쪽 */
+/* 오른쪽 박스 (리스트 포함) */
 .top-right {
-  flex: 3;
+  flex: 3; /* 비율로 크기 조정 */
   background-color: #ffffff;
   padding: 20px;
-  
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: auto; /* 내용이 많아지면 스크롤 활성화 */
+  max-height: 500px; /* 최대 높이 제한 (스크롤 활성화) */
 }
-
 /* 하단 영역 */
 .bottom-section {
   display: flex;
   gap: 20px;
-  height: 400px; /* 고정된 높이 설정 */
+  height: auto; /* 고정 높이 제거 */
 }
 
 /* 하단 왼쪽 */
@@ -90,6 +95,10 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 그래프 가운데 정렬 */
+  justify-content: center;
 }
 
 /* 하단 오른쪽 */
@@ -99,17 +108,17 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* 공통 스타일 */
-h3, h4 {
-  margin-bottom: 10px;
-  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 영역을 넘어가지 않도록 설정 */
+  max-height: 500px; /* 최대 높이 제한 */
 }
 
 .chart-placeholder {
   width: 100%;
-  height: 80%;
+  height: 100%; /* 자동 크기 조정 */
   background-color: #f0f0f0;
   display: flex;
   justify-content: center;
@@ -118,6 +127,41 @@ h3, h4 {
   color: #aaa;
 }
 
+#pieChart {
+  height: 400px; /* 세로 길이를 늘림 */
+}
+
+#barChart {
+  width: 100%; /* 부모 컨테이너에 맞게 너비를 설정 */
+  height: auto; /* 높이를 자동 조정 */
+}
+
+
+	#partlist {
+  	text-align: center; /* 텍스트 중앙 정렬 */
+  	margin-top: 10px; /* 위아래 간격 추가 */
+	}
+	
+	#partlist a {
+	  text-decoration: none; /* 링크 밑줄 제거 */
+	  color: #007bff; /* 원하는 텍스트 색상 지정 */
+	  font-weight: bold; /* 텍스트 굵게 */
+	}
+	
+	#partlist a:hover {
+	  color: #0056b3; /* 링크에 마우스를 올렸을 때 색상 변경 */
+	  text-decoration: underline; /* 마우스를 올렸을 때 밑줄 표시 */
+	}
+	
+
+/* 공통 스타일 */
+h3, h4 {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+
+
 </style>
 </head>
 
@@ -125,7 +169,7 @@ h3, h4 {
 	<!-- 부트스트랩 -->
 	<script src="/resources/assets/static/js/initTheme.js"></script>
 	<div id="app">
-
+	
 		<!-- 사이드바 -->
 		<jsp:include page="../sidebar.jsp" />
 
@@ -146,6 +190,12 @@ h3, h4 {
 			    <div class="top-right">
 			      <h4>직영점 리스트</h4>
 			      <table class="info-table">
+			      <colgroup>
+						<col>
+						<col >
+						<col width="40%">
+						<col>
+					</colgroup>
 			        <thead>
 			          <tr>
 			            <th>직영점이름</th>
@@ -155,26 +205,30 @@ h3, h4 {
 			          </tr>
 			        </thead>
 			        <tbody>
-			          <tr>
-			            <td>이경언</td>
-			            <td>25</td>
-			            <td>돼미남 강남점</td>
-			            <td>2024.04.06</td>
-			          </tr>
+			          <c:forEach var="direct" items="${list}">
+			            <tr>
+			                <td>${direct.spotName}</td>
+			                <td>${direct.name}</td>
+			                <td>${direct.address}</td>
+			                <td>${direct.create_date}</td>
+			            </tr>
+			        	</c:forEach>
 			        </tbody>
 			      </table>
+			      <h6 id="partlist"><a href="/ad/dept/listView">직영점 리스트 더보러가기</a></h6>
 			    </div>
 			  </div>
 			
 			  <!-- 하단 영역 -->
+			  <!-- 하단 영역 -->
 			  <div class="bottom-section">
 			    <div class="bottom-left">
-			      <h4>지점별 매출</h4>
-			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			      <h4>직영점별 매출</h4>
+			      <canvas id="pieChart"></canvas>
 			    </div>
 			    <div class="bottom-right">
-			      <h4>직영점 총 매출 그래프</h4>
-			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			      <h4>돼미남 총 매출 그래프</h4>
+			      <canvas id="barChart"></canvas>
 			    </div>
 			  </div>
 			</div>
@@ -221,87 +275,67 @@ h3, h4 {
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
+//원형 차트
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+const pieChart = new Chart(pieCtx, {
+  type: 'pie',
+  data: {
+      labels: ['신림사거리점', '강남점', '방배점', '신림점', '해운대점'],
+      datasets: [{
+          data: [15, 20, 25, 10, 15], // 임의 데이터
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff'],
+          borderWidth: 1
+      }]
+  },
+  options: {
+      responsive: true,
+      plugins: {
+          legend: {
+              position: 'bottom', // 범례를 아래로 이동
+          },
+      }
+  }
+});
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
-
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
-
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
+//막대 그래프
+const barCtx = document.getElementById('barChart').getContext('2d');
+const barChart = new Chart(barCtx, {
+  type: 'bar',
+  data: {
+      labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+      datasets: [{
+          label: '월별 매출',
+          data: [1500000000, 1800000000, 1300000000, 1400000000, 2000000000, 2200000000, 2100000000, 1900000000, 1700000000, 2300000000, 2500000000, 2400000000], // 데이터를 10억 단위로 조정
+          backgroundColor: '#36a2eb',
+          borderColor: '#36a2eb',
+          borderWidth: 1,
+      }]
+  },
+  options: {
+      responsive: true,
+      maintainAspectRatio: false, // 그래프 비율 유지 해제
+      plugins: {
+          legend: {
+              display: true,
+              position: 'top'
+          },
+      },
+      scales: {
+          y: {
+              beginAtZero: true,
+              ticks: {
+                  callback: function(value) {
+                      return (value / 1000000000).toFixed(1) + '억'; // y축 값을 10억 단위로 변환
+                  }
+              }
+          }
+      }
+  }
+});
 
 
 </script>

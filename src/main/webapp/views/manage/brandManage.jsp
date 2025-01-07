@@ -100,30 +100,60 @@
 	
 	
 	/* 하단 영역 */
-	.bottom-section {
-	  display: flex;
-	  gap: 20px;
-	  height: 400px; /* 고정된 높이 설정 */
-	}
-	
-	/* 하단 왼쪽 */
-	.bottom-left {
-	  flex: 1;
-	  background-color: #ffffff;
-	  padding: 20px;
-	  border-radius: 10px;
-	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	}
-	
-	/* 하단 오른쪽 */
-	.bottom-right {
-	  flex: 3.5;
-	  background-color: #ffffff;
-	  padding: 20px;
-	  border-radius: 10px;
-	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	}
-	
+.bottom-section {
+  display: flex;
+  gap: 20px;
+  height: auto; /* 고정 높이 제거 */
+}
+
+/* 하단 왼쪽 */
+.bottom-left {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 그래프 가운데 정렬 */
+  justify-content: center;
+}
+
+/* 하단 오른쪽 */
+.bottom-right {
+  flex: 3.5;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* 영역을 넘어가지 않도록 설정 */
+  max-height: 500px; /* 최대 높이 제한 */
+}
+
+.chart-placeholder {
+  width: 100%;
+  height: 100%; /* 자동 크기 조정 */
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: #aaa;
+}
+
+#pieChart {
+  height: 400px; /* 세로 길이를 늘림 */
+}
+
+#barChart {
+  width: 100%; /* 부모 컨테이너에 맞게 너비를 설정 */
+  height: auto; /* 높이를 자동 조정 */
+}
+
 	
 	/* 공통 스타일 */
 	h3, h4 {
@@ -131,16 +161,6 @@
 	  font-weight: bold;
 	}
 	
-	.chart-placeholder {
-	  width: 100%;
-	  height: 80%;
-	  background-color: #f0f0f0;
-	  display: flex;
-	  justify-content: center;
-	  align-items: center;
-	  border-radius: 5px;
-	  color: #aaa;
-	}
 
 </style>
 </head>
@@ -162,7 +182,7 @@
 			  <div class="top-section">
 			    <div class="top-left">
 			      <h3> P&S</h3>
-			      <p>직영점주: 박준규</p>
+			      <p>대표: 박준규</p>
 			      <p>주소: 서울 강남구 강남대로 27 1층</p>
 			      
 			    </div>
@@ -194,14 +214,15 @@
 			  </div>
 			
 			  <!-- 하단 영역 -->
+			<!-- 하단 영역 -->
 			  <div class="bottom-section">
 			    <div class="bottom-left">
 			      <h4>브랜드별 매출</h4>
-			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			      <canvas id="pieChart"></canvas>
 			    </div>
 			    <div class="bottom-right">
 			      <h4>브랜드 총 매출 그래프</h4>
-			      <div class="chart-placeholder">여기에 그래프가 표시됩니다.</div>
+			      <canvas id="barChart"></canvas>
 			    </div>
 			  </div>
 			</div>
@@ -248,87 +269,69 @@
 <script src="/resources/assets/extensions/filepond/filepond.js"></script>
 <script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
 
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
 
-	// 공통으로 옮기고, 
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	if($('#pagination')){		
-		$('.page-item.prev').find('.page-link').html(
-				'<i class="bi bi-chevron-left"></i>');
-		$('.page-item.next').find('.page-link').html(
-				'<i class="bi bi-chevron-right"></i>');
-		$('.page-item.first').find('.page-link').html(
-				'<i class="bi bi-chevron-double-left"></i>');
-		$('.page-item.last').find('.page-link').html(
-				'<i class="bi bi-chevron-double-right"></i>');
-	}
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
+// 원형 차트
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+const pieChart = new Chart(pieCtx, {
+  type: 'pie',
+  data: {
+      labels: ['커핑머핑', '영원', '돼미남', '스시곤조', '떡본김에'],
+      datasets: [{
+          data: [15, 20, 25, 10, 15], // 임의 데이터
+          backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff'],
+          borderWidth: 1
+      }]
+  },
+  options: {
+      responsive: true,
+      plugins: {
+          legend: {
+              position: 'bottom', // 범례를 아래로 이동
+          },
+      }
+  }
+});
 
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
+//막대 그래프
+const barCtx = document.getElementById('barChart').getContext('2d');
+const barChart = new Chart(barCtx, {
+  type: 'bar',
+  data: {
+      labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+      datasets: [{
+          label: '월별 매출',
+          data: [15000000000, 18000000000, 13000000000, 14000000000, 20000000000, 22000000000, 21000000000, 19000000000, 17000000000, 23000000000, 25000000000, 24000000000],
+          backgroundColor: '#36a2eb',
+          borderColor: '#36a2eb',
+          borderWidth: 1,
+      }]
+  },
+  options: {
+      responsive: true,
+      maintainAspectRatio: false, // 그래프 비율 유지 해제
+      plugins: {
+          legend: {
+              display: true,
+              position: 'top'
+          },
+      },
+      scales: {
+          y: {
+              beginAtZero: true,
+              ticks: {
+                  callback: function(value) {
+                      return (value / 10000000000).toLocaleString() + '백억'; // y축 값을 백억 단위로 변환
+                  }
+              }
+          }
+      }
+  }
+});
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 
 
 </script>

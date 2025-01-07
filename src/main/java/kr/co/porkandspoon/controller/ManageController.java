@@ -49,19 +49,26 @@ public class ManageController {
 	public ModelAndView spotManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String owner = userDetails.getUsername();
 		List<ManageDTO> list = manageService.getPartList5(owner);
+		ManageDTO dto = manageService.getDirectInfo(owner);
 		ModelAndView mav = new ModelAndView("/manage/spotManage");
+		mav.addObject("list",list);
+		mav.addObject("info",dto);
+		return mav;
+	}
+	
+	@GetMapping(value="/ad/directManage")
+	public ModelAndView directManageView(@AuthenticationPrincipal UserDetails userDetails) {
+		String id = userDetails.getUsername();
+		List<ManageDTO> list = manageService.getDirectList();
+		ModelAndView mav = new ModelAndView("/manage/directManage");
 		mav.addObject("list",list);
 		
 		return mav;
 	}
 	
-	@GetMapping(value="/ad/directManage")
-	public ModelAndView directManageView() {
-		return new ModelAndView("/manage/directManage");
-	}
-	
 	@GetMapping(value="/ad/brandManage")
-	public ModelAndView brandManageView() {
+	public ModelAndView brandManageView(@AuthenticationPrincipal UserDetails userDetails) {
+		String id = userDetails.getUsername();
 		List<ManageDTO> list = manageService.getBrandList();
 		ModelAndView mav = new ModelAndView("/manage/brandManage");
 		mav.addObject("list",list);
