@@ -263,18 +263,80 @@ public class MailController {
 	}
 	
 	// 전달
-	@PostMapping(value="/mail/delivery")
-	public ModelAndView deliverMail(@RequestBody Map<String, Object> params, @AuthenticationPrincipal UserDetails userDetails){
+	@GetMapping(value="/mail/delivery/{idx}")
+	public ModelAndView deliverMail(@PathVariable String idx, @AuthenticationPrincipal UserDetails userDetails){
 		String loginId = userDetails.getUsername();
-		logger.info("params : "+params.get("mailInfo"));
-		logger.info("params : "+params.get("fileList"));
+		
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("username", loginId);
+		params.put("idx", idx);
+		
+		// 권한 체크
+	    boolean isSender = mailService.isSender(params);
+	    boolean isReceiver = mailService.isReceiver(params);
+	    if (isSender || isReceiver) {
+	    	
+	    }
+
+		MailDTO mailInfo = mailService.getMailInfo(idx);
+		//List<FileDTO> fileList = mailService.getAttachedFiles(idx);
+		
+		
+		
+		logger.info("mailInfo : "+mailInfo);
+		//logger.info("fileList : "+fileList);
+		//logger.info("params : "+params.get("mailInfo"));
+		//logger.info("params : "+params.get("fileList"));
+		
 		//MailDTO mailDTO = mailService.deliverMail(idx,loginId);
 		//result.put("mailInfo", mailDTO);
-		ModelAndView mav = new ModelAndView("/mail/mailWrite");
-		mav.addObject("mailInfo", params.get("mailInfo"));
-		mav.addObject("fileList", params.get("fileList"));
+		ModelAndView mav = new ModelAndView("/mail/mailUpdate");
+		mav.addObject("mailInfo", mailInfo);
+		//mav.addObject("fileList", fileList);
+		logger.info("여기까지옴");
+		//mav.addObject("mailInfo", params.get("mailInfo"));
+		//mav.addObject("fileList", params.get("fileList"));
 		return mav;
 	}
+	
+	// update시 Filepond 초기값 설정
+	@GetMapping(value="/mail/getUploadedFiles/{idx}")
+	public List<FileDTO> getUploadedFiles(@PathVariable String idx){
+		List<FileDTO> fileList = mailService.getAttachedFiles(idx);
+		
+		// 파일 크기 가져오기
+		for (FileDTO fileDTO : fileList) {
+			String fileName = fileDTO.getNew_filename();
+			
+	        File file = new File(paths + fileName);
+	        if (file.exists()) {
+	            long fileSize = file.length();
+	            fileDTO.setFile_size(fileSize);
+			}
+		}
+		
+//		[
+//		  {
+//		    "id": "12345",
+//		    "name": "example.pdf",
+//		    "size": 3000000,
+//		    "type": "application/pdf"
+//		  },
+//		  {
+//		    "id": "67890",
+//		    "name": "image.jpg",
+//		    "size": 500000,
+//		    "type": "image/jpeg"
+//		  }
+//		]
+
+		return fileList;
+	}
+	
+	
+	
+	
+	
 	
 	
 }
