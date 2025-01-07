@@ -172,8 +172,8 @@ border-bottom: none;
 	
 					<ul>
 						<li><a href="/ad/spotManage">매장관리 홈</a></li>	
-						<li><a href="/ad/partSchedule">스케줄 관리</a></li>	
-						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
+						<li class="active"><a href="/ad/partSchedule">스케줄 관리</a></li>	
+						<li ><a href="/ad/part">아르바이트 관리</a></li>
 						<li><a href="/us/rest/listView">휴점신청</a></li>
 					</ul>
 					<div class="buttons">						
@@ -191,14 +191,29 @@ border-bottom: none;
                      <div id='calender'></div>
                   </div>
                   <div id="weeklyPayModal" class="modal" style="display: none;">
-				    <div class="modal-content">
-				        <div class="modal-header">
-				            <h5 class="title">이번주 주급 현황</h5>
-				            <button type="button" id="closeWeeklyPayModal" class="modal-close">X</button>
-				        </div>
-				        <div class="modal-body">
-				            <p>이번 주의 주급을 계산하고 있습니다...</p>
-				            <div id="calculatedPay">계산 결과가 여기에 표시됩니다.</div>
+			      <div class="modal-content">
+			        <div class="modal-header">
+			            <h5 class="title">이번 주 주급 현황</h5>
+			            <button type="button" id="closeWeeklyPayModal" class="modal-close">X</button>
+			        </div>
+			        <div class="modal-body">
+			            <table id="weeklyPayTable" class="table">
+			                <thead>
+			                    <tr>
+			                        <th>아르바이트생 이름</th>
+			                        <th>이번주 주급 합계</th>
+			                    </tr>
+			                </thead>
+			                <tbody>
+			                    <!-- 동적으로 데이터 추가 -->
+			                </tbody>
+			                <tfoot>
+			                    <tr>
+			                        <th>총합</th>
+			                        <th id="totalWeeklyPay">0</th>
+			                    </tr>
+			                </tfoot>
+			            </table>
 				        </div>
 				        <div class="modal-footer">
 				            <button type="button" class="btn btn-secondary" id="closePayModalButton">닫기</button>
@@ -214,6 +229,7 @@ border-bottom: none;
 					            <button type="button" id="closeEditModal" class="modal-close">X</button>
 					        </div>
 					        <div class="modal-body">
+					        
 					            <form id="editEventForm">
 					                <table class="modal-table">
 					                    <tr>
@@ -332,6 +348,7 @@ border-bottom: none;
 
 
 <script>
+
 $(document).ready(function () {
     // 캘린더 초기화
     var calendarEl = document.getElementById('calender');
@@ -348,68 +365,131 @@ $(document).ready(function () {
     }
 
     // 캘린더 설정
- var calendar = new FullCalendar.Calendar(calendarEl, {
-    plugins: ['timeGrid', 'interaction'],
-    header: {
-        left: 'prev,next', // 왼쪽에는 < > 버튼
-        center: 'title',   // 가운데에는 캘린더 제목
-        right: 'customWeeklyPay' // 오른쪽에는 주급 계산기 버튼
-    },
-    locale: 'ko',
-    initialView: 'timeGridWeek',
-    customButtons: {
-        customWeeklyPay: {
-            text: '주급 계산기',
-            click: function() {
-                // 버튼 클릭 시 동작
-            	  $('#weeklyPayModal').fadeIn();
-            }
-        }
-    },
-    events: [], // 기존 이벤트 유지
-    eventClick: function(info) {
-        openEditModal(info); // 기존 수정 모달 열기
-    	}
-	});
-    calendar.render();
-
-    // 이벤트 데이터 로드
- function loadEvents() {
-    $.ajax({
-        url: '/ad/getPartTime',
-        method: 'GET',
-        dataType: 'json',
-        success: function (data) {
-            const formattedData = data.map(item => {
-                // 작업 날짜와 시간 결합
-                const startDate = new Date(item.work_date + 'T' + item.start_time);
-                const endDate = new Date(item.work_date + 'T' + item.end_time);
-
-                return {
-                    id: item.history_idx, // history_idx를 ID로 사용
-                    title: item.part_name, // 달력에 표시할 이름
-                    start: startDate.toISOString(), // ISO 형식으로 전달
-                    end: endDate.toISOString(),
-                    backgroundColor: getFixedColor(item.part_name),
-                    borderColor: getFixedColor(item.part_name),
-                    extendedProps: {
-                        history_idx: item.history_idx, // history_idx 추가
-                        part_idx: item.part_idx,
-                        part_name: item.part_name,
-                        pay: item.pay,
-                        is_done: item.is_done,
-                        work_date: item.work_date
-                    }
-                };
-            });
-            calendar.removeAllEvents();
-            calendar.addEventSource(formattedData);
+   var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['timeGrid', 'interaction'],
+        header: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'customWeeklyPay'
         },
-        error: function (err) {
-            console.error('이벤트 로드 실패:', err);
+        locale: 'ko',
+        firstDay: 0, // 달력 일요일 시작
+        initialView: 'timeGridWeek',
+        customButtons: {
+            customWeeklyPay: {
+                text: '주급 계산기',
+                click: function () {
+                    calculateWeeklyPay(globalData);
+                    $('#weeklyPayModal').fadeIn();
+                }
+            }
+        },
+        events: [], // 기존 이벤트 유지
+        eventClick: function (info) {
+            openEditModal(info);
         }
     });
-}
+
+    calendar.render();
+
+    // 주급 계산 함수
+    function calculateWeeklyPay(data) {
+        console.log("주급 계산 함수 실행");
+        console.log("사용할 데이터:", data);
+
+        const weekStart = calendar.view.activeStart; // 현재 보이는 주의 시작 (일요일)
+        const weekEnd = calendar.view.activeEnd; // 현재 보이는 주의 끝 (다음 주 일요일 00:00)
+
+        console.log("이번 주 시작일:", weekStart);
+        console.log("이번 주 종료일:", weekEnd);
+
+        const filteredData = data.filter(item => {
+            const workDate = new Date(item.work_date);
+            return item.is_done === 'Y' && workDate >= weekStart && workDate < weekEnd;
+        });
+
+        console.log("필터링된 데이터:", filteredData);
+
+        const payMap = {};
+        let totalPay = 0;
+
+        filteredData.forEach(item => {
+            const [startHour, startMinute] = item.start_time.split(':').map(Number);
+            const [endHour, endMinute] = item.end_time.split(':').map(Number);
+            const hoursWorked = (endHour + endMinute / 60) - (startHour + startMinute / 60);
+            const weeklyPay = hoursWorked * item.pay;
+
+            if (!payMap[item.part_name]) {
+                payMap[item.part_name] = 0;
+            }
+            payMap[item.part_name] += weeklyPay;
+            totalPay += weeklyPay;
+        });
+
+        console.log("이름별 주급 합계:", payMap);
+        console.log("주급 총합:", totalPay);
+
+        const tableBody = document.querySelector('#weeklyPayTable tbody');
+        tableBody.innerHTML = ''; // 기존 테이블 내용 삭제
+
+        Object.keys(payMap).forEach(name => {
+            const row = document.createElement('tr'); // <tr> 생성
+
+            const nameCell = document.createElement('td'); // 이름 <td> 생성
+            nameCell.textContent = name; // 이름 값을 설정
+            row.appendChild(nameCell); // <tr>에 추가
+
+            const payCell = document.createElement('td'); // 주급 <td> 생성
+            payCell.textContent = payMap[name].toLocaleString() + '원'; // 문자열 연결 방식으로 주급 값 설정
+            row.appendChild(payCell); // <tr>에 추가
+
+            tableBody.appendChild(row); // 완성된 <tr>을 <tbody>에 추가
+
+            console.log(row); // 각 row의 상태 확인
+        });
+
+        // 총합 업데이트
+        document.querySelector('#totalWeeklyPay').textContent = totalPay.toLocaleString() + '원';
+    }
+
+    let globalData = [];
+
+    function loadEvents() {
+        $.ajax({
+            url: '/ad/getPartTime',
+            method: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                globalData = data;
+                const formattedData = data.map(item => {
+                    const startDate = new Date(item.work_date + 'T' + item.start_time);
+                    const endDate = new Date(item.work_date + 'T' + item.end_time);
+
+                    return {
+                        id: item.history_idx,
+                        title: item.part_name,
+                        start: startDate.toISOString(),
+                        end: endDate.toISOString(),
+                        backgroundColor: getFixedColor(item.part_name),
+                        borderColor: getFixedColor(item.part_name),
+                        extendedProps: {
+                            history_idx: item.history_idx,
+                            part_idx: item.part_idx,
+                            part_name: item.part_name,
+                            pay: item.pay,
+                            is_done: item.is_done,
+                            work_date: item.work_date
+                        }
+                    };
+                });
+                calendar.removeAllEvents();
+                calendar.addEventSource(formattedData);
+            },
+            error: function (err) {
+                console.error('이벤트 로드 실패:', err);
+            }
+        });
+    }
 
     loadEvents();
 
@@ -480,6 +560,7 @@ function loadPartNames(selectId, selectedValue = null) {
         }
     });
 }
+
 
 
 

@@ -160,6 +160,10 @@ public interface ManageDAO {
 
 	List<ManageDTO> getPartList5(String owner);
 
+	ManageDTO getDirectInfo(String owner);
+
+	List<ManageDTO> getDirectList();
+
 	
 
 	

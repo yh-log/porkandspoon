@@ -1,9 +1,7 @@
 package kr.co.porkandspoon.dto;
 
-import java.security.Timestamp;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDateTime;
 
 public class ManageDTO extends ResponseDTO {
     
@@ -33,15 +31,14 @@ public class ManageDTO extends ResponseDTO {
 	private int part_idx;
 	private int history_idx;
 	private String is_done;
+	
 
 
-
-
+    
 	private String id;
-	
-	
 	private String spotName;
-
+	private String address_detail;
+	private String owner;
 	//브랜드 리스트
 	
 	
@@ -253,6 +250,26 @@ public class ManageDTO extends ResponseDTO {
 
 	public void setCreate_date(Date create_date) {
 		this.create_date = create_date;
+	}
+
+
+	public String getAddress_detail() {
+		return address_detail;
+	}
+
+
+	public void setAddress_detail(String address_detail) {
+		this.address_detail = address_detail;
+	}
+
+
+	public String getOwner() {
+		return owner;
+	}
+
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 	
 }
