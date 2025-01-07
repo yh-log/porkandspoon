@@ -167,7 +167,7 @@
 	</delete>
 
 	<!-- 전 직원 조회 -->
-	<select id="userList" parameterType="map"
+	<select id="userList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT
 		u.name,
@@ -236,54 +236,20 @@
 		LIMIT #{offset}, #{limit}
 	</select>
 
-	<!-- 브랜드 등록 페이지 정보(기안문 테이블) -->
-	<select id="deptWriteView" parameterType="String"
-		resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.subject, d.name, d.content, d.from_date,
-		f.new_filename AS logo_file, u.name AS user_name, dept.text AS
-		dept_text, al.approval_date
-		FROM
-		draft d LEFT JOIN user u ON d.username = u.username
-		LEFT JOIN department dept ON d.dept_id = dept.id
-		LEFT JOIN
-		(SELECT
-		draft_idx, MAX(`order_num`) AS max_order
-		FROM approval_line
-		GROUP BY draft_idx)
-		al_max ON d.draft_idx = al_max.draft_idx
-		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
-		AND al.`order_num` = al_max.max_order
-		AND al.status = 'ap004'
-		LEFT JOIN file f ON d.draft_idx = f.pk_idx AND f.code_name = 'bl001'
-		WHERE
-		d.draft_idx = #{idx}
-		AND d.target_type = 'df001'
-		AND d.action_type = 'df011';
-	</select>
 
-	<!-- 부서 코드 중복 검사 -->
-	<select id="deptCodeOverlay"
-		parameterType="kr.co.porkandspoon.dto.DeptDTO" resultType="int">
-		SELECT
-		COUNT(id) FROM department WHERE id = #{id}
-	</select>
+
+
 
 	<!-- 부서(브랜드) 등록 -->
 	<insert id="deptWrite"
+			useGeneratedKeys="true"
+			keyProperty="id"
+			keyColumn="id"
 		parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		INSERT INTO department(id, text, type, use_yn, use_date,
 		content)
 		VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content})
 	</insert>
-
-	<!-- 브랜드 상세 정보 조회 -->
-	<select id="deptDetail"
-		resultType="kr.co.porkandspoon.dto.DeptDTO" parameterType="String">
-		SELECT d.id,
-		d.text, d.content, d.use_yn, d.use_date, f.new_filename AS logo FROM
-		department d left join file f on d.id = f.pk_idx WHERE id = #{id} AND
-		f.code_name = 'bl001';
-	</select>
 
 	<!-- 기존 부서 이미지 삭제 -->
 	<delete id="fileDelete" parameterType="String">
@@ -410,34 +376,7 @@
 		ORDER BY al.approval_date DESC
 	</select>
 
-	<!-- 직영점 등록 요청 페이지 이동 및 조회 -->
-	<select id="storeWriteView" parameterType="String"
-		resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.subject, d.name, d.content, d.from_date,
-		dept.use_date AS parent_date, d.address, dept.id AS dept_id,
-		d.address_detail, f.new_filename AS file_name, u.name AS user_name,
-		dept.text AS dept_text, al.approval_date
-		FROM
-		draft d LEFT JOIN user u ON d.username = u.username
-		LEFT JOIN department
-		dept ON d.dept_id = dept.id
-		LEFT JOIN
-		(SELECT
-		draft_idx, MAX(`order_num`) AS max_order
-		FROM approval_line
-		GROUP BY draft_idx)
-		al_max ON d.draft_idx = al_max.draft_idx
-		LEFT JOIN approval_line al ON
-		d.draft_idx = al.draft_idx
-		AND al.`order_num` = al_max.max_order
-		AND al.status = 'ap004'
-		LEFT JOIN file f ON f.pk_idx = dept.id AND
-		f.code_name = 'bl001'
-		WHERE
-		d.draft_idx = #{idx}
-		AND d.target_type = 'df002'
-		AND d.action_type = 'df011'
-	</select>
+
 
 	<!-- 직영점 등록 -->
 	<insert id="storeWrite"
@@ -448,35 +387,7 @@
 		#{address_detail}, 'admin', #{use_date}, #{content})
 	</insert>
 
-	<!-- 직영점 상세 조회 -->
-	<select id="storeDetail" parameterType="String"
-		resultType="kr.co.porkandspoon.dto.DeptDTO">
-		SELECT
-		ds.id,
-		ds.parent,
-		d.use_date AS parent_date,
-		ds.name,
-		ds.use_yn,
-		ds.address,
-		ds.content,
-		ds.is_close,
-		ds.owner,
-		ds.address_detail,
-		ds.use_date,
-		d.`text`,
-		u.name AS user_name,
-		f.new_filename AS logo,
-		r.start_date,
-		r.end_date
-		FROM
-		direct_store ds
-		LEFT JOIN department d ON ds.parent = d.id
-		LEFT JOIN `user` u ON ds.owner = u.username
-		LEFT JOIN file f ON d.id = f.pk_idx AND f.code_name = 'bl001'
-		LEFT JOIN rest r ON ds.id = r.id AND ds.is_close = 'Y'
-		WHERE
-		ds.id = #{id}
-	</select>
+
 
 	<!-- 직영점 수정 -->
 	<update id="storeUpdate"

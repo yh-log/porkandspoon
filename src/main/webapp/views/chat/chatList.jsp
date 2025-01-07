@@ -9,7 +9,7 @@
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-	<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 <!-- select -->
 <link rel="stylesheet"
@@ -422,6 +422,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.2/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
@@ -518,7 +519,6 @@
 
 			let content = '';
 			response.forEach(function (item) {
-				console.log('왜?');
 				content += '<div class="custom-chat-item" onclick="chatRoomopen(\'' + item.roomId + '\')">';
 
 				content += '<div class="custom-chat-name">' + item.name + '</div>';

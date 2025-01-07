@@ -13,6 +13,15 @@ public class PagingDTO {
     private String keyword;
     private String start_date;
     private String end_date;
+    private int limit;
+    private int offset;
+    private String userYn;
+
+    // page와 cnt를 기반으로 limit과 offset을 계산하는 메서드
+    public void calculatePaging() {
+        this.limit = this.cnt; // 페이지당 아이템 수
+        this.offset = (this.page - 1) * this.cnt; // 시작점 계산
+    }
 
     public int getPage() {
         return page;
@@ -20,6 +29,7 @@ public class PagingDTO {
 
     public void setPage(int page) {
         this.page = page;
+        calculatePaging(); // page가 설정될 때 limit과 offset 자동 계산
     }
 
     public int getCnt() {
@@ -28,6 +38,7 @@ public class PagingDTO {
 
     public void setCnt(int cnt) {
         this.cnt = cnt;
+        calculatePaging(); // cnt가 설정될 때 limit과 offset 자동 계산
     }
 
     public String getOption() {
@@ -60,5 +71,29 @@ public class PagingDTO {
 
     public void setEnd_date(String end_date) {
         this.end_date = end_date;
+    }
+
+    public int getLimit() {
+        return limit;
+    }
+
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public String getUserYn() {
+        return userYn;
+    }
+
+    public void setUserYn(String userYn) {
+        this.userYn = userYn;
     }
 }

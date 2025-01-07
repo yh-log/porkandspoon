@@ -117,7 +117,8 @@
 	        );
 	</select>
 	
-	<!-- author yh.kim (24.12.29) 조직도 데이터 조회 -->
+	<!-- author yh.kim (24.12.29)
+		조직도 데이터 조회 -->
 	<select id="getChartData" resultType="kr.co.porkandspoon.dto.DeptDTO" >
 		WITH RECURSIVE menu_tree_cte AS (
 			-- 1. 최상위 부서 (department 테이블의 루트 노드)
@@ -201,137 +202,161 @@
 			 ) final_result
 		WHERE parent IS NOT NULL
 		ORDER BY menuDepth, menuOrder
--- 		WITH RECURSIVE menu_tree_cte AS (
--- 			SELECT
--- 				id,
--- 				COALESCE(parent, '#') AS parent,
--- 				text,
--- 				'default' AS type,
--- 				1 AS menu_depth
--- 			FROM department
--- 			WHERE parent IS NULL
---
--- 			UNION ALL
---
--- 			SELECT
--- 				d.id,
--- 				COALESCE(d.parent, '#') AS parent,
--- 				d.text,
--- 				'default' AS type,
--- 				cte.menu_depth + 1 AS menu_depth
--- 			FROM department d
--- 					 JOIN menu_tree_cte cte ON d.parent = cte.id
--- 		),
--- 					   menu_and_employee AS (
--- 						   SELECT
--- 							   id AS id,
--- 							   parent,
--- 							   text AS text,
--- 							   menu_depth,
--- 							   type,
--- 							   NULL AS position_order
--- 						   FROM menu_tree_cte
---
--- 						   UNION ALL
---
--- 						   SELECT
--- 							   u.username AS id,
--- 							   COALESCE(u.parent, '#') AS parent,
--- 							   CONCAT(u.name, ' ', COALESCE(c.content, '')) AS text,
--- 							   COALESCE(cte.menu_depth, 1) + 1 AS menu_depth,
--- 							   'file' AS type,
--- 							   CAST(SUBSTRING(u.position, 3) AS UNSIGNED) AS position_order
--- 						   FROM user u
--- 									LEFT JOIN code c ON u.position = c.name
--- 									LEFT JOIN menu_tree_cte cte ON u.parent = cte.id
--- 					   )
--- 		SELECT
--- 			id,
--- 			parent,
--- 			text,
--- 			menuDepth,
--- 			type,
--- 			menuOrder
--- 		FROM (
--- 				 SELECT
--- 					 id,
--- 					 COALESCE(parent, '#') AS parent,
--- 					 text,
--- 					 menu_depth AS menuDepth,
--- 					 COALESCE(type, 'file') AS type,
--- 					 ROW_NUMBER() OVER (
---             PARTITION BY parent, menu_depth
---             ORDER BY COALESCE(position_order, id) ASC
---         ) AS menuOrder
--- 				 FROM menu_and_employee
--- 			 ) final_result
--- 		WHERE parent IS NOT NULL
--- 		ORDER BY menuDepth, menuOrder
--- 		WITH RECURSIVE menu_tree_cte AS (
--- 			SELECT
--- 				id,
--- 				COALESCE(parent, '#') AS parent,
--- 				text,
--- 				'default' AS type,
--- 				1 AS menu_depth
--- 			FROM department
--- 			WHERE parent IS NULL
---
--- 			UNION ALL
---
--- 			SELECT
--- 				d.id,
--- 				COALESCE(d.parent, '#') AS parent,
--- 				d.text,
--- 				'default' AS type,
--- 				cte.menu_depth + 1 AS menu_depth
--- 			FROM department d
--- 					 JOIN menu_tree_cte cte ON d.parent = cte.id
--- 		),
--- 					   menu_and_employee AS (
--- 						   SELECT
--- 							   id AS id,
--- 							   parent,
--- 							   text AS text,
--- 							   menu_depth,
--- 							   type,
--- 							   NULL AS position_order
--- 						   FROM menu_tree_cte
---
--- 						   UNION ALL
---
--- 						   SELECT
--- 							   u.username AS id,
--- 							   COALESCE(u.parent, '#') AS parent,
--- 							   CONCAT(u.name, ' ', COALESCE(c.content, '')) AS text,
--- 							   COALESCE(cte.menu_depth, 1) + 1 AS menu_depth,
--- 							   'file' AS type,
--- 							   CAST(SUBSTRING(u.position, 3) AS UNSIGNED) AS position_order
--- 						   FROM user u
--- 									LEFT JOIN code c ON u.position = c.name
--- 									LEFT JOIN menu_tree_cte cte ON u.parent = cte.id
--- 					   )
--- 		SELECT
--- 			id,
--- 			parent,
--- 			text,
--- 			menuDepth,
--- 			type,
--- 			menuOrder
--- 		FROM (
--- 				 SELECT
--- 					 id,
--- 					 COALESCE(parent, '#') AS parent,
--- 					 text,
--- 					 menu_depth AS menuDepth,
--- 					 COALESCE(type, 'file') AS type,
--- 					 ROW_NUMBER() OVER (
---             PARTITION BY parent, menu_depth
---             ORDER BY COALESCE(position_order, id) ASC
---         ) AS menuOrder
--- 				 FROM menu_and_employee
--- 			 ) final_result
--- 		ORDER BY menuDepth, menuOrder
 	</select>
-	
+
+	<!-- author yh.kim, (24.12.26)
+        부서 상세 페이지 이동 -->
+	<select id="deptDetail"
+			resultType="kr.co.porkandspoon.dto.DeptDTO" parameterType="String">
+		SELECT d.id,
+			   d.text, d.content, d.use_yn, d.use_date, f.new_filename AS logo FROM
+			department d left join file f on d.id = f.pk_idx WHERE id = #{id} AND
+			f.code_name = 'bl001';
+	</select>
+
+	<!-- author yn.kim (24.12.27)
+		직영점 등록 요청 페이지 이동 및 조회 -->
+	<select id="storeWriteView" parameterType="String"
+			resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT d.subject, d.name, d.content, d.from_date,
+			   dept.use_date AS parent_date, d.address, dept.id AS dept_id,
+			   d.address_detail, f.new_filename AS file_name, u.name AS user_name,
+			   dept.text AS dept_text, al.approval_date
+		FROM
+			draft d LEFT JOIN user u ON d.username = u.username
+					LEFT JOIN department
+				dept ON d.dept_id = dept.id
+					LEFT JOIN
+			(SELECT
+				 draft_idx, MAX(`order_num`) AS max_order
+			 FROM approval_line
+			 GROUP BY draft_idx)
+				al_max ON d.draft_idx = al_max.draft_idx
+					LEFT JOIN approval_line al ON
+				d.draft_idx = al.draft_idx
+					AND al.`order_num` = al_max.max_order
+					AND al.status = 'ap004'
+					LEFT JOIN file f ON f.pk_idx = dept.id AND
+										f.code_name = 'bl001'
+		WHERE
+			d.draft_idx = #{idx}
+		  AND d.target_type = 'df002'
+		  AND d.action_type = 'df011'
+	</select>
+
+	<!-- author yh.kim (24.12.25)
+		브랜드 등록 페이지 정보(기안문 테이블) -->
+	<select id="deptWriteView" parameterType="String"
+			resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT d.subject, d.name, d.content, d.from_date,
+			   f.new_filename AS logo_file, u.name AS user_name, dept.text AS
+								 dept_text, al.approval_date
+		FROM
+			draft d LEFT JOIN user u ON d.username = u.username
+					LEFT JOIN department dept ON d.dept_id = dept.id
+					LEFT JOIN
+			(SELECT
+				 draft_idx, MAX(`order_num`) AS max_order
+			 FROM approval_line
+			 GROUP BY draft_idx)
+				al_max ON d.draft_idx = al_max.draft_idx
+					LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
+				AND al.`order_num` = al_max.max_order
+				AND al.status = 'ap004'
+					LEFT JOIN file f ON d.draft_idx = f.pk_idx AND f.code_name = 'bl001'
+		WHERE
+			d.draft_idx = #{idx}
+		  AND d.target_type = 'df001'
+		  AND d.action_type = 'df011';
+	</select>
+
+	<!-- author yh.kim (24.12.27)
+		직영점 상세 조회 -->
+	<select id="storeDetail" parameterType="String"
+			resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT ds.id, ds.parent, d.use_date AS parent_date, ds.name, ds.use_yn, ds.address, ds.content,
+			ds.is_close, ds.owner, ds.address_detail, ds.use_date, d.`text`, u.name AS user_name,
+			f.new_filename AS logo, r.start_date, r.end_date
+		FROM direct_store ds
+				LEFT JOIN department d ON ds.parent = d.id
+				LEFT JOIN `user` u ON ds.owner = u.username
+				LEFT JOIN file f ON d.id = f.pk_idx AND f.code_name = 'bl001'
+				LEFT JOIN rest r ON ds.id = r.id AND ds.is_close = 'Y'
+		WHERE ds.id = #{id}
+	</select>
+
+	<!-- author yh.kim (24.12.25)
+		부서 코드 중복 검사 -->
+	<select id="deptCodeOverlay"
+			parameterType="kr.co.porkandspoon.dto.DeptDTO" resultType="int">
+		SELECT COUNT(id) FROM department WHERE id = #{id}
+	</select>
+
+	<!-- author yh.kim (25. 01. 07)
+		부서 등록 조직도 선택 시 직원 정보 조회 -->
+	<select id="getUserStoreInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT
+			CASE
+				WHEN d.id IS NOT NULL AND ds.id IS NULL THEN d.`text`
+				WHEN ds.id IS NOT NULL THEN
+					CONCAT(
+							(SELECT `text` FROM department WHERE id = ds.parent),
+							' ',
+							ds.name)
+				ELSE '정보 없음'
+				END AS dept_name,
+			CASE
+				WHEN d.id IS NOT NULL AND ds.id IS NULL THEN 'D'
+				WHEN ds.id IS NOT NULL THEN 'S'
+				ELSE NULL
+				END AS type,
+			CASE
+				WHEN d.id IS NOT NULL THEN d.id
+				WHEN ds.id IS NOT NULL THEN ds.id
+				ELSE NULL
+				END AS parent,
+			c.content AS position,
+    u.username,
+    u.name AS name
+		FROM user u
+			LEFT JOIN direct_store ds ON u.parent = ds.id
+			LEFT JOIN department d ON u.parent = d.id
+			LEFT JOIN code c ON u.`position` = c.name
+		WHERE u.username = #{username}
+
+	</select>
+
+	<!-- author yh.kim, (25.01.06)
+        채팅 페이지 이동 시 직원 정보 조회 -->
+	<select id="getUserDeptInfo" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT
+			CASE
+				WHEN d.id IS NOT NULL AND ds.id IS NULL THEN d.`text`
+				WHEN ds.id IS NOT NULL THEN
+					CONCAT(
+							(SELECT `text` FROM department WHERE id = ds.parent),
+							' ',
+							ds.name)
+				ELSE '정보 없음'
+				END AS dept_name,
+			CASE
+				WHEN d.id IS NOT NULL AND ds.id IS NULL THEN 'D'
+				WHEN ds.id IS NOT NULL THEN 'S'
+				ELSE NULL
+				END AS type,
+			CASE
+				WHEN d.id IS NOT NULL THEN d.id
+				WHEN ds.id IS NOT NULL THEN ds.id
+				ELSE NULL
+				END AS parent,
+			c.content AS position,
+		u.username,
+		u.name AS name
+			FROM user u
+				LEFT JOIN direct_store ds ON u.parent = ds.id
+				LEFT JOIN department d ON u.parent = d.id
+				LEFT JOIN code c ON u.`position` = c.name
+			WHERE u.username = #{username}
+	</select>
+
 </mapper>
