@@ -96,7 +96,7 @@ public class AlarmService {
 		
 		switch (noticeDTO.getCode_name()) {
 		case "ml001":
-			noticeDTO.setSubject("회의실 예약 알림이 왔습니다.");
+			noticeDTO.setSubject("회의 예약 알림이 왔습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;회의실에서 회의 예약이 있습니다.");
 			noticeDTO.setUrl("마이페이지 자기 캘린더로 이동 url");
 			break;
