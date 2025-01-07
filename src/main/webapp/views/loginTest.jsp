@@ -21,7 +21,9 @@
 	<a href="/m/mTest">manager</a> <br/>
 	<a href="/u/uTest">user (text page)</a> <br/>
 	<!-- <a href="/chart">chart</a> -->
-	<a href="/chat/list">채팅방 이동</a>
+	<a href="/chat/list">채팅방 이동</a> <br/>
+
+	<a href="/ad/user/listView">직원 리스트 이동</a>
 </body>
 
 <script src='/resources/js/common.js'></script>

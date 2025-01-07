@@ -6,7 +6,7 @@
 		<div class="sidebar-header position-relative">
 			<div class="d-flex justify-content-between align-items-center">
 				<div class="logo">
-					<a href="index.html"><img src="resources/img/logo.jpg"
+					<a href="index.html"><img src="/resources/img/logo.jpg"
 						alt="Logo" srcset=""></a>
 				</div>
 				

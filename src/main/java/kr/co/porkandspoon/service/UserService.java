@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import kr.co.porkandspoon.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.porkandspoon.dao.UserDAO;
-import kr.co.porkandspoon.dto.ApprovalDTO;
-import kr.co.porkandspoon.dto.CareerDTO;
-import kr.co.porkandspoon.dto.DeptDTO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 @Service
@@ -361,38 +357,14 @@ public class UserService {
 	/**
 	 * author yh.kim (24.12.24)
 	 * 직원 리스트 조회
-	 * @param userYn 
 	 */
-	public List<UserDTO> userList(int page, int cnt, String option, String keyword, String userYn) {
-
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
-		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		parmeterMap.put("userYn", userYn);
-		
-		return userDao.userList(parmeterMap);
+	public List<UserDTO> userList(PagingDTO pagingDTO) {
+		return userDao.userList(pagingDTO);
 	}
 
-	/**
-	 * author yh.kim (24.12.25)
-	 * 브랜드 생성 페이지 기안문 내용 조회
-	 */
-	public ApprovalDTO deptWriteView(String idx) {
-		return userDao.deptWriteView(idx);
-	}
 
-	/**
-	 * author yh.kim (24.12.25)
-	 * 부서코드 중복체크
-	 */
-	public boolean deptCodeOverlay(DeptDTO dto) {
-		return userDao.deptCodeOverlay(dto) == 0 ? true : false;
-	}
+
+
 
 
 	/**
@@ -400,15 +372,24 @@ public class UserService {
 	 * 부서(브랜드) 등록
 	 */
 	public DeptDTO deptWrite(MultipartFile file, DeptDTO dto) {
-		
+
 		// 브랜드 등록
 		int deptRow = userDao.deptWrite(dto);
-		
+
+//		String[] usernameArr = dto.getUser_name().split(" ");
+//		for (String username : usernameArr) {
+//			dto.setUser_name(username);
+//			int userUpdateRow = userDao.userDeptUpdate(dto);
+//			logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
+//		}
+
+
+
 		logger.info("브랜드 생성 로우 => " + deptRow);
-		
+
 		List<FileDTO> imgs = dto.getImgs();
 		if(imgs.size() > 0 || imgs != null) {
-			
+
 			// FileDTO에서 new_filename 값 추출
 		    List<String> fileNames = imgs.stream()
 		                                 .map(FileDTO::getNew_filename) // new_filename 추출
@@ -418,20 +399,20 @@ public class UserService {
 		    // 파일 이동
 		    boolean moveResult = CommonUtil.moveFiles(fileNames);
 		    logger.info("파일 이동 결과: {}", moveResult);
-			
+
 			for (FileDTO img : imgs) {
 				img.setPk_idx(dto.getId());
 				img.setCode_name("bc100");
-				
+
 				String type = img.getOri_filename().substring(img.getOri_filename().lastIndexOf("."));
 				img.setType(type);
-				
+
 				int contentImgRow = userDao.userFileWriet(img);
 				logger.info("이미지 업로드 => ", contentImgRow);
 			}
 		}
-		
-		// 브랜드 로고 업로드 
+
+		// 브랜드 로고 업로드
 		if (file != null && !file.isEmpty()) { // 파일이 null이 아니고 비어있지 않은 경우에만 처리
 	        try {
 	            FileDTO fileDto = CommonUtil.uploadSingleFile(file);
@@ -447,18 +428,14 @@ public class UserService {
 	    } else {
 	        logger.warn("프로필 이미지 파일이 없습니다.");
 	    }
-		
-		return null;
+
+		dto.setStatus(200);
+		dto.setMessage("부서 등록이 완료되었습니다.");
+
+		return dto;
 	}
 
-	/**
-	 * author yh.kim (24.12.26) 
-	 * 부서 상세 페이지 이동
-	 */
-	public DeptDTO deptDetsil(String id) {
-		
-		return userDao.deptDetail(id);
-	}
+
 
 	/**
 	 * author yh.kim (24.12.26)
@@ -587,13 +564,7 @@ public class UserService {
 	}
 
 
-	/**
-	 * author yh.kim (24.12.27)
-	 * 직영점 등록 요청 페이지 이동 및 조회
-	 */
-	public ApprovalDTO storeWriteView(String idx) {
-		return userDao.storeWriteView(idx);
-	}
+
 
 
 	/**
@@ -634,14 +605,6 @@ public class UserService {
 		return null;
 	}
 
-
-	/**
-	 * author yh.kim (24.12.27) 
-	 * 직영점 수정 페이지 이동 및 조회
-	 */
-	public DeptDTO storeDetsil(String id) {
-		return userDao.storeDetail(id);
-	}
 
 	/**
 	 * author yh.kim (24.12.27)
