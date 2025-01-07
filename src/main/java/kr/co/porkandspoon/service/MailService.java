@@ -256,6 +256,11 @@ public boolean chageAllToRead(Map<String, String> params) {
 	return mailDAO.chageAllToRead(params) > 0 ? true : false ;
 }
 
+/*
+ * public MailDTO deliverMail(String idx, String loginId) { return
+ * mailDAO.deliverMail(idx,loginId); }
+ */
+
 
 
 }

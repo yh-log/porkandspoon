@@ -124,7 +124,7 @@
 }
 
 .mailDetail .util-area .left > * {
-	margin-right: 10px;
+    margin: 0 10px 0 0;
 }
 
 
@@ -236,7 +236,7 @@ div.attach_file span.btn_area span.btn_wrap {
     background-color: var(--bs-bg);
     border: 1px solid #dae0eb;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 15px;
 }
 .mailDetail #bookmark {
 	font-size: 22px;
@@ -289,10 +289,10 @@ div.attach_file span.btn_area span.btn_wrap {
 						</div>
 						<div class="util-area">
 							<div class="left">
-								<buttton>답장</buttton>
-								<buttton>전달</buttton>
-								<buttton>삭제</buttton>
-								<buttton>안읽음</buttton>
+								<buttton class="btn btn-outline-primary btn-sm">답장</buttton>
+								<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/delivery/${mailInfo.idx}`">전달</buttton>
+								<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+								<buttton class="btn btn-outline-primary btn-sm">안읽음</buttton>
 							</div>
 						</div>
 
@@ -378,6 +378,8 @@ div.attach_file span.btn_area span.btn_wrap {
 <script src='/resources/js/textEaditor.js'></script>
 
 <script>
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
 	var receivers = '${mailInfo.username}';
 	var receiverArray = receivers.split(',');
@@ -391,11 +393,15 @@ div.attach_file span.btn_area span.btn_wrap {
 	$('.receivers .tag-area').append(receiverCont);
 	
 	// 파일
+	var fileCount = 0;
+	var totalFileSize = 0; 
 	var fileCont = "";
 	<c:forEach items="${fileList}" var="file">
 		//파일 사이즈 표시(1MB보다크면 MB단위 아니면 KB단위)
 		var fileSizeMB = '${file.file_size/1024/1024}';
 		var fileSizeKB = '${file.file_size/1024}' ;
+		totalFileSize += parseFloat(fileSizeKB);
+		fileCount++;
 		var fileSize;
         if (fileSizeMB > 1) {
             fileSize = Math.round(fileSizeMB * 10) / 10  + " MB"; 
@@ -418,8 +424,17 @@ div.attach_file span.btn_area span.btn_wrap {
 		fileCont += '</li> ';
 	</c:forEach> 
 	$('#file_wrap').append(fileCont);
-	console.log("fileList","${fileList}");
-	console.log("fileCont",fileCont);
+	$('.attach_file_header .num').text(fileCount);
+	var totalFileSizeMB = totalFileSize/1024;
+	console.log('totalFileSizeMB : ', totalFileSizeMB);
+	console.log('totalFileSize : ', totalFileSize);
+    if (totalFileSizeMB > 1) {
+    	totalFileSize = Math.round(totalFileSizeMB * 10) / 10  + " MB"; 
+    } else {
+    	totalFileSize = Math.round(totalFileSize * 10) / 10  + " KB";
+    }
+		console.log('totalFileSize : ', totalFileSize);
+	$('.attach_file_header .size').text(totalFileSize);
 
 	// 즐겨찾기
 	var isBookmark='${is_bookmark}';
@@ -441,6 +456,25 @@ div.attach_file span.btn_area span.btn_wrap {
 		isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
 		console.log("[success2]isBookmark : ",isBookmark);
 	} 
+	
+	// 전달
+	/* function delivery() {
+		console.log('전달');
+		$.ajax({
+	        type : 'POST',
+	        url : `/mail/delivery/${mailInfo.idx}`,
+	        data : {},
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	            //window.location.href = '/mail/write';
+	            //console.log(response);
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	} */
 </script>
 
 </html>

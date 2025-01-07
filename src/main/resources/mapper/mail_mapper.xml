@@ -238,7 +238,7 @@
 			WHERE 
 				idx = #{idx}
 			AND 
-				sender = #{loginId} 
+				username = #{loginId} 
 	</select>
 	
 	<select id="getAttachedFiles" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
@@ -467,5 +467,6 @@
 			AND 
 			username = #{loginId}
 	</update>
+	
 	
 </mapper>
