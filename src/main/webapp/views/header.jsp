@@ -8,54 +8,56 @@
 
 <sec:authentication var="loggedInUser" property="principal.username" />
 <script>
-function checkNewAlarms() {
-    var loggedInUser = '${loggedInUser}';
+	function checkNewAlarms() {
+	    var loggedInUser = '${loggedInUser}';
+	
+	    if (!loggedInUser) {
+	        console.warn('로그인 정보가 없습니다.');
+	        return;
+	    }
+	
+	   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
+	        method: 'GET',
+	        headers: { 'Content-Type': 'application/json' }
+	    })
+	    .then(response => response.json())
+	    .then(alarms => {
+	        if (alarms.length > 0) {
+	            alarms.forEach(alarm => {
+	                displayAlarmMessage(alarm);
+	            });
+	        }
+	    })
+	    .catch(error => console.error('알림 조회 실패:', error));
+	}
+	
+	function displayAlarmMessage(alarm) {
+		var alarmMessage = document.getElementById('alarmMessage');
+		alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
+	
+		// 메시지 표시
+		alarmMessage.style.display = 'flex';
+	    setTimeout(function () {
+	        alarmMessage.style.opacity = '1';  // 천천히 나타나기
+	    }, 10);
+	    // 3초 후 메시지 천천히 사라짐
+	    setTimeout(function () {
+	        alarmMessage.style.opacity = '0'; // 점점 사라지기
+	        setTimeout(function () {
+	            alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
+	        }, 1000); // 사라지는 애니메이션 지속 시간 (1초)
+	    }, 3000); // 알림이 유지되는 시간 (3초)
+	}
 
-    if (!loggedInUser) {
-        console.warn('로그인 정보가 없습니다.');
-        return;
-    }
 
-   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-    })
-    .then(response => response.json())
-    .then(alarms => {
-        if (alarms.length > 0) {
-            alarms.forEach(alarm => {
-                displayAlarmMessage(alarm);
-            });
-        }
-    })
-    .catch(error => console.error('알림 조회 실패:', error));
-}
-
-function displayAlarmMessage(alarm) {
-	var alarmMessage = document.getElementById('alarmMessage');
-	alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
-
-	// 메시지 표시
-	alarmMessage.style.display = 'flex';
-	alarmMessage.style.opacity = '1';  // 천천히 나타나기
-}
-    // 3초 후 메시지 천천히 사라짐
-    /* setTimeout(function () {
-        alarmMessage.style.opacity = '0'; // 점점 사라지기
-        setTimeout(function () {
-            alarmMessage.style.display = 'none'; // 완전히 사라진 후 숨김
-        }, 1000); // 사라지는 애니메이션 지속 시간 (1초)
-    }, 3000); // 알림이 유지되는 시간 (3초)
-}
-
-// 5초마다 알림 확인
-setInterval(checkNewAlarms, 5000); */
+	// 5초마다 알림 확인
+	setInterval(checkNewAlarms, 3000);
 </script> 
 <style>
 	#alarmPopup {
 	    position: fixed;
 	    top: 80px;
-   		left: calc(50% - -384px);	
+   		left: calc(50% - -489px);	
 	    width: 440px;
 	    border: 1px solid #ddd;
 	    padding: 20px;
@@ -78,12 +80,12 @@ setInterval(checkNewAlarms, 5000); */
 	    cursor: pointer;
 	}
 	
-	#alarmHeader {
+	.alarmHeader {
 	    background: #fff;
 	    height: 36px;
 	}
 	
-	#alarmSubject {
+	.alarmSubject {
 	    font-weight: 600;
 	    font-size: 20px;
 	}
@@ -155,22 +157,38 @@ setInterval(checkNewAlarms, 5000); */
 	    pointer-events: auto;
 	}
 	
+	.red-one {
+		position: absolute;
+	    right: -4px;
+	    top: 5px;
+	    background: #ff7976;
+	    color: #fff;
+	    border-radius: 50%;
+	    width: 13px;
+	    height: 13px;
+	    font-size: 11px;
+	    text-align: center;
+	}
 	.alarm-msg {
-	width: auto; /* 텍스트에 따라 유동적으로 크기 조정 */ /* 최대 너비 설정 */
-    height: auto; /* 텍스트 크기에 따라 높이 조정 */
-    position: absolute;
-    right: 100px;
-    top: 85px;
-    background: #cfd8f4;
-    padding: 3px 10px;
-    border-radius: 3%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-    font-size: 16px;
-    white-space: nowrap; 
+		width: auto; /* 텍스트에 따라 유동적으로 크기 조정 */ /* 최대 너비 설정 */
+	    height: 50px; /* 텍스트 크기에 따라 높이 조정 */
+	    position: absolute;
+	    right: 100px;
+	    top: 85px;
+	    background: white;
+	    padding: 3px 10px;
+	    border-radius: 3%;
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    opacity: 0;
+	    transition: opacity 1s ease-in-out;
+	    font-size: 16px;
+	    font-weight: bold;
+	    white-space: nowrap; 
+	    border: 1px solid #bbbbb;
+	    z-index: 1000;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	}
 	
 	.alarm-icon-style {
@@ -192,7 +210,7 @@ setInterval(checkNewAlarms, 5000); */
 	    display: none;
         top: 80px;
     	right: 128px;
-    	border: 1px solid #ddd;
+    	border: 1px solid #e5e5e5;
 	}
 	
 	.unAlarmList {
@@ -240,8 +258,8 @@ setInterval(checkNewAlarms, 5000); */
 <div id="alarmPopup" class="popup">
     <div class="popup-content">
         <span class="btn-close"></span> <!-- onclick="closeAlarmPopup(event)" -->
-        <div id="alarmHeader">
-        	<span id="alarmSubjectaa">알림</span>
+        <div class="alarmHeader">
+        	<span class="alarmSubject">알림</span>
         </div>
         <div id="alarmListContent">
 
@@ -255,14 +273,14 @@ setInterval(checkNewAlarms, 5000); */
 <div class="allAlarm">
 	<div class="col-12 col-lg-12 row">
 		<div class="col-sm-11">
-			<div id="alarmHeaderdd"><span id="alarmSubject">알림</span></div>
+			<div class="alarmHeader"><span class="alarmSubject">알림</span></div>
 		</div>
-		<div class="col-sm-1"><span class="btn-close" style="position: absolute; font-size: 16px; margin-left: 30px; cursor: pointer;"></span></div>
+		<div class="col-sm-1"><span class="btn-close" style="position: absolute; font-size: 16px; margin-left: 52px; cursor: pointer;"></span></div>
 	</div>
 
 	<div class="col-12 col-lg-12 row">
 		<div class="col-sm-6">
-			<div class="unreadAlarm">안읽은 알림</div>
+			<div class="unreadAlarm" style="margin: 0 0 0 3px">안읽은 알림</div>
 		</div>
 		<div class="col-sm-6">
 			<div class="readAlarm">읽은 알림</div>
@@ -270,12 +288,12 @@ setInterval(checkNewAlarms, 5000); */
 	</div>
 	<div class="col-12 col-lg-12 row">
 		<div class="col-sm-6">
-			<div class="unAlarmList">
+			<div class="unAlarmList" style="border: 1px solid #bbbbbb; border-radius: 3px;">
 			
            </div>
 		</div>
 		<div class="col-sm-6">
-			<div class="readAlarmList">
+			<div class="readAlarmList" style="border: 1px solid #bbbbbb; border-radius: 3px;">
 				
 			</div>
 		</div>
@@ -334,6 +352,7 @@ setInterval(checkNewAlarms, 5000); */
 	            datatype: 'JSON',
 	            success: function(response) {
 	                drawAlarm(response);
+	                $('.allAlarm').hide();
 	                $('#alarmPopup').show();
 	            },
 	            error: function(xhr, status, error) {
@@ -368,7 +387,7 @@ setInterval(checkNewAlarms, 5000); */
 	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 	                '    <div class="alarm-item">' +
 	                '        <a onclick="deleteAlarm2(' + alarm.alarm_idx + ')" href="' + alarm.url + '">' +
-	                '            <span id="al_content">' + alarm.content + '</span>' +
+	                '            <span id="al_content">' + '<i class="bi bi-circle-fill" style="font-size: 8px; vertical-align: middle; color: #ff7976; margin-right: 5px;"></i>' +alarm.content + '</span>' +
 	                '            <span id="al_date">' + relativeTime + '</span>' +
 	                '        </a>' +
 	                '    </div>' +
@@ -507,7 +526,7 @@ setInterval(checkNewAlarms, 5000); */
 		                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 		                '    <div class="alarm-item">' +
 		                '        <a href="' + alarm.url + '" onclick="deleteAlarm2(' + alarm.alarm_idx + ')">' +
-		                '            <span id="al_content">' + alarm.content + '</span>' +
+		                '            <span id="al_content">' + '<i class="bi bi-circle-fill" style="font-size: 8px; vertical-align: middle; color: #ff7976; margin-right: 5px;"></i>' + alarm.content + '</span>' +
 		                '            <span id="al_date">' + relativeTime + '</span>' +
 		                '        </a>' +
 		                '    </div>' +
@@ -531,7 +550,6 @@ setInterval(checkNewAlarms, 5000); */
 		                '            <span id="al_date">' + relativeTime + '</span>' +
 		                '        </a>' +
 		                '    </div>' +
-		                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
 		                '</div>';
 		            readAlarmList.append(alarmHTML);
 		        });

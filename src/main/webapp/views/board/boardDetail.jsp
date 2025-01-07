@@ -346,7 +346,7 @@
 													        </button>
 													    </c:if>
 													    <c:if test="${childComment.use_yn == 'Y'}">
-													        <sec:authorize access="(#childComment.username == principal.username) or hasRole('admin') or hasRole('superadmin')">
+													        <sec:authorize access="(#childComment.username == principal.username) or hasRole('ADMIN') or hasRole('SUPERADMIN')">
 													            <button class="btn icon btn-secondary btn-delete" onclick="deleteReview(${childComment.review_idx})">
 													                <i class="bi bi-trash"></i>
 													            </button>
