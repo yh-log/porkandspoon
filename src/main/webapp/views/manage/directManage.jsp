@@ -154,11 +154,28 @@
 	}
 	
 
-/* 공통 스타일 */
-h3, h4 {
-  margin-bottom: 10px;
-  font-weight: bold;
-}
+	/* 공통 스타일 */
+	h3, h4 {
+	  margin-bottom: 10px;
+	  font-weight: bold;
+	}
+
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 이미지와 텍스트 간격 */
+  }
+
+  .logo-container img {
+    max-width: 120px;
+    height: auto;
+  }
+
+  .logo-container p {
+    margin: 0;
+  }
 
 
 
@@ -181,10 +198,20 @@ h3, h4 {
 			  <!-- 상단 영역 -->
 			  <div class="top-section">
 			    <div class="top-left">
-			      <h3>돼미남 정보</h3>
-			      <p>직영점주: 박준규</p>
+			    <div class="logo-container">
+				    <c:choose>
+		                <c:when test="${not empty info.filedto and not empty info.filedto.new_filename}">
+		                    <img src=" /photo/${info.filedto.new_filename}" alt="상품 이미지">  
+		                </c:when>
+		                <c:otherwise>
+		                    <img src="/resources/img/default.jpg" alt="기본 이미지">
+		                </c:otherwise>
+		            </c:choose>
+			      <h3>${info.text} 정보</h3>
+			      <p>${info.text}팀 팀장:${info.name} </p>
 			      <p>주소: 서울 강남구 강남대로 27 1층</p>
-			      
+			    </div>
+			    
 			    </div>
 			    
 			    <div class="top-right">

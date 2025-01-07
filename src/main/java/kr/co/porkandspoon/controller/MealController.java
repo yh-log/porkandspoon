@@ -180,7 +180,7 @@ public class MealController {
 	
 	@GetMapping(value="/ad/mealTicket")// /ad/meal/Ticket
 	//ad/meal/TickerWrite
-	public ModelAndView mealTicketView() {
+	public ModelAndView mealTicketView(@AuthenticationPrincipal UserDetails userDetails) {
 		List<MealDTO> list = mealService.getmealTicket();
 	    
 		
@@ -201,7 +201,7 @@ public class MealController {
         
 	    // 식권 보유량 계산
 	    //username 어캐 가져올까나
-	    String username = "admin";
+	    String username =userDetails.getUsername();
 	    
 	    int count = mealService.getTicketCount(username);
 	    
@@ -256,7 +256,7 @@ public class MealController {
 		
 		//식권 수정 뷰이동
 		@GetMapping(value="/ad/mealTicket/Update/{meal_idx}")
-		public ModelAndView mealTicketUpdateView(@PathVariable int meal_idx) {
+		public ModelAndView mealTicketUpdateView(@PathVariable String meal_idx) {
 			 MealDTO dto = mealService.detailmealTicket(meal_idx);
 			    FileDTO fto = mealService.getFile(meal_idx);
 			    dto.setMeal_idx(meal_idx);
@@ -277,26 +277,49 @@ public class MealController {
 			    return mav;
 			}
 		
-		//식권 수정 기능
-		@PostMapping(value="/ad/mealTicket/Update/{meal_idx}")
-		public ModelAndView editmealTicket(@RequestParam("filepond") MultipartFile file,@PathVariable String meal_idx,
-				@RequestParam Map<String, String> params) {
+		@PostMapping(value = "/ad/mealTicket/Update/{meal_idx}")
+		public ModelAndView editmealTicket(
+		        @RequestParam(value = "filepond", required = false) MultipartFile file, // 파일은 필수가 아님
+		        @AuthenticationPrincipal UserDetails userDetails,
+		        @PathVariable String meal_idx,
+		        @RequestParam Map<String, String> params) {
+		    // 업데이트한 사용자 정보 추가
+		    String updater = userDetails.getUsername();
+		    params.put("updater", updater);
+		    
+		    FileDTO dto = null;
 
-			//사진/파일 업데이트 내용 추가 필요
+		    // 파일 확인 및 처리
+		    if (file != null && !file.isEmpty()) { // 파일이 있는 경우
+		        try {
+		            logger.info("파일 이름: {}", file.getOriginalFilename());
+		            logger.info("파일 크기: {}", file.getSize());
+		            logger.info("파일 타입: {}", file.getContentType());
 
-			FileDTO dto = CommonUtil.uploadSingleFile(file);
-			logger.info("dto : {}",dto);
-			dto.setPk_idx(meal_idx);
-			
-				dto.setCode_name("MT001");
-				params.put("meal_idx", meal_idx);
-				mealService.editmealTicket(params,dto);
-			
-			
-			return new ModelAndView("/meal/mealTicketUpdate/"+meal_idx);
+		            // 파일 업로드 및 DTO 설정
+		            dto = CommonUtil.uploadSingleFile(file);
+		            dto.setPk_idx(meal_idx);
+		            dto.setCode_name("MT001");
+		        } catch (Exception e) {
+		            logger.error("파일 업로드 중 오류 발생: {}", e.getMessage());
+		            throw new RuntimeException("파일 업로드에 실패했습니다.");
+		        }
+		    } else {
+		        logger.info("파일이 업로드되지 않았거나 비어 있습니다.");
+		    }
+
+		    // params에 meal_idx 추가
+		    params.put("meal_idx", meal_idx);
+		    logger.info("params : {}",params);
+		    // 서비스 호출
+		    mealService.editmealTicket(params, dto);
+
+		    // 페이지 리다이렉트
+		    return new ModelAndView("redirect:/ad/mealTicket/Update/" + meal_idx);
 		}
-		
-		
+
+
+
 	//식단표
 	@GetMapping(value = "/ad/mealMenu")
 	public ModelAndView mealMenuView() {

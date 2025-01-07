@@ -21,8 +21,8 @@ public class ManageDTO extends ResponseDTO {
 	private String text;
 	private Date  create_date; 
  
-	
-
+	private FileDTO filedto;
+	private String code_name;
 
 	private String work_date;
 	
@@ -39,6 +39,7 @@ public class ManageDTO extends ResponseDTO {
 	private String spotName;
 	private String address_detail;
 	private String owner;
+	private String parent;
 	//브랜드 리스트
 	
 	
@@ -204,6 +205,16 @@ public class ManageDTO extends ResponseDTO {
 	}
 
 
+	public FileDTO getFiledto() {
+		return filedto;
+	}
+
+
+	public void setFiledto(FileDTO filedto) {
+		this.filedto = filedto;
+	}
+
+
 	public Date getQuit_date() {
 		return quit_date;
 	}
@@ -270,6 +281,26 @@ public class ManageDTO extends ResponseDTO {
 
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+
+
+	public String getCode_name() {
+		return code_name;
+	}
+
+
+	public void setCode_name(String code_name) {
+		this.code_name = code_name;
+	}
+
+
+	public String getParent() {
+		return parent;
+	}
+
+
+	public void setParent(String parent) {
+		this.parent = parent;
 	}
 	
 }

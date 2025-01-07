@@ -120,7 +120,7 @@
 	                        <tr>
 	                           <th class="align-l">상품명</th>
 	                           <td ><input class="form-control sor-1 "  name="name" value="${info.name}" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
-	                           <td ><input class="form-control sor-1 "  name="name" value="${info.meal_idx}" type="text" placeholder="상품명을 입력해주세요." required="required" hidden=""/></td>
+	                           <td ><input class="form-control sor-1 "  name="meal_idx" value="${info.meal_idx}" type="text" placeholder="상품명을 입력해주세요." required="required" hidden=""/></td>
 	                        </tr>
 	                        <tr>
 	                           <th class="align-l">상품가격</th>
@@ -131,21 +131,13 @@
 	                          <td ><input class="form-control sor-1 "  name="count" value="${info.count}" type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
 	                        </tr>
 	                        
-	                        <tr>
-							    <th class="align-l">파일첨부</th>
-							    <td>
-							        <!-- FilePond File Uploader -->
-							        <input class="filepond" type="file" name="filepond" />
-							
-							        <!-- Hidden image preview (fallback for non-FilePond users) -->
-							        <c:if test="${not empty fileUrl}">
-							            <div>
-							                
-							            </div>
-							        </c:if>
-							    </td>
-							</tr>
-								                        
+	                      <tr>
+					            <th class="align-l">파일첨부</th>
+					            <td>
+					                <input class="filepond" type="file" name="filepond" />
+					            </td>
+					        </tr>
+													                        
 	                        
 	                     <tr>
 						   <th class="align-l">활성여부</th>
@@ -221,39 +213,48 @@
 
 <script>
 
+//FilePond 초기화
+const pond = FilePond.create(document.querySelector('input[type="file"]'), {
+    allowMultiple: false, // 단일 파일만 허용
+    allowImagePreview: true, // 이미지 미리보기 활성화
+    imagePreviewMaxHeight: 150, // 미리보기 높이
+    acceptedFileTypes: ['image/*'], // 이미지 파일만 허용
+    instantUpload: false, // 즉시 업로드 비활성화
+    server: {
+        process: null, // 실시간 처리하지 않음
+        revert: null, // 삭제 처리 비활성화
+    },
+});
 
-document.addEventListener('DOMContentLoaded', function () {
-    const fileInput = document.querySelector('.filepond');
+// 선택된 파일을 폼 데이터에 추가
+document.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault(); // 기본 동작 방지
 
-    // FilePond 초기화
-    const pond = FilePond.create(fileInput, {
-        allowImagePreview: true, // 이미지 미리보기 활성화
-        imagePreviewMaxHeight: 150,
-        acceptedFileTypes: ['image/*'], // 이미지 파일만 허용
+    const form = e.target; // 현재 폼
+    const formData = new FormData(form);
+
+    // FilePond에서 파일 데이터 가져오기
+    pond.getFiles().forEach((fileItem) => {
+        formData.append('filepond', fileItem.file); // 'filepond'는 서버에서 받을 이름
     });
 
-    // 서버에서 제공된 기존 파일 설정
-    const fileUrl = '${fileUrl}'; // 서버에서 제공된 파일 URL
-    const fileName = '${fileName}'; // 서버에서 제공된 파일 이름
-
-    if (fileUrl && fileName) {
-        pond.setOptions({
-            files: [
-                {
-                    source: fileUrl, // 기존 이미지의 URL
-                    options: {
-                        type: 'local', // 로컬 파일로 간주
-                        file: {
-                            name: fileName, // 기존 파일 이름
-                            size: 300000, // 파일 크기 (선택)
-                            type: 'image/jpeg', // MIME 타입
-                        },
-                    },
-                },
-            ],
-        });
-    }
+    // AJAX 요청
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', form.action, true);
+    xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            console.log('폼 전송 성공:', xhr.responseText);
+            alert('업로드 성공!');
+            window.location.reload(); // 성공 시 페이지 새로고침 또는 다른 처리
+        } else {
+            console.error('폼 전송 실패:', xhr.responseText);
+            alert('업로드 실패. 다시 시도해주세요.');
+        }
+    };
+    xhr.send(formData); // 폼 데이터 전송
 });
+
+
 	/* 알림 팝업 */
 	function btn1Act() {
 		// 1번버튼 클릭시 수행할 내용
