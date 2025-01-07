@@ -62,6 +62,8 @@ public interface MailDAO {
 
 	int chageAllToRead(Map<String, String> params);
 
+	//MailDTO deliverMail(String idx, String loginId);
+
 
 
 

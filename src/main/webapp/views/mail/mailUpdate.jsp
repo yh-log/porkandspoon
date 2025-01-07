@@ -359,25 +359,56 @@
 
 <script src='/resources/js/textEaditor.js'></script>
 
-
 <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src='/resources/js/mailWrite.js'></script>
 
 <script>
-	//FilePond 등록
-	FilePond.registerPlugin();
-	const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
+
+	var title = 'FW: ${mailInfo.title}';
+	$('input[name="title"]').val(title);
+	var content = '<br/><br/><br/>-----Original Message-----<br/>';
+	content += 'From: ${mailInfo.sender}<br/>';
+	content += 'To: ${mailInfo.sender}<br/>';
+	content += 'Sent: ${mailInfo.send_date}<br/>';
+	content += 'Sent: ${mailInfo.title}<br/>';
+	content += '${mailInfo.content}';
+	$('input[name="title"]').val(title);
+	$('#summernote').val(content);
+	console.log('${mailInfo.content}');
+
+	// FilePond 등록
+   FilePond.registerPlugin();
+   const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
 	    allowMultiple: true,
 	    maxFiles: 5,
 	    allowImagePreview: false,
 	    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
 	    instantUpload: false
-	});
+   });
 	
+	 // 서버에서 파일 목록을 불러와 FilePond에 설정
+    fetch('/mail/getUploadedFiles/${mailInfo.idx}')
+        .then(response => response.json())
+        .then(files => {
+            FilePond.setOptions({
+                files: files.map(file => ({
+                    source: file.new_filename,  // 서버에서 파일 식별자 (ID 또는 URL)
+                    options: {
+                        type: 'local',
+                        file: {
+                            name: file.ori_filename,
+                            size: file.file_size,
+                            type: file.type
+                        }
+                    }
+                }))
+            });
+      });
 	
+	 
 	// 전송
-	function textEaditorWrite(url){
+    function textEaditorWrite(url){
 		console.log('approval.js textEaditorWrite실행');
 		// check!!! 이거두줄
 		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -418,6 +449,9 @@
 	     console.log("textEaditorWrite 실행완료");
 	     console.log("textEaditorWrite after : "+after);
 	}
+ 	
+	
+
 	
 </script>
 
