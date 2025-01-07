@@ -44,7 +44,23 @@ public interface MailDAO {
 
 	List<MailDTO> getBookMark(Map<String, Object> params);
 
-	List<MailDTO> getDeleteMark(Map<String, Object> params);
+	List<MailDTO> getDeleteList(Map<String, Object> params);
+
+	int changeToRead(List<String> idxList, String loginId);
+
+	int isSender(Map<String, String> params);
+
+	int isReceiver(Map<String, String> params);
+
+	int toggleSentMailBookmark(Map<String, String> params);
+
+	int toggleReceivedMailBookmark(Map<String, String> params);
+
+	String getSentMailBookmark(String idx, String loginId);
+
+	String getReceivedMailBookmark(String idx, String loginId);
+
+	int chageAllToRead(Map<String, String> params);
 
 
 

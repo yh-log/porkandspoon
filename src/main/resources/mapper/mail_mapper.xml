@@ -155,7 +155,7 @@
 			m.idx = #{idx}
 	</select> -->
 	
-	<select id="isBookmarked" resultType="int">
+<!-- 	<select id="isBookmarked" resultType="int">
 		SELECT 
 			COUNT(idx) 
 		FROM 
@@ -164,7 +164,7 @@
 			idx = #{idx} 
 			AND 
 			username = #{loginId}
-	</select>
+	</select> -->
 	
 	<delete id="deleteBookmark" parameterType="map">
 		DELETE 
@@ -185,6 +185,62 @@
 		) 
 	</insert>
 	
+	<select id="isSender" parameterType="map" resultType="int">
+		SELECT COUNT(idx) 
+		FROM mail
+		WHERE idx = #{idx}
+		AND sender = #{username} 
+	</select>
+
+	<select id="isReceiver" parameterType="map" resultType="int">
+		SELECT COUNT(idx) 
+		FROM mail_receive
+		WHERE idx = #{idx}
+		AND username = #{username} 
+	</select>
+	
+	<update id="toggleSentMailBookmark" parameterType="map">
+		UPDATE mail
+		SET
+			is_bookmark = #{is_bookmark}
+		WHERE
+			idx = #{idx}
+			AND 
+			sender = #{username} 
+	</update>
+	
+	<update id="toggleReceivedMailBookmark" parameterType="map">
+		UPDATE mail_receive
+		SET
+			is_bookmark = #{is_bookmark}
+		WHERE
+			idx = #{idx}
+			AND 
+			username = #{username} 
+	</update>
+	
+	<select id="getSentMailBookmark" resultType="String">
+		SELECT 
+				is_bookmark
+			FROM 
+				mail
+			WHERE 
+				idx = #{idx}
+			AND 
+				sender = #{loginId} 
+	</select>
+
+	<select id="getReceivedMailBookmark" resultType="String">
+		SELECT 
+				is_bookmark
+			FROM 
+				mail_receive
+			WHERE 
+				idx = #{idx}
+			AND 
+				sender = #{loginId} 
+	</select>
+	
 	<select id="getAttachedFiles" parameterType="String" resultType="kr.co.porkandspoon.dto.FileDTO">
 		SELECT ori_filename, new_filename, type FROM file 
 			WHERE code_name = 'ma001' 
@@ -192,43 +248,224 @@
 	</select>
 	
 	<select id="getSendList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
-		SELECT m.idx
-			,m.title
-			,m.is_bookmark
-			,m.send_date
-			,(SELECT 
-					MIN(idx) 
-				FROM 
-					file 
-				WHERE 
-					pk_idx = m.idx 
-				AND 
-					code_name = 'ma001'
-			) AS fileYn
-			,(SELECT 
-					MIN(username) 
-				FROM 
-					mail_receive mr 
-				WHERE 
-					m.idx = mr.idx 
-				GROUP BY idx
-			) AS username
-			, u.name
-			,COUNT(*) OVER() AS total_count
+ 		SELECT 
+			m.idx,
+			m.title,
+			m.is_bookmark,
+			m.send_date,
+			(SELECT MIN(idx) 
+				FROM file 
+				WHERE pk_idx = m.idx 
+				AND code_name = 'ma001'
+			) AS fileYn,
+			mr.username,
+			u.name,
+			COUNT(*) OVER() AS total_count
 		FROM 
 			mail m
-		JOIN user u 
-			ON m.username = u.username
+		JOIN (
+		    SELECT 
+		    	idx, 
+		    	MIN(username) AS username
+		    FROM mail_receive
+		    GROUP BY idx
+		) AS mr ON m.idx = mr.idx
+		JOIN 
+			user u ON mr.username = u.username
 		WHERE 
-			sender = 'smpark'
-		AND
-			m.send_status = 'sd'
+		    m.sender = #{loginId}
+		    AND m.send_status = 'sd'
+		    AND m.use_yn = 'Y'
+			<if test="search != null and !search.equals('') and option == 'subject'"> 
+				AND m.title LIKE CONCAT('%',#{search},'%')		
+			</if>
+			ORDER BY m.idx DESC
+			LIMIT #{limit} 
+			OFFSET #{offset}	
+	</select>
+	
+	<select id="getReceiveList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
+ 		SELECT 
+		    m.idx
+		    ,m.sender
+		    ,m.title
+		    ,m.send_date
+		    ,(SELECT MIN(idx) 
+		     	FROM file 
+		     	WHERE pk_idx = m.idx 
+		     	AND code_name = 'ma001'
+	     	) AS fileYn
+		    ,mr.is_bookmark
+		    ,mr.is_read
+		    ,u.name
+		    ,COUNT(*) OVER() AS total_count
+		FROM mail m
+		JOIN user u 
+			ON m.sender = u.username
+		JOIN mail_receive mr 
+			ON m.idx = mr.idx 
+			AND mr.username = #{loginId}
+		WHERE 
+		    mr.use_yn = 'Y' 
+		    AND m.send_status = 'sd' 
+	    <if test="filter != null and filter == 'noread'">
+			AND mr.is_read = 'N'
+		</if>
 		<if test="search != null and !search.equals('') and option == 'subject'"> 
-			AND d.subject LIKE CONCAT('%',#{search},'%')		
+			AND m.title LIKE CONCAT('%',#{search},'%')		
 		</if>
 		ORDER BY m.idx DESC
 		LIMIT #{limit} 
-		OFFSET #{offset}	
+		OFFSET #{offset}
 	</select>
+	
+	<select id="getSaveList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
+ 		SELECT 
+ 			m.idx
+ 			,m.title
+ 			,m.is_bookmark
+ 			,m.send_date 
+			,(SELECT MIN(idx) 
+				FROM file 
+				WHERE pk_idx = m.idx 
+				AND code_name = 'ma001'
+			) AS fileYn
+			,(SELECT MIN(username) 
+				FROM mail_receive mr 
+				WHERE m.idx = mr.idx 
+				GROUP BY idx
+			) AS username
+			,u.name
+			,COUNT(*) OVER() AS total_count
+		FROM mail m
+		JOIN user u
+			ON m.sender = u.username 
+		WHERE
+			m.sender = #{loginId}
+			AND
+			send_status = 'sv'
+			AND
+			m.use_yn = 'Y'
+			<if test="search != null and !search.equals('') and option == 'subject'"> 
+				AND m.title LIKE CONCAT('%',#{search},'%')		
+			</if>
+		ORDER BY m.idx DESC
+		LIMIT #{limit} 
+		OFFSET #{offset}
+	</select>
+	
+	<select id="getBookMark" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
+ 		SELECT  
+		    m.idx
+		    ,m.title
+		    ,m.send_date
+		    ,CASE 
+		        WHEN m.sender = #{loginId} THEN 'sent'
+		        ELSE 'received'
+		    END 
+		    AS mail_type
+		    ,COALESCE(mr.username, m.sender) 
+		    AS username
+		    ,u.name
+		    ,(SELECT MIN(idx) 
+		    	FROM file 
+	    		WHERE pk_idx = m.idx 
+	    		AND code_name = 'ma001'
+    		) AS fileYn
+    		,COUNT(*) OVER() AS total_count
+		FROM mail m
+		LEFT JOIN (
+		    SELECT 
+		    	mr_inner.idx
+		    	,MIN(mr_inner.username
+	    	) AS username
+		    FROM mail_receive mr_inner
+		    GROUP BY mr_inner.idx
+		) mr 
+			ON m.idx = mr.idx
+		LEFT JOIN user u 
+			ON u.username = COALESCE(mr.username, m.sender)
+		LEFT JOIN mail_receive mr2 
+		    ON m.idx = mr2.idx 
+		    AND mr2.username = #{loginId}
+		WHERE (
+		    (m.sender = #{loginId} AND m.is_bookmark = 'Y')  
+		    OR (mr2.username = #{loginId} AND mr2.is_bookmark = 'Y')
+	    ) AND (mr2.use_yn = 'Y' or m.use_yn = 'Y')  
+		<if test="search != null and !search.equals('') and option == 'subject'"> 
+		AND m.title LIKE CONCAT('%',#{search},'%')		
+		</if>
+		ORDER BY m.idx DESC
+		LIMIT #{limit} 
+		OFFSET #{offset}
+	</select>
+	
+	<select id="getDeleteList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
+ 		SELECT 
+		    m.idx
+		    ,m.title
+		    ,m.send_date
+		    ,CASE 
+		        WHEN m.sender = #{loginId} THEN m.is_bookmark  
+		        ELSE mr.is_bookmark 
+		    END AS is_bookmark
+		    ,CASE 
+		        WHEN m.sender = #{loginId} THEN 'sent'
+		        ELSE 'received'
+		    END AS mail_type
+		    ,CASE 
+		        WHEN m.sender = #{loginId}
+		        THEN (
+		            SELECT 
+		            	GROUP_CONCAT(mr_inner.username 
+		            		ORDER BY mr_inner.username ASC LIMIT 1
+	            		)
+		            FROM mail_receive mr_inner
+		            WHERE mr_inner.idx = m.idx
+		        )  
+		        ELSE m.sender 
+		    END AS username
+		    ,(SELECT MIN(idx) 
+				FROM file 
+				WHERE pk_idx = m.idx 
+				AND code_name = 'ma001'
+			) AS fileYn
+		    ,u.name
+			,COUNT(*) OVER() AS total_count
+		FROM 
+		    mail m
+		LEFT JOIN 
+			mail_receive mr 
+		    ON m.idx = mr.idx 
+		    AND mr.username = #{loginId}
+		JOIN user u
+			ON m.sender = u.username 
+		WHERE 
+		    (m.sender = #{loginId} OR mr.username = #{loginId}) 
+		    AND (m.use_from_date IS NOT NULL OR mr.use_from_date IS NOT NULL)
+    		AND (m.use_yn = 'Y' OR mr.use_yn = 'Y')
+		<if test="search != null and !search.equals('') and option == 'subject'"> 
+		AND m.title LIKE CONCAT('%',#{search},'%')		
+		</if>
+		ORDER BY m.idx DESC
+		LIMIT #{limit} 
+		OFFSET #{offset}
+	</select>
+
+	<update id="changeToRead">
+		UPDATE 
+			mail_receive
+		SET 
+			is_read = 'Y'
+			,read_date = NOW()
+		WHERE
+			idx IN (
+			<foreach collection="idxList" item="idx" index="index" separator=",">
+				#{idx}
+			</foreach>
+			)
+			AND 
+			username = #{loginId}
+	</update>
 	
 </mapper>

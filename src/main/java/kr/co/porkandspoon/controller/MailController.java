@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -172,8 +175,13 @@ public class MailController {
 			
 			mav = new ModelAndView("/mail/mailDetail"); 
 			mav.addObject("mailInfo", mailInfo);
-			mav.addObject("isBookmarked", mailService.isBookmarked(idx, loginId));
+			//mav.addObject("isBookmarked", mailService.isBookmarked(idx, loginId));
 			mav.addObject("fileList", fileList);
+			if(isReceiver) {
+				mav.addObject("is_bookmark", mailService.getSentMailBookmark(idx, loginId));
+			}else if (isSender) {
+				mav.addObject("is_bookmark", mailService.getReceivedMailBookmark(idx, loginId));
+			}
 		}else {
 			try {
 				// 메시지를 URL 인코딩
@@ -183,6 +191,14 @@ public class MailController {
 				e.printStackTrace();
 			}
 		}
+		
+		if(isReceiver) {
+			// 읽음 처리
+			List<String> idxList = new ArrayList<String>();
+			idxList.add(idx);
+			mailService.changeToRead(idxList, loginId);
+		}
+		
 			return mav;
 	}
 	
@@ -200,17 +216,53 @@ public class MailController {
 		return userListStr;
 	}
 	
-	// 북마크 상태 변경
-	@PostMapping(value = "/mail/bookmark")
+	// 즐겨찾기 상태 변경
+	@PutMapping(value = "/mail/bookmark")
 	public Map<String, Object> updateBookmark(@RequestParam Map<String, String> params, @AuthenticationPrincipal UserDetails userDetails) {    
+		//Map<String, Object> result = new HashMap<String, Object>();
+//		String loginId = userDetails.getUsername();
+//		params.put("username", loginId);
+//		String isBookmarked = params.get("isBookmarked");
+//		logger.info("bookmark? : "+params.get("isBookmarked"));
+//		logger.info("idx? : "+params.get("idx"));
+//		boolean success = mailService.updateBookmark(params);
+		
 		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
 		String loginId = userDetails.getUsername();
 		params.put("username", loginId);
-		String isBookmarked = params.get("isBookmarked");
-		logger.info("bookmark? : "+params.get("isBookmarked"));
-		logger.info("idx? : "+params.get("idx"));
-		boolean success = mailService.updateBookmark(params);
+		
+		params.put("is_bookmark", params.get("is_bookmark").equals("Y") ? "N" : "Y");
+		// 보낸 메일인지 확인
+	    boolean isSender = mailService.isSender(params);
+	    if (isSender) {
+	        mailService.toggleSentMailBookmark(params);
+	        success = true;
+	    }
+
+	    // 받은 메일인지 확인
+	    boolean isReceiver = mailService.isReceiver(params);
+	    if (isReceiver) {
+	    	mailService.toggleReceivedMailBookmark(params);
+	    	success = true;
+	    }
+	    result.put("success", success);
+	    return result;
+	}
+	
+	//다중 읽음 처리 기능
+	@PutMapping(value = "/mail/changeToRead")
+	public Map<String, Object> changeToRead(@RequestBody Map<String, List<String>> requestBody, @AuthenticationPrincipal UserDetails userDetails) {    
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
+		String loginId = userDetails.getUsername();
+		 List<String> idxList = requestBody.get("idxList"); 
+		success = mailService.changeToRead(idxList,loginId);
+		result.put("success", success);
 		return result;
 	}
+	
+	
+	
 	
 }

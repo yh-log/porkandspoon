@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,6 +33,7 @@
 	display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 3px 40px;
 }
 
 .mailList .tit-area .left {
@@ -76,49 +78,89 @@
 
 .mailList input[name="search-data"] {
 	width: 300px;
-	height: 38px;
+	height: 34px;
 	margin: 14px 0;
 	border: 1px solid #DFE3E7;
 }
 
 .mailList .search-area select {
 	margin: 14px 0;
-    height: 38px;
+    height: 34px;
 }
 
-.mailList .search-area .btn-sch {
+.mailList .search-area #searchBtn {
+    padding: 0px 12px;
 	margin: 14px 0;
-    height: 38px;
+    height: 34px;
 }
 
 .mailList .util-area {
 	display: flex;
 	justify-content: space-between;
-    padding: 20px 40px;
+	align-items: center;
+    padding: 16px 40px;
     border-bottom: 1px solid #ddd;
 }
 
+.mailList .util-area {
+	
+}
+
+.mailList .util-area .left {
+	display: flex;
+    align-items: center;
+}
+
 .mailList .util-area .left > * {
-	margin-right: 10px;
+    margin: 0 10px 0 0;
 }
 
 .mailList .cont-body {
 	padding: 0;
 }
 
+.mailList .list-area.recv {
+	color: #656C74;
+}
 .mailList .list-area .mail-item {
 	display: flex;
 	justify-content: space-between;
-    padding: 16px 40px;
+    padding: 12px 40px;
     border-bottom: 1px solid #ddd;
 }
+.mailList .list-area .mail-item.no-read {
+	font-weight: 500;
+    color: var(--bs-body-color);
+}
 .mailList .list-area .mail-item .left > *{
-	margin-right: 10px;
+	margin-right: 24px;
 }
 .mailList .list-area .mail-item .name {
+	display: inline-block;
+	width: 70px;
 	margin-right: 30px;
 }
+.mailList .list-area .mail-item .bi-paperclip {
+	font-size: 17px;
+    color: #888;
+    margin-left: 7px;
+}
+.mailList .list-area .mail-item .title {
+	cursor: pointer;
+}
+.mailList .list-area .mail-item #bookmark {
+	cursor: pointer;
+}
+.mailList .btn-refresh{
+	cursor: pointer;
+}
 
+.mailList .bi-star {
+	color: #8D959F;
+}
+.mailList .bi-star-fill{
+	color: var(--bs-warning);
+}
 </style>
 
 </head>
@@ -152,17 +194,30 @@
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<div class="left">
-								<h5>받은 메일함 <span class="mail-count">21</span></h5>
-								<div class="tab">
-									<button class="selected"><i class="bi bi-filter-left"></i> 전체</button>
-									<span class="bar"></span>
-									<button>안읽은 메일</button>
-								</div>
+								<h5>
+									<c:choose>
+										<c:when test="${listType eq 'sd'}">보낸 메일함</c:when>
+										<c:when test="${listType eq 'recv'}">받은 메일함</c:when>
+										<c:when test="${listType eq 'sv'}">임시 보관함</c:when>
+										<c:when test="${listType eq 'bk'}">중요 메일함</c:when>
+										<c:when test="${listType eq 'del'}">휴지통</c:when>
+									</c:choose>
+									<span class="mail-count"></span>
+								</h5>
+								<c:if test="${listType eq 'recv'}">
+									<div class="buttons filter-btns clearfix">
+										<div class="tab">
+											<button class="selected" data-filter="all" ><i class="bi bi-filter-left"></i> 전체</button>
+											<span class="bar"></span>
+											<button data-filter="noread">안읽은 메일</button>
+										</div>
+									</div>
+								</c:if>
 							</div>
 							<div class="search-area">
-								<select name="search" class="form-select">
+								<select name="search" class="form-select form-select-sm">
 									<option value="subject">제목</option>
-								</select> <input type="text" name="search-data" class="form-control"
+								</select> <input type="text" name="search-data" class="form-control form-control-sm"
 									placeholder="검색내용을 입력하세요" width="80%" />
 								<button id="searchBtn" class="btn btn-primary">
 									<i class="bi bi-search"></i>
@@ -172,27 +227,37 @@
 						<div class="util-area">
 							<div class="left">
 								<input type="checkbox" class="form-check-input" id="checkbox2">
-								<buttton>읽음</buttton>
-								<buttton>삭제</buttton>
-								<buttton>중요</buttton>
+								<c:choose>
+									<c:when test="${listType eq 'recv' or listType eq 'bk'}">
+										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
+									</c:when>
+									<c:when test="${listType eq 'sd'}">
+										<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">다시보내기</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
+									</c:when>
+									<c:when test="${listType eq 'sv'}">
+										<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">전송</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
+									</c:when>
+									<c:when test="${listType eq 'del'}">
+										<buttton class="btn btn-outline-primary btn-sm">영구삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm">삭제취소</buttton>
+									</c:when>
+						
+								</c:choose>
 							</div>
-							<div><i class="bi bi-arrow-clockwise"></i></div>
+							<div class="btn-refresh" onclick="location.reload();"><i class="bi bi-arrow-clockwise"></i></div>
 						</div>
 
 						<div class="cont-body">
-
+						
 							<div class="list-area">
-								<div class="mail-item">
-									<div class="left">
-										<input type="checkbox" class="form-check-input" id="checkbox2">
-										<i class="bi bi-star"></i>
-										<span class="name">김승현</span>
-										<span>[경영지원본부] 교육일정 전달의 건 <i class="bi bi-paperclip"></i></span>
-									</div>
-									<span>오전 11:40</span>
-								</div>
+							
 							</div>
-
 							<nav aria-label="Page navigation">
 								<ul class="pagination justify-content-center" id="pagination"></ul>
 							</nav>
@@ -215,28 +280,30 @@
 
 <script>
 var listType = '${listType}';
+if(listType == 'recv'){
+	$('.list-area').addClass('recv');
+}
 console.log("listType : ",listType);
 var show = 1;
 var paginationInitialized = false;
-var option = '';
-var search = '';
-var filter = '';
+
 
 var totalCount = 0;
 var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
 var totalPage = 0;
-//var filterElem = '';
+
 
 pageCall(show, listType);
 
 function pageCall(page, listType) {
-	option = document.querySelector('select[name="search"]').value;
-	search = document.querySelector('input[name="search-data"]').value;
-	//filterElem = document.querySelector('.filter-btns .btn.selected');
-	//if(filterElem){		
-	//	filter = filterElem.getAttribute('data-filter');
-	//	console.log("filter!!!! ",filter );
-	//}
+	var option = document.querySelector('select[name="search"]').value;
+	var search = document.querySelector('input[name="search-data"]').value;
+	var filterElem = document.querySelector('.filter-btns button.selected');
+	var filter = null;
+	if(filterElem){		
+		filter = filterElem.getAttribute('data-filter');
+		console.log("filter!!!! ",filter );
+	}
 	console.log("option",option);
 	console.log("search",search);
 	
@@ -248,7 +315,7 @@ function pageCall(page, listType) {
 			'cnt':15,
 			'search' : search,
 			'option' : option,
-		//	'filter': filter,
+			'filter': filter,
 			'listType': listType
 		},
 		datatype:'JSON',
@@ -286,8 +353,9 @@ function pageCall(page, listType) {
 }
 
 function drawList(list) {
+	// 총 메일 수
+	$('.tit-area .mail-count').text(totalCount);
 	var content ='';
-	var approvalDate = '';
 	if(totalCount == 0){
 		content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
 		$('.list tbody').html(content);
@@ -300,23 +368,26 @@ function drawList(list) {
 			approvalDate = '-';
 		} */
 		
-		
-		content +='<div class="mail-item">';
+		if(listType == 'recv' && view.is_read == 'N'){
+			content +='<div class="mail-item no-read" data-idx="'+view.idx+'">';
+		}else{
+			content +='<div class="mail-item" data-idx="'+view.idx+'">';
+		}
 		content +='<div class="left">';
 		content +='<input type="checkbox" class="form-check-input" id="checkbox2">';
 		if(view.is_bookmark == 'N'){
-			content +='<i class="bi bi-star"></i>';
+			content +='<i id="bookmark" class="bi bi-star"></i>';
 		}else{
-			content +='<i class="bi bi-star-fill"></i>';
+			content +='<i id="bookmark" class="bi bi-star-fill"></i>';
 		}
-		content +='<span class="name">'+view.username+'</span>';
-		content +='<span onclick="location.href=\'/mail/detail/'+view.idx+'\'">'+view.title;
+		content +='<span class="name">'+view.name+'</span>';
+		content +='<span class="title" onclick="location.href=\'/mail/detail/'+view.idx+'\'">'+view.title;
 		if(view.fileYn != null){
 			content +='<i class="bi bi-paperclip"></i>';
 		}	
 		content +='</span>';
 		content +='</div>';
-		content +='<span>'+view.send_date+'</span>';
+		content +='<span>'+view.send_date_str+'</span>';
 		content +='</div>';
 		
 	  }
@@ -324,7 +395,7 @@ function drawList(list) {
      console.log("content :::",content);
 }
 
-$(document).on('click','.list td.delete',function(){
+/* $(document).on('click','.list td.delete',function(){
 	var draftIdx = $(this).data('draftidx');
 	layerPopup('해당 기안문을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
 	
@@ -352,7 +423,7 @@ $(document).on('click','.list td.delete',function(){
 	        }
 	    });
 	}
-});
+}); */
 
 	// 검색이벤트
 	$('#searchBtn').on('click', function() {
@@ -362,13 +433,13 @@ $(document).on('click','.list td.delete',function(){
 	});
 
 	// 필터링
-/* 	$('.filter-btns .btn').on('click', function() {
+ 	$('.filter-btns button').on('click', function() {
 		$(this).siblings().removeClass('selected');
 		$(this).addClass('selected');
 		show = 1;
 	    paginationInitialized = false;
 	    pageCall(show, listType);  // 검색어가 추가된 상태에서 호출
-	}); */
+	}); 
 	
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
 	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
@@ -377,6 +448,65 @@ $(document).on('click','.list td.delete',function(){
 		location.reload();
 		removeAlert(); 
 	}
+	
+	// 즐겨찾기
+	$(document).on('click', '#bookmark', function() {
+		var thisEl = $(this);
+		var is_bookmark = $(this).hasClass('bi-star-fill') ? 'Y' : 'N';
+		var idx = $(this).parents('.mail-item').data('idx');
+		console.log("[전송직전]is_bookmark : ",is_bookmark);
+		console.log("[전송직전]idx : ",idx);
+		
+		$.ajax({
+        	type : 'PUT',
+	        url : '/mail/bookmark',
+	        data : {
+	        	'idx' : idx,
+				'is_bookmark' : is_bookmark
+	        },
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	$(thisEl).toggleClass('bi-star-fill bi-star');
+				console.log("$(this) : ",$(thisEl));
+				console.log("[전송후]is_bookmark : ",$(thisEl).hasClass('bi-star-fill'));
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+		
+    });
+	
+	// 다중 읽음 처리
+	function changeToRead() {
+		var checkedEls = $('.list-area .form-check-input:checked');
+		var checkedIdx = [];
+		for ( var checkedEl of checkedEls) {
+			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
+		}
+		console.log("checkedEls : ", checkedEls);
+		console.log("checkedIdx : ", checkedIdx);
+		
+		$.ajax({
+        	type : 'PUT',
+	        url : '/mail/changeToRead',
+	        data: JSON.stringify({ 'idxList': checkedIdx }),  // JSON 형태로 전송
+	        contentType: 'application/json',  // Content-Type을 JSON으로 설정
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	alert('성공');
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+	
+
 	
 </script>
 
