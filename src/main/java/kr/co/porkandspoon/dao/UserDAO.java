@@ -3,14 +3,9 @@ package kr.co.porkandspoon.dao;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.porkandspoon.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import kr.co.porkandspoon.dto.ApprovalDTO;
-import kr.co.porkandspoon.dto.CareerDTO;
-import kr.co.porkandspoon.dto.DeptDTO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
 public interface UserDAO{
@@ -121,19 +116,11 @@ public interface UserDAO{
 	 * author yh.kim (24.12.24)
 	 * 직원 리스트 조회
 	 */
-	List<UserDTO> userList(Map<String, Object> parmeterMap);
+	List<UserDTO> userList(PagingDTO pagingDTO);
 
-	/**
-	 * author yh.kim (24.12.25)
-	 * 브랜드 생성 페이지 기안문 내용 조회
-	 */
-	ApprovalDTO deptWriteView(String idx);
 
-	/**
-	 * author yh.kim (24.12.25)
-	 * 부서코드 중복체크
-	 */
-	int deptCodeOverlay(DeptDTO dto);
+
+
 
 	/**
 	 * author yh.kim (24.12.26) 
@@ -141,11 +128,6 @@ public interface UserDAO{
 	 */
 	int deptWrite(DeptDTO dto);
 
-	/**
-	 * author yh.kim (24.12.26) 
-	 * 부서 상세 페이지 이동
-	 */
-	DeptDTO deptDetail(String id);
 
 	/**
 	 * author yh.kim (24.12.26)
@@ -177,23 +159,13 @@ public interface UserDAO{
 	 */
 	List<ApprovalDTO> deptDeleteList(Map<String, Object> parmeterMap);
 
-	/**
-	 * author yn.kim (24.12.27)
-	 * 직영점 등록 요청 페이지 이동 및 조회
-	 */
-	ApprovalDTO storeWriteView(String idx);
+
 
 	/**
 	 * author yh.kim (24.12.27)
 	 * 직영점 등록
 	 */
 	int storeWrite(DeptDTO dto);
-
-	/**
-	 * author yh.kim (24.12.27) 
-	 * 직영점 수정 페이지 이동 및 조회
-	 */
-	DeptDTO storeDetail(String id);
 
 	/**
 	 * author yh.kim (24.12.27)

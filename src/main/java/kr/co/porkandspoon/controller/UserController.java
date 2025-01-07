@@ -16,7 +16,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.catalina.User;
+import kr.co.porkandspoon.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +42,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import kr.co.porkandspoon.dto.ApprovalDTO;
-import kr.co.porkandspoon.dto.CareerDTO;
-import kr.co.porkandspoon.dto.DeptDTO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.UserService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -72,45 +67,32 @@ public class UserController {
 	 * 직원 리스트 조회
 	 */
 	@GetMapping(value="/ad/user/list")
-	public List<UserDTO> userList(
-	        @RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword, 
-	        @RequestParam(defaultValue = "", value = "userYn") String userYn) {
+	public List<UserDTO> userList(@ModelAttribute PagingDTO pagingDTO) {
 
-	    logger.info("keyword => " + keyword);
-	    logger.info("option => " + option);
-	    logger.info("page => " + page);
-	    logger.info("cnt => " + cnt);
+		logger.info(CommonUtil.toString(pagingDTO));
 
-	    List<UserDTO> dtoList = userService.userList(page, cnt, option, keyword, userYn);
+		List<UserDTO> dtoList = userService.userList(pagingDTO);
 
-	    return dtoList;
+		return dtoList;
 	}
 
-	
-	@GetMapping(value="/ad/user/listView")
-	public ModelAndView userListView() {
-		return new ModelAndView("/user/userList");
-	}
-	
 	/**
 	 * author yh.kim (24.12.18) 
-	 * 부서 리스트 이동
+	 * 직원 리스트 페이지 이동
 	 */
-	@GetMapping(value="/ad/dept/listView")
-	public ModelAndView deptListView() {
-		return new ModelAndView("/user/deptList");
+	@GetMapping(value="/ad/user/listView")
+	public ModelAndView userListView() {
+
+		return new ModelAndView("/user/userList");
 	}
-	
+
 	/**
 	 * author yh.kim (24.12.18) 
 	 * 인사이동 리스트 이동
 	 */
 	@GetMapping(value="/ad/employeeTransfer")
 	public ModelAndView employeeTransferView() {
-		
+
 		return new ModelAndView("/user/employeeTransfer");
 	}
 
@@ -120,6 +102,7 @@ public class UserController {
 	 */
 	@GetMapping(value="/ad/user/writeView")
 	public ModelAndView userWriteView() {
+
 		return new ModelAndView("/user/userWrite");
 	}
 	
@@ -135,7 +118,6 @@ public class UserController {
 		mav.setViewName("/user/userDetail");
 		
 		return mav;
-		
 	}
 	
 	/**
@@ -150,7 +132,6 @@ public class UserController {
 		mav.setViewName("/user/userUpdate");
 		
 		return mav;
-		
 	}
 	
 	/**
@@ -203,143 +184,6 @@ public class UserController {
 	}
 	
 	/**
-	 * author yh.kim (24.12.19) 
-	 * 부서 상세 페이지 이동
-	 */
-	@GetMapping(value="/ad/dept/detail/{id}")
-	public ModelAndView deptDetailView(@PathVariable String id) {
-		
-		ModelAndView mav = new ModelAndView();
-		DeptDTO deptDto = new DeptDTO();
-		
-		if(id == null || id.isEmpty()) {
-			deptDto.setStatus(400);
-			deptDto.setMessage("입력된 부서코드가 없습니다.");
-		}
-		
-		deptDto = userService.deptDetsil(id);
-		
-		mav.addObject("deptInfo", deptDto);
-		mav.setViewName("/user/deptDetail");
-		
-		return mav;
-	}
-	
-	/**
-	 * author yh.kim (24.12.19) 
-	 * 브랜드 생성 페이지 기안문 내용 조회
-	 */
-	@GetMapping(value="/ad/dept/write/{idx}")
-	public ModelAndView deptWriteView(@PathVariable String idx) {
-		
-		if(idx == null || idx.equals("")) {
-			return new ModelAndView("/user/deptList");
-		}
-		
-		ModelAndView mav = new ModelAndView();
-		
-		ApprovalDTO apprDto = userService.deptWriteView(idx);
-		
-		logger.info("받아온 브랜드 정보 => " + CommonUtil.toString(apprDto));
-		
-		mav.addObject("deptInfo", apprDto);
-		mav.setViewName("/user/deptWrite");
-		
-		return mav;
-	}
-	
-	/**
-	 * author yh.kim (24.12.19) 
-	 * 부서 수정 페이지 이동
-	 */
-	@GetMapping(value="/ad/dept/update/{id}")
-	public ModelAndView deptUpdateView(@PathVariable String id) {
-		
-		ModelAndView mav = new ModelAndView();
-		DeptDTO deptDto = new DeptDTO();
-		
-		if(id == null || id.isEmpty()) {
-			deptDto.setStatus(400);
-			deptDto.setMessage("입력된 부서코드가 없습니다.");
-		}
-		
-		deptDto = userService.deptDetsil(id);
-		
-		mav.addObject("deptInfo", deptDto);
-		mav.setViewName("/user/deptUpdate");
-		
-		return mav;
-	}
-	
-	/**
-	 * author yh.kim (24.12.19) 
-	 * 직영점 등록 요청 페이지 이동 및 조회
-	 */
-	@GetMapping(value="/ad/store/write/{idx}")
-	public ModelAndView storeWriteView(@PathVariable String idx) {
-		
-		if(idx == null || idx.equals("")) {
-			return new ModelAndView("/user/storeList");
-		}
-		
-		ModelAndView mav = new ModelAndView();
-		
-		ApprovalDTO apprDto = userService.storeWriteView(idx);
-		
-		logger.info("받아온 브랜드 정보 => " + CommonUtil.toString(apprDto));
-		
-		mav.addObject("storeInfo", apprDto);
-		mav.setViewName("/user/storeWrite");
-		
-		return mav;
-	}
-	
-	/**
-	 * author yh.kim (24.12.19) 
-	 * 직영점 수정 페이지 이동 및 조회
-	 */
-	@GetMapping(value="/ad/store/update/{id}")
-	public ModelAndView storeUpdateView(@PathVariable String id) {
-		
-		ModelAndView mav = new ModelAndView();
-		DeptDTO storeDto = new DeptDTO();
-		
-		if(id == null || id.isEmpty()) {
-			return new ModelAndView("/user/storeList");
-		}
-		
-		storeDto = userService.storeDetsil(id);
-		
-		mav.addObject("storeInfo", storeDto);
-		mav.setViewName("/user/storeUpdate");
-		
-		return mav;
-	}
-	
-	/**
-	 * author yh.kim (24.12.19) 
-	 * 직영점 상세 페이지 이동
-	 */
-	@GetMapping(value="/ad/store/detail/{id}")
-	public ModelAndView storeDetailView(@PathVariable String id) {
-		ModelAndView mav = new ModelAndView();
-		DeptDTO storeDto = new DeptDTO();
-		
-		if(id == null || id.isEmpty()) {
-			return new ModelAndView("/user/storeList");
-		}
-		
-		storeDto = userService.storeDetsil(id);
-		
-		mav.addObject("storeInfo", storeDto);
-		mav.setViewName("/user/storeDetail");
-		
-		return mav;
-	}
-	
-
-	
-	/**
 	 * author yh.kim (24.12.22) 
 	 * 사용자 체크 및 메일 발송 메서드
 	 * 사용자 체크 → 인증번호 생성 → 메일 발송
@@ -379,7 +223,6 @@ public class UserController {
 		
 		return dto;
 	}
-
 
 	/**
 	 * author yh.kim (24.12.22)
@@ -552,7 +395,7 @@ public class UserController {
 	 */
 	@GetMapping(value="/ad/dept/list")
 	public List<DeptDTO> deptList() {
-		
+
 		List<DeptDTO> deptList = userService.deptList();
 		
 		return deptList;
@@ -566,6 +409,7 @@ public class UserController {
 	public UserDTO userWrite(@ModelAttribute UserDTO dto,
 							 @RequestParam("careerStr") String careerStr,
 							 @RequestPart(value = "file", required = false) MultipartFile file) {
+
 		logger.info(CommonUtil.toString(dto));
 		logger.info(CommonUtil.toString(careerStr));
 		logger.info(file.getOriginalFilename());
@@ -683,28 +527,7 @@ public class UserController {
 		return result;
 	}
 	
-	/**
-	 * author yh.kim (24.12.25)
-	 * 부서 코드 중복체크
-	 */
-	@GetMapping(value="/ad/user/deptCodeOverlay")
-	public DeptDTO deptCodeOverlay(@ModelAttribute DeptDTO dto) {
-		
-		if(dto.getId() == null || dto.getId().isEmpty()) {
-			dto.setStatus(400);
-			dto.setMessage("부서 코드를 입력해주세요.");
-			return dto;
-		}
-		
-		if(userService.deptCodeOverlay(dto)) {
-			dto.setStatus(200);
-			dto.setMessage("사용 가능한 코드입니다.");
-		}else {
-			dto.setStatus(500);
-			dto.setMessage("사용 불가능한 코드입니다.");
-		}
-		return dto;
-	}
+
 	
 	/**
 	 * author yh.kim (24.12.25)
@@ -713,16 +536,18 @@ public class UserController {
 	@PostMapping(value="/ad/dept/write")
 	public DeptDTO deptWrite(MultipartFile file, @ModelAttribute DeptDTO dto,
 			@RequestParam("imgsJson") String imgsJson) {
-		
+
+
+		logger.info(CommonUtil.toString(dto));
 		ObjectMapper obj = new ObjectMapper();
 		List<FileDTO> imgs = null;
-		
+
 		try {
 			imgs = obj.readValue(imgsJson, obj.getTypeFactory().constructCollectionType(List.class, FileDTO.class));
-			
+
 			dto.setImgs(imgs);
 			dto = userService.deptWrite(file, dto);
-			
+
 		} catch (JsonMappingException e) {
 			logger.error("JsonMappingException 예외 발생", e);
 			e.printStackTrace();
@@ -730,7 +555,7 @@ public class UserController {
 			logger.error("JsonProcessingException 예외 발생", e);
 			e.printStackTrace();
 		}
-		
+
 		return dto;
 	}
 	

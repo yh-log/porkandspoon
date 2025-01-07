@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.porkandspoon.dto.ApprovalDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,10 +81,69 @@ public class DeptService {
 		
 		if(result == null) {
 			result = new ArrayList<>();
-			
+
 		}
 		
 		return result;
 	}
 
+	/**
+	 * author yh.kim (24.12.26)
+	 * 부서 상세 페이지 이동
+	 */
+	public DeptDTO deptDetsil(String id) {
+
+		return deptDAO.deptDetail(id);
+	}
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 등록 요청 페이지 이동 및 조회
+	 */
+	public ApprovalDTO storeWriteView(String idx) {
+		return deptDAO.storeWriteView(idx);
+	}
+
+	/**
+	 * author yh.kim (24.12.25)
+	 * 브랜드 생성 페이지 기안문 내용 조회
+	 */
+	public ApprovalDTO deptWriteView(String idx) {
+		return deptDAO.deptWriteView(idx);
+	}
+
+	/**
+	 * author yh.kim (24.12.27)
+	 * 직영점 수정 페이지 이동 및 조회
+	 */
+	public DeptDTO storeDetsil(String id) {
+		return deptDAO.storeDetail(id);
+	}
+
+	/**
+	 * author yh.kim (24.12.25)
+	 * 부서코드 중복체크
+	 */
+	public boolean deptCodeOverlay(DeptDTO dto) {
+		return deptDAO.deptCodeOverlay(dto) == 0 ? true : false;
+	}
+
+	/**
+	 * author yh.kim, (25.01.07)
+	 * 브랜드 직원 등록 조직도 정보 조회
+	 */
+	public UserDTO getUserDeptInfo(String username) {
+		UserDTO userDTO = deptDAO.getUserDeptInfo(username);
+
+		if (userDTO == null){
+			userDTO.setStatus(404);
+			userDTO.setMessage("직원 정보를 조회하지 못했습니다.");
+			return userDTO;
+		}
+
+		userDTO.setStatus(200);
+		userDTO.setMessage("직원 정보 조회를 완료했습니다.");
+
+		return userDTO;
+	}
 }
