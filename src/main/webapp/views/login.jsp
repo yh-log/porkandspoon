@@ -24,12 +24,12 @@
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
-<link rel="stylesheet" href="/resources/css/common.css">
 
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<link rel="stylesheet" href="/resources/css/common.css">
 <style>
     .login-container {
         background: #ffffff;
