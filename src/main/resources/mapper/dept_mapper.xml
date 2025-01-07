@@ -54,17 +54,24 @@
         'default' AS type,
         NULL AS menuOrder,
         NULL AS position
-	    FROM department d
-	    UNION ALL
-	    SELECT 
+    FROM department d
+    UNION ALL
+    SELECT 
         u.username AS id,
         u.name AS text,   
-        u.parent AS parent, 
+        CASE 
+            WHEN u.position = 'po7' AND ds.parent IS NOT NULL AND ds.parent != 'NO1000' THEN ds.parent
+            WHEN u.parent != 'NO1000' THEN u.parent
+            ELSE NULL  
+        END AS parent, 
         'file' AS type,
         u.position AS menuOrder,
         NULL AS position
-	    FROM user u
-	    WHERE u.parent IS NOT NULL
+    FROM user u
+    LEFT JOIN direct_store ds 
+        ON u.parent = ds.id
+    WHERE u.parent IS NOT NULL
+      AND (u.parent != 'NO1000' OR (u.position = 'po7' AND ds.parent != 'NO1000'))
 	</select>
 	
 	<select id="getDeptdata" resultType="kr.co.porkandspoon.dto.DirectstoreDTO">

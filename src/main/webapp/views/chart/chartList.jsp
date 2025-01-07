@@ -239,7 +239,7 @@
 													<table class="table-sun">
 														<tbody>
 															<tr>
-																<td class="department-name"></td>
+																<td class="department-name" style="font-weight: bold;"></td>
 															</tr>
 															<tr>
 																<td class="td-style-style" style="text-align: -webkit-center;">
@@ -309,6 +309,11 @@
 	        const text = item.text || "기본 텍스트";
 	        const menuOrder = item.menuOrder || ""; // 직급을 나타내는 menuOrder
 	        let position = "";
+	        
+	        if (parent === "NO1000" || id === "NO1000") {
+	            console.warn("미발령 데이터 제외됨:", item);
+	            return; // 미발령 데이터는 추가하지 않음
+	        }
 
 	        if (item.type === 'file') {
 	            // 부서에 해당하는 사원 데이터를 저장
@@ -378,7 +383,7 @@
 	        // 사원을 계층적으로 추가
 	        employees.forEach(employee => {
 	            chartData.addRow([
-	                { v: employee.id, f: '<div class="userNode" style="padding: 5px; text-align: center;" onclick="userIdData(\'' + employee.id + '\')">' + employee.position + ' ' + employee.text + '</div>' },
+	                { v: employee.id, f: '<div class="userNode" style="padding: 5px; text-align: center;" onclick="userIdData(\'' + employee.id + '\')">' + employee.position + '<br> ' + employee.text + '</div>' },
 	                previousEmployeeId // 바로 이전 사원이 부모
 	            ]);
 	            previousEmployeeId = employee.id; // 현재 사원을 다음 사원의 부모로 설정
@@ -390,6 +395,8 @@
 	    chart.draw(chartData, { allowHtml: true });
 	    
 	}
+	
+	
 	document.addEventListener('click', (event) => {
 	    // 부서 모달 처리
 	    const deptModalOverlay = document.querySelector('.modal-dept');
@@ -501,7 +508,7 @@
 		        const trTitle = document.createElement('tr');
 		        const thTitle = document.createElement('th');
 		        thTitle.colSpan = 4; // 제목 행은 4칸을 병합
-		        thTitle.innerText = store.name || '제목 없음'; // 부서명
+		        thTitle.innerText = store.name || '해당 브랜드의 직영점이 없습니다.'; // 부서명
 		        trTitle.appendChild(thTitle);
 		        tbody.appendChild(trTitle);
 		
@@ -513,7 +520,7 @@
 		        trOwnerPhone.appendChild(thOwner);
 		
 		        const tdOwner = document.createElement('td');
-		        tdOwner.innerText = store.username || '이름 없음';
+		        tdOwner.innerText = store.username || '';
 		        trOwnerPhone.appendChild(tdOwner);
 		
 		        const thPhone = document.createElement('th');
@@ -521,7 +528,7 @@
 		        trOwnerPhone.appendChild(thPhone);
 		
 		        const tdPhone = document.createElement('td');
-		        tdPhone.innerText = store.phone || '번호 없음';
+		        tdPhone.innerText = store.phone || '';
 		        trOwnerPhone.appendChild(tdPhone);
 		
 		        tbody.appendChild(trOwnerPhone);
@@ -534,7 +541,7 @@
 		        trPositionJoinDate.appendChild(thPosition);
 		
 		        const tdPosition = document.createElement('td');
-		        tdPosition.innerText = store.position || '직급 없음';
+		        tdPosition.innerText = store.position || '';
 		        trPositionJoinDate.appendChild(tdPosition);
 		
 		        const thJoinDate = document.createElement('th');
@@ -542,7 +549,7 @@
 		        trPositionJoinDate.appendChild(thJoinDate);
 		
 		        const tdJoinDate = document.createElement('td');
-		        tdJoinDate.innerText = store.join_date || '입사일 없음';
+		        tdJoinDate.innerText = store.join_date || '';
 		        trPositionJoinDate.appendChild(tdJoinDate);
 		
 		        tbody.appendChild(trPositionJoinDate);  
