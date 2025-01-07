@@ -86,7 +86,7 @@ public class MailController {
 
 	@Transactional
 	@PostMapping(value="/mail/write/{status}")
-	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
+	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, @RequestParam("existingFileIds") List<String> existingFileIds, String originalIdx, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		mailDTO.setSender(userDetails.getUsername());
@@ -117,7 +117,7 @@ public class MailController {
             }
         }
         
-        String mailIdx = mailService.saveMail(username, mailDTO, attachedFiles, status);
+        String mailIdx = mailService.saveMail(username, mailDTO, attachedFiles, existingFileIds, originalIdx, status);
         logger.info("여기서도 idx가져오기 가능??? : "+ mailDTO.getIdx());
         result.put("mailIdx", mailIdx);
         result.put("status", status);
@@ -177,6 +177,8 @@ public class MailController {
 			mav.addObject("mailInfo", mailInfo);
 			//mav.addObject("isBookmarked", mailService.isBookmarked(idx, loginId));
 			mav.addObject("fileList", fileList);
+			mav.addObject("isSender", isSender);
+			mav.addObject("isReceiver", isReceiver);
 			if(isReceiver) {
 				mav.addObject("is_bookmark", mailService.getSentMailBookmark(idx, loginId));
 			}else if (isSender) {
@@ -262,9 +264,10 @@ public class MailController {
 		return result;
 	}
 	
-	// 전달
-	@GetMapping(value="/mail/delivery/{idx}")
-	public ModelAndView deliverMail(@PathVariable String idx, @AuthenticationPrincipal UserDetails userDetails){
+	// 전달/답장
+	@GetMapping(value="/mail/prepareMail/{status}/{idx}")
+	public ModelAndView deliverMail(@PathVariable String status, @PathVariable String idx, @AuthenticationPrincipal UserDetails userDetails, HttpServletResponse response){
+		ModelAndView mav = new ModelAndView("redirect:/");
 		String loginId = userDetails.getUsername();
 		
 		Map<String, String> params = new HashMap<String, String>();
@@ -275,27 +278,19 @@ public class MailController {
 	    boolean isSender = mailService.isSender(params);
 	    boolean isReceiver = mailService.isReceiver(params);
 	    if (isSender || isReceiver) {
-	    	
+	    	MailDTO mailInfo = mailService.getMailInfo(idx);
+	    	mav = new ModelAndView("/mail/mailUpdate");
+	    	mav.addObject("mailInfo", mailInfo);
+	    	mav.addObject("status", status);
+	    }else {
+	    	try {
+				// 메시지를 URL 인코딩
+				response.setContentType("text/html;charset=UTF-8");
+				response.getWriter().write("<script>alert('해당 메일에 접근 권한이 없습니다.'); history.back();</script>");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 	    }
-
-		MailDTO mailInfo = mailService.getMailInfo(idx);
-		//List<FileDTO> fileList = mailService.getAttachedFiles(idx);
-		
-		
-		
-		logger.info("mailInfo : "+mailInfo);
-		//logger.info("fileList : "+fileList);
-		//logger.info("params : "+params.get("mailInfo"));
-		//logger.info("params : "+params.get("fileList"));
-		
-		//MailDTO mailDTO = mailService.deliverMail(idx,loginId);
-		//result.put("mailInfo", mailDTO);
-		ModelAndView mav = new ModelAndView("/mail/mailUpdate");
-		mav.addObject("mailInfo", mailInfo);
-		//mav.addObject("fileList", fileList);
-		logger.info("여기까지옴");
-		//mav.addObject("mailInfo", params.get("mailInfo"));
-		//mav.addObject("fileList", params.get("fileList"));
 		return mav;
 	}
 	
@@ -332,8 +327,6 @@ public class MailController {
 
 		return fileList;
 	}
-	
-	
 	
 	
 	

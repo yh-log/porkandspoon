@@ -62,6 +62,8 @@ public interface MailDAO {
 
 	int chageAllToRead(Map<String, String> params);
 
+	int setDeleveryExistingImage(String mailIdx, String fileId, String originalIdx);
+
 	//MailDTO deliverMail(String idx, String loginId);
 
 

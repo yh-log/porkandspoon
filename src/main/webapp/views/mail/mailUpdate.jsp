@@ -364,16 +364,28 @@
 <script src='/resources/js/mailWrite.js'></script>
 
 <script>
-
-	var title = 'FW: ${mailInfo.title}';
-	$('input[name="title"]').val(title);
+	// 기존 데이터 보여지기
+	var titleTag = '';
+	if(${status eq 'delivery'}){
+		// 전달일 경우
+		titleTag = 'FW: ';
+	}else if(${status eq 'reply'}){
+		// 답장일 경우		
+		titleTag = 'RE: ';
+		var $receiverInput = $('input[name="username"]');
+		$receiverInput.val('${mailInfo.sender}');
+		$receiverInput.attr("readonly", true);
+	}
+	
+	//업데이트일 경우
+	// 전달/답장일 경우
 	var content = '<br/><br/><br/>-----Original Message-----<br/>';
 	content += 'From: ${mailInfo.sender}<br/>';
 	content += 'To: ${mailInfo.sender}<br/>';
 	content += 'Sent: ${mailInfo.send_date}<br/>';
 	content += 'Sent: ${mailInfo.title}<br/>';
 	content += '${mailInfo.content}';
-	$('input[name="title"]').val(title);
+	$('input[name="title"]').val(titleTag+'${mailInfo.title}');
 	$('#summernote').val(content);
 	console.log('${mailInfo.content}');
 
@@ -420,12 +432,27 @@
 		formData.append('content', content);
 	    
 	    //첨부 파일 추가
-	    const attachedFiles = attachedFilesPond.getFiles();
+/* 	    const attachedFiles = attachedFilesPond.getFiles();
 	    if (attachedFiles.length > 0) {
 	    	attachedFiles.forEach(function(file, index) {
 	    	    formData.append('attachedFiles', file.file); 
 	    	});
-	    }
+	    } */
+	    // 첨부파일 추가
+	    const existingFiles = attachedFilesPond.getFiles().filter(file => file.origin === FilePond.FileOrigin.LOCAL);
+	    const newFiles = attachedFilesPond.getFiles().filter(file => file.origin !== FilePond.FileOrigin.LOCAL);
+
+	    // 기존 파일의 ID만 서버로 전송
+	    existingFiles.forEach(file => {
+	    	formData.append('existingFileIds', file.source); 
+	    });
+	    //새로운 파일 정보
+	    newFiles.forEach(file => {
+	    	formData.append('attachedFiles', file.file);  // 새로운 파일을 서버로 전송
+	    });
+	    
+    	formData.append('originalIdx', '${mailInfo.idx}'); 
+	    
 		
 		var tempDom = $('<div>').html(content);
 	    var imgsInEditor = []; // 최종 파일을 담을 배열
@@ -447,7 +474,6 @@
 	 
 	 	 fileAjax('POST', url, formData);
 	     console.log("textEaditorWrite 실행완료");
-	     console.log("textEaditorWrite after : "+after);
 	}
  	
 	

@@ -40,7 +40,7 @@ public class MailService {
 	}
 
 	@Transactional
-	public String saveMail(HashSet<String> username, MailDTO mailDTO, MultipartFile[] attachedFiles, String status) {
+	public String saveMail(HashSet<String> username, MailDTO mailDTO, MultipartFile[] attachedFiles, List<String> existingFileIds , String originalIdx, String status) {
 		// summernote 이미지 서버 저장 (이미지가 있을 경우 반복문 사용)
         List<FileDTO> imgs = mailDTO.getFileList();
         if (imgs != null && !imgs.isEmpty()) {
@@ -75,7 +75,13 @@ public class MailService {
         // 첨부파일 저장
         saveFile(attachedFiles, mailIdx);
         
-        // 메일수신 정보저장
+        // 전달의 경우 기존 첨부파일
+        if(existingFileIds != null) {
+        	for (String fileId : existingFileIds) {
+				logger.info("fileId : "+fileId);
+				mailDAO.setDeleveryExistingImage(mailIdx, fileId, originalIdx);
+			}
+        }
         
         return mailIdx;
 	}

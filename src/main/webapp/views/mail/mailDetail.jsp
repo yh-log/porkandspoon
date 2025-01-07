@@ -289,10 +289,14 @@ div.attach_file span.btn_area span.btn_wrap {
 						</div>
 						<div class="util-area">
 							<div class="left">
-								<buttton class="btn btn-outline-primary btn-sm">답장</buttton>
-								<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/delivery/${mailInfo.idx}`">전달</buttton>
+								<c:if test="${isReceiver eq true}">
+									<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/prepareMail/reply/${mailInfo.idx}`">답장</buttton>
+								</c:if>
+								<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/prepareMail/delivery/${mailInfo.idx}`">전달</buttton>
 								<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
-								<buttton class="btn btn-outline-primary btn-sm">안읽음</buttton>
+								<c:if test="${isReceiver eq true}">
+									<buttton class="btn btn-outline-primary btn-sm">안읽음</buttton>
+								</c:if>
 							</div>
 						</div>
 

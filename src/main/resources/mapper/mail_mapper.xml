@@ -468,5 +468,14 @@
 			username = #{loginId}
 	</update>
 	
+	<insert id="setDeleveryExistingImage" parameterType="String">
+		INSERT INTO 
+			file (code_name, ori_filename, new_filename, type, pk_idx)
+			SELECT code_name, ori_filename, new_filename, type, #{mailIdx}
+			FROM file 
+			WHERE new_filename = #{fileId} 
+			AND pk_idx = ${originalIdx}
+			AND code_name = 'ma001'
+	</insert>
 	
 </mapper>
