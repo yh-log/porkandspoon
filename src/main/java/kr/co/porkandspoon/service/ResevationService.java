@@ -14,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.ResevationDAO;
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 
 @Service
 public class ResevationService {
 	
 	@Autowired ResevationDAO resDao;
+	@Autowired AlarmService alarmService;
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	// 물품 등록(작성자 정보)
@@ -141,6 +143,14 @@ public class ResevationService {
             params.put("idx", idx);
             params.put("username", username);
             resDao.insertAttendee(params);
+            
+            // 알림
+            NoticeDTO noticedto = new NoticeDTO();
+            noticedto.setUsername(username);
+            noticedto.setFrom_idx(idx);
+            noticedto.setCode_name("ml001");
+            alarmService.saveAlarm(noticedto);
+
         }
 
         return true;

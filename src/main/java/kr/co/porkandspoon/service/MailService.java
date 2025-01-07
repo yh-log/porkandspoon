@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import kr.co.porkandspoon.dao.MailDAO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MailDTO;
+import kr.co.porkandspoon.dto.NoticeDTO;
 
 @Service
 public class MailService {
@@ -30,6 +31,7 @@ public class MailService {
 	Logger logger = org.slf4j.LoggerFactory.getLogger(getClass());
 	
 	@Autowired MailDAO mailDAO;
+	@Autowired AlarmService alarmService;
 	
 	 @Value("${upload.path}") String paths;
      @Value("${uploadTem.path}") String tem_path;
@@ -82,6 +84,21 @@ public class MailService {
 				mailDAO.setDeleveryExistingImage(mailIdx, fileId, originalIdx);
 			}
         }
+        
+        // 메일 수신 알림
+        if(status.equals("sd")) {
+        	NoticeDTO dto = new NoticeDTO();
+        	for(String user : username) {
+                logger.info("받는사람 : " + user);
+                dto.setUsername(user);
+                dto.setFrom_id(mailDTO.getSender());
+                dto.setFrom_idx(mailDTO.getIdx());
+                dto.setSubject(mailDTO.getTitle());
+                dto.setCode_name("ml002");
+                alarmService.saveAlarm(dto);
+        	}
+        }
+        
         
         return mailIdx;
 	}
