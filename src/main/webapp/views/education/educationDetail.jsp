@@ -8,8 +8,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	
+		
 	<!-- 부트스트랩 -->
 	<link rel="shortcut icon"
 		href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -171,25 +170,25 @@
 	}
 	
 	/* 반응형 iframe 스타일 */
-    .responsive-iframe {
-        position: relative;
-        padding-bottom: 56.25%; /* 16:9 비율 */
-        padding-top: 25px;
-        height: 0;
-    }
-    .responsive-iframe iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    /* 에러 메시지 스타일 */
-    #error-message {
-        font-size: 12px;
-        color: red;
-    }
+	.responsive-iframe {
+	    position: relative;
+	    padding-bottom: 56.25%; /* 16:9 비율 */
+	    padding-top: 25px;
+	    height: 0;
+	}
+	.responsive-iframe #player { /* IFrame Player API를 위한 스타일 */
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	}
+	
+	/* 에러 메시지 스타일 */
+	#error-message {
+	    font-size: 12px;
+	    color: red;
+	}
 
 </style>
 </head>
@@ -212,66 +211,60 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>교육 등록</h5>
+                  <h5>교육 상세보기</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
+                  	<input type="hidden" value="${info.no}"/>
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">${info}</td>
+	                  		<td class="align-l">${info.name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>카테고리</th>
-	                  		<td>
-	                  			<select class="form-input1" name="category">
-	                  				<option value="duty">의무 교육</option>
-	                  				<option value="job">직무 교육</option>
-	                  				<option value="hygiene">위생 교육</option>
-	                  				<option value="operate">운영 교육</option>
-	                  			</select>
-	                  		</td>
+            				<c:if test="${info.category == 'duty'}">
+		                  		<td class="align-l">의무 교육</td>         				
+            				</c:if>
+            				<c:if test="${info.category == 'job'}">
+		                  		<td class="align-l">직무 교육</td>         				
+            				</c:if>
+            				<c:if test="${info.category == 'hygiene'}">
+		                  		<td class="align-l">위생 교육</td>         				
+            				</c:if>
+            				<c:if test="${info.category == 'operate'}">
+		                  		<td class="align-l">운영 교육</td>         				
+            				</c:if>		
 	                  	</tr>
 	                  	<tr>
 	                  		<th>부서</th>
-	                  		<td class="coutn-dis">
-	                  			<select class="form-input1" name="dept">
-	                  				<c:forEach items="${dept}" var="dept">
-										<option value="${dept.id}">${dept.text}</option>	                  				
-	                  				</c:forEach>
-	                  			</select>
-	                  		</td>
+	                  		<td class="align-l">${info.text}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>제목</th>
-	                  		<td><input class="form-control sor-1" type="text" name="subject"/></td>
+	                  		<td class="align-l">${info.subject}</td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>영상 첨부</th>
-							<td>
-		                        <input id="youtube-url" class="form-control sor-1" type="text" name="url" placeholder="동영상 주소를 입력 해주세요."/>
-			                    <div id="error-message" style="color: red; margin-top: 5px;"></div>
-			                    <div id="video-preview" style="margin-top: 15px;">
-			                        <!-- 유튜브 동영상이 여기에 표시됩니다 -->
-			                    </div>
+	                  		<th>영상</th>
+							<td>	                        
+			                	<div class="responsive-iframe">
+                                	<div id="player"></div>
+                                </div>
                     		</td>
 	                  	</tr>
 	                  	<tr>
-	                  		<th>영상 시간</th>
-	                  		<td><input class="form-control sor-1" type="text" name="time"/></td>
-	                  	</tr>
-	                  	<tr>
 	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content"></textarea></td>
+	                  		<td class="align-l">${info.content}</td>
 	                  	</tr>
 	                  </table>
                   </div>
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-		           		<div class="btn btn-primary" onclick="eduWrite()">등록하기</div>
+		           		<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
 		                <div class="btn btn-primary" onclick="back()">돌아가기</div>
+		                <div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
 	           		</div>
            		</div>
            	</div>
@@ -290,97 +283,93 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
+	
+	console.log('url : ','${videoId}');
+	
+	// YouTube IFrame Player API 로드 및 초기화
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-	$(document).ready(function(){
-	    $('#youtube-url').on('input', function() {
-	        var url = $(this).val().trim();
-	        console.log("입력된 URL:", url); // 디버깅용 로그
+    var player;
+    function onYouTubeIframeAPIReady() {
+        console.log("YouTube IFrame API Ready");
+        player = new YT.Player('player', {
+            height: '100%',
+            width: '100%',
+            videoId: '${videoId}', // 서버에서 전달된 videoId 사용
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
 	
-	        var videoId = getYouTubeVideoID(url);
-	        console.log("추출된 동영상 ID:", videoId); // 디버깅용 로그
-	
-	        if(videoId){
-	            var embedUrl = 'https://www.youtube.com/embed/' + videoId;
-	            var iframe = '<div class="responsive-iframe">' +
-	             '    <iframe src="' + embedUrl + '" ' +
-	             '            title="유튜브 동영상" ' +
-	             '            frameborder="0" ' +
-	             '            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-	             '            referrerpolicy="strict-origin-when-cross-origin" ' +
-	             '            allowfullscreen>' +
-	             '    </iframe>' +
-	             '</div>';
-	            $('#video-preview').html(iframe);
-	            $('#error-message').text('');
-	        } else if(url !== ''){
-	            $('#video-preview').html('');
-	            $('#error-message').text('유효한 유튜브 URL을 입력해주세요.');
-	        } else {
-	            $('#video-preview').html('');
-	            $('#error-message').text('');
-	        }
-	    });
-	
-	    function getYouTubeVideoID(url){
-	        var regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
-	        var match = url.match(regex);
-	        if(match){
-	            console.log("정규식 매치 성공:", match[1]); // 디버깅용 로그
-	            return match[1];
-	        } else {
-	            console.log("정규식 매치 실패"); // 디버깅용 로그
-	            return null;
-	        }
-	    }
-	
-	    
-	});
-	
-	function eduWrite() {
-		
-		var category = $('select[name="category"]').val();
-		var dept = $('select[name="dept"]').val();
-		var subject = $('input[name="subject"]').val();
-		var content = $('textarea[name="content"]').val();
-		var time = $('input[name="time"]').val();		
-		var url = $('input[name="url"]').val();
-		
-				
-	    if (!category || !dept || !subject || !content || !time || !url) {
-	    	layerPopup("항목을 모두 입력해주세요.", "확인", false, secondBtn1Act, secondBtn1Act);
-	        return;
-	    }
-		
-		var data = {
-				username: '${pageContext.request.userPrincipal.name}',
-				category: category,
-				id: dept,
-				subject: subject,
-				content: content,
-				total_time: time,
-				url: url
-		}
-		
-		console.log('데이터',data);
-		
-		httpAjax('POST','/educationWrite',data);
+   
+    
+    function onPlayerStateChange(event) {
+        if (event.data === YT.PlayerState.ENDED) {
+        	console.log("다봤다");          
+            educationHistory();
+        }
+    }
+ 
+    function educationHistory() {
+        var no = '${info.no}';
+        console.log('no : ',no);
+        $.ajax({
+            url: '/educationHistory',
+            type: 'POST',
+            data: {no: no},
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRF-TOKEN', '${_csrf.token}'); // CSRF 토큰 설정
+            },
+            success: function(data) {
+                if(data.success) {
+                	layerPopup("교육 수강을 완료 하였습니다.", "확인", false, secondBtn1Act, secondBtn1Act);
+                } else {
+                	layerPopup("이미 수강한 교육입니다.", "확인", false, secondBtn1Act, secondBtn1Act);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+                alert('오류가 발생했습니다.');
+            }
+        });
+    }
 
-	}
-	
-	function httpSuccess(response) {
-		console.log('성공',response);
-		location.href="/ad/education"
-	}
-	
+    function eduUpdate() {
+        location.href="/ad/educationUpdate/${info.no}"
+    }
+
+    function back(){
+        location.href="/ad/education"
+    }
+    
 	function secondBtn1Act() {
 		// 두번째팝업 1번버튼 클릭시 수행할 내용
 		console.log('두번째팝업 1번 버튼 동작');
 		removeAlert(); // 팝업닫기
 	}
 	
-	function back(){
+	function eduDelete() {
+		layerPopup("교육을 삭제 하시겠습니까?", "확인", "취소", eduDel, secondBtn1Act);
+	}
+	
+	function eduDel() {
+		
+		var data = {
+				no: '${info.no}'
+		}
+		
+		httpAjax('DELETE','/eduDelete/',data);
+	}
+	
+	function httpSuccess(response){
+		console.log('삭제 완료');
+		removeAlert(); // 팝업닫기
 		location.href="/ad/education"
-    }
+	}
 	
 	
 </script>

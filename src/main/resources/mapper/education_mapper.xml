@@ -5,15 +5,18 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.EducationDAO">
 	
+	<!-- 부서 정보 -->
 	<select id="dept" resultType="kr.co.porkandspoon.dto.DeptDTO">
-		SELECT * FROM department
+		SELECT * FROM department WHERE id LIKE '%BD%' AND use_yn ='Y'
 	</select>
 	
+	<!-- 교육 등록 -->
 	<insert id="educationWrite" parameterType="map">
 		INSERT INTO education(category,subject,content,url,username,id,total_time)
 							  VALUES(#{category},#{subject},#{content},#{url},#{username},#{id},#{total_time})
 	</insert>
 	
+	<!-- 교육 리스트 -->
 	<select id="educationList" parameterType="map" resultType="kr.co.porkandspoon.dto.EducationDTO">
 		SELECT 
             e.*, 
@@ -21,10 +24,47 @@
             COUNT(*) OVER() AS total_count
         FROM education e
         JOIN department d ON e.id = d.id
-        ORDER BY e.education_no DESC
+        ORDER BY e.no DESC
         LIMIT #{limit} 
         OFFSET #{offset}
 	</select>
+	
+	<!-- 교육 상세보기 -->
+	<select id="detail" resultType="kr.co.porkandspoon.dto.EducationDTO">
+		SELECT e.*,u.name,d.`text` FROM education e JOIN user u ON e.username = u.username JOIN  department d ON e.id = d.id 
+		WHERE no=#{no}
+	</select>
+	
+	<!-- 교육 수정 -->
+	<update id="educationUpdate" parameterType="map">
+		UPDATE education SET 
+			category=#{category},
+			subject=#{subject},
+			content=#{content},
+			url=#{url},
+			updater=#{username},
+			id=#{id},
+			total_time=#{total_time}
+		WHERE no=#{no}	
+	</update>
+	
+	 <!-- 교육 이수 기록 삽입 -->
+    <insert id="educationHistory">
+        INSERT INTO education_history(no, username)
+       									 VALUES(#{no}, #{username})
+    </insert>
+    
+    <!-- 특정 사용자와 교육 번호에 대한 이수 기록 수 조회 -->
+    <select id="history" resultType="int">
+        SELECT COUNT(*) FROM education_history WHERE no = #{no} AND username = #{username}
+    </select>
+    
+    <!-- 교육 삭제 -->
+	<delete id="eduDelete">
+		DELETE FROM education WHERE no=#{no}
+	</delete>
+	
+	
 	
 	
 </mapper>

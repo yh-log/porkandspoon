@@ -96,6 +96,7 @@
 											<th>제목</th>
 											<th>이수 시간</th>
 											<th>등록일</th>
+											<th></th>
 										</tr>
 									</thead>
 									<tbody id="list">
@@ -211,13 +212,13 @@
 				content += '<td>운영 교육</td>';
 			}
 			
-			content += '<td>'+view.subject+'</td>';
+			content += '<td><a href="/ad/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
 			content += '<td>'+view.total_time+'</td>';
 			
 			var dateOnly = view.create_date.split('T')[0];
 	        content += '<td>' + dateOnly + '</td>';
+	        content +='<td><a href="/ad/educationUpdate/'+view.no+'" class="btn btn-sm btn-outline-primary">수정</a></td>';
 	        content += '</tr>';
-			content += '</tr>';
 		}
 		$('#list').html(content);
 	}

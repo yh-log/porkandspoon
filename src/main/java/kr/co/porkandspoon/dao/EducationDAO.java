@@ -17,4 +17,14 @@ public interface EducationDAO {
 
 	List<EducationDTO> educationList(Map<String, Object> params);
 
+	EducationDTO detail(int no);
+
+	int educationUpdate(Map<String, Object> params);
+
+	int history(int no, String username);
+
+	void educationHistory(int no, String username);
+
+	int eduDelete(int no);
+
 }
