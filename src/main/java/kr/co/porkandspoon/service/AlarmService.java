@@ -88,7 +88,7 @@ public class AlarmService {
 		if(noticeDTO.getCode_name() == "ml005") {
 			List<NoticeDTO> dto = alarmDAO.getEdu(noticeDTO);
 			for(NoticeDTO noticedto : dto) {
-				noticedto.setUsername(null);
+				noticeDTO.setFrom_idx(noticedto.getFrom_idx());
 			}
 		}
 	
