@@ -23,13 +23,13 @@ public interface MealDAO {
 	//식권
 	int setmealTicket(Map<String, String> params);
 
-	MealDTO detailmealTicket(int meal_idx);
+	MealDTO detailmealTicket(String meal_idx);
 
 	int editmealTicket(Map<String, String> params);
 
 	int setmealFile(FileDTO dto);
 
-	FileDTO getFile(int meal_idx);
+	FileDTO getFile(String meal_idx);
 
 	List<MealDTO> getmealTicket();
 

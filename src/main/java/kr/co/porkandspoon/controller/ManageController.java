@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.porkandspoon.dao.UserDAO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.ManageDTO;
+import kr.co.porkandspoon.dto.MealDTO;
 import kr.co.porkandspoon.dto.RestDTO;
 import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.ManageService;
@@ -56,26 +57,52 @@ public class ManageController {
 		return mav;
 	}
 	
-	@GetMapping(value="/ad/directManage")
+	@GetMapping(value="/us/directManage")
 	public ModelAndView directManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String id = userDetails.getUsername();
-		List<ManageDTO> list = manageService.getDirectList();
+		List<ManageDTO> list = manageService.getDirectList(id);
+		 
+		
+		ManageDTO info = manageService.getBrandInfo(id);
+		
+		info.setCode_name("bl001");
+		FileDTO fileDTO = manageService.getFile(info.getCode_name(),info.getParent());
+		info.setFiledto(fileDTO);
+		
+		
 		ModelAndView mav = new ModelAndView("/manage/directManage");
 		mav.addObject("list",list);
+		mav.addObject("info",info);
 		
 		return mav;
 	}
 	
 	@GetMapping(value="/ad/brandManage")
 	public ModelAndView brandManageView(@AuthenticationPrincipal UserDetails userDetails) {
-		String id = userDetails.getUsername();
-		List<ManageDTO> list = manageService.getBrandList();
-		ModelAndView mav = new ModelAndView("/manage/brandManage");
-		mav.addObject("list",list);
-		
-		
-		return mav;
+	    // CEO 정보 가져오기
+	    String CEO = manageService.getCEOInfo();
+
+	    // 브랜드 리스트 가져오기
+	    List<ManageDTO> list = manageService.getBrandList();
+
+	    // 각 DTO에 파일 정보 설정
+	    for (ManageDTO dto : list) {
+	        // code_name 셋팅
+	        dto.setCode_name("bl001");
+
+	        // code_name과 id로 파일 정보 가져오기
+	        FileDTO fileDTO = manageService.getFile(dto.getCode_name(),dto.getId());
+	        dto.setFiledto(fileDTO); // DTO에 파일 정보 설정
+	    }
+
+	    // ModelAndView에 데이터 추가
+	    ModelAndView mav = new ModelAndView("/manage/brandManage");
+	    mav.addObject("list", list);
+	    mav.addObject("info", CEO);
+
+	    return mav;
 	}
+
 	
 	
 	

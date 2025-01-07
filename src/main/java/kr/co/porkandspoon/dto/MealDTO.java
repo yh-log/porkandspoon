@@ -15,7 +15,7 @@ public class MealDTO extends ResponseDTO {
     private LocalDateTime end_date;    // 변경된 타입
 
     // meal 테이블
-    private int meal_idx;
+    private String meal_idx;
     private String name;
     private String meal_name;
     private String total_cost;
@@ -91,11 +91,11 @@ public class MealDTO extends ResponseDTO {
     }
 
     // Getter and Setter for meal
-    public int getMeal_idx() {
+    public String getMeal_idx() {
         return meal_idx;
     }
 
-    public void setMeal_idx(int meal_idx) {
+    public void setMeal_idx(String meal_idx) {
         this.meal_idx = meal_idx;
     }
 

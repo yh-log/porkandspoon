@@ -156,11 +156,29 @@
 
 	
 	/* 공통 스타일 */
-	h3, h4 {
+	h3, h4{
 	  margin-bottom: 10px;
 	  font-weight: bold;
 	}
 	
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 이미지와 텍스트 간격 */
+  }
+
+  .logo-container img {
+    max-width: 120px;
+    height: auto;
+  }
+
+  .logo-container p {
+    margin: 0;
+  }
+
+
 
 </style>
 </head>
@@ -181,12 +199,13 @@
 			  <!-- 상단 영역 -->
 			  <div class="top-section">
 			    <div class="top-left">
-			      <h3> P&S</h3>
-			      <p>대표: 박준규</p>
-			      <p>주소: 서울 강남구 강남대로 27 1층</p>
-			      
+			      <div class="logo-container">
+				    <img class="img" alt="로고이미지" src="/resources/img/logo.jpg">
+				    <p>대표: ${info}</p>
+				    <p>주소: 서울 강남구 강남대로 27 1층</p>
+				  </div>
 			    </div>
-			    
+			   
 			    <div class="top-right">
 			      <h4>브랜드 리스트</h4>
 			      <table class="info-table">
@@ -194,16 +213,23 @@
 			          <tr>
 			            <th>로고</th>
 			            <th>브랜드이름</th>
-			            <th>주소</th>
 			            <th>시행일자</th>
 			          </tr>
 			        </thead>
 			        <tbody>
 			           <c:forEach var="brand" items="${list}">
 			            <tr>
-			                <td>로고 이미지?</td>
-			                <td>${brand.text}</td>
-			                <td>주소?</td>
+			                <td>
+			                	<c:choose>
+					                <c:when test="${not empty brand.filedto and not empty brand.filedto.new_filename}">
+					                    <img src=" /photo/${brand.filedto.new_filename}" alt="상품 이미지">  
+					                </c:when>
+					                <c:otherwise>
+					                    <img src="/resources/img/default.jpg" alt="기본 이미지">
+					                </c:otherwise>
+					            </c:choose>
+				            </td>
+			                <td>${brand.text}</td>   
 			                <td>${brand.create_date}</td>
 			            </tr>
 			        	</c:forEach>

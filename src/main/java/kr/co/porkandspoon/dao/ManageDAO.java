@@ -157,12 +157,21 @@ public interface ManageDAO {
 	int restCheckScheduler();
 
 	List<ManageDTO> getBrandList();
-
+	
+	
+	List<ManageDTO> getDirectList(String id);
+	ManageDTO getBrandInfo(String id);
+	
+	
+	ManageDTO getDirectInfo(String owner);
 	List<ManageDTO> getPartList5(String owner);
 
-	ManageDTO getDirectInfo(String owner);
+	String getCEOInfo();
 
-	List<ManageDTO> getDirectList();
+	FileDTO getFile(String code_name, String id);
+
+
+
 
 	
 
