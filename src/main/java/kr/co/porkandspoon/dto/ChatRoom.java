@@ -35,4 +35,12 @@ public class ChatRoom {
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
