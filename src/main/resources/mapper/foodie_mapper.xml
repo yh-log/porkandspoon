@@ -5,4 +5,33 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.FoodieDAO">
 
+	<!-- 매장 중복검사 -->
+	<select id="getoverlapStore" parameterType="kr.co.porkandspoon.dto.FoodieDTO" resultType="int">
+		SELECT COUNT(*) 
+		FROM food_map 
+		WHERE store_name = #{store_name}
+	</select>
+
+	<!-- 맛집 등록 -->
+	<insert
+		useGeneratedKeys="true" 
+	   	keyColumn="store_idx" 
+	   	keyProperty="store_idx" 
+	 	id="setStoreWrite" 
+	 	parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		INSERT INTO food_map (store_latitude, store_longitude, store_address, store_name, store_category)
+			VALUES(#{store_latitude}, #{store_longitude}, #{store_address}, #{store_name}, #{store_category})
+	</insert>
+	
+	<!-- 리뷰 등록 -->
+	<insert id="setReviewWrirte" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		INSERT INTO food_review (store_idx, username, content, review_star)
+			VALUES(#{store_idx}, #{username}, #{content}, #{review_star})
+	</insert>
+	
+	<!-- 매장 리스트 가져오기 -->
+	<select id="getFoodieList" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		SELECT * FROM food_map
+	</select>
+
 </mapper>

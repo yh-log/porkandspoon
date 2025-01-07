@@ -269,7 +269,7 @@ function pageCall(page = 1) {
 		    content += '<tr class="td-link">';
 		    content += '<td>';
 		    if (item.board_notice !== 'Y') {
-		        content += '<sec:authorize access="hasRole(\'admin\')">'
+		        content += '<sec:authorize access="hasRole(\'ADMIN\')">'
 		            + '<input type="checkbox" id="checkbox' + item.board_idx + '" class="form-check-input" onclick="toggleNoticeFields()">'
 		            + '</sec:authorize>';
 		    }else {
