@@ -363,13 +363,6 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <script>
-	// 전달
-	if('${mailInfo}'){
-		var title = '${mailInfo.title}';
-		console.log('title : ', title);
-	}
-
-
 	//두 번째 FilePond에 다른 설정 적용
 	const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
 	    allowMultiple: true,

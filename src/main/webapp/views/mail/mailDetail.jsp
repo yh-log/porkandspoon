@@ -124,7 +124,7 @@
 }
 
 .mailDetail .util-area .left > * {
-	margin-right: 10px;
+    margin: 0 10px 0 0;
 }
 
 
@@ -289,10 +289,10 @@ div.attach_file span.btn_area span.btn_wrap {
 						</div>
 						<div class="util-area">
 							<div class="left">
-								<buttton>답장</buttton>
-								<buttton>전달</buttton>
-								<buttton>삭제</buttton>
-								<buttton>안읽음</buttton>
+								<buttton class="btn btn-outline-primary btn-sm">답장</buttton>
+								<buttton class="btn btn-outline-primary btn-sm" onclick="delivery()">전달</buttton>
+								<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+								<buttton class="btn btn-outline-primary btn-sm">안읽음</buttton>
 							</div>
 						</div>
 
@@ -378,6 +378,8 @@ div.attach_file span.btn_area span.btn_wrap {
 <script src='/resources/js/textEaditor.js'></script>
 
 <script>
+	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
 	var receivers = '${mailInfo.username}';
 	var receiverArray = receivers.split(',');
@@ -441,6 +443,28 @@ div.attach_file span.btn_area span.btn_wrap {
 		isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
 		console.log("[success2]isBookmark : ",isBookmark);
 	} 
+	
+	// 전달
+	function delivery() {
+		console.log('전달');
+		$.ajax({
+	        type : 'POST',
+	        url : '/mail/delivery',
+	        data : JSON.stringify({
+        		'mailInfo' : '${mailInfo}',
+        		'fileList' : '${fileList}'
+            }),
+            contentType: 'application/json', 
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	            console.log(response);
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
 </script>
 
 </html>

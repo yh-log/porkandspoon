@@ -262,7 +262,19 @@ public class MailController {
 		return result;
 	}
 	
-	
+	// 전달
+	@PostMapping(value="/mail/delivery")
+	public ModelAndView deliverMail(@RequestBody Map<String, Object> params, @AuthenticationPrincipal UserDetails userDetails){
+		String loginId = userDetails.getUsername();
+		logger.info("params : "+params.get("mailInfo"));
+		logger.info("params : "+params.get("fileList"));
+		//MailDTO mailDTO = mailService.deliverMail(idx,loginId);
+		//result.put("mailInfo", mailDTO);
+		ModelAndView mav = new ModelAndView("/mail/mailWrite");
+		mav.addObject("mailInfo", params.get("mailInfo"));
+		mav.addObject("fileList", params.get("fileList"));
+		return mav;
+	}
 	
 	
 }
