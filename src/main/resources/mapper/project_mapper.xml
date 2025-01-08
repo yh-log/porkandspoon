@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+>
+
+<mapper namespace="kr.co.porkandspoon.dao.ProjectDAO">
+	 <!-- DeptDTO에 대한 ResultMap-->
+    <resultMap id="DeptMap" type="kr.co.porkandspoon.dto.DeptDTO">
+        <result property="text" column="text"/>
+        <result property="parent" column="parent"/>
+    </resultMap>
+
+    <!-- UserDTO에 대한 ResultMap -->
+    <resultMap id="UserMap" type="kr.co.porkandspoon.dto.UserDTO">
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="position_content" column="position_content"/>
+        <!-- dept는 DeptMap을 참조 -->
+        <association property="dept" resultMap="DeptMap"/>
+    </resultMap>
+	 
+	 
+	 
+	 
+	 
+	<select id="getUserInfo" resultMap="UserMap">
+        SELECT 
+            u.username, u.name, c.content AS position_content	, u.parent, d.text
+        FROM 
+            user u
+        JOIN 
+            department d
+	        ON  
+	            u.parent = d.id
+		JOIN
+			code c
+			ON
+				u.position = c.name
+        WHERE 
+            u.username = #{userId}
+    </select>
+	
+
+
+
+</mapper>
