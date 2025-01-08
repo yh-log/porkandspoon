@@ -177,16 +177,24 @@ public class EducationController {
 	
 	//수강 이력 히스토리
 	@GetMapping(value="/eduHistory")
-	public Map<String,Object> eduHistory(@RequestParam int no,@RequestParam String id){	
+	public Map<String,Object> eduHistory(@RequestParam Map<String,Object> params){
+		logger.info("다 나오니!!! : "+params);
 		Map<String,Object> result = new HashMap<String, Object>();
-		List<EducationDTO> list = eduService.historyList(no,id);
+		List<EducationDTO> list = eduService.historyList(params);
 		logger.info("수강 이력 : "+CommonUtil.toString(list));
 		result.put("list", list);
 		
 		return result;
 	}
 	
+	// 직영점주가 보는 뷰
+	@GetMapping(value="/mEducation")
+	public ModelAndView mEducation() {
+				
+		ModelAndView mav = new ModelAndView("/education/education");
 	
+		return mav;
+	}
 	
 	
 	

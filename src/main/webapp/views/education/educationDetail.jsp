@@ -262,9 +262,13 @@
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-		           		<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
+               			<sec:authorize access="hasRole('admin') or hasRole('superadmin')">
+		           			<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
+		           		</sec:authorize>
 		                <div class="btn btn-primary" onclick="back()">돌아가기</div>
-		                <div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
+		                <sec:authorize access="hasRole('admin') or hasRole('superadmin')">
+		                	<div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
+		                </sec:authorize>
 	           		</div>
            		</div>
            	</div>
