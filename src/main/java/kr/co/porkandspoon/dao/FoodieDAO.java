@@ -18,5 +18,7 @@ public interface FoodieDAO {
 
 	List<FoodieDTO> getFoodieList();
 
+	List<FoodieDTO> getReviewList(FoodieDTO fdto);
+
 
 }

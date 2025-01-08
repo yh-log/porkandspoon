@@ -11,7 +11,13 @@ public class FoodieDTO extends ResponseDTO {
 	private String store_name;
 	private String store_category;
 	
-	
+	public double getTotal_review_star() {
+		return total_review_star;
+	}
+	public void setTotal_review_star(double total_review_star) {
+		this.total_review_star = total_review_star;
+	}
+	private double total_review_star;
 	private int review_idx;
 	private String username;
 	private String content;

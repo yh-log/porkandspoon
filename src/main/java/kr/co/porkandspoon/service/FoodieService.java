@@ -24,16 +24,20 @@ public class FoodieService {
 	
 	
 	public void setFoodieWrite(FoodieDTO dto) {
-		int idx = foodieDAO.setStoreWrite(dto);
-		dto.setStore_idx(idx);
+		foodieDAO.setStoreWrite(dto);
 		foodieDAO.setReviewWrirte(dto);
-		
 	}
 
 
 
 	public List<FoodieDTO> getFoodieList() {
 		return foodieDAO.getFoodieList();
+	}
+
+
+
+	public List<FoodieDTO> getReviewList(FoodieDTO fdto) {
+		return foodieDAO.getReviewList(fdto);
 	}
 	
 }
