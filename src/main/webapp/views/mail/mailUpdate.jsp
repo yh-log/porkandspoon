@@ -369,25 +369,46 @@
 	if(${status eq 'delivery'}){
 		// 전달일 경우
 		titleTag = 'FW: ';
-	}else if(${status eq 'reply'}){
+	}
+	if(${status eq 'reply'}){
 		// 답장일 경우		
 		titleTag = 'RE: ';
 		var $receiverInput = $('input[name="username"]');
 		$receiverInput.val('${mailInfo.sender}');
 		$receiverInput.attr("readonly", true);
 	}
+	if(${status eq 'update'}){
+		console.log('receivers:: ','${mailInfo.username}');
+		// 주어진 문자열
+		let receivers = '${mailInfo.username}';
+
+		// 정규 표현식을 사용하여 < > 사이의 내용을 추출
+		let receiversArr = receivers.match(/<([^>]+)>/g).map(item => item.slice(1, -1));
+		console.log('receiversArr : ',receiversArr);
+		for(receiver of receiversArr){
+			var $receiverInput = $('.search-area:last-child input');
+			console.log('receiver : ',receiver);
+			$receiverInput.val(receiver);
+			$receiverInput.attr('readonly',true);
+			addNewInput();
+		}
+		$('#receivers input:not([readonly])').blur();
+	}
 	
-	//업데이트일 경우
+	// 본문내용(텍스트 에디터부분)
 	// 전달/답장일 경우
-	var content = '<br/><br/><br/>-----Original Message-----<br/>';
-	content += 'From: ${mailInfo.sender}<br/>';
-	content += 'To: ${mailInfo.sender}<br/>';
-	content += 'Sent: ${mailInfo.send_date}<br/>';
-	content += 'Sent: ${mailInfo.title}<br/>';
+	var content = '';
+	if(${status eq 'delivery' or status eq 'reply'}){
+		content = '<br/><br/><br/>-----Original Message-----<br/>';
+		content += 'From: ${mailInfo.sender}<br/>';
+		content += 'To: ${mailInfo.sender}<br/>';
+		content += 'Sent: ${mailInfo.send_date}<br/>';
+		content += 'Sent: ${mailInfo.title}<br/>';
+	}
 	content += '${mailInfo.content}';
-	$('input[name="title"]').val(titleTag+'${mailInfo.title}');
 	$('#summernote').val(content);
-	console.log('${mailInfo.content}');
+	// 제목
+	$('input[name="title"]').val(titleTag+'${mailInfo.title}');
 
 	// FilePond 등록
    FilePond.registerPlugin();
@@ -472,6 +493,7 @@
 	 
 	 	formData.append('imgsJson', JSON.stringify(finalImgs));
 	 
+	     console.log("아작스전");
 	 	 fileAjax('POST', url, formData);
 	     console.log("textEaditorWrite 실행완료");
 	}

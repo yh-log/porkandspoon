@@ -46,7 +46,10 @@
 	background: none;
 	border: none;
 }
-
+.mailList .tit-area .mail-count {
+	color: var(--bs-primary);
+	margin-left: 4px;
+}
 .mailList .tab {
 	margin-left: 14px;
 }
@@ -181,11 +184,11 @@
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						<li class="active"><a href="/mail/listView/recv">받은메일함</a></li>
-						<li><a href="/mail/listView/sd">보낸메일함</a></li>
-						<li><a href="/mail/listView/sv">임시보관함</a></li>
-						<li><a href="/mail/listView/bk">중요메일함</a></li>
-						<li><a href="/mail/listView/del">휴지통</a></li>
+						<li <c:if test="${listType eq 'recv'}">class="active"</c:if>><a href="/mail/listView/recv">받은메일함</a></li>
+						<li <c:if test="${listType eq 'sd'}">class="active"</c:if>><a href="/mail/listView/sd">보낸메일함</a></li>
+						<li <c:if test="${listType eq 'sv'}">class="active"</c:if>><a href="/mail/listView/sv">임시보관함</a></li>
+						<li <c:if test="${listType eq 'bk'}">class="active"</c:if>><a href="/mail/listView/bk">중요메일함</a></li>
+						<li <c:if test="${listType eq 'del'}">class="active"</c:if>><a href="/mail/listView/del">휴지통</a></li>
 					</ul>
 					<div class="btn btn-primary full-size" onclick="location.href='/mail/write'">메일쓰기</div>
 				</section>
@@ -228,20 +231,25 @@
 							<div class="left">
 								<input type="checkbox" class="form-check-input" id="checkbox2">
 								<c:choose>
-									<c:when test="${listType eq 'recv' or listType eq 'bk'}">
+									<c:when test="${listType eq 'recv'}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
-										<buttton class="btn btn-outline-primary btn-sm" onclick="moveToTrash()">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, btn1Act)">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
+									</c:when>
+									<c:when test="${listType eq 'bk'}">
+										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요해제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sd'}">
-										<buttton class="btn btn-outline-primary btn-sm" onclick="moveToTrash()">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, btn1Act)">삭제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">다시보내기</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sv'}">
-										<buttton class="btn btn-outline-primary btn-sm" onclick="moveToTrash()">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, btn1Act)">삭제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">전송</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'del'}">
 										<buttton class="btn btn-outline-primary btn-sm">영구삭제</buttton>
@@ -371,14 +379,14 @@ function drawList(list) {
 		if(listType == 'recv' && view.is_read == 'N'){
 			content +='<div class="mail-item no-read" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
 		}else{
-			content +='<div class="mail-item" data-idx="'+view.idx+'" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
+			content +='<div class="mail-item" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
 		}
 		content +='<div class="left">';
 		content +='<input type="checkbox" class="form-check-input" id="checkbox2">';
 		if(view.is_bookmark == 'N'){
-			content +='<i id="bookmark" class="bi bi-star"></i>';
+			content +='<i id="bookmark" class="bi bi-star" data-bookmark="N"></i>';
 		}else{
-			content +='<i id="bookmark" class="bi bi-star-fill"></i>';
+			content +='<i id="bookmark" class="bi bi-star-fill" data-bookmark="Y"></i>';
 		}
 		content +='<span class="name">'+view.name+'</span>';
 		content +='<span class="title" onclick="location.href=\'/mail/detail/'+view.idx+'\'">'+view.title;
@@ -449,41 +457,13 @@ function drawList(list) {
 		removeAlert(); 
 	}
 	
-	// 즐겨찾기
-	$(document).on('click', '#bookmark', function() {
-		var thisEl = $(this);
-		var is_bookmark = $(this).hasClass('bi-star-fill') ? 'Y' : 'N';
-		var idx = $(this).parents('.mail-item').data('idx');
-		console.log("[전송직전]is_bookmark : ",is_bookmark);
-		console.log("[전송직전]idx : ",idx);
-		
-		$.ajax({
-        	type : 'PUT',
-	        url : '/mail/bookmark',
-	        data : {
-	        	'idx' : idx,
-				'is_bookmark' : is_bookmark
-	        },
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	$(thisEl).toggleClass('bi-star-fill bi-star');
-				console.log("$(this) : ",$(thisEl));
-				console.log("[전송후]is_bookmark : ",$(thisEl).hasClass('bi-star-fill'));
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-		
-    });
+
 	
 	// 다중 읽음 처리
 	function changeToRead() {
 		var checkedEls = $('.list-area .form-check-input:checked');
 		var checkedIdx = [];
-		for ( var checkedEl of checkedEls) {
+		for (var checkedEl of checkedEls) {
 			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
 		}
 		console.log("checkedEls : ", checkedEls);
@@ -501,7 +481,7 @@ function drawList(list) {
 	            xhr.setRequestHeader(csrfHeader, csrfToken);
 	        },
 	        success : function(response){
-	        	alert('성공');
+	        	location.reload();
 	        },error: function(e){
 	            console.log(e);
 	        }
@@ -511,22 +491,20 @@ function drawList(list) {
 	
 	// 다중 삭제 처리(휴지통)
 	function moveToTrash() {
+		removeAlert();
 		var checkedEls = $('.list-area .form-check-input:checked');
-		var checkedList = [];
-		for ( var checkedEl of checkedEls) {
-			var checkedObj = {};
-			checkedObj.idx = $(checkedEl).parents('.mail-item').data('idx');
-			checkedObj.mail_type = $(checkedEl).parents('.mail-item').data('mailtype');
-			checkedList.push(checkedObj);
+		var checkedIdx = [];
+		for (var checkedEl of checkedEls) {
+			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
 		}
 		console.log("checkedEls : ", checkedEls);
-		console.log("checkedList : ", checkedList);
+		console.log("checkedIdx : ", checkedIdx);
 		
 		$.ajax({
         	type : 'PUT',
 	        url : '/mail/moveToTrash',
 	        data: JSON.stringify({
-	        	'checkedList': checkedList
+	        	'idxList': checkedIdx 
         	}), 
 	        contentType: 'application/json',
 	        dataType : 'JSON',
@@ -534,15 +512,63 @@ function drawList(list) {
 	            xhr.setRequestHeader(csrfHeader, csrfToken);
 	        },
 	        success : function(response){
-	        	alert('성공');
+	        	location.reload();
 	        },error: function(e){
 	            console.log(e);
 	        }
 	    });
 	}
 	
-
+	// 다중 북마크 토글
+	function toggleBookmark(){
+		var checkedEls = $('.list-area .form-check-input:checked');
+		var checkedList = [];
+		for (var checkedEl of checkedEls) {
+			console.log('book마크태그',$(checkedEl).siblings('#bookmark'));
+			console.log('book마크여부',$(checkedEl).siblings('#bookmark').data('bookmark'));
+			var mailInfo = {};
+			mailInfo.idx = $(checkedEl).parents('.mail-item').data('idx');
+			mailInfo.is_bookmark = $(checkedEl).siblings('#bookmark').data('bookmark');
+			checkedList.push(mailInfo);
+		}
+		toggleBookmarkAjax(checkedList);
+	}
 	
+	function toggleBookmarkAjax(checkedList){
+		$.ajax({
+        	type : 'PUT',
+	        url : '/mail/toggleBookmark',
+	        data: JSON.stringify({
+	        	'checkedList': checkedList 
+        	}), 
+	        contentType: 'application/json',
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	location.reload();
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+	
+	// 개별 북마크 토글
+	$(document).on('click', '#bookmark', function() {
+		var checkedList = [
+			{idx : $(this).parents('.mail-item').data('idx'),
+			is_bookmark : $(this).data('bookmark')}
+		];
+		toggleBookmarkAjax(checkedList);
+    });
+	
+	// 삭제 팝업 (취소버튼)
+	function btn1Act(){
+		removeAlert();
+	}
+
+
 </script>
 
 </html>

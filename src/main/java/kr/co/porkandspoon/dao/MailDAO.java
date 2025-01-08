@@ -72,6 +72,8 @@ public interface MailDAO {
 
 	int moveSentToTrash(String idx, String loginId);
 
+	List<MailDTO> getSenderReceivers(String idx);
+
 	//MailDTO deliverMail(String idx, String loginId);
 
 

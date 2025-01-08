@@ -242,7 +242,7 @@ var handleKeyDown = function(event) {
 };
 
 // 기본 텍스트 팝업
-function layerPopup(message, btn1, btn2, btn1Callback = btn1Act, btn2Callback = btn2Act) {
+function layerPopup(message, btn1, btn2, btn1Callback = removeAlert, btn2Callback = removeAlert) {
     // 대화 상자를 HTML 요소로 생성
     var confirmBox = document.createElement('div');
     confirmBox.setAttribute('class', 'confirm-box');
@@ -290,6 +290,7 @@ function popUpCommon(btn2, confirmBox, btn1Callback, btn2Callback, iconIdx){
     window.addEventListener('keydown', handleKeyDown);
     
 }
+
 
 
 /**

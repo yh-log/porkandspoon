@@ -126,13 +126,12 @@ public class MailService {
     }
     
 private void saveFile(MultipartFile[] attachedFiles, String mailIdx) {
-		
+	if(attachedFiles != null) {
 		for(MultipartFile file : attachedFiles) {
 			try {
 				
 				logger.info("mailIdx 3 @@@ : "+mailIdx);
-				if(!file.isEmpty()) {
-					//check!!! 얘도 if문안에 넣어야하는게 아닌가?
+			//	if(!file.isEmpty()) {
 					String ori_filename = file.getOriginalFilename();
 					logger.info("file 비어있나? : "+file.isEmpty()); // true
 					logger.info("ori_filename : "+ ori_filename); 
@@ -168,12 +167,13 @@ private void saveFile(MultipartFile[] attachedFiles, String mailIdx) {
 			        //Files.exists(filePath);
 					
 					
-				}
+				//}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
+}
 
 public MailDTO getMailInfo(String idx) {
 	return mailDAO.getMailInfo(idx);
@@ -289,6 +289,10 @@ public boolean moveSentToTrash(String idx, String loginId) {
 
 public boolean moveReceivedToTrash(String idx, String loginId) {
 	return  mailDAO.moveReceivedToTrash(idx,loginId) > 0 ? true : false;
+}
+
+public List<MailDTO> getSenderReceivers(String idx) {
+	return mailDAO.getSenderReceivers(idx);
 }
 
 /*

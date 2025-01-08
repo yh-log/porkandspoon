@@ -240,8 +240,9 @@ div.attach_file span.btn_area span.btn_wrap {
 }
 .mailDetail #bookmark {
 	font-size: 22px;
-	margin-right: 2px;
-	margini-top: -4px;
+	display: inline-block;
+	margin-right: 10px;
+	transform: translateY(-4px);
 	cursor: pointer;
 }
 .mailDetail .bi-star {
@@ -290,8 +291,8 @@ div.attach_file span.btn_area span.btn_wrap {
 						<div class="util-area">
 							<div class="left">
 								<c:if test="${mailInfo.send_status == 'sv'}">
-									<buttton class="btn btn-outline-primary btn-sm" onclick="">수정</buttton>
-									<buttton class="btn btn-outline-primary btn-sm" onclick="">삭제</buttton>
+									<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/prepareMail/update/${mailInfo.idx}`">수정</buttton>
+									<buttton class="btn btn-outline-primary btn-sm"  onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
 								</c:if>
 								<c:if test="${mailInfo.send_status != 'sv'}">
 									<c:if test="${isReceiver eq true}">
@@ -448,25 +449,31 @@ div.attach_file span.btn_area span.btn_wrap {
 
 	// 즐겨찾기
 	var isBookmark='${is_bookmark}';
-	console.log("[첫]isBookmark : ",isBookmark);
-	console.log("bookel",document.getElementById('bookmark'));
 	document.getElementById('bookmark').addEventListener('click', function() {
-		console.log("[전송직전]isBookmark : ",isBookmark);
-		var params = {
-				'idx' : '${mailInfo.idx}',
-				'is_bookmark' : isBookmark
-		}
-		httpAjax('PUT','/mail/bookmark',params);
-		//location.reload();
+		var checkedList = [
+			{idx : '${mailInfo.idx}',
+			is_bookmark : isBookmark}
+		];
+		$.ajax({
+        	type : 'PUT',
+	        url : '/mail/toggleBookmark',
+	        data: JSON.stringify({
+	        	'checkedList': checkedList 
+        	}), 
+	        contentType: 'application/json',
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	$('#bookmark').toggleClass('bi-star-fill bi-star');
+	    		isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
 	});
 
-	function httpSuccess(response){
-		$('#bookmark').toggleClass('bi-star-fill bi-star');
-		console.log("[success1]isBookmark : ",isBookmark);
-		isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
-		console.log("[success2]isBookmark : ",isBookmark);
-	} 
-	
 	
 	// 전달
 	/* function delivery() {
@@ -486,6 +493,38 @@ div.attach_file span.btn_area span.btn_wrap {
 	        }
 	    });
 	} */
+	
+	// 삭제(휴지통)
+	function moveToTrash() {
+		removeAlert();
+		//var checkedEls = $('.list-area .form-check-input:checked');
+		var checkedIdx = ['${mailInfo.idx}'];
+		//for (var checkedEl of checkedEls) {
+		//	checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
+		//}
+		//console.log("checkedEls : ", checkedEls);
+		//console.log("checkedIdx : ", checkedIdx);
+		
+		$.ajax({
+        	type : 'PUT',
+	        url : '/mail/moveToTrash',
+	        data: JSON.stringify({
+	        	'idxList': checkedIdx 
+        	}), 
+	        contentType: 'application/json',
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	window.history.back();
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+	
+	
 </script>
 
 </html>

@@ -280,7 +280,7 @@
 		    AND 
 		    	m.use_yn = 'Y'
 		    AND
-				m.use_from_date NULL
+				m.use_from_date IS NULL
 			<if test="search != null and !search.equals('') and option == 'subject'"> 
 				AND m.title LIKE CONCAT('%',#{search},'%')		
 			</if>
@@ -519,6 +519,16 @@
 		AND send_status = 'sv' 
 		AND use_yn = 'y' 
 		AND use_from_date IS NULL
+	</select>
+	
+	<select id="getSenderReceivers" resultType="kr.co.porkandspoon.dto.MailDTO">
+		SELECT 
+			m.sender
+			,mr.username 
+		FROM mail m
+		LEFT JOIN mail_receive mr 
+		ON m.idx = mr.idx
+   		WHERE m.idx = #{idx}
 	</select>
 	
 </mapper>

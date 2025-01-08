@@ -311,8 +311,10 @@ function btn1Act(){
 function reloadAct() {
 	location.reload();
 	removeAlert();
-	
 }
+
+
+
 </script>
 
 </html>

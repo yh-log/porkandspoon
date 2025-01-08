@@ -90,7 +90,7 @@ public class MailController {
 
 	@Transactional
 	@PostMapping(value="/mail/write/{status}")
-	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, @RequestParam("existingFileIds") List<String> existingFileIds, String originalIdx, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
+	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart(value="attachedFiles", required = false) MultipartFile[] attachedFiles, @RequestParam("existingFileIds") List<String> existingFileIds, String originalIdx, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		mailDTO.setSender(userDetails.getUsername());
@@ -135,26 +135,30 @@ public class MailController {
 		String loginId = userDetails.getUsername();
 		MailDTO mailInfo = mailService.getMailInfo(idx);
 		
+		// 권한체크
+		// 받는사람
+		boolean isReceiver = false;
 		// 받는사람 <> 괄호 안의 값을 추출
 		String regex = "<([^>]+)>";  
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(mailInfo.getUsername());
-
-        List<String> usernames = new ArrayList<>();
-        while (matcher.find()) {
-        	usernames.add(matcher.group(1));
+        if(mailInfo.getUsername() != null) {
+	        Matcher matcher = pattern.matcher(mailInfo.getUsername());
+	
+	        List<String> usernames = new ArrayList<>();
+	        while (matcher.find()) {
+	        	usernames.add(matcher.group(1));
+	        }
+			
+			for (String user : usernames) {
+				logger.info("user: {} / loginId: {}",user,loginId);
+				if(user.equals(loginId)) {
+					isReceiver = true;
+					break;
+				}
+			}
         }
 		
-		// 권한체크
-		boolean isReceiver = false;
-		for (String user : usernames) {
-			logger.info("user: {} / loginId: {}",user,loginId);
-			if(user.equals(loginId)) {
-				isReceiver = true;
-				break;
-			}
-		}
-		
+        // 보낸사람
 		boolean isSender = mailInfo.getSender().equals(loginId);
 		
 		if(isReceiver || isSender) {
@@ -270,17 +274,92 @@ public class MailController {
 	//다중 삭제 처리 기능
 	@Transactional
 	@PutMapping(value = "/mail/moveToTrash")
-	public Map<String, Object> moveToTrash(@RequestBody Map<String, List<Map<String, String>>> params, @AuthenticationPrincipal UserDetails userDetails) {    
+	public Map<String, Object> moveToTrash(@RequestBody Map<String, List<String>> params, @AuthenticationPrincipal UserDetails userDetails) {    
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
+		String loginId = userDetails.getUsername();
+		List<String> idxList = params.get("idxList");
+		logger.info("idxList count :"+idxList.size());
+		for (String idx : idxList) {
+			List<MailDTO> senderReceivers = mailService.getSenderReceivers(idx);
+			boolean isSender = senderReceivers.get(0).getSender().equals(loginId) ?  true : false;
+			boolean isReceiver = false;
+			for (MailDTO senderReceiver : senderReceivers) {
+				logger.info("Receiver : {} == loginId : {} ", senderReceiver.getUsername(), loginId);
+				if(senderReceiver.getUsername() == null) {
+					break;
+				}
+				if(senderReceiver.getUsername().equals(loginId)) {
+					isReceiver = true;
+					break;
+				}
+			}
+			logger.info("isSender ? : " + isSender);
+			logger.info("isReceiver ? : " + isReceiver);
+			
+			if(isReceiver) {
+				success = mailService.moveReceivedToTrash(idx,loginId);
+			}
+			if(isSender) {
+				success = mailService.moveSentToTrash(idx,loginId);
+			}
+		}
+		result.put("success", success);
+		return result;
+	}
+	
+	//다중 북마크 토글 기능
+	@Transactional
+	@PutMapping(value = "/mail/toggleBookmark")
+	public Map<String, Object> toggleBookmark(@RequestBody Map<String, List<Map<String, String>>> params, @AuthenticationPrincipal UserDetails userDetails) {    
 		Map<String, Object> result = new HashMap<String, Object>();
 		boolean success = false;
 		String loginId = userDetails.getUsername();
 		List<Map<String, String>> checkedList = params.get("checkedList");
-		for (Map<String, String> mailItem : checkedList) {
-			if(mailItem.get("mail_type").equals("received")) {
-				success = mailService.moveReceivedToTrash(mailItem.get("idx"),loginId);
-			}else if(mailItem.get("mail_type").equals("sent")) {
-				success = mailService.moveSentToTrash(mailItem.get("idx"),loginId);
-			}
+		
+		
+		
+		
+		
+//		params.put("is_bookmark", params.get("is_bookmark").equals("Y") ? "N" : "Y");
+//		// 보낸 메일인지 확인
+//	    boolean isSender = mailService.isSender(params);
+//	    if (isSender) {
+//	        mailService.toggleSentMailBookmark(params);
+//	        success = true;
+//	    }
+//
+//	    // 받은 메일인지 확인
+//	    boolean isReceiver = mailService.isReceiver(params);
+//	    if (isReceiver) {
+//	    	mailService.toggleReceivedMailBookmark(params);
+//	    	success = true;
+//	    }
+//	    result.put("success", success);
+	    
+	    
+	    
+	    
+	    
+		
+		for (Map<String, String> checkedItem : checkedList) {
+			logger.info("checkedItem"+checkedItem);
+			checkedItem.put("username", loginId);
+			checkedItem.put("is_bookmark", checkedItem.get("is_bookmark").equals("Y") ? "N" : "Y");
+			
+			// 보낸 메일인지 확인
+		    boolean isSender = mailService.isSender(checkedItem);
+		    if (isSender) {
+		        mailService.toggleSentMailBookmark(checkedItem);
+		        success = true;
+		    }
+
+		    // 받은 메일인지 확인
+		    boolean isReceiver = mailService.isReceiver(checkedItem);
+		    if (isReceiver) {
+		    	mailService.toggleReceivedMailBookmark(checkedItem);
+		    	success = true;
+		    }
 		}
 		result.put("success", success);
 		return result;
@@ -351,7 +430,14 @@ public class MailController {
 	}
 	
 	
-	
-	
+	// 다시보내기
+	@GetMapping(value="/mail/resend/{idx}")
+	public Map<String, Object> resend(@PathVariable List<String> idx, @AuthenticationPrincipal UserDetails userDetails){
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
+		String loginId = userDetails.getUsername();
+		
+		return result;
+	}
 	
 }
