@@ -145,7 +145,7 @@ public interface UserDAO{
 	 * author yh.kim (24.12.26)
 	 * 부서 리스트 조회
 	 */
-	List<DeptDTO> deptGetList(Map<String, Object> parmeterMap);
+	List<DeptDTO> deptGetList(PagingDTO pagingDTO);
 
 	/**
 	 * author yh.kim (24.12.26)

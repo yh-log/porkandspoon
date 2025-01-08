@@ -4,19 +4,24 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.porkandspoon.dto.*;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,9 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.MealDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.MyPageService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -317,19 +319,119 @@ public class MyPageController {
 
 	    return result;
 	}
-	
-	// 출장 리스트 이동 페이지
-	@GetMapping(value="/trip/list")
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 리스트 페이지 이동
+	 */
+	@GetMapping(value="/trip/listView")
 	public ModelAndView tripListView() {
-		return new ModelAndView("/myPage/businessTripList");
+
+		ModelAndView mav = new ModelAndView("/myPage/businessTripList");
+//		mav.addObject("username", username);
+
+		return mav;
 	}
-	
-	// 출장 리스트 이동 페이지
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 리스트 조회
+	 */
+	@GetMapping(value = "/trip/list")
+	public List<TripDTO> tripList(@ModelAttribute PagingDTO pagingDTO) {
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+		List<TripDTO> tripDTO = myPageService.tripList(pagingDTO, username);
+
+		return tripDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 상세 페이지 이동 및 조회
+	 */
+	@GetMapping(value="/trip/detail/{schedule_idx}")
+	public ModelAndView tripDetail(@PathVariable int schedule_idx) {
+
+		TripDTO tripDTO = myPageService.tripDetail(schedule_idx);
+
+		ModelAndView mav = new ModelAndView("/myPage/businessTripDetail");
+		mav.addObject("tripDTO", tripDTO);
+
+		return mav;
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 비활성화
+	 */
+	@DeleteMapping(value = "/trip/delete")
+	public TripDTO tripDelete(@ModelAttribute TripDTO tripDTO) {
+		logger.info(CommonUtil.toString(tripDTO));
+		tripDTO = myPageService.tripDelete(tripDTO);
+		return tripDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 등록 페이지 이동
+	 */
 	@GetMapping(value="/trip/write")
 	public ModelAndView tripWriteView() {
-		return new ModelAndView("/myPage/businessTripWrite");
+
+		ModelAndView mav = new ModelAndView("/myPage/businessTripWrite");
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		mav.addObject("username", username);
+
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		mav.addObject("userName",userDetails.getName()); // 이름
+		return mav;
 	}
-	
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 등록
+	 */
+	@PostMapping(value = "/trip/write")
+	public TripDTO tripWrite(@ModelAttribute TripDTO tripDTO) {
+
+		logger.info(CommonUtil.toString(tripDTO));
+
+		tripDTO = myPageService.tripWrite(tripDTO);
+
+		return tripDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 수정 페이지 이동 및 조회
+	 */
+	@GetMapping(value="/trip/update/{schedule_idx}")
+	public ModelAndView tripUpdate(@PathVariable int schedule_idx) {
+
+		TripDTO tripDTO = myPageService.tripDetail(schedule_idx);
+
+		ModelAndView mav = new ModelAndView("/myPage/businessTripDetail");
+		mav.addObject("tripDTO", tripDTO);
+
+		return mav;
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 수정
+	 */
+	@PutMapping(value = "/trip/update")
+	public TripDTO tripUpdate(@ModelAttribute TripDTO tripDTO) {
+
+		logger.info(CommonUtil.toString(tripDTO));
+
+		return null;
+	}
+
+
 	// 출장 리스트 이동 페이지
 	@GetMapping(value="/trip/update")
 	public ModelAndView tripUpdateView() {

@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,8 +72,8 @@
 				<section id="menu">
 					<h4 class="menu-title">부서 리스트</h4>
 					<ul>
-						<li class="active" id="firstMenu"><a href="#">브랜드 리스트</a></li>
-						<li id="secondMenu"><a href="#">직영점 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="/ma/dept/listView">브랜드 리스트</a></li>
+						<li id="secondMenu"><a href="/ma/store/list">직영점 리스트</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
@@ -112,8 +113,10 @@
 										</td>
 									</tr>
 								</table>
-								<button type="button" class="btn btn-primary" onclick="location.href='/ad/dept/update/${deptInfo.id}'">수정</button>
-								<button type="button" class="btn btn-outline-primary" id="listBtn" onclick="location.href='/ad/dept/listView'">목록</button>
+								<sec:authorize access="hasAnyRole('ADMIN', 'SUPERADMIN')">
+									<button type="button" class="btn btn-primary" onclick="location.href='/ad/dept/update/${deptInfo.id}'">수정</button>
+								</sec:authorize>
+								<button type="button" class="btn btn-outline-primary" id="listBtn" onclick="location.href='/ma/dept/listView'">목록</button>
 							</form>
 						</div> <!-- cont-body -->
 					</div>

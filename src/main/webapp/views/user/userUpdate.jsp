@@ -144,10 +144,10 @@
 				<section id="menu">
 					<h4 class="menu-title">직원 수정</h4>
 					<ul>
-						<li id="firstMenu"><a href="#">직원 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
 						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
 					</ul>
-					<div class="btn btn-primary full-size"><i class="bi bi-plus-lg"></i> 직원 등록</div>
+					<div class="btn btn-primary full-size" onclick="location.href='/ad/user/writeView'"><i class="bi bi-plus-lg"></i> 직원 등록</div>
 				</section>
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">

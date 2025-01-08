@@ -165,9 +165,13 @@
 									<button type="submit" class="btn btn-lg btn-primary" id="loginBtn">로그인</button>
 								</div>
 							</form>
-							<c:if test="${param.error == 'true'}">
-					            <p class="error-message">아이디/비밀번호를 확인하세요.</p>
-					        </c:if>
+							<!-- 에러 메시지 처리 -->
+							<c:if test="${param.error eq 'true'}">
+								<p style="color: red;">로그인 실패: 비밀번호가 틀렸습니다.</p>
+							</c:if>
+							<c:if test="${param.error eq 'locked'}">
+								<p style="color: red;">계정이 잠겨 있습니다. 관리자에게 문의하세요.</p>
+							</c:if>
 						</div>
 					</div>
 				</section>	
