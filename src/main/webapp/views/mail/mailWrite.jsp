@@ -233,6 +233,11 @@
 .mailList #filepond {
 	width: 100%;
 }
+.mailList .fc-gray {
+	color: var(--bs-secondary);
+	font-size: 19px;
+	margin-left: 10px;
+}
 
     .ui-autocomplete { position: absolute; max-height: 200px; margin: 0; padding: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; z-index: 1; list-style: none; overflow-y: auto; } 
     .ui-autocomplete li { padding: 10px; cursor: pointer; font-size: 16px; color: #000; } 
@@ -271,7 +276,7 @@
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<div class="left">
-								<h5>메일쓰기 <button onclick="location.href='/mail/listView/sv'">임시보관 메일</button><span class="mail-count">${savedMailCount}</span></h5>
+								<h5>메일쓰기 <button class="fc-gray" onclick="location.href='/mail/listView/sv'">임시보관 메일 <span class="mail-count">${savedMailCount}</span></button></h5>
 							</div>
 						</div>
 						<div class="util-area">
