@@ -66,7 +66,7 @@
 	</delete>
 	
 	<!-- 교육 이력 리스트 -->
-	<select id="historyList" resultType="kr.co.porkandspoon.dto.EducationDTO">
+	<select id="historyList" parameterType="map" resultType="kr.co.porkandspoon.dto.EducationDTO">
 		SELECT 
 		    ds.parent,
 		    ds.name AS dept_name,
