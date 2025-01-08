@@ -1,10 +1,12 @@
 package kr.co.porkandspoon.util.security;
 
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -19,29 +21,32 @@ public class CustomUserDetailService implements UserDetailsService {
 		Empl empl = emplRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+//		// CustomUserDetails 생성
+//		CustomUserDetails userDetails = new CustomUserDetails(empl);
+//
+//		// 계정이 잠겨 있는 경우 예외 발생
+//		if (userDetails.isAccountLocked()) {
+//			throw new LockedException("Account is locked.");
+//		}
+
 		// CustomUserDetails 반환
 		return new CustomUserDetails(empl);
 	}
 
-
-//	private final EmplRepository emplRepository;
+//	@Transactional
+//	public void increaseFailedAttempts(CustomUserDetails userDetails) {
+//		int failedAttempts = userDetails.getFailedAttempts();
+//		userDetails.setFailedAttempts(++failedAttempts);
 //
-//	public CustomUserDetailService(EmplRepository emplRepository) {
-//		this.emplRepository = emplRepository;
+//		if(failedAttempts + 1 >= 3) {
+//			userDetails.setAccountLocked(true);
+//		}
 //	}
 //
-//	@Override
-//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//
-//		Empl empl = emplRepository.findByUsername(username)
-//				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-//
-//		return User.builder()
-//				.username(empl.getUsername())
-//				.password(empl.getPassword()) // 암호화 된 비밀번호 그대로 사용
-//				.roles(empl.getRole()) // 기본 권한
-//				.build();
+//	@Transactional
+//	public void resetFailedAttempts(CustomUserDetails userDetails) {
+//		userDetails.setFailedAttempts(0);
+//		userDetails.setAccountLocked(false);
 //	}
-
 
 }

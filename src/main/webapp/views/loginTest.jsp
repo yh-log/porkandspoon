@@ -41,12 +41,12 @@
 	<a href="/chartlist/View">조직도</a> <br/>
 	<a href="/foodie/View">맛집지도</a> <br/> <!-- 404 -->
 
-	<a href="ad/mealMenu">식단표</a> <br/>
-	<a href="/adl/mypPageBuyList/recv">나의 구매기록</a> <br/> <!-- 404 -->
+	<a href="/ad/mealMenu">식단표</a> <br/>
+	<a href="/ad/myPageBuy">나의 구매기록</a> <br/>
 	<a href="/ad/part">아르바이트 리스트</a> <br/>
-	<a href="/us/spotManage">직영점 관리</a> <br/> <!-- 404 -->
-	<a href="/ad/directManage">매장 관리</a> <br/> <!-- 404 -->
-	<a href="/ad/brandManage/del">브랜드 관리 </a><br/> <!-- 404 -->
+	<a href="/ad/spotManage">직영점 관리</a> <br/>
+	<a href="/us/directManage">매장 관리</a> <br/>
+	<a href="/ad/brandManage">브랜드 관리</a>
 
 	<a href="/mail/write">메일작성</a> <br/>
 	<a href="/mail/listView/recv">받은메일함</a> <br/>
