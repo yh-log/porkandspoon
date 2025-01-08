@@ -3,6 +3,7 @@ package kr.co.porkandspoon.util.security;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "user")
@@ -17,6 +18,8 @@ public class Empl {
 	private String role;
 
 	private String name;
+
+	//@Transient // DB에 관리되지 않도록 하기 위해 선언
 	
 
 	public String getUsername() {

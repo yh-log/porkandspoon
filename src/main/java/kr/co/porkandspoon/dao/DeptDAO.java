@@ -62,4 +62,10 @@ public interface DeptDAO {
 	 * 브랜드 직원 등록 조직도 정보 조회
 	 */
 	UserDTO getUserDeptInfo(String username);
+
+	/**
+	 * author yh.kim, (25.01.07)
+	 * 브랜드 수정 시 조직도 초기 데이터 조회
+	 */
+	List<UserDTO> deptUserDetail(String id);
 }
