@@ -32,6 +32,7 @@
 
 	<a href="/calender">캘린더 이동</a> <br/>
 	<a href="/ad/education">교육 이동</a><br/>
+	<a href="/mEducation">직영점주 교육 이동</a><br/>
 	<a href="/articleResevation">물품예약 이동</a><br/>
 	<a href="/roomResevation">물품예약 이동</a><br/>
 	<a href="/ad/resevation/list">물품등록 이동</a><br/>

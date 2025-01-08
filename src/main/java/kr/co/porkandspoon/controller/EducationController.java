@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,6 +197,37 @@ public class EducationController {
 		return mav;
 	}
 	
+	// 교육 리스트 ajax
+	@GetMapping(value="/eEducationList")
+	public Map<String,Object> eEducationList(@RequestParam Map<String,Object> params,@AuthenticationPrincipal CustomUserDetails user){
+		
+		String username = user.getUsername();
+		logger.info("로그인한 아이디 : "+username);
+		params.put("username", username);
+		
+		logger.info("params : "+params);
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.put("list", eduService.eEducationList(params));
+		
+		return result;
+	}
+	
+	// 이수증 발급
+	@GetMapping(value="/completion")
+	public Map<String,Object> completion(@RequestParam int no,@AuthenticationPrincipal CustomUserDetails user){
+		
+		String username = user.getUsername();
+		logger.info("로그인한 아이디랑 교육번호 : "+username+no);
+		EducationDTO dto = eduService.completion(no,username);
+		LocalDateTime time = dto.getEducation_date();
+		String education_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+		dto.setReCreate_date(education_date);
+		
+		Map<String,Object> result = new HashMap<String, Object>();
+		result.put("list", dto);
+	
+		return result;
+	}
 	
 	
 	
