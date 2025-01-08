@@ -267,7 +267,7 @@ border-bottom: none;
 			                </table>
 			            </div>
 			            <div class="modal-footer">
-			                <button type="submit" id="saveModal" class="btn btn-primary">저장</button>
+			                <button type="button" id="saveModal" class="btn btn-primary btn-popup">저장</button>
 			                <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
 			            </div>
 			        </form>
@@ -437,6 +437,47 @@ document.addEventListener('click', function (event) {
         modal.style.display = "none";
     }
 });
+
+$('.btn-popup').on(
+		'click',
+		function() {
+			layerPopup('식단을 수정하시겠습니까?', '확인', '취소', btn1Act,
+					btn2Act);
+		});
+
+/* 알림 팝업 */
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
+
+	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+	removeAlert(); // 기존팝업닫기
+	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+	layerPopup("수정이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+}
+
+function btn2Act() {
+	// 2번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
+
+function secondBtn1Act() {
+	// 두번째팝업 1번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 1번 버튼 동작');
+	
+	 document.querySelector('form').submit();
+	
+	removeAlert(); // 팝업닫기
+	
+}
+
+function secondBtn2Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+	
+}
 
 
 </script>

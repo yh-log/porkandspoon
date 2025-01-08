@@ -169,7 +169,7 @@
 	                        </tr>
 	                     </table>
 							<div id="btn-gap">							
-								<button   type="submit" class="btn btn-primary">등록</button>
+								<button type="button" class="btn btn-primary btn-popup">등록</button>
 								<button class="btn btn-outline-primary">취소</button>
 							</div>
 			         </form>
@@ -235,14 +235,12 @@
 	    }
 	});
 	
-	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
-
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
+	$('.btn-popup').on(
+			'click',
+			function() {
+				layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', btn1Act,
+						btn2Act);
+			});
 	
 	/* 알림 팝업 */
 	function btn1Act() {
@@ -252,7 +250,7 @@
 		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
 		removeAlert(); // 기존팝업닫기
 		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
+		layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
 	}
 	
 	function btn2Act() {
@@ -264,8 +262,11 @@
 	function secondBtn1Act() {
 		// 두번째팝업 1번버튼 클릭시 수행할 내용
 		console.log('두번째팝업 1번 버튼 동작');
+		
+		 document.querySelector('form').submit();
+		
 		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
+		
 	}
 
 	function secondBtn2Act() {
@@ -275,15 +276,7 @@
 		
 	}
 	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
 
 
 </script>

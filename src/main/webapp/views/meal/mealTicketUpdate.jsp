@@ -158,7 +158,7 @@
 						</tr>
 		                     </table>
 								<div id="btn-gap">							
-									<button   type="submit" class="btn btn-primary">수정</button>
+									<button type="button" class="btn btn-primary btn-popup">수정</button>
 									<button  type="button" class="btn btn-outline-primary" onclick="location.href='/ad/meal/List'">취소</button>
 								</div>
 				         </form>
@@ -226,6 +226,28 @@ const pond = FilePond.create(document.querySelector('input[type="file"]'), {
     },
 });
 
+// 서버에서 제공된 기존 파일 설정
+const fileUrl = '${fileUrl}'; // 서버에서 전달한 파일 URL
+const fileName = '${fileName}'; // 서버에서 전달한 파일 이름
+
+if (fileUrl && fileName) {
+    pond.setOptions({
+        files: [
+            {
+                source: fileUrl, // 기존 이미지의 URL
+                options: {
+                    type: 'local', // 로컬 파일로 간주
+                    file: {
+                        name: fileName, // 기존 파일 이름
+                        size: 300000, // 파일 크기 (옵션)
+                        type: 'image/jpeg', // MIME 타입 (예시)
+                    },
+                },
+            },
+        ],
+    });
+}
+
 // 선택된 파일을 폼 데이터에 추가
 document.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault(); // 기본 동작 방지
@@ -254,48 +276,46 @@ document.querySelector('form').addEventListener('submit', (e) => {
     xhr.send(formData); // 폼 데이터 전송
 });
 
+$('.btn-popup').on(
+		'click',
+		function() {
+			layerPopup('식권을 수정하시겠습니까?', '확인', '취소', btn1Act,
+					btn2Act);
+		});
 
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+/* 알림 팝업 */
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
+	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+	removeAlert(); // 기존팝업닫기
+	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+	layerPopup("수정이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+}
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
+function btn2Act() {
+	// 2번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
 
+function secondBtn1Act() {
+	// 두번째팝업 1번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 1번 버튼 동작');
+	
+	 document.querySelector('form').submit();
+	
+	removeAlert(); // 팝업닫기
+	
+}
+
+function secondBtn2Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+	
+}
 
 </script>
 
