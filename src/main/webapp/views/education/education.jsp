@@ -81,7 +81,8 @@
 	    background: #fff;
 	    padding: 20px;
 	    border-radius: 8px;
-	    width: 800px;
+	    width: 700px;
+	    height: 800px;
 	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 	}
 
@@ -92,6 +93,10 @@
 	    align-items: center;
 	    border-bottom: 1px none #ddd;
 	    margin-bottom: 15px;
+	}
+	.modal-footer{
+		display: flex;
+		justify-content: center;
 	}
 
 	/* 닫기(x) 버튼 */
@@ -104,6 +109,37 @@
 	.modal-body .form-group {
 	    margin-bottom: 15px;
 	}
+	.sun{
+        border: 2px solid #E5D471;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        padding: 7px;
+    }
+    .sun1{
+        background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='%23E5D471' stroke-width='4' stroke-dasharray='6%2c 12%2c 18%2c 24' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        width: 100%;
+        height: 100%;
+    }
+    
+    @media print {
+  /* 전체 숨기기 및 .down 표시 */
+  body * {
+    display: none !important;
+  }
+  .down, .down * {
+    display: block !important;
+  }
+  .down {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+  }
+  
+  /* 필요시 모달 관련 추가 조정 */
+  /* 예: 모달 배경 제거, 특정 폰트 크기 변경 등 */
+}
+    
 </style>
 
 
@@ -123,17 +159,18 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">교육 등록 리스트</h4>
+					<h4 class="menu-title">교육 수강 리스트</h4>
 					<ul>
-						<li id="firstMenu"  ><a href="#">교육 등록</a></li>
-						<li id="secondMenu" class="active" ><a href="#">수강 기록</a></li>
+						<li id="firstMenu" class="active"  ><a href="#">전체 보기</a></li>
+						<li id="secondMenu" ><a href="#">수강 할 목록</a></li>
+						<li id="thirdMenu"><a href="#">수강 한 목록</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject">수강 기록</h5>
+							<h5 id="subMenuSubject"></h5>
 						</div>
 						<div class="cont-body"> 							
 							<div class="col-12 col-lg-12">
@@ -145,6 +182,7 @@
 											<th>제목</th>
 											<th>이수 시간</th>
 											<th>수강 상태</th>
+											<th>이수증</th>
 											<th>등록일</th>
 										</tr>
 									</thead>
@@ -156,7 +194,6 @@
 							<nav aria-label="Page navigation" style="margin-top: 35px;">
 								<ul class="pagination justify-content-center" id="pagination"></ul>
 							</nav>
-							<div class="btn-trip"><a href="/ad/educationWrite" class="btn btn-primary">등록</a></div>
 							
 							<div id="modalBox" class="modal" style="display: none;">
 					   			<div class="modal-content"></div>
@@ -189,6 +226,7 @@
 	
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/menu.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 	var show = 1;
 	var paginationInitialized = false;
@@ -202,7 +240,7 @@
 		
 		$.ajax({
 			type:'GET',
-			url:'/educationList',
+			url:'/eEducationList',
 			data:{
 				'page':page,
 				'cnt':15,
@@ -274,11 +312,52 @@
 			content += '<td>'+view.total_time+'</td>';
 			
 			var dateOnly = view.create_date.split('T')[0];
-	        content +='<td>미수강</td>';
+			if (view.education_date) {
+				content +='<td style="color: green;">수강완료</td>';
+				content +='<td onclick="loadModal(\'history\',\'Info\','+no+')">발급</td>';
+			}else{
+				content +='<td style="color: red;">미수강</td>';
+				content +='<td>미발급</td>';
+			}
+	                
 	        content += '<td>' + dateOnly + '</td>';
 	        content += '</tr>';
 		}
 		$('#list').html(content);
+	}
+	
+	function setModalData(type,no) {
+		console.log('실행',no)
+		var data = {
+			no: no
+		}
+		getAjax('/completion','JSON',data);
+	}
+	
+	function getSuccess(response) {
+		console.log("받아와?",response.list);
+		$("#userName").append(response.list.name);
+		$("#subject").append(response.list.subject);
+		$("#totalTime").append(response.list.total_time);
+		$("#eduDate").append(response.list.reCreate_date);
+					
+		$("#downLoad").on("click", function() {
+			html2canvas($('.down')[0]).then(function(canvas) {
+		        var img = document.createElement("a");
+		        img.download = "test.png";
+		        img.href = canvas.toDataURL();
+		        document.body.appendChild(img);
+		        img.click();
+		    });
+		});
+			
+		$("#print").on("click", function() {
+		    // 모달이 열려 있는지 확인 또는 강제로 열기
+		    // 예시: $('#historyInfoModal').show();
+
+		    window.print();
+		    return false;
+		});
 	}
 	
 	

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import kr.co.porkandspoon.dao.EducationDAO;
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.EducationDTO;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @Service
 public class EducationService {
@@ -66,6 +67,21 @@ public class EducationService {
 
 	public List<EducationDTO> historyList(Map<String, Object> params) {
 		return eduDao.historyList(params);
+	}
+
+	public Object eEducationList(Map<String, Object> params) {
+		int page_ = Integer.parseInt((String)params.get("page"));
+        int cnt_ = Integer.parseInt((String)params.get("cnt"));
+        int limit = cnt_;
+        int offset = (page_ - 1) * cnt_;
+        params.put("limit", limit);
+        params.put("offset", offset);
+       
+        return eduDao.eEducationList(params);
+	}
+
+	public EducationDTO completion(int no, String username) {
+		return eduDao.completion(no,username);
 	}
 
 }

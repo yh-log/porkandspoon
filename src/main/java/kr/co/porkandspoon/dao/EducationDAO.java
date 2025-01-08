@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.DeptDTO;
 import kr.co.porkandspoon.dto.EducationDTO;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @Mapper
 public interface EducationDAO {
@@ -28,5 +29,9 @@ public interface EducationDAO {
 	int eduDelete(int no);
 
 	List<EducationDTO> historyList(Map<String, Object> params);
+
+	List<EducationDTO> eEducationList(Map<String, Object> params);
+
+	EducationDTO completion(int no, String username);
 
 }
