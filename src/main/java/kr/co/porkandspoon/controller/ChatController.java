@@ -2,14 +2,17 @@ package kr.co.porkandspoon.controller;
 
 import kr.co.porkandspoon.dto.ChatDTO;
 import kr.co.porkandspoon.dto.ChatRoom;
+import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.dto.ResponseDTO;
 import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.service.AlarmService;
 import kr.co.porkandspoon.service.ChatRoomManager;
 import kr.co.porkandspoon.service.ChatService;
 import kr.co.porkandspoon.util.CommonUtil;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -26,6 +29,7 @@ import java.util.Map;
 public class ChatController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
+	@Autowired AlarmService alarmService;
 
 	private final ChatRoomManager chatRoomManager;
 
@@ -76,11 +80,19 @@ public class ChatController {
 		logger.info("채팅방 메시지 발송: roomId => " + chatRoomId);
 		logger.info("발송 메시지: " + message.getContent());
 		logger.info("요청 직원 => " + message.getUsername());
-
+		
 		message.setRoomId(chatRoomId);
 
 		saveChatMessage(message);
-
+		
+		// 알림
+		NoticeDTO noticedto = new NoticeDTO();
+		noticedto.setContent(message.getContent());
+		noticedto.setFrom_id(message.getUsername());
+		noticedto.setSubject(chatRoomId);
+		noticedto.setCode_name("ml010");
+		alarmService.saveAlarm(noticedto);
+		
 		return message; // 메시지를 구독 중인 사용자에게 전송
 	}
 	

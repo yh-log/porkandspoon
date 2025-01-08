@@ -42,7 +42,19 @@
 	</select>
 	
 	<select id="getAlarmList" resultType="kr.co.porkandspoon.dto.NoticeDTO">
-		SELECT * FROM notice WHERE username = #{username} ORDER BY create_date DESC
+		SELECT * 
+	    FROM notice 
+	    WHERE username = #{username}
+	      AND code_name != 'ml010' 
+	    ORDER BY create_date DESC
+	</select>
+	
+	<select id="getChatList" resultType="kr.co.porkandspoon.dto.NoticeDTO">
+		SELECT * 
+	    FROM notice 
+	    WHERE username = #{username}
+	      AND code_name = 'ml010' 
+	    ORDER BY create_date DESC
 	</select>
 	
 	<select id="getDraftLine" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
@@ -99,6 +111,39 @@
 	    WHERE e.url = #{content}
 	</select>
 	
+	<select id="getChat" resultType="kr.co.porkandspoon.dto.NoticeDTO">
+		SELECT 
+	        cr.name AS subject,
+	        cu.username AS username
+	    FROM 
+	        chat_room cr
+	    JOIN 
+	        chat_room_user cu 
+	    ON 
+	        cr.roomId = #{subject}
+	        AND cu.roomId = #{subject}
+	</select>
 	
+	<select id="getAlarmrow" resultType="int">
+		 SELECT 
+	        COUNT(*)
+	    FROM 
+	        notice
+	    WHERE 
+	        username = #{username}
+	        AND is_url = 'N'
+	        AND code_name != 'ml010'
+	</select>
+	
+	<select id="getChatrow" resultType="int">
+		 SELECT 
+	        COUNT(*)
+	    FROM 
+	        notice
+	    WHERE 
+	        username = #{username}
+	        AND is_url = 'N'
+	        AND code_name = 'ml010'
+	</select>
 	
 </mapper>

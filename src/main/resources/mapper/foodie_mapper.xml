@@ -14,10 +14,10 @@
 
 	<!-- 맛집 등록 -->
 	<insert
+	 	id="setStoreWrite" 
 		useGeneratedKeys="true" 
 	   	keyColumn="store_idx" 
 	   	keyProperty="store_idx" 
-	 	id="setStoreWrite" 
 	 	parameterType="kr.co.porkandspoon.dto.FoodieDTO">
 		INSERT INTO food_map (store_latitude, store_longitude, store_address, store_name, store_category)
 			VALUES(#{store_latitude}, #{store_longitude}, #{store_address}, #{store_name}, #{store_category})
@@ -32,6 +32,24 @@
 	<!-- 매장 리스트 가져오기 -->
 	<select id="getFoodieList" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
 		SELECT * FROM food_map
+	</select>
+	
+	<select id="getReviewList" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		SELECT 
+	        fr.*,
+	        u.name AS name,
+	        fm.store_name AS store_name, 
+	        ROUND(AVG(fr.review_star) OVER(PARTITION BY fr.store_idx), 1) AS total_review_star
+	    FROM 
+	        food_review fr
+	    JOIN 
+	        user u 
+	        ON fr.username = u.username
+	    JOIN 
+	        food_map fm 
+	        ON fr.store_idx = fm.store_idx  
+	    WHERE 
+	        fr.store_idx = #{store_idx}
 	</select>
 
 </mapper>
