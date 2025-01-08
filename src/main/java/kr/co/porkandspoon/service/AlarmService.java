@@ -84,12 +84,36 @@ public class AlarmService {
 			noticeDTO.setSubject(ndto.getSubject());
 		}
 		
-		// 교육 시청 알림
+		// 교육 시청 알림 개별 로직
 		if(noticeDTO.getCode_name() == "ml005") {
-			List<NoticeDTO> dto = alarmDAO.getEdu(noticeDTO);
-			for(NoticeDTO noticedto : dto) {
-				noticeDTO.setFrom_idx(noticedto.getFrom_idx());
-			}
+			List<NoticeDTO> dtoList = alarmDAO.getEdu(noticeDTO);
+		    for (NoticeDTO noticedto : dtoList) {
+		        // 각 사용자별로 새 NoticeDTO 객체를 생성하여 알림 발송
+		        NoticeDTO newNotice = new NoticeDTO();
+		        newNotice.setFrom_idx(noticedto.getFrom_idx());
+		        newNotice.setSubject(noticedto.getSubject());
+		        newNotice.setFrom_id(noticedto.getFrom_id());
+		        newNotice.setUsername(noticedto.getUsername());
+		        newNotice.setCode_name("ml005");
+		        newNotice.setCreate_date(noticeDTO.getCreate_date());
+		        // 사용자 이름 가져오기
+		        String username = newNotice.getFrom_id();
+		        if (username != null) {
+		            username = alarmDAO.getUsername(username);
+		        } else {
+		            continue; // 사용자 정보가 없으면 건너뛰기
+		        }
+
+		        // 알림 메시지 설정
+		        String sub = newNotice.getSubject();
+		        newNotice.setSubject("교육 시청 알림이 왔습니다.");
+		        newNotice.setContent("<b>" + sub + "</b> &nbsp; 교육 시청 알림이 왔습니다.");
+		        newNotice.setUrl("/u/educationDetail/" + noticedto.getFrom_idx());
+
+		        // 알림 발송 (개별 발송)
+		        alarmDAO.savaAlarm(newNotice);
+		    }
+		    return;
 		}
 	
 		
@@ -123,11 +147,6 @@ public class AlarmService {
 			noticeDTO.setSubject("댓글에 답변이 달렸습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;에 대댓글이 달렸습니다.");
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getBoard_idx());
-			break;
-		case "ml005":
-			noticeDTO.setSubject("교육 시청 알림이 왔습니다.");
-			noticeDTO.setContent("<b>" + sub + "</b> &nbsp; 교육 시청 알림이 왔습니다.");
-			noticeDTO.setUrl("/u/educationDetail/" + noticeDTO.getBoard_idx());
 			break;
 		case "ml007":
 			noticeDTO.setSubject("결재요청이 왔습니다.");
