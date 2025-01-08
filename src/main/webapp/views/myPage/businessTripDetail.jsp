@@ -10,8 +10,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	
 	<!-- 부트스트랩 -->
-	<link rel="shortcut icon"
-		href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+	<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 	<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 		
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
@@ -160,6 +159,10 @@
 		align-items: center;
 	}
 
+	#btn-gap{
+		margin: 15px 35px -10px 35px;
+	}
+
 </style>
 </head>
 <body>
@@ -183,7 +186,7 @@
          <section class="cont">
             <div class="col-12 col-lg-12">
                <div class="tit-area">
-                  <h5>출장 수정</h5>
+                  <h5>출장 상세</h5>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -191,36 +194,30 @@
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">
-								${tripDTO.name}
-								<input type="hidden" name="username" value="${tripDTO.username}">
-							</td>
+	                  		<td class="align-l">${tripDTO.name}</td>
 	                  	</tr>
 						  <tr>
 							  <th>출장명</th>
-							  <td><input class="form-control sor-1" type="text" name="subject" value="${tripDTO.subject}"/></td>
+							  <td class="align-l">${tripDTO.subject}</td>
 						  </tr>
 	                  	<tr>
 	                  		<th>시작 일시</th>
-	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="datetime-local" name="start_date" style="width: 23%;"/>	                  			
+	                  		<td class="coutn-dis" id="startDate">
+								${tripDTO.start_date}
 	                  		</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>종료 일시</th>
-	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="datetime-local" name="end_date" style="width: 23%;"/>
+	                  		<td class="coutn-dis" id="endDate">
+								${tripDTO.end_date}
 	                  		</td>
 	                  	</tr>
-						  <tr>
-							  <th>출장 장소</th>
-							  <td>
-								  <div class="inline-layout">
-									  <input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true" value="${tripDTO.address}"/>
-									  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
-								  </div>
-							  </td>
-						  </tr>
+	                  	<tr>
+	                  		<th>출장 장소</th>
+	                  		<td style="float: left;">
+								${tripDTO.address}
+							</td>
+	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
 	                  		<td><textarea class="form-control art" name="content">${tripDTO.content}</textarea></td>
@@ -229,10 +226,11 @@
                   </div>
                	</div>
                	<div class="col-12 col-lg-12">
-               		<div class="btn-room">
-	           			<div class="btn btn-primary">수정하기</div>
-	                	<div class="btn btn-primary">돌아가기</div>
-	           		</div>
+					<div id="btn-gap">
+						<button type="button" class="btn btn-primary" onclick="location.href='/trip/update/${tripDTO.schedule_idx}'" style="float: left;">수정</button>
+						<button type="button" class="btn btn-outline-primary" onclick="tripDelete()" style="float: left;">삭제</button>
+						<button type="button" class="btn btn-outline-secondary" onclick="location.href='/trip/listView'" style="float: right;">목록</button>
+					</div>
            		</div>
            	</div>
          </section>   
@@ -252,12 +250,36 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
+
 	let start_date = '${tripDTO.start_date}';
 	let startDate = start_date.slice(0, -3);
-	$('#startDate').val(startDate);
+	$('#startDate').text(startDate);
 
 	let end_date = '${tripDTO.end_date}';
 	let endDate = end_date.slice(0, -3);
-	$('#endDate').val(endDate);
+	$('#endDate').text(endDate);
+
+
+
+
+	function tripDelete(){
+		let schedule_idx = '${tripDTO.schedule_idx}';
+		console.log('받은 ', schedule_idx);
+
+		let tripDTO = {'schedule_idx' : schedule_idx};
+
+		httpAjax('DELETE', '/trip/delete', tripDTO);
+
+
+
+
+
+	}
+
+	function httpSuccess(response){
+		if(response.status === 200){
+			location.href = '/trip/listView';
+		}
+	}
 </script>
 </html>
