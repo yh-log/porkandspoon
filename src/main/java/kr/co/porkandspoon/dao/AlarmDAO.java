@@ -37,5 +37,13 @@ public interface AlarmDAO {
 
 	List<NoticeDTO> getEdu(NoticeDTO noticeDTO);
 
+	List<NoticeDTO> getChat(NoticeDTO noticeDTO);
+
+	int getAlarmrow(NoticeDTO dto);
+
+	List<NoticeDTO> getChatList(NoticeDTO dto);
+
+	int getChatrow(NoticeDTO dto);
+
 
 }

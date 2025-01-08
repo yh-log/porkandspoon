@@ -61,5 +61,17 @@ public class AlarmController {
     	return dto;
     }
     
+    @GetMapping("/getAlarmrow")
+    public NoticeDTO getAlarmrow(@ModelAttribute NoticeDTO dto) {
+    	NoticeDTO ndto = new NoticeDTO();
+    	ndto.setArow(alarmService.getAlarmrow(dto));
+    	ndto.setCrow(alarmService.getChatrow(dto));
+    	return ndto;
+    }
     
+    @GetMapping("/getChatList")
+    public List<NoticeDTO> getChatList(@ModelAttribute NoticeDTO dto) {
+    	List<NoticeDTO> noticedto = alarmService.getChatList(dto);
+    	return noticedto;
+    }
 }

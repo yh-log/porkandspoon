@@ -88,20 +88,18 @@ public class AlarmService {
 		if(noticeDTO.getCode_name() == "ml005") {
 			List<NoticeDTO> dtoList = alarmDAO.getEdu(noticeDTO);
 		    for (NoticeDTO noticedto : dtoList) {
-		        // 각 사용자별로 새 NoticeDTO 객체를 생성하여 알림 발송
-		        NoticeDTO newNotice = new NoticeDTO();
+		    	NoticeDTO newNotice = new NoticeDTO();
 		        newNotice.setFrom_idx(noticedto.getFrom_idx());
 		        newNotice.setSubject(noticedto.getSubject());
 		        newNotice.setFrom_id(noticedto.getFrom_id());
 		        newNotice.setUsername(noticedto.getUsername());
 		        newNotice.setCode_name("ml005");
 		        newNotice.setCreate_date(noticeDTO.getCreate_date());
-		        // 사용자 이름 가져오기
 		        String username = newNotice.getFrom_id();
 		        if (username != null) {
 		            username = alarmDAO.getUsername(username);
 		        } else {
-		            continue; // 사용자 정보가 없으면 건너뛰기
+		            continue; 
 		        }
 
 		        // 알림 메시지 설정
@@ -114,6 +112,29 @@ public class AlarmService {
 		        alarmDAO.savaAlarm(newNotice);
 		    }
 		    return;
+		}
+		
+		if(noticeDTO.getCode_name().equals("ml010")) {
+			List<NoticeDTO> dto = alarmDAO.getChat(noticeDTO);
+			for(NoticeDTO noticedto : dto) {
+				if(!noticedto.getUsername().equals(noticeDTO.getFrom_id())) {
+					NoticeDTO notice = new NoticeDTO();
+					notice.setSubject("<b>" + noticedto.getSubject() + "</b>");
+					notice.setUsername(noticedto.getUsername());
+					notice.setContent(noticeDTO.getContent());
+					notice.setFrom_id(noticeDTO.getFrom_id());
+					notice.setUrl("/chat/list");
+					notice.setCode_name(noticeDTO.getCode_name());
+					notice.setFrom_idx("0");
+					notice.setCreate_date(noticeDTO.getCreate_date());
+					String username = notice.getFrom_id();
+					if (username != null) {
+						username = alarmDAO.getUsername(username);
+					}
+					alarmDAO.savaAlarm(notice);
+				}
+			}
+			return;
 		}
 	
 		
@@ -134,7 +155,7 @@ public class AlarmService {
 			noticeDTO.setUrl("/calender");
 			break;
 		case "ml002":
-			noticeDTO.setSubject("메일이 왔습니다.");
+			noticeDTO.setSubject("<b>" + username + "</b>" + " 님에게 메일이 왔습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp; 메일이 왔습니다.");
 			noticeDTO.setUrl("/mail/detail/" + noticeDTO.getFrom_idx());
 			break;
@@ -149,18 +170,18 @@ public class AlarmService {
 			noticeDTO.setUrl("/boarddetail/View/" + noticeDTO.getBoard_idx());
 			break;
 		case "ml007":
-			noticeDTO.setSubject("결재요청이 왔습니다.");
+			noticeDTO.setSubject("<b>" + username + "</b>" + " 님에게 결재요청이 왔습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문에 결재 요청이 왔습니다.");
 			noticeDTO.setUrl("/approval/detail/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml008":
-			noticeDTO.setSubject("결재가 승인되었습니다.");
+			noticeDTO.setSubject("<b>" + username + "</b>" + "님이 결재를 승인하였습니다.");
 			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문 결재가 승인되었습니다.");
 			noticeDTO.setUrl("/approval/detail/" + noticeDTO.getFrom_idx());
 			break;
 		case "ml009":
-			noticeDTO.setSubject("결재가 반려되었습니다.");
-			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문 결재가 반려되었습니다.");
+			noticeDTO.setSubject("<b>" + username + "</b>" + " 님이 결재를 반려하였습니다.");
+			noticeDTO.setContent("<b>" + sub + "</b> &nbsp;기안문이 반려되었습니다.");
 			noticeDTO.setUrl("/approval/detail/" + noticeDTO.getFrom_idx());
 			break;
 		default:
@@ -192,6 +213,21 @@ public class AlarmService {
 
 	public void setUpdateUrl(NoticeDTO dto) {
 		alarmDAO.setUpdateUrl(dto);
+	}
+
+
+	public int getAlarmrow(NoticeDTO dto) {
+		return alarmDAO.getAlarmrow(dto);
+	}
+
+
+	public List<NoticeDTO> getChatList(NoticeDTO dto) {
+		return alarmDAO.getChatList(dto);
+	}
+
+
+	public int getChatrow(NoticeDTO dto) {
+		return alarmDAO.getChatrow(dto);
 	}
 	
 
