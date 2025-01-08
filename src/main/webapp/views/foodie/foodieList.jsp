@@ -53,7 +53,37 @@
 	    transition: background-color 0.2s ease; /* 부드러운 색상 변화 효과 */
 	}
 	
+	#review {
+		width: 100%;
+	    height: 100%;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    z-index: 996;
+	    background: rgba(0, 0, 0, 0.6);
+	    display: block;
+	}
 	
+	.review-modal {
+	    position: absolute;
+	    left: 50%;
+	    top: 160px;
+	    transform: translateX(-50%);
+	    width: 600px;
+	    height: 650px;
+	    padding: 30px;
+	    background: #fff;
+	    border: none;
+	    border-radius: 8px;
+	}
+	
+	.content-review {
+		text-align: left;
+	}
+	
+	.trash {
+		text-align: right;
+	}
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -150,6 +180,48 @@
 								</div>
 							</div>
 						</div>
+						
+						<div id="review" class="modal" style="display: none;">
+							<div class="modal-cont review-modal">
+								<div id="modal-body">
+									<div>
+										<h4 class="menu-title review_name" style="text-align: center;">
+										</h4>
+									</div>
+									<div style="text-align: center;" class="review-star-num">
+									</div>
+									<div style="height: 441px; overflow: auto;">
+										<table class="review-table">
+											<colgroup>
+												<col width="20%" />
+												<col width="60%" />
+												<col width="20%" />
+											</colgroup>
+											<tbody class="review-body">
+												
+											</tbody>
+										</table>
+									</div>
+									<div style="text-align: center;">
+										<a class="btn btn-primary">리뷰등록</a>
+										<a class="btn btn-outline-primary review-modal-close">돌아가기</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
 	               </div>
 	            </div>
 	         </section>   
@@ -168,6 +240,77 @@
 <script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
 <script src="/resources/assets/static/js/pages/rater-js.js"></script>
 <script>
+	
+	
+	function openModal(data) {
+		var url = '/getReviewList';
+		var data = {store_idx: data};
+		$.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            datatype: 'JSON',
+            success: function(response) {
+                reviewList(response);
+                $('#review').show();
+            },
+            error: function(xhr, status, error) {
+                console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+            }
+        });
+	}
+	
+	function reviewList(response) {
+		console.log('dd', response);
+		$('.review-body').empty();
+		var loggedInUser = '${loggedInUser}';
+		var content = '';
+		var reviewstar = '';
+		var review_name = '';
+		if (response.length > 0) {
+	        var total = response[0].total_review_star; 
+	        var totals = (total / 5) * 100;
+	        
+	        reviewstar = '<div id="review-star" class="star-rating" style="width: 160px; height: 32px; background-size: 32px;" data-rating="' + total + '" title="' + total + '/5">' +
+	            '<div class="star-value" style="background-size: 32px; width: ' + totals + '%;"></div>' +
+	            '</div>';
+	        $('.review-star-num').html(reviewstar);  
+	    }
+		
+		if(response.length > 0) {
+			var store_name = response[0].store_name;
+			review_name = '<img src="https://cdn-icons-png.flaticon.com/512/5134/5134814.png" width="50" height="50" alt="" title="" class="img-small"><span style="margin: 0 20px;">' + store_name + '</span><img src="https://cdn-icons-png.flaticon.com/512/5134/5134814.png" width="50" height="50" alt="" title="" class="img-small">';
+			$('.review_name').html(review_name);
+		}
+		
+		response.forEach(function(item){
+			const starPercentage = (item.review_star / 5) * 100;
+			content += '<tr>';
+			content += '<th>' + item.name + '</th>';
+			content += '<td class="content-review">' + item.content + '</td>';
+			if (loggedInUser === item.username) {
+			    content += '<td class="trash"><i class="bi bi-trash btn-popup bi-icon" style="color:gray;" onclick="deleteboard(' + item.review_idx + ')"></i></td>';
+			} else {
+				content += '<td class="trash">' +
+		        '<div class="star-rating" style="width: 91px; height: 17px; background-size: 18px;" data-rating="' + item.review_star + '" title="' + item.review_star + '/5">' +
+		        '<div class="star-value" style="background-size: 18px; width: ' + starPercentage + '%;"></div>' +
+		        '</div>' +
+		        '</td>';
+			}
+			content += '</tr>';
+		});
+		
+		$('.review-body').append(content);
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	$(document).ready(function () {
 	    var url = '/foodie/list'; // 서버에서 여러 매장의 정보를 가져오는 URL
@@ -224,9 +367,6 @@
 	    });
 	}
 	
-	function openModal(data) {
-		console.log(data);
-	}
 	
 	
 	$('.btnModal').on('click', function () {
@@ -236,6 +376,10 @@
 	$('#modal .close').on('click', function () {
 	    $('#modal').hide();
 	});
+	
+	$('.review-modal-close').on('click', function() {
+		$('#review').hide();
+	})
 	
 	
 	$('#keyword').on('input', function(){
@@ -340,7 +484,6 @@
 	}
 
 	function storeWrite() {
-	    // ✅ 값 수집 (document.getElementById 사용)
 	    var category = document.querySelector('input[name="flexRadioDefault"]:checked').value;
 	    var storename = document.getElementById('store_name').value;
 	    var storeAddress = document.getElementById('store_address').value;

@@ -39,7 +39,7 @@
 	<a href="/board/View">공지사항 게시판</a> <br/>
 	<a href="/lbboardlist/View">라이브러리 게시판</a> <br/>
 	<a href="/chartlist/View">조직도</a> <br/>
-	<a href="/foodie/View">맛집지도</a> <br/> <!-- 404 -->
+	<a href="/foodielist/View">맛집지도</a> <br/> <!-- 404 -->
 
 	<a href="/ad/mealMenu">식단표</a> <br/>
 	<a href="/ad/myPageBuy">나의 구매기록</a> <br/>
