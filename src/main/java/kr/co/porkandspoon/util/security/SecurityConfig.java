@@ -18,11 +18,22 @@ public class SecurityConfig {
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
 
+	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+	private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+	public SecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler,
+						  CustomAuthenticationFailureHandler customAuthenticationFailureHandler) {
+		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+		this.customAuthenticationFailureHandler = customAuthenticationFailureHandler;
+	}
+
 	// 암호화
 	@Bean
 	public PasswordEncoder getPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
+
 	
 	@Bean
 	public AuthenticationProvider authenticationProvider(CustomUserDetailService userDetailService, PasswordEncoder passwordEncoder) {
@@ -35,7 +46,7 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider authenticationProvider) throws Exception {
+	public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationProvider authenticationProvider, CustomUserDetailService customUserDetailService) throws Exception {
 
 		
 		http.authorizeHttpRequests()
@@ -48,19 +59,32 @@ public class SecurityConfig {
 		
 		.anyRequest().authenticated(); // 그 외 요청은 검토
 		
+//		http.formLogin()
+//        .loginPage("/") // 메인 페이지를 로그인 페이지로 설정
+//        .loginProcessingUrl("/login") // 로그인 요청 처리 URL
+//        .successHandler(new CustomAuthenticationSuccessHandler())
+//    //    .failureHandler(new CustomAuthenticationSuccessHandler())
+//        .failureUrl("/?error=true") // 로그인 실패 시 이동할 페이지
+//        .usernameParameter("username")
+//        .passwordParameter("password")
+//        .and()
+//        .logout()
+//        .logoutSuccessUrl("/")
+//        .invalidateHttpSession(true)
+//        .deleteCookies("JSESSIONID");
+
 		http.formLogin()
-        .loginPage("/") // 메인 페이지를 로그인 페이지로 설정
-        .loginProcessingUrl("/login") // 로그인 요청 처리 URL
-        .successHandler(new CustomAuthenticationSuccessHandler())
-    //    .failureHandler(new CustomAuthenticationSuccessHandler())
-        .failureUrl("/?error=true") // 로그인 실패 시 이동할 페이지
-        .usernameParameter("username")
-        .passwordParameter("password")
-        .and()
-        .logout()
-        .logoutSuccessUrl("/")
-        .invalidateHttpSession(true)
-        .deleteCookies("JSESSIONID");
+				.loginPage("/") // 메인 페이지를 로그인 페이지로 설정
+				.loginProcessingUrl("/login") // 로그인 요청 처리 URL
+				.successHandler(customAuthenticationSuccessHandler) // 주입된 성공 핸들러 사용
+				.failureHandler(customAuthenticationFailureHandler) // 주입된 실패 핸들러 사용
+				.usernameParameter("username")
+				.passwordParameter("password")
+				.and()
+				.logout()
+				.logoutSuccessUrl("/")
+				.invalidateHttpSession(true)
+				.deleteCookies("JSESSIONID");
 		
 		http.csrf().ignoringAntMatchers("/wsConnect/**");
 		// WebSocket 엔드포인트 제외

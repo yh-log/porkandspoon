@@ -16,6 +16,7 @@ public class PagingDTO {
     private int limit;
     private int offset;
     private String userYn;
+    private String username;
 
     // page와 cnt를 기반으로 limit과 offset을 계산하는 메서드
     public void calculatePaging() {
@@ -95,5 +96,13 @@ public class PagingDTO {
 
     public void setUserYn(String userYn) {
         this.userYn = userYn;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

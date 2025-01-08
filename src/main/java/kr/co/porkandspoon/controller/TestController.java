@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,9 +32,14 @@ public class TestController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	// pw 암호화, 복호화 시 사용
-	@Autowired PasswordEncoder encoder;
-	
-	@Autowired TestService service;
+	private final PasswordEncoder encoder;
+	private final TestService service;
+
+	@Autowired
+	public TestController(PasswordEncoder encoder, TestService service) {
+		this.encoder = encoder;
+		this.service = service;
+	}
 	
 	@Value("${upload.path}") private String paths;
 	

@@ -2,6 +2,7 @@ package kr.co.porkandspoon.service;
 
 import java.util.List;
 
+import kr.co.porkandspoon.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import kr.co.porkandspoon.dao.MyPageDAO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.MealDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 @Service
@@ -112,8 +110,84 @@ public class MyPageService {
 		return myPageDao.fileDelete(dto);
 		
 	}
-	
-	
-	
-	
+
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 리스트 조회
+	 */
+    public List<TripDTO> tripList(PagingDTO pagingDTO, String username) {
+
+		pagingDTO.setUsername(username);
+		List<TripDTO> tripDTO = myPageDao.tripList(pagingDTO);
+		return tripDTO;
+    }
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 상세 페이지 이동 및 조회
+	 */
+	public TripDTO tripDetail(int schedule_idx) {
+
+		TripDTO tripDTO = myPageDao.tripDetail(schedule_idx);
+
+		return tripDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 비활성화
+	 */
+	public TripDTO tripDelete(TripDTO tripDTO) {
+
+		int tripDeleteRow = myPageDao.tripDelete(tripDTO);
+		if(tripDeleteRow == 0){
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장을 삭제하지 못했습니다.");
+			return tripDTO;
+		}
+
+		tripDTO.setStatus(200);
+		tripDTO.setMessage("출장을 삭제했습니다.");
+
+		return tripDTO;
+
+	}
+
+
+
+	public static String convertToTargetFormat(String dateString) {
+		// 'T'를 공백으로 대체하고 ":00" 추가
+		return dateString.replace("T", " ") + ":00";
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 등록
+	 */
+	public TripDTO tripWrite(TripDTO tripDTO) {
+
+		tripDTO.setStart_date(convertToTargetFormat(tripDTO.getStart_date()));
+		tripDTO.setEnd_date(convertToTargetFormat(tripDTO.getEnd_date()));
+
+		int writeRow = myPageDao.tripWrite(tripDTO);
+		if(writeRow == 0) {
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장 등록에 실패했습니다.");
+			return tripDTO;
+		}
+
+		// 출장 캘린더 등록
+		int tripCalenderRow = myPageDao.tripCalenderWrite(tripDTO);
+		if(tripCalenderRow == 0) {
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장 캘린더 등록에 실패했습니다.");
+			return tripDTO;
+		}
+
+		tripDTO.setStatus(200);
+		tripDTO.setMessage("출장 등록에 성공했습니다.");
+		return tripDTO;
+
+	}
 }

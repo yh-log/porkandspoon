@@ -162,7 +162,7 @@ $('#firstMenu').on('click', function() {
     firstPage = 1;
     paginationInitialized = false;
     pageCall(firstPage, { userYn: '' }); // userYn 기본값 비움
-    $('input[name="search"]').val(''); 
+    $('input[name="search"]').val('');
     $('#subMenuSubject').text($('#firstMenu').text());
 });
 
@@ -177,7 +177,7 @@ $('#secondMenu').on('click', function() {
     firstPage = 1;
     paginationInitialized = false;
     pageCall(firstPage, { userYn: 'Y' }); // userYn 값 전달
-    $('input[name="search"]').val(''); 
+    $('input[name="search"]').val('');
     $('#subMenuSubject').text($('#secondMenu').text());
 });
 
@@ -211,7 +211,7 @@ function pageCall(page = 1, extraData = {}) {
     // 추가 데이터 병합
     requestData = { ...requestData, ...extraData };
 
-    
+
     $.ajax({
         type: 'GET',
         url: '/ad/user/list',
@@ -227,8 +227,12 @@ function pageCall(page = 1, extraData = {}) {
                 $('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
             }
 
-            // 페이지네이션 초기화
-            var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
+			// 페이지네이션 초기화
+			var totalpage = response[0]?.totalpage || 1;
+			console.log('받은 totalpage:', totalpage);
+
+			var totalPages = Math.ceil(totalpage / 10);
+			console.log('계산된 총 페이지 수:', totalPages);
 
             if (!paginationInitialized || keyword !== '') {
                 $('#pagination').twbsPagination('destroy');
@@ -254,9 +258,9 @@ function pageCall(page = 1, extraData = {}) {
 
 function getSuccess(response){
 	console.log(response);
-	
+
 	$('#userList').empty();
-	
+
 	var content = '';
 	response.forEach(function(item){
 		content += '<tr>';
@@ -266,18 +270,18 @@ function getSuccess(response){
 		content += '<td>' + item.position_content + '</td>';
 		content += '<td>' + item.company_num + '</td>';
 		content += '<td>' + item.join_date + '</td>';
-		
+
 		if(item.user_yn === 'N'){
-			content += '<td><p class="btn icon btn-primary" style="margin:0px 5px; height: 34px;">재직</p></td>';			
+			content += '<td><span style="color: var(--bs-primary);">재직</span></td>';
 		}else{
-			content += '<td><p class="btn icon btn-light" style="margin:0px 5px; height: 34px;">퇴사</p></td>';		 				
+			content += '<td><span style="color: #8C8C8C;">퇴사</span></td>';
 		}
-		
+
 		content += '</tr>';
 	});
-	
+
 	$('#userList').append(content);
-	
+
 }
 
 

@@ -160,8 +160,8 @@
 				<section id="menu">
 					<h4 class="menu-title">직영점 리스트</h4>
 					<ul>
-						<li class="active" id="firstMenu"><a href="#">브랜드 리스트</a></li>
-						<li id="secondMenu"><a href="#">직영점 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="/ma/dept/listView">브랜드 리스트</a></li>
+						<li id="secondMenu"><a href="/ma/store/list">직영점 리스트</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->

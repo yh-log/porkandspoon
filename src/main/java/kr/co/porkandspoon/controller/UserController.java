@@ -596,16 +596,9 @@ public class UserController {
 	 * 브랜드 리스트 조회
 	 */
 	@GetMapping(value="/ma/dept/getList")
-	public List<DeptDTO> deptGetList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+	public List<DeptDTO> deptGetList(@ModelAttribute PagingDTO pagingDTO) {
 		
-		logger.info(keyword);
-		logger.info(option);
-		
-		List<DeptDTO> dto = userService.deptGetList(page, cnt, option, keyword);
+		List<DeptDTO> dto = userService.deptGetList(pagingDTO);
 		
 		for (DeptDTO deptDTO : dto) {
 			String type = "B";
@@ -713,8 +706,8 @@ public class UserController {
 		if(dto == null) {
 			return false;
 		}
-		
-		dto.setPassword("1111");
+		String hash = encoder.encode("1111");
+		dto.setPassword(hash);
 		boolean result = userService.changePassword(dto);
 		
 		return result;

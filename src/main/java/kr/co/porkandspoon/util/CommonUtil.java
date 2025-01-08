@@ -75,6 +75,7 @@ public class CommonUtil {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern(outputFormat);
       return LocalDateTime.now().format(formatter);
    }
+
    
    /**
     * author yh.kim (24.12.13) 

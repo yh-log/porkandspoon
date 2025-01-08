@@ -266,7 +266,7 @@
 	</update>
 
 	<!-- 브랜드 리스트 조회 -->
-	<select id="deptGetList" parameterType="map"
+	<select id="deptGetList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.DeptDTO">
 		WITH RankedDepartments AS (
 		SELECT d.id, d.text, d.use_date, d.use_yn, u.name AS creater, u.position,
