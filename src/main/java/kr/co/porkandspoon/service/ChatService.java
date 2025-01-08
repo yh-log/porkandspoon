@@ -64,6 +64,10 @@ public class ChatService {
      */
     public void createRoom(ChatRoom room) {
 
+        if(room.getName().isEmpty()){
+            room.setName("이름 없는 채팅방");
+        }
+        
         logger.info(CommonUtil.toString(room));
         int createRow = chatDAO.createRoom(room);
         logger.info(createRow + " 생성된 채팅 로우");
@@ -181,9 +185,14 @@ public class ChatService {
                chatDTO.setType("R");
            }
        }
+
+       // 채팅방 참여 인원 프로필 정보 가져오기!
+
+
+
         // 채팅 읽음 처리 진행
         int readUpdateRow = chatDAO.chatMessageReadUpdate(chatRoomId, username);
-       logger.info("읽음 처리 로우 =>" + readUpdateRow);
+        logger.info("읽음 처리 로우 =>" + readUpdateRow);
 
         return chatRoomList;
 

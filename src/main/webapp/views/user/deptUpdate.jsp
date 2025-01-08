@@ -7,20 +7,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>브랜드 등록</title>
 
-	<meta name="_csrf" content="${_csrf.token}">
-	<meta name="_csrf_header" content="${_csrf.headerName}">
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-<link rel="shortcut icon"
-	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
-	type="image/png">
+<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 
 <!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 <!-- summernote bootstrap-->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
 
@@ -28,6 +24,7 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+<link rel="stylesheet" href="/resources/css/chartModal.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
 
@@ -173,7 +170,7 @@
 											<input type="file" id="file" name="file" onchange="clearLogo(); preview(this);" id="fileInput"/>
 										</td>
 										<th>브랜드 명</th>
-										<td colspan="2"><input type="text" name="text"  class="form-control" value="${deptInfo.text}" data-required="true"/></td>
+										<td colspan="2"><input type="text" name="text"  class="form-control" value="${deptInfo.text}	" data-required="true"/></td>
 										<th>브랜드 코드</th>
 										<td>
 											<input type="text" name="id" id="deptCode" class="form-control input-readonly" data-required="true" value="${deptInfo.id}"/>
@@ -196,8 +193,9 @@
 										<th>소속 직원</th>
 										<td colspan="4">
 											<div class="inline-layout">
-												<input type="text" name="" class="form-control .disable" disabled="disabled"/> 
-												<button class="btn btn-primary" ><i class="bi bi-diagram-3"></i></button>
+												<input type="text" name="deptUsername" class="form-control .disable" disabled="disabled" value="${deptInfo.user_name}"/>
+												<button type="button" class="btn btn-primary" onclick="loadChartModal('chartInputModal')" ><i class="bi bi-diagram-3"></i></button>
+												<input type="hidden" name="user_name">
 											</div>
 										</td>
 									</tr>
@@ -219,6 +217,10 @@
 			</div>
 		</div>
 	</div>
+	<!-- 조직도 모달 사용 시 추가 -->
+	<div id="chartModalBox" class="modal" style="display: none;">
+		<div class="chartModal-content"></div>
+	</div>
 </body>
 
 <!-- 부트스트랩 -->
@@ -236,7 +238,11 @@
 	
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/deptInfo.js'></script>
+<script src='/resources/js/charjstree.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 <script>
 	
 	$(document).ready(function() {
@@ -274,6 +280,124 @@
         const deptLogo = document.getElementById('deptLogo');
         deptLogo.style.display = 'none';
     }
+
+	const userInfo = JSON.parse('${userInfo}');
+
+
+	userInfo.forEach(user => {
+		console.log(user);
+	})
+
+	/* 조직도노드  */
+	//초기 데이터
+	const initialData = {
+		headers: ['이름', '부서', '직급', '삭제'],
+		rows: [
+
+		],
+		footer: '<div></div>'
+	};
+
+	userInfo.forEach(user => {
+		initialData.rows.push([user.name, user.dept_name, user.position, '']);
+	});
+
+	const exampleData = JSON.parse(JSON.stringify(initialData));
+
+	// 선택된 ID를 rows에 추가하는 함수
+	function addSelectedIdToRows(selectedId) {
+		console.log("가져온 ID:", selectedId);
+
+		// 현재 데이터 모두 확인
+		const isAlreadyAdded = [...initialData.rows, ...exampleData.rows].some(row => {
+			const rowUsername = row[3]?.match(/'([^']+)'/); // row[3]에서 username 값 추출
+			return rowUsername && rowUsername[1] === selectedId;
+		});
+
+		if (isAlreadyAdded) {
+			alert("이미 추가된 사용자입니다!");
+			return; // 중복된 경우 함수 종료
+		}
+
+		let username = {'username':selectedId};
+
+		getAjax('/ad/dept/userAppend', 'JSON', username);
+
+	}
+
+	// 선택된 ID를 받아서 처리
+	getSelectId(function (selectedId) {
+		addSelectedIdToRows(selectedId);
+	});
+
+	$(document).on('click', '#addModal', function () {
+		console.log("등록 버튼 클릭됨!");
+
+		const newUsers = exampleData.rows.map(row => {
+			const match = row[3]?.match(/chartTableDelete\(this, '([^']+)', '([^']+)', '([^']+)'\)/); // username과 name 추출
+			return match ? { username: match[1], name: match[2], parent: match[3]} : null; // 객체로 반환
+		}).filter(user => user !== null); // null 값 제거
+
+		console.log("새롭게 추가된 사용자들의 username:", newUsers);
+
+		if (newUsers.length === 0) {
+			console.log("새롭게 추가된 사용자가 없습니다.");
+			return;
+		}
+
+		// 필요에 따라 추가 작업 수행
+		newUsers.forEach(user => {
+			console.log("Username:", user.username, "Name:", user.name, "Parent", user.parent);
+		});
+
+		// 초기값을 설정하지 않으면 앞에 undefined 이 붙는다!
+		let deptUsername = '';
+		let usernames = '';
+		for(const user of newUsers){
+			if(user.parent !== 'NO1000'){
+				layerPopup("미발령 직원만 선택 가능합니다.", '확인', false, removeAlert, removeAlert);
+				break;
+			}else{
+				deptUsername += ' ' + user.name;
+				usernames += user.username + ' ';
+				const modal = document.querySelector("#chartModalBox");
+				modal.style.display = "none";
+
+			}
+		}
+		console.log(deptUsername);
+		console.log(usernames);
+		let defaultValue = $('input[name="deptUsername"]').val();
+		$('input[name="deptUsername"]').val(defaultValue + deptUsername);
+		$('input[name="user_name"]').val(usernames);
+
+	});
+
+	// 선택된 username 삭제 (조직도)
+	function chartTableDelete(element, username) {
+		console.log('삭제 실행 ', username);
+
+		// 1. 해당 버튼의 부모 tr 요소 찾기
+		const row = element.closest('tr'); // 호출된 버튼을 기준으로 tr 찾기
+
+		// 2. 행 삭제
+		if (row) {
+			row.remove(); // 테이블에서 해당 행 삭제
+		}
+
+		// 3. exampleData.rows에서 해당 username에 해당하는 데이터 제거
+		exampleData.rows = exampleData.rows.filter(function (row) {
+			return row[3].indexOf(username) === -1; // username과 일치하지 않는 데이터만 남김
+		});
+
+		// 4. 테이블 데이터 업데이트
+		updateTableData('customTable', exampleData);
+
+		console.log('삭제 완료!');
+	}
+
+
+
 
 </script>
 

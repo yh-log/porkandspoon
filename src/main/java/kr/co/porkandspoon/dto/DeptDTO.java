@@ -45,6 +45,7 @@ public class DeptDTO extends ResponseDTO{
    private String reason;
    private String start_date;
    private String end_date;
+
 public String getId() {
 	return id;
 }
