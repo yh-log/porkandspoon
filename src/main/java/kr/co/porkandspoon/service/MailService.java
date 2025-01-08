@@ -279,6 +279,18 @@ public boolean chageAllToRead(Map<String, String> params) {
 	return mailDAO.chageAllToRead(params) > 0 ? true : false ;
 }
 
+public int savedMailCount(String loginId) {
+	return mailDAO.savedMailCount(loginId);
+}
+
+public boolean moveSentToTrash(String idx, String loginId) {
+	return  mailDAO.moveSentToTrash(idx,loginId) > 0 ? true : false;
+}
+
+public boolean moveReceivedToTrash(String idx, String loginId) {
+	return  mailDAO.moveReceivedToTrash(idx,loginId) > 0 ? true : false;
+}
+
 /*
  * public MailDTO deliverMail(String idx, String loginId) { return
  * mailDAO.deliverMail(idx,loginId); }

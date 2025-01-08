@@ -39,6 +39,9 @@ public class MailDTO {
 
 	// 첨부파일 여부
 	private String fileYn;
+
+	// 메일타입 (수신/발신)
+	private String mail_type;
 	
 	// 리스트 글 개수 카운트
     private int total_count;
@@ -150,6 +153,12 @@ public class MailDTO {
 	}
 	public void setFileYn(String fileYn) {
 		this.fileYn = fileYn;
+	}
+	public String getMail_type() {
+		return mail_type;
+	}
+	public void setMail_type(String mail_type) {
+		this.mail_type = mail_type;
 	}
 
 

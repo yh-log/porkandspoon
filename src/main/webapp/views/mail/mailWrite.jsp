@@ -271,7 +271,7 @@
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<div class="left">
-								<h5>메일쓰기 <button>임시보관 메일</button><span class="mail-count">21</span></h5>
+								<h5>메일쓰기 <button onclick="location.href='/mail/listView/sv'">임시보관 메일</button><span class="mail-count">${savedMailCount}</span></h5>
 							</div>
 						</div>
 						<div class="util-area">

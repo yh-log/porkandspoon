@@ -133,17 +133,26 @@
 				<section id="menu">
 					<h4 class="menu-title">나의문서함</h4>
 					<ul>
-						<li class="active"><a href="#">기안문서함</a></li>
-						<li><a href="#">결재할 문서</a></li>
-						<li><a href="#">결재한 문서</a></li>
-						<li><a href="#">임시저장 문서</a></li>
-						<li><a href="#">나의 결재라인</a></li>
+						<li class="active"><a href="/approval/listView/my">기안문서함</a></li>
+						<li><a href="/approval/listView/tobe">결재할 문서</a></li>
+						<li><a href="/approval/listView/did">결재한 문서</a></li>
+						<li><a href="/approval/listView/sv">임시저장 문서</a></li>
+						<li><a href="/approval/listView/line">나의 결재라인</a></li>
 					</ul>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>기안문서함</h5>
+							<h5>
+								<c:choose>
+									<c:when test="${listType == 'my'}">기안문서함</c:when>
+									<c:when test="${listType == 'tobe'}">결재할 문서</c:when>
+									<c:when test="${listType == 'did'}">결재한 문서</c:when>
+									<c:when test="${listType == 'sv'}">임시저장 문서</c:when>
+									<c:when test="${listType == 'line'}">나의 결재라인</c:when>
+								</c:choose>
+						
+							</h5>
 						</div>
 						<div class="buttons filter-btns clearfix">
 							<c:if test="${listType == 'my'}">

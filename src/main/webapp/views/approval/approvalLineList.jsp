@@ -103,13 +103,13 @@
 
 			<div class="page-content apprLineList">
 				<section id="menu">
-					<h4 class="menu-title">사내메일</h4>
+					<h4 class="menu-title">나의문서함</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li><a href="/approval/listView/my">기안문서함</a></li>
+						<li><a href="/approval/listView/tobe">결재할 문서</a></li>
+						<li><a href="/approval/listView/did">결재한 문서</a></li>
+						<li><a href="/approval/listView/sv">임시저장 문서</a></li>
+						<li class="active"><a href="/approval/listView/line">나의 결재라인</a></li>
 					</ul>
 					<div class="btn btn-primary full-size">사사이드바 버튼</div>
 				</section>

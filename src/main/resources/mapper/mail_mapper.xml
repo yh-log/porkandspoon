@@ -260,6 +260,7 @@
 			) AS fileYn,
 			mr.username,
 			u.name,
+			'sent' AS mail_type,
 			COUNT(*) OVER() AS total_count
 		FROM 
 			mail m
@@ -274,8 +275,12 @@
 			user u ON mr.username = u.username
 		WHERE 
 		    m.sender = #{loginId}
-		    AND m.send_status = 'sd'
-		    AND m.use_yn = 'Y'
+		    AND 
+		    	m.send_status = 'sd'
+		    AND 
+		    	m.use_yn = 'Y'
+		    AND
+				m.use_from_date NULL
 			<if test="search != null and !search.equals('') and option == 'subject'"> 
 				AND m.title LIKE CONCAT('%',#{search},'%')		
 			</if>
@@ -298,6 +303,7 @@
 		    ,mr.is_bookmark
 		    ,mr.is_read
 		    ,u.name
+		    ,'received' AS mail_type
 		    ,COUNT(*) OVER() AS total_count
 		FROM mail m
 		JOIN user u 
@@ -307,6 +313,8 @@
 			AND mr.username = #{loginId}
 		WHERE 
 		    mr.use_yn = 'Y' 
+		    AND
+			mr.use_from_date IS NULL
 		    AND m.send_status = 'sd' 
 	    <if test="filter != null and filter == 'noread'">
 			AND mr.is_read = 'N'
@@ -336,6 +344,7 @@
 				GROUP BY idx
 			) AS username
 			,u.name
+		    ,'sent' AS mail_type
 			,COUNT(*) OVER() AS total_count
 		FROM mail m
 		JOIN user u
@@ -346,6 +355,8 @@
 			send_status = 'sv'
 			AND
 			m.use_yn = 'Y'
+			AND
+			m.use_from_date IS NULL
 			<if test="search != null and !search.equals('') and option == 'subject'"> 
 				AND m.title LIKE CONCAT('%',#{search},'%')		
 			</if>
@@ -392,6 +403,7 @@
 		    (m.sender = #{loginId} AND m.is_bookmark = 'Y')  
 		    OR (mr2.username = #{loginId} AND mr2.is_bookmark = 'Y')
 	    ) AND (mr2.use_yn = 'Y' or m.use_yn = 'Y')  
+	    AND (m.use_from_date IS NULL OR mr2.use_from_date IS NULL)
 		<if test="search != null and !search.equals('') and option == 'subject'"> 
 		AND m.title LIKE CONCAT('%',#{search},'%')		
 		</if>
@@ -452,7 +464,7 @@
 		OFFSET #{offset}
 	</select>
 
-	<update id="changeToRead">
+	<update id="changeToRead" parameterType="map">
 		UPDATE 
 			mail_receive
 		SET 
@@ -468,6 +480,28 @@
 			username = #{loginId}
 	</update>
 	
+	<update id="moveReceivedToTrash" parameterType="map">
+		UPDATE 
+			mail_receive 
+		SET 
+			use_from_date = NOW() 
+		WHERE 
+			idx = #{idx}
+		AND 
+			username = #{loginId}
+	</update>
+	
+	<update id="moveSentToTrash" parameterType="map">
+		UPDATE 
+			mail
+		SET 
+			use_from_date = NOW() 
+		WHERE 
+			idx = #{idx}
+		AND 
+			sender = #{loginId}
+	</update>
+	
 	<insert id="setDeleveryExistingImage" parameterType="String">
 		INSERT INTO 
 			file (code_name, ori_filename, new_filename, type, pk_idx)
@@ -477,5 +511,14 @@
 			AND pk_idx = ${originalIdx}
 			AND code_name = 'ma001'
 	</insert>
+	
+	<select id="savedMailCount" resultType="int">
+		SELECT COUNT(idx) 
+		FROM mail 
+		WHERE sender = #{loginId} 
+		AND send_status = 'sv' 
+		AND use_yn = 'y' 
+		AND use_from_date IS NULL
+	</select>
 	
 </mapper>
