@@ -89,14 +89,14 @@
 	<!-- 직원 등록 -->
 	<insert id="userWrite"
 		parameterType="kr.co.porkandspoon.dto.UserDTO">
-		INSERT INTO user(username, name, password, email, gender, phone,
+		INSERT INTO user(username, name, password, person_num, email, gender, phone,
 		parent, birth, join_date, title, position,
 
 		<if test="company_num != null and company_num != ''">company_num,</if>
 
 		address, role)
 
-		VALUES(#{username}, #{name}, #{password}, #{email}, #{gender}, #{phone}, #{parent},
+		VALUES(#{username}, #{name}, #{password}, #{person_num}, #{email}, #{gender}, #{phone}, #{parent},
 		#{birth}, #{join_date}, #{title}, #{position},
 
 		<if test="company_num != null and company_num != ''">#{company_num},</if>
@@ -247,8 +247,8 @@
 			keyColumn="id"
 		parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		INSERT INTO department(id, text, type, use_yn, use_date,
-		content)
-		VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content})
+		content, parent)
+		VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content}, 'SA0001')
 	</insert>
 
 	<!-- 기존 부서 이미지 삭제 -->
@@ -305,22 +305,42 @@
 	</select>
 
 	<!-- 브랜드 생성 요청 리스트 조회 -->
-	<select id="deptCreateList" parameterType="map"
+	<select id="deptCreateList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.draft_idx, d.subject, d.name, u.name AS user_name, c.content,
-		al_max.approval_date
-		FROM draft d LEFT JOIN `user` u ON d.username = u.username
+		SELECT
+		d.draft_idx,
+		d.subject,
+		d.name,
+		u.name AS user_name,
+		c.content,
+		al_max.approval_date,
+		total_data.totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
 		LEFT JOIN (
-		SELECT draft_idx, MAX(`order_num`) AS max_order,SUBSTRING_INDEX(
-		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER
-		BY order_num DESC), ',', 1) AS approval_date
+		SELECT draft_idx, MAX(`order_num`) AS max_order,
+		SUBSTRING_INDEX(
+		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER BY order_num DESC), ',', 1
+		) AS approval_date
 		FROM approval_line
 		WHERE status = 'ap004'
-		GROUP BY draft_idx) al_max
-		ON d.draft_idx = al_max.draft_idx
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
 		LEFT JOIN code c ON u.`position` = c.name
 		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
 		AND al.`order_num` = al_max.max_order
+		CROSS JOIN (
+		<!-- 전체 데이터 수를 계산하는 서브쿼리 -->
+		SELECT COUNT(DISTINCT d.draft_idx) AS totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
+		LEFT JOIN (
+		SELECT draft_idx, MAX(`order_num`) AS max_order
+		FROM approval_line
+		WHERE status = 'ap004'
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
+		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
 		WHERE d.target_type = 'df001'
 		AND d.action_type = 'df011'
 		AND al.status IS NOT NULL
@@ -333,30 +353,85 @@
 					AND u.name LIKE CONCAT('%', #{keyword}, '%')
 				</when>
 				<otherwise>
-					AND 1 = 0 <!-- 기본적으로 조건이 없으면 데이터 반환하지 않음 -->
+					AND 1 = 0 <!-- 조건이 없으면 데이터 반환하지 않음 -->
+				</otherwise>
+			</choose>
+		</if>
+		) total_data
+		WHERE d.target_type = 'df001'
+		AND d.action_type = 'df011'
+		AND al.status IS NOT NULL
+		<if test="keyword != null and keyword.trim() != ''">
+			<choose>
+				<when test="option == 'dept'">
+					AND d.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="option == 'name'">
+					AND u.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					AND 1 = 0 <!-- 조건이 없으면 데이터 반환하지 않음 -->
 				</otherwise>
 			</choose>
 		</if>
 		ORDER BY al.approval_date DESC
+		LIMIT #{offset}, #{limit}
 	</select>
 
 	<!-- 브랜드 삭제 요청 리스트 조회 -->
-	<select id="deptDeleteList" parameterType="map"
+	<select id="deptDeleteList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.draft_idx, d.subject, d.name, u.name AS user_name, c.content,
-		al_max.approval_date
-		FROM draft d LEFT JOIN `user` u ON d.username = u.username
+		SELECT
+		d.draft_idx,
+		d.subject,
+		d.name,
+		u.name AS user_name,
+		c.content,
+		al_max.approval_date,
+		total_data.totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
 		LEFT JOIN (
-		SELECT draft_idx, MAX(`order_num`) AS max_order,SUBSTRING_INDEX(
-		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER
-		BY order_num DESC), ',', 1) AS approval_date
+		SELECT draft_idx, MAX(`order_num`) AS max_order,
+		SUBSTRING_INDEX(
+		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER BY order_num DESC), ',', 1
+		) AS approval_date
 		FROM approval_line
 		WHERE status = 'ap004'
-		GROUP BY draft_idx) al_max
-		ON d.draft_idx = al_max.draft_idx
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
 		LEFT JOIN code c ON u.`position` = c.name
 		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
 		AND al.`order_num` = al_max.max_order
+		CROSS JOIN (
+		<!-- 전체 데이터 수를 계산하는 서브쿼리 -->
+		SELECT COUNT(DISTINCT d.draft_idx) AS totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
+		LEFT JOIN (
+		SELECT draft_idx, MAX(`order_num`) AS max_order
+		FROM approval_line
+		WHERE status = 'ap004'
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
+		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
+		WHERE d.target_type = 'df001'
+		AND d.action_type = 'df012'
+		AND al.status IS NOT NULL
+		<if test="keyword != null and keyword.trim() != ''">
+			<choose>
+				<when test="option == 'dept'">
+					AND d.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="option == 'name'">
+					AND u.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					AND 1 = 0
+				</otherwise>
+			</choose>
+		</if>
+		) total_data
 		WHERE d.target_type = 'df001'
 		AND d.action_type = 'df012'
 		AND al.status IS NOT NULL
@@ -374,6 +449,7 @@
 			</choose>
 		</if>
 		ORDER BY al.approval_date DESC
+		LIMIT #{offset}, #{limit};
 	</select>
 
 
@@ -399,7 +475,7 @@
 	</update>
 
 	<!-- 직영점 리스트 -->
-	<select id="storeList" parameterType="map"
+	<select id="storeList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.DeptDTO">
 		SELECT
 		ds.id,
@@ -409,19 +485,25 @@
 		ds.use_yn,
 		ds.use_date,
 		d.text,
-		ds.name
+		ds.name,
+		total_data.totalpage
 		FROM
 		direct_store ds
 		LEFT JOIN
 		department d ON ds.parent = d.id
 		LEFT JOIN
 		`user` u ON ds.owner = u.username
-		WHERE
-		1 = 1
+		CROSS JOIN (
+		SELECT COUNT(*) AS totalpage
+		FROM direct_store ds
+		LEFT JOIN department d ON ds.parent = d.id
+		LEFT JOIN `user` u ON ds.owner = u.username
+		WHERE 1 = 1
 		<if test="keyword != null and keyword.trim() != ''">
 			<choose>
 				<when test="option == 'dept'">
-					AND d.text LIKE CONCAT('%', #{keyword}, '%')
+					AND (d.text LIKE CONCAT('%', #{keyword}, '%')
+					OR ds.name LIKE CONCAT('%', #{keyword}, '%'))
 				</when>
 				<when test="option == 'name'">
 					AND u.name LIKE CONCAT('%', #{keyword}, '%')
@@ -431,11 +513,21 @@
 				</otherwise>
 			</choose>
 		</if>
-		<if test="isClose != null">
-			AND ds.is_close = #{isClose}
-		</if>
-		<if test="isActive != null">
-			AND ds.use_yn = #{isActive}
+		) total_data
+		WHERE 1 = 1
+		<if test="keyword != null and keyword.trim() != ''">
+			<choose>
+				<when test="option == 'dept'">
+					AND (d.text LIKE CONCAT('%', #{keyword}, '%')
+						OR ds.name LIKE CONCAT('%', #{keyword}, '%'))
+				</when>
+				<when test="option == 'name'">
+					AND u.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					AND 1 = 0
+				</otherwise>
+			</choose>
 		</if>
 		ORDER BY
 		ds.use_date DESC
@@ -445,22 +537,42 @@
 
 
 	<!-- 직영점 생성 요청 리스트 -->
-	<select id="ceateStoreList" parameterType="map"
+	<select id="ceateStoreList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.draft_idx, d.subject, d.name, u.name AS user_name, c.content,
-		al_max.approval_date
-		FROM draft d LEFT JOIN `user` u ON d.username = u.username
+		SELECT
+		d.draft_idx,
+		d.subject,
+		d.name,
+		u.name AS user_name,
+		c.content,
+		al_max.approval_date,
+		total_data.totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
 		LEFT JOIN (
-		SELECT draft_idx, MAX(`order_num`) AS max_order,SUBSTRING_INDEX(
-		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER
-		BY order_num DESC), ',', 1) AS approval_date
+		SELECT draft_idx, MAX(`order_num`) AS max_order,
+		SUBSTRING_INDEX(
+		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER BY order_num DESC), ',', 1
+		) AS approval_date
 		FROM approval_line
 		WHERE status = 'ap004'
-		GROUP BY draft_idx) al_max
-		ON d.draft_idx = al_max.draft_idx
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
 		LEFT JOIN code c ON u.`position` = c.name
 		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
 		AND al.`order_num` = al_max.max_order
+		CROSS JOIN (
+		<!-- 총 데이터 수를 계산하는 서브쿼리 -->
+		SELECT COUNT(*) AS totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
+		LEFT JOIN (
+		SELECT draft_idx, MAX(`order_num`) AS max_order
+		FROM approval_line
+		WHERE status = 'ap004'
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
+		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
 		WHERE d.target_type = 'df002'
 		AND d.action_type = 'df011'
 		AND al.status IS NOT NULL
@@ -473,30 +585,85 @@
 					AND u.name LIKE CONCAT('%', #{keyword}, '%')
 				</when>
 				<otherwise>
-					AND 1 = 0 <!-- 기본적으로 조건이 없으면 데이터 반환하지 않음 -->
+					AND 1 = 0
+				</otherwise>
+			</choose>
+		</if>
+		) total_data
+		WHERE d.target_type = 'df002'
+		AND d.action_type = 'df011'
+		AND al.status IS NOT NULL
+		<if test="keyword != null and keyword.trim() != ''">
+			<choose>
+				<when test="option == 'dept'">
+					AND d.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="option == 'name'">
+					AND u.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					AND 1 = 0
 				</otherwise>
 			</choose>
 		</if>
 		ORDER BY al.approval_date DESC
+		LIMIT #{offset}, #{limit}
 	</select>
 
 	<!-- 직영점 폐점 요청 리스트 -->
-	<select id="deleteStoreList" parameterType="map"
+	<select id="deleteStoreList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.ApprovalDTO">
-		SELECT d.draft_idx, d.subject, d.name, u.name AS user_name, c.content,
-		al_max.approval_date
-		FROM draft d LEFT JOIN `user` u ON d.username = u.username
+		SELECT
+		d.draft_idx,
+		d.subject,
+		d.name,
+		u.name AS user_name,
+		c.content,
+		al_max.approval_date,
+		total_data.totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
 		LEFT JOIN (
-		SELECT draft_idx, MAX(`order_num`) AS max_order,SUBSTRING_INDEX(
-		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER
-		BY order_num DESC), ',', 1) AS approval_date
+		SELECT draft_idx, MAX(`order_num`) AS max_order,
+		SUBSTRING_INDEX(
+		GROUP_CONCAT(CASE WHEN status = 'ap004' THEN approval_date END ORDER BY order_num DESC), ',', 1
+		) AS approval_date
 		FROM approval_line
 		WHERE status = 'ap004'
-		GROUP BY draft_idx) al_max
-		ON d.draft_idx = al_max.draft_idx
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
 		LEFT JOIN code c ON u.`position` = c.name
 		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
 		AND al.`order_num` = al_max.max_order
+		CROSS JOIN (
+		<!-- 총 데이터 수를 계산하는 서브쿼리 -->
+		SELECT COUNT(*) AS totalpage
+		FROM draft d
+		LEFT JOIN `user` u ON d.username = u.username
+		LEFT JOIN (
+		SELECT draft_idx, MAX(`order_num`) AS max_order
+		FROM approval_line
+		WHERE status = 'ap004'
+		GROUP BY draft_idx
+		) al_max ON d.draft_idx = al_max.draft_idx
+		LEFT JOIN approval_line al ON d.draft_idx = al.draft_idx
+		WHERE d.target_type = 'df002'
+		AND d.action_type = 'df012'
+		AND al.status IS NOT NULL
+		<if test="keyword != null and keyword.trim() != ''">
+			<choose>
+				<when test="option == 'dept'">
+					AND d.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<when test="option == 'name'">
+					AND u.name LIKE CONCAT('%', #{keyword}, '%')
+				</when>
+				<otherwise>
+					AND 1 = 0
+				</otherwise>
+			</choose>
+		</if>
+		) total_data
 		WHERE d.target_type = 'df002'
 		AND d.action_type = 'df012'
 		AND al.status IS NOT NULL
@@ -514,6 +681,7 @@
 			</choose>
 		</if>
 		ORDER BY al.approval_date DESC
+		LIMIT #{offset}, #{limit}
 	</select>
 
 	<!-- 직영점 비활성화 -->
@@ -894,6 +1062,24 @@
 	<!-- 직영점 이동 시 직영점 테이블 업데이트 -->
 	<update id="updateStoreOwner" parameterType="kr.co.porkandspoon.dto.UserDTO">
 		UPDATE direct_store SET owner = #{username} WHERE id = #{new_position}
+	</update>
+
+	<!-- author yh.kim (25. 01. 07)
+		부서(브랜드) 등록 시 발령 직원 부서, 사번 업데이트 -->
+	<update id="userDeptUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE user SET person_num = #{person_num}, parent = #{parent} WHERE username = #{username}
+	</update>
+
+	<!-- author yh.kim (25. 01. 07)
+		직영점 비활성화 -->
+	<update id="storeInactiveUpdate" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		UPDATE direct_store SET use_yn = 'N', owner = '미발령' WHERE parent = #{id}
+	</update>
+
+	<!-- author yh.kim (25. 01. 07)
+		직영점 직원 부서 변경 (비활성화 시) -->
+	<update id="storeUserUpdate">
+		UPDATE user AS u JOIN direct_store AS d ON u.username = d.owner SET u.parent = 'NO1000' WHERE d.parent = #{id}
 	</update>
 
 </mapper>

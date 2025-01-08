@@ -346,12 +346,6 @@
 
 	}
 
-	// function getSuccess(response){
-	//
-	// 	console.log(response, '가져옴');
-	//
-	//
-	// }
 
 	// 선택된 ID를 받아서 처리
 	getSelectId(function (selectedId) {
@@ -399,6 +393,8 @@
 		$('input[name="user_name"]').val(usernames);
 
 	});
+
+
 
 
 </script>

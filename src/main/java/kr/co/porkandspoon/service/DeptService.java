@@ -146,4 +146,16 @@ public class DeptService {
 
 		return userDTO;
 	}
+
+	/**
+	 * author yh.kim, (25.01.07)
+	 * 브랜드 수정 시 조직도 초기 데이터 조회
+	 */
+	public List<UserDTO> deptUserDetail(String id) {
+
+		List<UserDTO> userDTO = deptDAO.deptUserDetail(id);
+
+		return userDTO;
+	}
+
 }

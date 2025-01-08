@@ -27,7 +27,9 @@ public class UserService {
 	@Autowired UserDAO userDao;
 	
 	private static final AtomicInteger counter = new AtomicInteger(1);
-	
+    @Autowired
+    private UserDAO userDAO;
+
 	/**
 	 * author yh.kim (24.12.22)
 	 * 아이디 찾기 시 사용자 검증
@@ -362,11 +364,6 @@ public class UserService {
 		return userDao.userList(pagingDTO);
 	}
 
-
-
-
-
-
 	/**
 	 * author yh.kim (24.12.26)
 	 * 부서(브랜드) 등록
@@ -376,12 +373,16 @@ public class UserService {
 		// 브랜드 등록
 		int deptRow = userDao.deptWrite(dto);
 
-//		String[] usernameArr = dto.getUser_name().split(" ");
-//		for (String username : usernameArr) {
-//			dto.setUser_name(username);
-//			int userUpdateRow = userDao.userDeptUpdate(dto);
-//			logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
-//		}
+		String[] usernameArr = dto.getUser_name().split(" ");
+		UserDTO userDTO = new UserDTO();
+		for (String username : usernameArr) {
+			userDTO.setUsername(username);
+			userDTO.setParent(dto.getId());
+			String person_num = generateCompanyNumber(userDTO);
+			userDTO.setPerson_num(person_num);
+			int userUpdateRow = userDao.userDeptUpdate(userDTO);
+			logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
+		}
 
 
 
@@ -442,10 +443,26 @@ public class UserService {
 	 * 부서 수정
 	 */
 	public DeptDTO deptUpdate(MultipartFile file, DeptDTO dto) {
-		
+
+		// 부서 비활성 시 선택 시 실행
+		if(dto.getUse_yn().equals("N")){
+			deptInactiveUpdate(dto);
+		}
+
 		int deptRow = userDao.deptUpdate(dto);
 		
 		logger.info("브랜드 수정 로우 => " + deptRow);
+
+		String[] usernameArr = dto.getUser_name().split(" ");
+		UserDTO userDTO = new UserDTO();
+		for (String username : usernameArr) {
+			userDTO.setUsername(username);
+			userDTO.setParent(dto.getId());
+			String person_num = generateCompanyNumber(userDTO);
+			userDTO.setPerson_num(person_num);
+			int userUpdateRow = userDao.userDeptUpdate(userDTO);
+			logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
+		}
 		
 		// 브랜드 비활성 시 직영점 업데이트
 		if(dto.getUse_yn().equals("N")) {
@@ -507,9 +524,42 @@ public class UserService {
 			} else {
 			    logger.warn("로고 이미지 파일이 없습니다.");
 			}
-		
-		
-		return null;
+
+		dto.setStatus(200);
+		dto.setMessage("부서 수정이 완료되었습니다.");
+
+		return dto;
+	}
+
+	/**
+	 * author yh.kim (25.01.07)
+	 * 부서 비활성화 시 직영점 비활성화 및 직원 미발령 이동
+	 */
+	private void deptInactiveUpdate(DeptDTO dto) {
+
+		// 부서 직원 변경
+		String[] usernameArr = dto.getUser_name().split(" ");
+		UserDTO userDTO = new UserDTO();
+		for (String username : usernameArr) {
+			userDTO.setUsername(username);
+			userDTO.setParent("NO1000");
+			String person_num = generateCompanyNumber(userDTO);
+			userDTO.setPerson_num(person_num);
+			int userUpdateRow = userDao.userDeptUpdate(userDTO);
+			logger.info("직원 부서 업데이트 로우 (비활성화) => " + userUpdateRow);
+		}
+
+		// 직영점 직원 변경
+		int storeUserUpdateRow = userDao.storeUserUpdate(dto);
+		logger.info("직영점 직원 변경 로우 => " + storeUserUpdateRow);
+
+		if(storeUserUpdateRow > 0) {
+			// 직영점 비활성화
+			int storeInactiveRow = userDao.storeInactiveUpdate(dto);
+			logger.info("직영점 비활성화 업데이트 => " + storeInactiveRow);
+		}
+
+
 	}
 
 
@@ -531,18 +581,9 @@ public class UserService {
 	 * author yh.kim (24.12.26)
 	 * 브랜드 생성 요청 리스트 조회
 	 */
-	public List<ApprovalDTO> deptCreateList(int page, int cnt, String option, String keyword) {
-
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
+	public List<ApprovalDTO> deptCreateList(PagingDTO pagingDTO) {
 		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		return userDao.deptCreateList(parmeterMap);
+		return userDao.deptCreateList(pagingDTO);
 		
 	}
 
@@ -550,17 +591,8 @@ public class UserService {
 	 * author yh.kim (24.12.26)
 	 * 브랜드 삭제 요청 리스트 조회
 	 */
-	public List<ApprovalDTO> deptDeleteList(int page, int cnt, String option, String keyword) {
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
-		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		return userDao.deptDeleteList(parmeterMap);
+	public List<ApprovalDTO> deptDeleteList(PagingDTO pagingDTO) {
+		return userDao.deptDeleteList(pagingDTO);
 	}
 
 
@@ -601,8 +633,11 @@ public class UserService {
 				logger.info("이미지 업로드 => ", contentImgRow);
 			}
 		}
-		
-		return null;
+
+		dto.setStatus(200);
+		dto.setMessage("직영점 등록이 완료되었습니다.");
+
+		return dto;
 	}
 
 
@@ -640,59 +675,38 @@ public class UserService {
 				logger.info("이미지 업로드 => ", contentImgRow);
 			}
 		}
+
+		dto.setStatus(200);
+		dto.setMessage("직영점 수정이 완료되었습니다.");
 		
-		return null;
+		return dto;
 	}
 
 	/**
 	 * author yh.kim (24.12.28)
 	 * 직영점 리스트
 	 */
-	public List<DeptDTO> storeList(int page, int cnt, String option, String keyword) {
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
+	public List<DeptDTO> storeList(PagingDTO pagingDTO) {
 		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		return userDao.storeList(parmeterMap);
+		return userDao.storeList(pagingDTO);
 	}
 
 	/**
 	 * author yh.kim (24.12.29)
 	 * 직영점 생성 요청 리스트 
 	 */
-	public List<ApprovalDTO> ceateStoreList(int page, int cnt, String option, String keyword) {
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
+	public List<ApprovalDTO> ceateStoreList(PagingDTO pagingDTO) {
 		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		return userDao.ceateStoreList(parmeterMap);
+		return userDao.ceateStoreList(pagingDTO);
 	}
 
 	/**
 	 * author yh.kim (24.12.29)
 	 * 직영점 폐점 요청 리스트
 	 */
-	public List<ApprovalDTO> deleteStoreList(int page, int cnt, String option, String keyword) {
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
+	public List<ApprovalDTO> deleteStoreList(PagingDTO pagingDTO) {
 		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		return userDao.deleteStoreList(parmeterMap);
+		return userDao.deleteStoreList(pagingDTO);
 	}
 
 	/**

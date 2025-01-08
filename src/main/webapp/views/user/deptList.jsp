@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,15 +9,11 @@
 <title>부서 리스트</title>
 
 <!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-<link rel="shortcut icon"
-	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
-	type="image/png">
+<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 <!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 
 
@@ -28,11 +25,24 @@
 
 
 <style>
+
+	.rowContainer{
+		--bs-gutter-x: 1.5rem;
+		--bs-gutter-y: 0;
+		display: flex;
+		flex-wrap: nowrap;
+		margin-top: calc(-1* var(--bs-gutter-y));
+		margin-right: calc(-.5* var(--bs-gutter-x));
+		margin-left: calc(-.5* var(--bs-gutter-x));
+		align-items: center;
+	}
+
 	.searchLayout{
 	    display: flex;
 	    align-items: center; /* 세로 중앙 정렬 */
    		justify-content: end; /* 가로 중앙 정렬 */
     	gap: 10px; /* 요소 간 간격 */
+		margin-left: 150px;
 	}
 	
 	.selectStyle{
@@ -69,8 +79,8 @@
 				<section id="menu">
 					<h4 class="menu-title">부서 리스트</h4>
 					<ul>
-						<li class="active" id="firstMenu"><a href="#">브랜드 리스트</a></li>
-						<li id="secondMenu"><a href="/ad/store/list">직영점 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="/ma/dept/listView">브랜드 리스트</a></li>
+						<li id="secondMenu"><a href="/ma/store/list">직영점 리스트</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
@@ -80,11 +90,13 @@
 							<h5 id="subMenuSubject">브랜드</h5>
 						</div>
 						<div class="cont-body"> 
-							<div class="row">
+							<div class="rowContainer">
 								<div class="col-5 col-lg-5" id="filterLayout">
-									<span onclick="listCall('/ad/dept/getList')">리스트</span>
-									<span onclick="listCall('/ad/dept/createList')">생성요청</span>
-									<span onclick="listCall('/ad/dept/deleteList')">삭제요청</span>
+									<sec:authorize access="hasAnyRole('ADMIN', 'SUPERADMIN')">
+										<span onclick="listCall('/ma/dept/getList')">리스트</span>
+										<span onclick="listCall('/ad/dept/createList')">생성요청</span>
+										<span onclick="listCall('/ad/dept/deleteList')">삭제요청</span>
+									</sec:authorize>
 								</div>
 								<div class="searchLayout" class="col-7 col-lg-7">
 									<select class="form-select selectStyle" id="searchOption">
@@ -157,13 +169,22 @@ $('#firstMenu').on('click', function() {
     currentOption = 'all';
     
     // URL 설정 및 호출
-    listCall('/ad/dept/getList');
+    listCall('/ma/dept/getList');
 });
 
 // URL 변경 및 페이지 호출
 function listCall(url) {
     currentUrl = url; // 전역 변수에 URL 저장
     console.log("listCall 호출 URL:", currentUrl);
+
+	// 페이징 초기화 (기존 페이징 제거)
+	firstPage = 1; // 첫 페이지로 초기화
+	paginationInitialized = false; // 페이징 초기화
+	$('#pagination').twbsPagination('destroy');
+
+	$('input[name="search"]').val('');
+
+
     pageCall(firstPage); // 첫 페이지 호출
 }
 
@@ -213,11 +234,15 @@ function pageCall(page = 1) {
             }
 
             // 페이지네이션 초기화
-            var totalPages = response[0]?.totalpage || 1; // 서버에서 받은 totalpage
-            console.log('총 페이지 수:', totalPages);
+			var totalpage = response[0]?.totalpage || 1;
+			console.log('받은 totalpage:', totalpage);
+
+			var totalPages = Math.ceil(totalpage / 10);
+			console.log('계산된 총 페이지 수:', totalPages);
 
             if (!paginationInitialized || keyword !== '') {
-                $('#pagination').twbsPagination('destroy');
+            	$('#pagination').twbsPagination('destroy');
+
                 $('#pagination').twbsPagination({
                     startPage: page,
                     totalPages: totalPages,
@@ -261,7 +286,7 @@ function getSuccess(response) {
             response.forEach(function (item) {
                 content += '<tr>';
                 content += '<td>' + item.id + '</td>';
-                content += '<td><a href="/ad/dept/detail/'+item.id+'">' + item.text + '</a></td>';
+                content += '<td><a href="/ma/dept/detail/'+item.id+'">' + item.text + '</a></td>';
                 content += '<td>' + item.creater + ' ' + item.content + '</td>';
                 content += '<td>' + item.position + '</td>';
                 content += '<td>' + item.use_date + '</td>';
