@@ -73,4 +73,75 @@
       select * from file where pk_idx = #{pk_idx} and code_name = #{code_name}
    </select>
 
+    <!-- author yh.kim (25. 01. 08)
+		출장 리스트 조회 -->
+    <select id="tripList" parameterType="kr.co.porkandspoon.dto.PagingDTO" resultType="kr.co.porkandspoon.dto.TripDTO">
+        SELECT
+        t.schedule_idx,
+        t.start_date,
+        t.end_date,
+        t.subject,
+        t.create_date,
+        t.username,
+        u.name,
+        (SELECT COUNT(*)
+        FROM trip t
+        LEFT JOIN `user` u ON t.username = u.username
+        WHERE u.username = #{username}
+        <if test="option == 'subject' and keyword != null and keyword != ''">
+            AND t.subject LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ) AS totalpage
+        FROM trip t
+        LEFT JOIN `user` u ON t.username = u.username
+        WHERE u.username = #{username} AND t.use_yn = 'Y'
+        <if test="option == 'subject' and keyword != null and keyword != ''">
+            AND t.subject LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+        ORDER BY t.schedule_idx DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- author yh.kim (25. 01. 08)
+		출장 상세 페이지 이동 및 조회 -->
+    <select id="tripDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.TripDTO">
+        SELECT t.start_date, t.end_date, t.subject, t.content, t.address, u.name, t.schedule_idx
+            FROM trip t LEFT JOIN user u ON t.username = u.username
+        WHERE t.schedule_idx = #{schedule_idx}
+    </select>
+
+    <!-- author yh.kim (25. 01. 08)
+		출장 비활성화 -->
+    <update id="tripDelete" parameterType="kr.co.porkandspoon.dto.TripDTO">
+        UPDATE trip SET use_yn = 'N' WHERE schedule_idx = #{schedule_idx}
+    </update>
+
+    <!-- author yh.kim (25. 01. 08)
+		출장 등록 -->
+    <insert id="tripWrite"
+            useGeneratedKeys="true"
+            keyProperty="schedule_idx"
+            keyColumn="schedule_idx"
+            parameterType="kr.co.porkandspoon.dto.TripDTO">
+        INSERT INTO trip(username, start_date, end_date, subject, address, content)
+            VALUES (#{username}, #{start_date}, #{end_date}, #{subject}, #{address}, #{content})
+    </insert>
+
+    <!-- author yh.kim (25. 01. 08)
+		출장 등록 시 캘린더 등록 -->
+    <insert id="tripCalenderWrite" parameterType="kr.co.porkandspoon.dto.TripDTO">
+        INSERT INTO schedule (username, start_date, end_date, subject, content, type, id)
+        SELECT
+            #{username},
+            #{start_date},
+            #{end_date},
+            #{subject},
+            #{content},
+            'T',
+            parent
+        FROM user
+        WHERE username = #{username}
+    </insert>
+
+
 </mapper>

@@ -131,6 +131,7 @@
 									<ul class="pagination justify-content-center" id="pagination"></ul>
 								</nav>
 							</div>
+
 							<div id="chartModalBox" class="modal" style="display: none;">
 						    	<div id="chartTransferModal" class="modal-template">
 									<div class="chartHeadBox"> <!-- 조직도 상단 -->
@@ -150,7 +151,7 @@
 														<tbody class="tbody-style">
 															<tr>
 																<td colspan="2" class="chart-search">
-																	<input class="form-control form-control-sm input-test" type="text"  id="" placeholder="이름/부서/직급으로 검색 가능합니다.">
+																	<input class="form-control form-control-sm input-test" type="text"  id="" placeholder="이름/부서/직급으로 검색 가능합니다." style="width: 270px;"/>
 																</td>
 															</tr>
 															<tr>
@@ -171,6 +172,7 @@
 													<input type="date" name="transfer_date" class="form-control" style="width: 150px;"/>
 												</div>
 												<div id="transferCheckBox">
+													<span style="color: red;">*</span>
 													<button class="btn btn-sm btn-outline-primary" id="employee">인사이동</button>
 													<button class="btn btn-sm btn-outline-primary" id="store">직영점이동</button>
 													<button class="btn btn-sm btn-outline-primary" id="leave">퇴사처리</button>
@@ -446,26 +448,64 @@ function useLastClickedButton() {
     }
 }
 
-
-
 var modal = document.getElementById("chartModalBox");
 
 function modelTransferOpen(){
 	 modal.style.display = "block"; // 모달 열기
 
-	document.getElementById('employee').click();
+	 loadOrgChartData(); // 데이터 로드 함수 호출
 
-	$('#employee, #leave').on('click', function (){
+
+	$('#employee').on('click', function (){
 		console.log('클릭 되었어요!! ');
 		$('#orgHeaderTransfer').empty();
 		$('#orgHeaderTransfer').append('<tr><th>사번</th><th>이름</th><th>부서</th><th>직위</th><th><i class="bi bi-trash3"></i></th></tr>');
+
+		document.getElementById('employee').classList.add('btn-primary');
+		document.getElementById('employee').classList.remove('btn-outline-primary');
+		document.getElementById('leave').classList.remove('btn-primary');
+		document.getElementById('store').classList.remove('btn-primary');
+		document.getElementById('store').classList.add('btn-outline-primary');
+		document.getElementById('leave').classList.add('btn-outline-primary');
+
+		$('#orgBodyTransfer').empty();
+
+
 	});
 
 	$('#store').on('click', function (){
 		$('#orgHeaderTransfer').empty();
 		$('#orgHeaderTransfer').append('<tr><th>사번</th><th>이름</th><th>부서</th><th>직영점</th><th><i class="bi bi-trash3"></i></th></tr>');
+
+		document.getElementById('store').classList.add('btn-primary');
+		document.getElementById('store').classList.remove('btn-outline-primary');
+		document.getElementById('leave').classList.remove('btn-primary');
+		document.getElementById('employee').classList.remove('btn-primary');
+		document.getElementById('employee').classList.add('btn-outline-primary');
+		document.getElementById('leave').classList.add('btn-outline-primary');
+
+		$('#orgBodyTransfer').empty();
 	});
-	 loadOrgChartData(); // 데이터 로드 함수 호출
+
+	$('#leave').on('click', function (){
+		console.log('클릭 되었어요!! ');
+		$('#orgHeaderTransfer').empty();
+		$('#orgHeaderTransfer').append('<tr><th>사번</th><th>이름</th><th>부서</th><th>직위</th><th><i class="bi bi-trash3"></i></th></tr>');
+
+		document.getElementById('leave').classList.add('btn-primary');
+		document.getElementById('leave').classList.remove('btn-outline-primary');
+		document.getElementById('employee').classList.remove('btn-primary');
+		document.getElementById('store').classList.remove('btn-primary');
+		document.getElementById('employee').classList.add('btn-outline-primary');
+		document.getElementById('store').classList.add('btn-outline-primary');
+
+		$('#orgBodyTransfer').empty();
+	});
+
+
+
+
+	$('#employee').trigger('click');
 }
 
 
@@ -481,10 +521,17 @@ function addSelectedIdToRows(selectedId) {
 			data: { selectedId: selectedId },
 			success: function(response){
 
+
+
+
 				console.log(response);
 
 				var userResult = response[0];
 
+				if(lastClickedButtonId === 'employee' && userResult.old_position === 'po7'){
+					layerPopup("직영점주는 선택 불가능합니다.", '확인', false, removeAlert, removeAlert);
+					return;
+				}
 				var uniqueId = userResult.person_num;
 
 				var hiddenInput =
@@ -566,6 +613,11 @@ function addSelectedIdToRows(selectedId) {
 
 				var userResult = response[0];
 				var deptResult = response[1];
+
+				if(userResult.old_department === '' ||  userResult.old_department === null){
+					layerPopup("직영점주만 선택 가능합니다.", '확인', false, removeAlert, removeAlert);
+					return;
+				}
 
 				var uniqueId = userResult.person_num;
 
@@ -695,6 +747,19 @@ function transferAdd() {
 		httpVariousAjax('DELETE', '/ad/userQuitDelete', JSON.stringify(userDto), 'application/json');
 	}
 }
+
+function hideAndClearModal() {
+	const modal = document.getElementById("chartModalBox");
+
+	// 모달 숨기기
+	modal.style.display = "none";
+
+	$('#orgBodyTransfer').empty();
+}
+
+// 닫기 버튼과 취소 버튼 클릭 이벤트 설정
+document.getElementById("closeModal").addEventListener("click", hideAndClearModal);
+document.getElementById("cancelModal").addEventListener("click", hideAndClearModal);
 
 </script>
 

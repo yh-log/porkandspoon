@@ -2,12 +2,8 @@ package kr.co.porkandspoon.dao;
 
 import java.util.List;
 
+import kr.co.porkandspoon.dto.*;
 import org.apache.ibatis.annotations.Mapper;
-
-import kr.co.porkandspoon.dto.CareerDTO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.MealDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
 public interface MyPageDAO {
@@ -55,4 +51,33 @@ public interface MyPageDAO {
 	FileDTO signExist(String pk_idx, String code_name);
 
 
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 리스트 조회
+	 */
+    List<TripDTO> tripList(PagingDTO pagingDTO);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 상세 페이지 이동 및 조회
+	 */
+	TripDTO tripDetail(int schedule_idx);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 비활성화
+	 */
+	int tripDelete(TripDTO tripDTO);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 등록
+	 */
+	int tripWrite(TripDTO tripDTO);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 등록 시 캘린더 등록
+	 */
+	int tripCalenderWrite(TripDTO tripDTO);
 }

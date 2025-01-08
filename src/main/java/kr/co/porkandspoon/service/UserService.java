@@ -562,19 +562,13 @@ public class UserService {
 
 	}
 
-
-	public List<DeptDTO> deptGetList(int page, int cnt, String option, String keyword) {
+	/**
+	 * author yh.kim (24.12.26)
+	 * 브랜드 리스트 조회
+	 */
+	public List<DeptDTO> deptGetList(PagingDTO pagingDTO) {
 		
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
-		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		return userDao.deptGetList(parmeterMap);
+		return userDao.deptGetList(pagingDTO);
 	}
 
 	/**

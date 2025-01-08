@@ -8,15 +8,11 @@
 <title>출장 리스트</title>
 
 <!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-<link rel="shortcut icon"
-	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
-	type="image/png">
+<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 <!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 
 
@@ -25,9 +21,6 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
-
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <style>
 	#searchLayout{
@@ -73,8 +66,8 @@
 					<ul>
 						<li id="firstMenu"><a href="#">나의 정보</a></li>
 						<li id="secondMenu" class="active" ><a href="#">출장</a></li>
-						<li id="secondMenu"><a href="#">서명 관리</a></li>
-						<li id="secondMenu"><a href="#">구매기록</a></li>
+						<li id="secondMendu"><a href="#">서명 관리</a></li>
+						<li id="secondMenud"><a href="#">구매기록</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
@@ -85,62 +78,34 @@
 						</div>
 						<div class="cont-body"> 
 								<div id="searchLayout">
-									<select class="form-select selectStyle">
-										<option>등록자</option>
-										<option>장소</option>
+									<select class="form-select selectStyle" id="searchOption">
+										<option value="subject">제목</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+									<button class="btn btn-primary" id="searchBtn"><i class="bi bi-search"></i></button>
 								</div>
 							<div class="col-12 col-lg-12">
 								<table>
 									<thead>
 										<tr>
-											<th>등록자</th>
+											<th>no</th>
+											<th colspan="2">제목</th>
 											<th>시작 일시</th>
 											<th>종료 일시</th>
-											<th>장소</th>
 											<th>등록일</th>
 										</tr>
 									</thead>
-									<tbody id="List">
-										<tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
-									    <tr>
-									        <td>김진형</td><td>2024.12.17 09:00</td><td>2024.12.17 18:00</td><td>가산점</td><td>2024.12.02</td>
-									    </tr>
+									<tbody id="tripList">
+
 									</tbody>
 								</table>
 							</div>
-							<nav aria-label="Page navigation" style="margin-top: 35px;">
-								<ul class="pagination justify-content-center" id="pagination"></ul>
-							</nav>
-							<div class="btn-trip"><a href="#" class="btn btn-primary">등록</a></div>			
+							<div class="">
+								<nav aria-label="Page navigation">
+									<ul class="pagination justify-content-center" id="pagination"></ul>
+								</nav>
+							</div>
+							<div class="btn-trip"><a href="/trip/write" class="btn btn-primary">등록</a></div>
 						</div> <!-- cont-body -->
 					</div>
 				</section>	
@@ -167,32 +132,111 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 	
-<script src='/resources/js/common.js'></script>
-<script src='/resources/js/menu.js'></script>
+<%--<script src='/resources/js/common.js'></script>--%>
 <script>
-	/* 페이지네이션 */
-	$('#pagination').twbsPagination({
-		startPage : 1,
-		totalPages : 10,
-		visiblePages : 10,
-	/* onPageClick:function(evt,page){
-		console.log('evt',evt); 
-		console.log('page',page); 
-		pageCall(page);
-	} */
-	});
-	
-	/* 페이지네이션 prev,next 텍스트 제거 */
-	// $('.page-item.prev, .page-item.first, .page-item.next, .page-item.last').find('.page-link').html('');
-	$('.page-item.prev').find('.page-link').html(
-			'<i class="bi bi-chevron-left"></i>');
-	$('.page-item.next').find('.page-link').html(
-			'<i class="bi bi-chevron-right"></i>');
-	$('.page-item.first').find('.page-link').html(
-			'<i class="bi bi-chevron-double-left"></i>');
-	$('.page-item.last').find('.page-link').html(
-			'<i class="bi bi-chevron-double-right"></i>');
 
+	var firstnewPage = 1;
+	var paginationInitialized = false;
+
+	$(document).ready(function () {
+		pageCall(firstnewPage);
+	});
+
+
+	// 검색 버튼 클릭 이벤트
+	$('#searchBtn').on('click', function(event) {
+		event.preventDefault(); // 기본 폼 동작 중지
+		paginationInitialized = false;
+
+		firstnewPage = 1;
+		pageCall(firstnewPage); // 검색 호출
+	});
+
+	function pageCall(page = 1) {
+
+		console.log('실행');
+		var option = $('#searchOption').val();
+		var keyword = $('input[name="search"]').val(); // 검색어
+
+		// 기본 데이터 설정
+		var requestData = {
+			page: page || 1,    // 현재 페이지
+			cnt: 10,            // 한 페이지당 항목 수
+			option: option,     // 검색 옵션
+			keyword: keyword    // 검색 키워드
+		};
+
+		$.ajax({
+			type: 'GET',
+			url: '/trip/list',
+			data: requestData,
+			datatype: 'JSON',
+			success: function(response) {
+				console.log("응답 데이터:", response);
+
+				// 데이터 처리
+				if (response && response.length > 0) {
+					getSuccess(response); // 검색 결과를 테이블에 렌더링
+				} else {
+					$('#tripList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+				}
+
+				// 페이지네이션 초기화
+				var totalpage = response[0]?.totalpage || 1;
+				console.log('받은 totalpage:', totalpage);
+
+				var totalPages = Math.ceil(totalpage / 10);
+				console.log('계산된 총 페이지 수:', totalPages);
+
+				if (!paginationInitialized || keyword !== '') {
+					$('#pagination').twbsPagination('destroy');
+					$('#pagination').twbsPagination({
+						startPage: page,
+						totalPages: totalPages,
+						visiblePages: 5,
+						initiateStartPageClick: false,
+						onPageClick: function (evt, page) {
+							console.log('클릭된 페이지:', page);
+							pageCall(page);
+						}
+					});
+					paginationInitialized = true;
+				}
+			},
+			error: function(e) {
+				console.log(e);
+			}
+		});
+	}
+
+
+	function getSuccess(response){
+		console.log(response);
+
+		$('#tripList').empty();
+
+		var content = '';
+		response.forEach(function(item){
+			content += '<tr>';
+			content += '<td>' + item.schedule_idx + '</td>';
+			content += '<td colspan="2"><a href="/trip/detail/' + item.schedule_idx+  '" >' + item.subject + '</a></td>';
+
+			let start_date = item.start_date.split("T");
+			let end_date = item.end_date.split("T");
+
+			content += '<td>' + start_date[0] + '</td>';
+			content += '<td>' + end_date[0] + '</td>';
+
+			let create_date = item.create_date.split(" ");
+
+			content += '<td>' + create_date[0] + '</td>';
+
+			content += '</tr>';
+		});
+
+		$('#tripList').append(content);
+
+	}
 
 
 </script>

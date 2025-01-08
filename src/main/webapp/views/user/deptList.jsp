@@ -292,9 +292,9 @@ function getSuccess(response) {
                 content += '<td>' + item.use_date + '</td>';
 
                 if (item.use_yn === "Y") {
-                    content += '<td><button class="btn icon btn-success" style="margin:0px 5px;">활성</button></td>';
+                    content += '<td><span style="color: var(--bs-primary);">활성</span></td>';
                 } else {
-                    content += '<td><button class="btn icon btn-light" style="margin:0px 5px;">비활성</button></td>';
+                    content += '<td><span style="color: #8C8C8C;">비활성</span></td>';
                 }
 
                 content += '</tr>';
