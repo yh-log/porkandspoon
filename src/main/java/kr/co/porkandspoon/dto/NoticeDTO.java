@@ -19,6 +19,20 @@ public class NoticeDTO extends ResponseDTO {
 	private String board_idx;
 	private String recreate_date;
 	private String state;
+	private int Arow;
+	private int Crow;
+	public int getArow() {
+		return Arow;
+	}
+	public void setArow(int arow) {
+		Arow = arow;
+	}
+	public int getCrow() {
+		return Crow;
+	}
+	public void setCrow(int crow) {
+		Crow = crow;
+	}
 	public String getState() {
 		return state;
 	}

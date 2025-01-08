@@ -68,6 +68,43 @@
 	    background: #fff;
 	}
 	
+	.chatPopup {
+	    position: fixed;
+	    top: 80px;
+   		right: 71px;	
+	    width: 440px;
+	    border: 1px solid #ddd;
+	    padding: 20px;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	    z-index: 1000;
+	    display: none;
+	    border-radius: 10px;
+	    background: #fff;
+	}
+	
+	.chatPopup .popup-content {
+	    position: relative;
+	}
+	
+	.chatPopup .btn-close {
+	    position: absolute;
+	    top: 0px;
+	    right: 0px;
+	    font-size: 14px;
+	    cursor: pointer;
+	}
+	
+	#chatListContent {
+	    max-height: 300px; /* 고정된 높이 설정 */
+	    overflow-y: auto; /* 스크롤바 표시 */
+	    background: #fff;
+	    border-radius: 10px;
+	    padding-right: 10px;
+	    margin: 3px;
+	    width: 100%;
+	    overflow-x: hidden; /* 가로 스크롤 숨기기 */
+	}
+	
 	#alarmPopup .popup-content {
 	    position: relative;
 	}
@@ -226,6 +263,20 @@
 	    padding: 3px;
     	margin: 3px;
 	}
+	
+	#chat .num {
+	    position: absolute;
+	    right: -4px;
+	    top: 5px;
+	    background: #ff7976;
+	    color: #fff;
+	    border-radius: 50%;
+	    width: 13px;
+	    height: 13px;
+	    font-size: 11px;
+	    text-align: center;
+    }
+    
 </style>
 
 <header>
@@ -245,11 +296,13 @@
      <div class="utils">
      	<a id="alarm">
      		<i class="bi bi-bell-fill">
-      		<span class="num"></span>
+      			<span class="num"></span>
      		</i>
      	</a>
      	<a id="chat">
-     		<i class="bi bi-chat-dots-fill"></i>
+     		<i class="bi bi-chat-dots-fill" style="position: relative;">
+     			<span class="num"></span>
+     		</i>
      	</a>
      </div>
     </div>
@@ -300,7 +353,17 @@
 	</div>
 </div>
 
+<div class="chatPopup" class="popup">
+    <div class="popup-content">
+        <span class="btn-close"></span> <!-- onclick="closeAlarmPopup(event)" -->
+        <div class="alarmHeader">
+        	<span class="alarmSubject">채팅</span>
+        </div>
+        <div id="chatListContent">
 
+		</div><!-- alarmListContent -->
+    </div><!-- popup-content -->
+</div><!-- alarmPopup -->
 
 
 
@@ -310,62 +373,74 @@
 <script>
 	var loggedInUser = '${loggedInUser}';
 	$(document).ready(function() {
-
-		 const url = '/getAlarmList';
-		 const data = {username: loggedInUser};
-		 $.ajax({
-		        type: 'GET',
-		        url: url,
-		        data: data,
-		        datatype: 'JSON',
-		        success: function(response) {
-		            const unreadCount = response.filter(alarm => alarm.is_url === 'N').length;
-		            const alarmIcon = $('#alarm .num');
-		            if (unreadCount > 0) {
-		                if (alarmIcon.length === 0) {
-		                    $('#alarm i').append('<span class="num">' + (unreadCount > 9 ? '9+' : unreadCount) + '</span>');
-		                } else {
-		                    alarmIcon.text(unreadCount > 9 ? '9+' : unreadCount).show();
-		                }
-		            } else {
-		                alarmIcon.remove(); // 'N' 알람이 없을 경우 span 제거
-		            }
-		        },
-		        error: function(xhr, status, error) {
-		            console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
-		        }
-		    });
-
-
-
-
-
-
-
-	    $('#alarm').on('click', function() {
-	    	const url = '/getAlarmList';
-	    	const data = {username: loggedInUser};
-	    	$.ajax({
-	            type: 'GET',
-	            url: url,
-	            data: data,
-	            datatype: 'JSON',
-	            success: function(response) {
-	                drawAlarm(response);
-	                $('.allAlarm').hide();
-	                $('#alarmPopup').show();
-	            },
-	            error: function(xhr, status, error) {
-	                console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
-	            }
-	        });
-	    });
-
-	    $('#alarmPopup .btn-close').on('click', function() {
-	        $('#alarmPopup').hide();
-	    });
-
+		updateAlarmCount();
 	});
+	
+	// 알림 갯수 가져오기
+	function updateAlarmCount() {
+	    const url = '/getAlarmrow';
+	    const data = {username: loggedInUser};
+
+	    $.ajax({
+	        type: 'GET',
+	        url: url,
+	        data: data,
+	        dataType: 'JSON',
+	        success: function(response) {
+	            const count = response.arow; 
+	            const Ccount = response.crow;  
+	            const $alarmNum = $('#alarm .num');
+	            const $CNum = $('#chat .num');
+
+	            // 알림 수 표시 로직
+	            if (count > 9) {
+	                $alarmNum.text('9+').show();
+	            } else if (count > 0) {
+	                $alarmNum.text(count).show();
+	            } else {
+	                $alarmNum.hide();  // 알림이 없을 때 span 숨기기
+	            }
+	            
+	            if (Ccount > 9) {
+	                $CNum.text('9+').show();
+	            } else if (Ccount > 0) {
+	                $CNum.text(Ccount).show();
+	            } else {
+	                $CNum.hide();  // 알림이 없을 때 span 숨기기
+	            }
+	        },
+	        error: function(xhr, status, error) {
+	            console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+	        }
+	    });
+	}
+	
+	
+	// 알림 클릭하면 리스트 가져오기
+    $('#alarm').on('click', function() {
+    	const url = '/getAlarmList';
+    	const data = {username: loggedInUser};
+    	$.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            datatype: 'JSON',
+            success: function(response) {
+                drawAlarm(response);
+                $('.chatPopup').hide();
+                $('.allAlarm').hide();
+                $('#alarmPopup').show();
+            },
+            error: function(xhr, status, error) {
+                console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+            }
+        });
+    });
+
+	// 모달창 닫기
+    $('#alarmPopup .btn-close').on('click', function() {
+        $('#alarmPopup').hide();
+    });
 	
 	
 	
@@ -440,23 +515,13 @@
 		                $('#alarm').trigger('click'); // 알림 팝업일 경우
 		            } else if ($('.allAlarm').is(':visible')) {
 		                $('.allView').trigger('click'); // 전체보기 팝업일 경우
+		            } else if ($('.chatPopup').is(':visible')) {
+		            	$('#chat').trigger('click');
 		            }
 					$('[data-alarm-idx="' + data + '"]').remove();
-
-	                // 알림 개수 업데이트
-	                const alarmIcon = $('#alarm .num');
-	                let currentCount = parseInt(alarmIcon.text().replace('+', ''), 10); // 9+ 처리 대비
-	
-	                if (currentCount > 1) {
-	                    currentCount--; // 알람 1 감소
-	                    if (currentCount > 9) {
-	                        alarmIcon.text('9+'); // 10개 이상이면 9+ 표시
-	                    } else {
-	                        alarmIcon.text(currentCount); // 9개 이하일 때 실제 수 표시
-	                    }
-	                } else {
-	                    alarmIcon.remove(); // 알람이 0개면 <span> 제거
-	                }
+					
+					updateAlarmCount();
+	               
 		        	}
 	        },error: function(e){
 	            console.log(e);
@@ -561,12 +626,63 @@
 	    $('.allAlarm .btn-close').on('click', function() {
 	        $('.allAlarm').hide();
 	    });
+	    
 	});
 	
-	
+	$('#chat').on('click', function () {
+		const url = '/getChatList';
+    	const data = {username: loggedInUser};
+    	$.ajax({
+            type: 'GET',
+            url: url,
+            data: data,
+            datatype: 'JSON',
+            success: function(response) {
+                $('#alarmPopup').hide();
+        		$('.allAlarm').hide();
+        		$('.chatPopup').show();
+                drawChat(response);
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+            }
+        });
+	});
 
-	
+	$('.chatPopup .btn-close').on('click', function() {
+        $('.chatPopup').hide();
+    });
 
+	function drawChat(response) {
+	    const alarmListContent = $('#chatListContent');
+	    
+	    alarmListContent.empty(); // 기존 내용 제거
+
+	    const filteredAlarms = response.filter(alarm => alarm.is_url === 'N');
+
+	    if (filteredAlarms.length > 0) {
+	        // 필터링된 알람이 있을 때만 렌더링
+	        filteredAlarms.forEach(function(alarm) {
+	            const relativeTime = getRelativeTime(alarm.create_date);
+
+	            const alarmHTML = 
+	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
+	                '    <div class="alarm-item">' +
+	                '        <a onclick="deleteAlarm2(' + alarm.alarm_idx + ')" href="' + alarm.url + '">' +
+	                '            <span id="al_content">' + '<i class="bi bi-circle-fill" style="font-size: 8px; vertical-align: middle; color: #ff7976; margin-right: 5px;"></i>' + alarm.subject + '  ' + alarm.content + '</span>' +
+	                '            <span id="al_date">' + relativeTime + '</span>' +
+	                '        </a>' +
+	                '    </div>' +
+	                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
+	                '</div>';
+	            alarmListContent.append(alarmHTML);
+	        });
+	    } else {
+	        // 'N'인 알람이 없을 때 메시지 표시
+	        alarmListContent.append('<div class="no-alarm">새로운 알림이 없습니다.</div>');
+	    }
+	}
 
 		
 </script>

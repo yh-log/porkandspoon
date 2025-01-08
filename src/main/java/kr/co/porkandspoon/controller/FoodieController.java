@@ -54,4 +54,22 @@ public class FoodieController {
 		List<FoodieDTO> dto = foodieService.getFoodieList();
 		return dto;
 	}
+	
+	@GetMapping(value="/getReviewList")
+	public List<FoodieDTO> getReviewList(@ModelAttribute FoodieDTO fdto) {
+		List<FoodieDTO> dto = foodieService.getReviewList(fdto);
+		return dto;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
