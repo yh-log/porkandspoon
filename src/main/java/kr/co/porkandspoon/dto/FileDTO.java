@@ -1,13 +1,16 @@
 package kr.co.porkandspoon.dto;
 
+import java.time.LocalDateTime;
+
 public class FileDTO extends ResponseDTO{
 	private int file_idx;
+	private int idx;
 	private String code_name;
 	private String ori_filename;
 	private String new_filename;
 	private String type;
 	private String pk_idx;
-
+	private LocalDateTime create_date;
 	private long file_size;
 	
 	
@@ -70,6 +73,22 @@ public class FileDTO extends ResponseDTO{
 
 	public void setFile_size(long file_size) {
 		this.file_size = file_size;
+	}
+
+	public int getIdx() {
+		return idx;
+	}
+
+	public void setIdx(int idx) {
+		this.idx = idx;
+	}
+
+	public LocalDateTime getCreate_date() {
+		return create_date;
+	}
+
+	public void setCreate_date(LocalDateTime create_date) {
+		this.create_date = create_date;
 	}
 	
 	
