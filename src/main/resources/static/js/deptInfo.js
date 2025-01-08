@@ -83,8 +83,7 @@
 	
 	function deptUpdate(){
 		var isFormValid = validateForm();
-		removeAlert();
-		
+
 		if (isFormValid) {
             console.log('폼이 유효합니다.');
 			textEaditorWrite('/ad/dept/update');
@@ -100,8 +99,6 @@
 	    		
 	        }else{
 		        deptCode.classList.remove('is-invalid');
-		       
-		        removeAlert();
 	        }
             
 		}
@@ -122,7 +119,6 @@
 	    		$('#overlayMessage').text('부서 코드 중복을 확인해주세요');
 	    		
 	    		deptCode.classList.add('is-invalid');
-	    		removeAlert();
 	    		
 	        }else{
 		        deptCode.classList.remove('is-invalid');
@@ -161,8 +157,34 @@
 		removeAlert();
 		console.log('결과', response);
 		if(response.status === 200){
-			layerPopup(response.message, '확인', false, function() {
-				location.href = '/ad/dept/detail/' + response.id;
-			});
+			location.href = '/ma/dept/detail/' + response.id;
+		}else if(response.status === 202){
+			location.href = 'ma/store/list';
 		}
 	}
+
+	// 선택된 username 삭제
+	function chartTableDelete(element, username, name, dept) {
+		console.log('삭제 실행 ', username);
+
+		// 1. 해당 버튼의 부모 tr 요소 찾기
+		const row = element.closest('tr'); // 호출된 버튼을 기준으로 tr 찾기
+
+		// 2. 행 삭제
+		if (row) {
+			row.remove(); // 테이블에서 해당 행 삭제
+		}
+
+		// 3. exampleData.rows에서 해당 username에 해당하는 데이터 제거
+		exampleData.rows = exampleData.rows.filter(function (row) {
+			return row[3].indexOf(username) === -1; // username과 일치하지 않는 데이터만 남김
+		});
+
+		// 4. 테이블 데이터 업데이트
+		updateTableData('customTable', exampleData);
+
+		console.log('삭제 완료!');
+	}
+
+
+

@@ -144,8 +144,8 @@
 											<th>교육 분류</th>
 											<th>제목</th>
 											<th>이수 시간</th>
+											<th>수강 상태</th>
 											<th>등록일</th>
-											<th></th>
 										</tr>
 									</thead>
 									<tbody id="list">
@@ -259,7 +259,7 @@
 			no = view.no;
 			console.log('부서,넘버 : ',id,no);
 			content += '<tr>';
-			content += '<td onclick="eduHistory(\'' + id + '\',' + no + ')">'+view.text+'</td>';
+			content += '<td>'+view.text+'</td>';
 			if(view.category == 'duty'){
 				content += '<td>의무 교육</td>';
 			}else if(view.category == 'job'){
@@ -274,60 +274,14 @@
 			content += '<td>'+view.total_time+'</td>';
 			
 			var dateOnly = view.create_date.split('T')[0];
+	        content +='<td>미수강</td>';
 	        content += '<td>' + dateOnly + '</td>';
-	        content +='<td><a href="/ad/educationUpdate/'+view.no+'" class="btn btn-sm btn-outline-primary">수정</a></td>';
 	        content += '</tr>';
 		}
 		$('#list').html(content);
 	}
 	
-	function eduHistory(id,no) {
-		console.log("eduHistory ",id,no)
-		var data = {
-				id: id,
-				no: no
-		}
-		
-		//getAjax('/eduHistory','JSON',data);	
-		loadModal('edu','Info',data);
-	}
 	
-	function setModalData(type, data) {
-		console.log('수강 리스트 가져왔니?',data);
-		getAjax('/eduHistory','JSON',data);
-	} 
-	
-
-
-
-	
-	function getSuccess(response){			
-		//loadModal('edu','Info',response);
-		console.log('실행',response.list);
-		var content = '';
-		for (var view of response.list) {
-			content += '<tr>';
-			content += '<td>'+view.name+'</td>';			
-			content += '<td>'+view.dept_name+'</td>';
-			
-			if(view.education_date){
-				content += '<td>수강완료</td>';	
-			}else{
-				content += '<td>미수강</td>';						
-			}
-			
-			var dateOnly = '';        
-	        if (view.education_date) {	            
-	            dateOnly = view.education_date.split('T')[0];
-	        } else {
-	            dateOnly = '-';
-	        }
-	        
-	        content += '<td>' + dateOnly + '</td>';
-	        content += '</tr>';
-		}
-		$('#history').html(content);
-	}
 	
 	
 	

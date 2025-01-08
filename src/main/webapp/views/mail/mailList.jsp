@@ -181,13 +181,13 @@
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li class="active"><a href="/mail/listView/recv">받은메일함</a></li>
+						<li><a href="/mail/listView/sd">보낸메일함</a></li>
+						<li><a href="/mail/listView/sv">임시보관함</a></li>
+						<li><a href="/mail/listView/bk">중요메일함</a></li>
+						<li><a href="/mail/listView/del">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">메일쓰기</div>
+					<div class="btn btn-primary full-size" onclick="location.href='/mail/write'">메일쓰기</div>
 				</section>
 				<section class="cont">
 
@@ -230,16 +230,16 @@
 								<c:choose>
 									<c:when test="${listType eq 'recv' or listType eq 'bk'}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="moveToTrash()">삭제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sd'}">
-										<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="moveToTrash()">삭제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">다시보내기</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sv'}">
-										<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="moveToTrash()">삭제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">전송</buttton>
 										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
 									</c:when>
@@ -369,9 +369,9 @@ function drawList(list) {
 		} */
 		
 		if(listType == 'recv' && view.is_read == 'N'){
-			content +='<div class="mail-item no-read" data-idx="'+view.idx+'">';
+			content +='<div class="mail-item no-read" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
 		}else{
-			content +='<div class="mail-item" data-idx="'+view.idx+'">';
+			content +='<div class="mail-item" data-idx="'+view.idx+'" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
 		}
 		content +='<div class="left">';
 		content +='<input type="checkbox" class="form-check-input" id="checkbox2">';
@@ -492,8 +492,43 @@ function drawList(list) {
 		$.ajax({
         	type : 'PUT',
 	        url : '/mail/changeToRead',
-	        data: JSON.stringify({ 'idxList': checkedIdx }),  // JSON 형태로 전송
-	        contentType: 'application/json',  // Content-Type을 JSON으로 설정
+	        data: JSON.stringify({ 
+	        	'idxList': checkedIdx 
+        	}), 
+	        contentType: 'application/json', 
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	alert('성공');
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+	
+	
+	// 다중 삭제 처리(휴지통)
+	function moveToTrash() {
+		var checkedEls = $('.list-area .form-check-input:checked');
+		var checkedList = [];
+		for ( var checkedEl of checkedEls) {
+			var checkedObj = {};
+			checkedObj.idx = $(checkedEl).parents('.mail-item').data('idx');
+			checkedObj.mail_type = $(checkedEl).parents('.mail-item').data('mailtype');
+			checkedList.push(checkedObj);
+		}
+		console.log("checkedEls : ", checkedEls);
+		console.log("checkedList : ", checkedList);
+		
+		$.ajax({
+        	type : 'PUT',
+	        url : '/mail/moveToTrash',
+	        data: JSON.stringify({
+	        	'checkedList': checkedList
+        	}), 
+	        contentType: 'application/json',
 	        dataType : 'JSON',
 	        beforeSend: function(xhr) {
 	            xhr.setRequestHeader(csrfHeader, csrfToken);

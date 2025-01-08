@@ -64,6 +64,14 @@ public interface MailDAO {
 
 	int setDeleveryExistingImage(String mailIdx, String fileId, String originalIdx);
 
+	int savedMailCount(String loginId);
+
+	int moveReceivedToTrash(String idx, String loginId);
+
+	int moveSentToTrash(Map<String, List<String>> params, String loginId);
+
+	int moveSentToTrash(String idx, String loginId);
+
 	//MailDTO deliverMail(String idx, String loginId);
 
 

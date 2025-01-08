@@ -36,6 +36,8 @@ public class ChatDTO extends ResponseDTO{
 
     private int idx;
 
+    private UserDTO userDTO;
+
     public String getRoomId() {
         return roomId;
     }
@@ -170,5 +172,13 @@ public class ChatDTO extends ResponseDTO{
 
     public void setIdx(int idx) {
         this.idx = idx;
+    }
+
+    public UserDTO getUserDTO() {
+        return userDTO;
+    }
+
+    public void setUserDTO(UserDTO userDTO) {
+        this.userDTO = userDTO;
     }
 }

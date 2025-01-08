@@ -79,8 +79,12 @@ public class MailController {
 
 	// 메일작성 view
 	@GetMapping(value="/mail/write")
-	public ModelAndView MailWriteView() {
-		ModelAndView mav = new ModelAndView("/mail/mailWrite");  
+	public ModelAndView MailWriteView(@AuthenticationPrincipal UserDetails userDetails) {
+		ModelAndView mav = new ModelAndView("/mail/mailWrite");
+		String loginId = userDetails.getUsername();
+		//임시보관 메일 수
+		int savedMailCount = mailService.savedMailCount(loginId);
+		mav.addObject("savedMailCount", savedMailCount);
 		return mav;
 	}
 
@@ -180,9 +184,9 @@ public class MailController {
 			mav.addObject("isSender", isSender);
 			mav.addObject("isReceiver", isReceiver);
 			if(isReceiver) {
-				mav.addObject("is_bookmark", mailService.getSentMailBookmark(idx, loginId));
-			}else if (isSender) {
 				mav.addObject("is_bookmark", mailService.getReceivedMailBookmark(idx, loginId));
+			}else if (isSender) {
+				mav.addObject("is_bookmark", mailService.getSentMailBookmark(idx, loginId));
 			}
 		}else {
 			try {
@@ -254,12 +258,30 @@ public class MailController {
 	
 	//다중 읽음 처리 기능
 	@PutMapping(value = "/mail/changeToRead")
-	public Map<String, Object> changeToRead(@RequestBody Map<String, List<String>> requestBody, @AuthenticationPrincipal UserDetails userDetails) {    
+	public Map<String, Object> changeToRead(@RequestBody Map<String, List<String>> params, @AuthenticationPrincipal UserDetails userDetails) {    
 		Map<String, Object> result = new HashMap<String, Object>();
 		boolean success = false;
 		String loginId = userDetails.getUsername();
-		 List<String> idxList = requestBody.get("idxList"); 
-		success = mailService.changeToRead(idxList,loginId);
+		success = mailService.changeToRead(params.get("idxList"),loginId);
+		result.put("success", success);
+		return result;
+	}
+	
+	//다중 삭제 처리 기능
+	@Transactional
+	@PutMapping(value = "/mail/moveToTrash")
+	public Map<String, Object> moveToTrash(@RequestBody Map<String, List<Map<String, String>>> params, @AuthenticationPrincipal UserDetails userDetails) {    
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
+		String loginId = userDetails.getUsername();
+		List<Map<String, String>> checkedList = params.get("checkedList");
+		for (Map<String, String> mailItem : checkedList) {
+			if(mailItem.get("mail_type").equals("received")) {
+				success = mailService.moveReceivedToTrash(mailItem.get("idx"),loginId);
+			}else if(mailItem.get("mail_type").equals("sent")) {
+				success = mailService.moveSentToTrash(mailItem.get("idx"),loginId);
+			}
+		}
 		result.put("success", success);
 		return result;
 	}

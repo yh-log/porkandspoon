@@ -182,8 +182,7 @@ public class MealController {
 	//ad/meal/TickerWrite
 	public ModelAndView mealTicketView(@AuthenticationPrincipal UserDetails userDetails) {
 		List<MealDTO> list = mealService.getmealTicket();
-	    
-		
+
 		 for (MealDTO dto : list) {
 		        int rawCost = Integer.parseInt(dto.getCost());
 		        String cost = CommonUtil.addCommaToNumber(rawCost, "#,###");
@@ -191,8 +190,7 @@ public class MealController {
 		        // 콤마 추가
 		        dto.setCost(cost);
 		    }
-		
-		
+
 	    // 파일 정보를 DTO에 추가
 	    for (MealDTO dto : list) {
 	        FileDTO fileDTO = mealService.getFile(dto.getMeal_idx());
