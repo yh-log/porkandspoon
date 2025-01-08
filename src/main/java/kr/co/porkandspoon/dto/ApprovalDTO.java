@@ -76,6 +76,8 @@ public class ApprovalDTO {
    
    // 글 개수 카운트
    private int total_count;
+
+   private int totalpage;
    
    public String getParent_date() {
 		return parent_date;
@@ -405,9 +407,13 @@ public class ApprovalDTO {
 	public void setApprover_positions(String approver_positions) {
 		this.approver_positions = approver_positions;
 	}
-	   
-   
 
 
+   public int getTotalpage() {
+      return totalpage;
+   }
 
+   public void setTotalpage(int totalpage) {
+      this.totalpage = totalpage;
+   }
 }

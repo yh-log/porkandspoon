@@ -32,10 +32,9 @@
 		gap: 30px; /* 요소 간 간격 */
 	}
 	
-	#profileBox {
+	#userProfile {
 		width: 60px;
-		height: 40px;
-		background-color: #3498db;
+		height: 60px;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
@@ -91,7 +90,8 @@
 
 	#chat-input-box{
 		display: flex;
-		gap: 15px;
+		gap: 30px;
+		margin-top: 15px;
 	}
 	
 	textarea.form-control.chatInputText{
@@ -165,8 +165,9 @@
 
 	/* 채팅 리스트 전체 컨테이너 */
 	#userChatList {
-		max-height: 300px;
+		max-height: 250px;
 		overflow-y: auto;
+		height: 250px;
 	}
 
 	/* 스크롤바 스타일 */
@@ -188,7 +189,15 @@
 		display: flex;
 		flex-direction: column;
 		padding: 10px;
-		margin-bottom: 0px;
+		margin-bottom: 5px; /* 아래쪽 마진 추가 */
+		border-bottom: 1px solid #ddd; /* 아래쪽에 연한 회색 선 추가 */
+		background-color: #fff; /* 기본 배경색 흰색 */
+		transition: background-color 0.2s ease; /* 배경색 변경 효과 */
+	}
+
+	/* 마우스 오버 시 효과 */
+	.custom-chat-item:hover {
+		background-color: #eaf4ff; /* 연한 하늘색 배경 */
 	}
 
 	/* 위쪽 이름 스타일 */
@@ -317,6 +326,21 @@
 		box-sizing: border-box; /* 패딩 포함 크기 계산 */
 	}
 
+	.userDeptText{
+		font-size: 14px;
+		color: gray;
+		margin-left: 5px;
+	}
+
+	.chatUserName{
+		font-weight: 700;
+	}
+
+	.chatUserEmail{
+		font-size: 14px;
+		color: gray;
+	}
+
 </style>
 
 </head>
@@ -337,12 +361,12 @@
 				<section id="menu">
 					<h4 class="menu-title">메신저</h4>
 					<div id="profile-seachBox">
-						<div id="profileBox"></div>
+						<div id="profileBox">
+							<img src="" id="userProfile"/>
+						</div>
 						<div class="form-group position-relative has-icon-left">
-							<input type="text" name="usernameSeach" class="form-control seachBox" placeholder="Username"/>
-							<div class="form-control-icon">
-								<i class="bi bi-search"></i>
-							</div>
+							<div class="chatUserName">${userDTO.name} <span class="userDeptText">${userDTO.dept_name}</span> </div>
+							<div class="chatUserEmail">${userDTO.email}</div>
 						</div>
 					</div>
 					<div class="btn btn-primary full-size" id="createChatRoom" onclick="loadChartModal('chartInputModal')">새로운 채팅</div>
@@ -355,27 +379,8 @@
 						</div>
 					</div>
 						<p class="chatSubject">Chat Participants</p>
-						<div> <!-- 채팅방 리스트 반복으로 넣기 -->
-							<div class="chat-item">
-							    <div class="profile-container">
-							        <div class="profile-image"></div> <!-- 프로필 이미지 -->
-							    	<div class="status-indicator"></div> <!-- 상태 표시 -->
-							    </div>
-							    <div class="chat-details">
-							    	<div class="chat-name">홍길동 사원</div> <!-- 채팅방 이름 -->
-							    	<div class="chat-message">기획부서 마케팅팀</div> <!-- 최근 메시지 -->
-							    </div>
-							</div>
-							<div class="chat-item">
-							    <div class="profile-container">
-							        <div class="profile-image"></div> <!-- 프로필 이미지 -->
-							    	<div class="status-indicator"></div> <!-- 상태 표시 -->
-							    </div>
-							    <div class="chat-details">
-							    	<div class="chat-name">김철수 대리</div> <!-- 채팅방 이름 -->
-							    	<div class="chat-message">기획부서 마케팅팀</div> <!-- 최근 메시지 -->
-							    </div>
-							</div>
+						<div> <!-- 채팅방 리스트 참여인원 -->
+
 						</div>
 					</div>
 				</section>
@@ -383,22 +388,25 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>채팅방 이름!</h5>
+							<h5 id="chatRoomName"></h5>
 							<div id="chatOutIcon">
 								<i class="bi bi-box-arrow-right"></i>
 							</div>
 						</div>
 						<div class="cont-body">
 
-							<div id="chatingDivBox">
+							<div id="noChatDiv" style="height: 550px; display: flex; justify-content: center; align-items: center; color: #888; font-size: 18px;">
+								메신저를 시작해보세요.
+							</div>
+
+							<div id="chatingDivBox" style="display: none;">
 								<div class="form-control" id="chatMessageDivBox" style="border: 1px solid #ccc; padding: 10px; height: 550px; overflow-y: auto;">
 									<!-- 수신된 메시지가 여기에 추가됩니다 -->
 								</div>
-							</div>
-
-							<div id="chat-input-box">
-								<textarea name="content" id="messageInput" class="form-control chatInputText" rows="2"></textarea>
-								<button class="btn btn-primary" id="sendMessageButton"><i class="bi bi-send"></i>&nbsp;전송</button>
+								<div id="chat-input-box">
+									<textarea name="content" id="messageInput" class="form-control chatInputText" rows="2"></textarea>
+									<button class="btn btn-primary" id="sendMessageButton"><i class="bi bi-send"></i>&nbsp;전송</button>
+								</div>
 							</div>
 
 						</div>
@@ -448,6 +456,8 @@
 
 	let chatRoomOpenValue;
 
+	let currentRoomId = null; // 현재 열려 있는 채팅방 ID
+
 	$(document).ready(function(){
 
 		console.log("Stomp 객체 확인:", typeof Stomp);
@@ -459,6 +469,15 @@
 		stompClient.connect({}, (frame) => {
 			console.log("WebSocket 연결 성공:", frame);
 		});
+
+		let userProfile = '${userDTO.new_filename}';
+
+		if(userProfile){
+			document.getElementById('userProfile').src = '/photo/' + userProfile;
+		}else{
+			document.getElementById('userProfile').src = '/resource/img/person.png';
+		}
+
 
 		participationChatList(`${userDTO.username}`);
 
@@ -472,7 +491,7 @@
 		rows: [
 			['${userDTO.name}', '${userDTO.dept_name}', '${userDTO.position}', '<span style="color: var(--bs-primary);">참여</span>', '<div onclick="chartTableDelete(this, \'${userDTO.username}\')"><i class="bi bi-trash3" style="display: none;"></i></div>'],
 		],
-		footer: '<div style="display: flex;">채팅방 이름 : <input type="text" name="" class="form-control"/></div>'
+		footer: '<div style="display: flex; margin: 5px 10px;"> 채팅방 이름 : <input type="text" name="chatRoomName" class="form-control" style="width: 80%; margin-left: 15px;" placeholder="채팅방 이름을 입력해주세요."/></div>'
 	};
 
 	const exampleData = JSON.parse(JSON.stringify(initialData));
@@ -517,11 +536,14 @@
 		if(currentFunction === 'CL') {
 			console.log(response);
 
+			// 기존 리스트 초기화
+			$('#userChatList').empty();
+
 			let content = '';
 			response.forEach(function (item) {
 				content += '<div class="custom-chat-item" onclick="chatRoomopen(\'' + item.roomId + '\')">';
 
-				content += '<div class="custom-chat-name">' + item.name + '</div>';
+				content += '<div class="custom-chat-name">' + item.custom_name + '</div>';
 				content += '<div class="custom-chat-message">';
 				content += '<span>' + item.content + '</span>';
 				content += '<span>' + item.formatDate + '</span>';
@@ -533,6 +555,12 @@
 
 		if(currentFunction === 'ML'){
 			console.log(response);
+
+			let chatName = response[0];
+
+			$('#chatRoomName').text(chatName.custom_name);
+			console.log('방아온 정보= ',chatName.custom_name);
+
 
 			let content = '';
 			response.reverse();
@@ -592,11 +620,11 @@
 	$(document).on('click', '#addModal', function () {
 		console.log("등록 버튼 클릭됨!");
 
-
-
 		// 원하는 동작 수행
-		const roomName = 'test';
+		const roomName = $('input[name="chatRoomName"]').val();
 		const username = $('input[name="username"]').val();
+
+		console.log(roomName, '룸 네임은 ');
 
 		// 1. 채팅 룸 생성 (id 리턴)
 		// AJAX 요청으로 채팅방 생성
@@ -624,11 +652,6 @@
 				console.error("채팅방 생성 실패:", xhr.status, xhr.responseText);
 			}
 		});
-
-
-
-
-
 	});
 
 	// 2. 받은 아이디로 조직도에 포함된 인원 구독 진행
@@ -672,6 +695,8 @@
 					const modal = document.querySelector("#chartModalBox");
 					modal.style.display = "none";
 					resetTableData();
+					const username = $('input[name="username"]').val();
+					participationChatList(username);
 				}else{
 					layerPopup(response.message, '확인', false, removeAlert, removeAlert);
 				}
@@ -697,6 +722,20 @@
 	function chatRoomopen(roomId) {
 		console.log('채팅 룸 아이디 => ', roomId);
 
+		if (currentRoomId === roomId) {
+			return;
+		}
+
+		// 기존 채팅방 내용 비우기
+		$('#chatMessageDivBox').empty();
+
+		// 채팅 UI 토글
+		$('#noChatDiv').hide(); // "채팅이 없습니다" 메시지 숨기기
+		$('#chatingDivBox').show(); // 채팅 UI 보이기
+
+		// 현재 열려 있는 채팅방 ID 갱신
+		currentRoomId = roomId;
+
 		chatRoomOpenValue = roomId;
 
 		// WebSocket을 통한 구독 요청
@@ -706,6 +745,8 @@
 
 			// 보낸 사람이 나인지 상대방인지 확인
 			const isSender = receivedMessage.username === '${userDTO.username}';
+
+
 
 			// 메시지 화면에 추가
 			if (isSender) {
@@ -735,8 +776,6 @@
 
 		});
 
-		alert("채팅방에 참여했습니다.");
-
 		// AJAX 요청으로 기존 메시지 로드
 		loadChatMessages(roomId);
 	}
@@ -764,6 +803,8 @@
 		console.log('메시지 발송: roomId => ,' , roomId , ' content => ', content);
 		$('#messageInput').val('');
 
+		participationChatList(username);
+
 	});
 
 	// 채팅 메시지 조회
@@ -782,6 +823,16 @@
 
 		let chatDTO = {'roomId' : roomId, 'username' : username};
 		httpAjax('DELETE', '/chat/roomDelete', chatDTO);
+
+		// 채팅 UI 숨기기
+		$('#chatingDivBox').hide();
+		$('#noChatDiv').show(); // "채팅이 없습니다" 메시지 표시
+
+		// 현재 열려 있는 채팅방 ID 초기화
+		currentRoomId = null;
+
+		// 채팅 내용 비우기
+		$('#chatMessageDivBox').empty();
 
 	});
 

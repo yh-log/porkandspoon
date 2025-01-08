@@ -595,7 +595,7 @@ public class UserController {
 	 * author yh.kim (24.12.26)
 	 * 브랜드 리스트 조회
 	 */
-	@GetMapping(value="/ad/dept/getList")
+	@GetMapping(value="/ma/dept/getList")
 	public List<DeptDTO> deptGetList(
 			@RequestParam(value = "page", defaultValue = "1") int page, 
 	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
@@ -620,13 +620,9 @@ public class UserController {
 	 * 브랜드 생성 요청 리스트 조회
 	 */
 	@GetMapping(value="/ad/dept/createList")
-	public List<ApprovalDTO> deptCreateList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+	public List<ApprovalDTO> deptCreateList(@ModelAttribute PagingDTO pagingDTO) {
 		
-		List<ApprovalDTO> dto = userService.deptCreateList(page, cnt, option, keyword);
+		List<ApprovalDTO> dto = userService.deptCreateList(pagingDTO);
 		
 		return dto;
 	}
@@ -636,13 +632,9 @@ public class UserController {
 	 * 브랜드 삭제 요청 리스트 조회
 	 */
 	@GetMapping(value="/ad/dept/deleteList")
-	public List<ApprovalDTO> deptDeleteList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword) {
+	public List<ApprovalDTO> deptDeleteList(@ModelAttribute PagingDTO pagingDTO) {
 		
-		List<ApprovalDTO> dto = userService.deptDeleteList(page, cnt, option, keyword);
+		List<ApprovalDTO> dto = userService.deptDeleteList(pagingDTO);
 		
 		return dto;
 	}
@@ -732,7 +724,7 @@ public class UserController {
 	 * author yh.kim (24.12.29)
 	 * 직영점 리스트 페이지 이동
 	 */
-	@GetMapping(value="/ad/store/list")
+	@GetMapping(value="/ma/store/list")
 	public ModelAndView storeListView() {
 		return new ModelAndView("/user/storeList");
 	}
@@ -741,16 +733,12 @@ public class UserController {
 	 * author yh.kim (24.12.28)
 	 * 직영점 리스트
 	 */
-	@GetMapping(value="/ad/store/getList")
-	public List<DeptDTO> storeList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+	@GetMapping(value="/ma/store/getList")
+	public List<DeptDTO> storeList(@ModelAttribute PagingDTO pagingDTO){
 		
 		System.out.println("실행됨?");
 		
-		List<DeptDTO> storeList = userService.storeList(page, cnt, option, keyword);
+		List<DeptDTO> storeList = userService.storeList(pagingDTO);
 		
 		System.out.println(CommonUtil.toString(storeList));
 		
@@ -773,14 +761,10 @@ public class UserController {
 	 * 직영점 생성 요청 리스트 
 	 */
 	@GetMapping(value="/ad/store/createList")
-	public List<ApprovalDTO> ceateStoreList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+	public List<ApprovalDTO> ceateStoreList(@ModelAttribute PagingDTO pagingDTO){
 		
 		System.out.println("실행됨? 신청 리스트임!! ");
-		List<ApprovalDTO> storeList = userService.ceateStoreList(page, cnt, option, keyword);
+		List<ApprovalDTO> storeList = userService.ceateStoreList(pagingDTO);
 		
 		return storeList;
 	}
@@ -790,14 +774,10 @@ public class UserController {
 	 * 직영점 폐점 요청 리스트
 	 */
 	@GetMapping(value="/ad/store/deleteList")
-	public List<ApprovalDTO> deleteStoreList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+	public List<ApprovalDTO> deleteStoreList(@ModelAttribute PagingDTO pagingDTO){
 		
 		System.out.println("실행됨? 신청 리스트임!! ");
-		List<ApprovalDTO> storeList = userService.deleteStoreList(page, cnt, option, keyword);
+		List<ApprovalDTO> storeList = userService.deleteStoreList(pagingDTO);
 		
 		return storeList;
 	}

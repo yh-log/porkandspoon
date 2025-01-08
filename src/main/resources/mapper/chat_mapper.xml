@@ -30,12 +30,15 @@
                 END AS parent,
             c.content AS position,
         u.username,
-        u.name AS name
-            FROM user u
-                LEFT JOIN direct_store ds ON u.parent = ds.id
-                LEFT JOIN department d ON u.parent = d.id
-                LEFT JOIN code c ON u.`position` = c.name
-            WHERE u.username = #{username}
+        u.name AS name,
+        f.new_filename,
+        u.email
+        FROM user u
+            LEFT JOIN direct_store ds ON u.parent = ds.id
+            LEFT JOIN department d ON u.parent = d.id
+            LEFT JOIN code c ON u.`position` = c.name
+            LEFT JOIN file f ON f.pk_idx = u.username
+        WHERE u.username =  #{username}
 
     </select>
 
@@ -64,7 +67,7 @@
     <!-- author yh.kim, (25.01.06)
         직원 채팅방 리스트 조회 -->
     <select id="userRoomList" parameterType="String" resultType="kr.co.porkandspoon.dto.ChatDTO">
-        SELECT cru.roomId, cru.username, cru.join_date, COALESCE(cru.custom_name, cr.name) AS name, COALESCE(cm.content, '최근 채팅이 존재하지 않습니다') AS content, cm.send_date
+        SELECT cru.roomId, cru.username, cru.join_date, COALESCE(cru.custom_name, cr.name) AS custom_name, COALESCE(cm.content, '최근 채팅이 존재하지 않습니다') AS content, cm.send_date
         FROM chat_room_user cru LEFT JOIN chat_room cr ON cru.roomId = cr.roomId
                                 LEFT JOIN (
             SELECT roomId, content, send_date
@@ -74,21 +77,25 @@
                    FROM chat_message
                    GROUP BY roomId)) cm ON cru.roomId = cm.roomId
         WHERE cru.username = #{username} AND cru.use_yn = 'Y'
-        ORDER BY cru.join_date DESC
+        ORDER BY cm.send_date DESC
     </select>
 
     <!-- author yh.kim, (25.01.06)
         채팅 메시지 조회 -->
     <select id="chatRoomMessage" parameterType="String" resultType="kr.co.porkandspoon.dto.ChatDTO">
-        SELECT cm.*
+        SELECT
+            cm.*,
+            COALESCE(cru.custom_name, cr.name) AS custom_name
         FROM chat_message cm
                  JOIN chat_room_user cru
                       ON cm.roomId = cru.roomId
+                 JOIN chat_room cr
+                      ON cm.roomId = cr.roomId
         WHERE cm.roomId = #{chatRoomId}
           AND cru.username = #{username}
           AND cm.send_date > cru.join_date
         ORDER BY cm.send_date DESC
-            LIMIT 0, 10
+
     </select>
 
     <!-- author yh.kim, (25.01.06)

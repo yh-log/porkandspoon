@@ -64,8 +64,6 @@ public class ChatController {
 		logger.info("채팅방 구독 요청: roomId => " + chatRoomId);
 
 		// 구독 로직만 처리 (클라이언트에서는 성공 시 UI 업데이트)
-
-
 	}
 
 	/**
@@ -124,25 +122,25 @@ public class ChatController {
 	}
 
 
-	// 모든 채팅방 조회
-	@GetMapping("/rooms")
-	@ResponseBody
-	public Map<String, ChatRoom> findAllRooms() {
-
-		logger.info("채팅방 조회 모든");
-
-		return chatRoomManager.findAllRooms();
-	}
-
-	// 특정 채팅방 조회
-	@GetMapping("/room/{roomId}")
-	@ResponseBody
-	public ChatRoom findRoomById(@PathVariable String roomId) {
-
-		logger.info("특정 채팅방 조회 -> " + roomId);
-
-		return chatRoomManager.findRoomById(roomId);
-	}
+//	// 모든 채팅방 조회
+//	@GetMapping("/rooms")
+//	@ResponseBody
+//	public Map<String, ChatRoom> findAllRooms() {
+//
+//		logger.info("채팅방 조회 모든");
+//
+//		return chatRoomManager.findAllRooms();
+//	}
+//
+//	// 특정 채팅방 조회
+//	@GetMapping("/room/{roomId}")
+//	@ResponseBody
+//	public ChatRoom findRoomById(@PathVariable String roomId) {
+//
+//		logger.info("특정 채팅방 조회 -> " + roomId);
+//
+//		return chatRoomManager.findRoomById(roomId);
+//	}
 
 
 	/**

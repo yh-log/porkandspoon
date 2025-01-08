@@ -137,6 +137,7 @@
 				1 AS menu_depth
 			FROM department
 			WHERE parent IS NULL
+			  AND use_yn = 'Y' -- 조건 추가: department 테이블에서 use_yn = 'Y'
 
 			UNION ALL
 
@@ -149,6 +150,7 @@
 				cte.menu_depth + 1 AS menu_depth
 			FROM department d
 					 JOIN menu_tree_cte cte ON d.parent = cte.id
+			WHERE d.use_yn = 'Y' -- 조건 추가: department 테이블에서 use_yn = 'Y'
 
 			UNION ALL
 
@@ -161,6 +163,7 @@
 				cte.menu_depth + 1 AS menu_depth
 			FROM direct_store ds
 					 JOIN menu_tree_cte cte ON ds.parent = cte.id
+			WHERE ds.use_yn = 'Y' -- 조건 추가: direct_store 테이블에서 use_yn = 'Y'
 		),
 					   menu_and_employee AS (
 						   -- 4. menu_tree_cte의 데이터를 기본적으로 포함
@@ -202,23 +205,25 @@
 					 menu_depth AS menuDepth,
 					 COALESCE(type, 'file') AS type,
 					 ROW_NUMBER() OVER (
-            PARTITION BY parent, menu_depth
-            ORDER BY COALESCE(position_order, id) ASC
-        ) AS menuOrder
+                 PARTITION BY parent, menu_depth
+                 ORDER BY COALESCE(position_order, id) ASC
+             ) AS menuOrder
 				 FROM menu_and_employee
 			 ) final_result
 		WHERE parent IS NOT NULL
-		ORDER BY menuDepth, menuOrder
+		ORDER BY menuDepth, menuOrder;
+
 	</select>
 
 	<!-- author yh.kim, (24.12.26)
         부서 상세 페이지 이동 -->
 	<select id="deptDetail"
 			resultType="kr.co.porkandspoon.dto.DeptDTO" parameterType="String">
-		SELECT d.id,
-			   d.text, d.content, d.use_yn, d.use_date, f.new_filename AS logo FROM
-			department d left join file f on d.id = f.pk_idx WHERE id = #{id} AND
-			f.code_name = 'bl001';
+		SELECT d.id, d.text, d.content, d.use_yn, d.use_date, f.new_filename AS logo, GROUP_CONCAT(u.name) AS user_name
+		FROM department d
+				 LEFT JOIN file f ON d.id = f.pk_idx AND f.code_name = 'bl001'
+				 LEFT JOIN `user` u ON d.id = u.parent
+		WHERE d.id = #{id}
 	</select>
 
 	<!-- author yn.kim (24.12.27)
@@ -364,6 +369,39 @@
 				LEFT JOIN department d ON u.parent = d.id
 				LEFT JOIN code c ON u.`position` = c.name
 			WHERE u.username = #{username}
+	</select>
+
+	<!-- author yh.kim, (25.01.07)
+        브랜드 수정 시 조직도 초기 데이터 조회 -->
+	<select id="deptUserDetail" parameterType="kr.co.porkandspoon.dto.UserDTO" resultType="kr.co.porkandspoon.dto.UserDTO">
+		SELECT
+			CASE
+				WHEN d.id IS NOT NULL AND ds.id IS NULL THEN d.`text`
+				WHEN ds.id IS NOT NULL THEN
+					CONCAT(
+							(SELECT `text` FROM department WHERE id = ds.parent),
+							' ',
+							ds.name)
+				ELSE '정보 없음'
+				END AS dept_name,
+			CASE
+				WHEN d.id IS NOT NULL AND ds.id IS NULL THEN 'D'
+				WHEN ds.id IS NOT NULL THEN 'S'
+				ELSE NULL
+				END AS type,
+			CASE
+				WHEN d.id IS NOT NULL THEN d.id
+				WHEN ds.id IS NOT NULL THEN ds.id
+				ELSE NULL
+				END AS parent,
+			c.content AS position,
+		u.username,
+		u.name AS name
+			FROM user u
+				LEFT JOIN direct_store ds ON u.parent = ds.id
+				LEFT JOIN department d ON u.parent = d.id
+				LEFT JOIN code c ON u.`position` = c.name
+			WHERE u.parent = #{id}
 	</select>
 
 </mapper>

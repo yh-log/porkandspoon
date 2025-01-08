@@ -1,13 +1,16 @@
 package kr.co.porkandspoon.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -86,7 +89,7 @@ public class DeptController {
 	 * author yh.kim (24.12.18)
 	 * 부서 리스트 이동
 	 */
-	@GetMapping(value="/ad/dept/listView")
+	@GetMapping(value="/ma/dept/listView")
 	public ModelAndView deptListView() {
 		return new ModelAndView("/user/deptList");
 	}
@@ -95,7 +98,7 @@ public class DeptController {
 	 * author yh.kim (24.12.19)
 	 * 부서 상세 페이지 이동
 	 */
-	@GetMapping(value="/ad/dept/detail/{id}")
+	@GetMapping(value="/ma/dept/detail/{id}")
 	public ModelAndView deptDetailView(@PathVariable String id) {
 
 		ModelAndView mav = new ModelAndView();
@@ -123,6 +126,7 @@ public class DeptController {
 
 		ModelAndView mav = new ModelAndView();
 		DeptDTO deptDto = new DeptDTO();
+		List<UserDTO> userDTO  = new ArrayList<UserDTO>();
 
 		if(id == null || id.isEmpty()) {
 			deptDto.setStatus(400);
@@ -130,8 +134,20 @@ public class DeptController {
 		}
 
 		deptDto = deptService.deptDetsil(id);
+		userDTO = deptService.deptUserDetail(id);
 
-		mav.addObject("deptInfo", deptDto);
+		// userInfo JSON 형태로 변환
+		ObjectMapper obj = new ObjectMapper();
+
+		try{
+			mav.addObject("deptInfo", deptDto);
+			mav.addObject("userInfo", obj.writeValueAsString(userDTO));
+
+		}catch (Exception e){
+			e.printStackTrace();
+			mav.addObject("userInfo", "[]");
+		}
+
 		mav.setViewName("/user/deptUpdate");
 
 		return mav;
@@ -209,7 +225,7 @@ public class DeptController {
 	 * author yh.kim (24.12.19)
 	 * 직영점 상세 페이지 이동
 	 */
-	@GetMapping(value="/ad/store/detail/{id}")
+	@GetMapping(value="/ma/store/detail/{id}")
 	public ModelAndView storeDetailView(@PathVariable String id) {
 		ModelAndView mav = new ModelAndView();
 		DeptDTO storeDto = new DeptDTO();

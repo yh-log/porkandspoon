@@ -151,13 +151,13 @@ public interface UserDAO{
 	 * author yh.kim (24.12.26)
 	 * 브랜드 생성 요청 리스트 조회
 	 */
-	List<ApprovalDTO> deptCreateList(Map<String, Object> parmeterMap);
+	List<ApprovalDTO> deptCreateList(PagingDTO pagingDTO);
 
 	/**
 	 * author yh.kim (24.12.26)
 	 * 브랜드 삭제 요청 리스트 조회
 	 */
-	List<ApprovalDTO> deptDeleteList(Map<String, Object> parmeterMap);
+	List<ApprovalDTO> deptDeleteList(PagingDTO pagingDTO);
 
 
 
@@ -177,19 +177,19 @@ public interface UserDAO{
 	 * author yh.kim (24.12.28)
 	 * 직영점 리스트
 	 */
-	List<DeptDTO> storeList(Map<String, Object> parmeterMap);
+	List<DeptDTO> storeList(PagingDTO pagingDTO);
 
 	/**
 	 * author yh.kim (24.12.29)
 	 * 직영점 생성 요청 리스트 
 	 */
-	List<ApprovalDTO> ceateStoreList(Map<String, Object> parmeterMap);
+	List<ApprovalDTO> ceateStoreList(PagingDTO pagingDTO);
 
 	/**
 	 * author yh.kim (24.12.29)
 	 * 직영점 폐점 요청 리스트
 	 */
-	List<ApprovalDTO> deleteStoreList(Map<String, Object> parmeterMap);
+	List<ApprovalDTO> deleteStoreList(PagingDTO pagingDTO);
 
 	/**
 	 * author yh.kim (24.12.30)
@@ -271,4 +271,21 @@ public interface UserDAO{
 	 */
 	int updateStoreOwner(UserDTO user);
 
+	/**
+	 * author yh.kim (25. 01. 07)
+	 * 부서(브랜드) 등록 시 발령 직원 부서, 사번 업데이트
+	 */
+	int userDeptUpdate(UserDTO userDTO);
+
+	/**
+	 * author yh.kim (25.01.07)
+	 * 직영점 비활성화
+	 */
+	int storeInactiveUpdate(DeptDTO dto);
+
+	/**
+	 * author yh.kim (25.01.07)
+	 * 직영점 직원 부서 변경 (비활성화 시)
+	 */
+	int storeUserUpdate(DeptDTO dto);
 }
