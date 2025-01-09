@@ -61,6 +61,12 @@
 		gap: 10px;
 	}
 
+	.required-value{
+		color: var(--bs-danger);
+	}
+
+
+
 </style>
 </head>
 <body>
@@ -99,23 +105,23 @@
 								</td>
 							</tr>
 							<tr>
-								<th>시작 일시</th>
+								<th>출장 명<span class="required-value">*</span></th>
+								<td><input class="form-control sor-1" type="text" name="subject" data-required="true"/></td>
+							</tr>
+							<tr>
+								<th>시작 일시<span class="required-value">*</span></th>
 								<td class="coutn-dis">
 									<input class="form-control sor-1" type="datetime-local" name="start_date" style="width: 23%;" data-required="true"/>
 								</td>
 							</tr>
 							<tr>
-								<th>종료 일시</th>
+								<th>종료 일시<span class="required-value">*</span></th>
 								<td class="coutn-dis">
 									<input class="form-control sor-1" type="datetime-local" name="end_date" style="width: 23%;" data-required="true"/>
 								</td>
 							</tr>
-							  <tr>
-								  <th>출장 명</th>
-								  <td><input class="form-control sor-1" type="text" name="subject" data-required="true"/></td>
-							  </tr>
 							<tr>
-								<th>출장 장소</th>
+								<th>출장 장소<span class="required-value">*</span></th>
 								<td>
 									<div class="inline-layout">
 										<input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true"/>
@@ -124,7 +130,7 @@
 								</td>
 							</tr>
 							<tr>
-								<th>내용</th>
+								<th>내용<span class="required-value">*</span></th>
 								<td><textarea class="form-control art" name="content"></textarea></td>
 							</tr>
 						  </table>
@@ -158,8 +164,8 @@
 
 	function validateForm() {
 		// data-required="true"가 있는 필드만 선택
-		var requiredFields = document.querySelectorAll('[data-required="true"]');
-		var isValid = true;
+		let requiredFields = document.querySelectorAll('[data-required="true"]');
+		let isValid = true;
 
 		requiredFields.forEach(function(field) {
 			if (!field.value.trim()) { // 값이 없으면

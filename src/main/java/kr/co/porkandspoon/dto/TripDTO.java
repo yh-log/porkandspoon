@@ -20,6 +20,8 @@ public class TripDTO extends ResponseDTO{
     private String startDate;
     private String endDate;
 
+    private int idx;
+
     public int getSchedule_idx() {
         return schedule_idx;
     }
@@ -122,5 +124,13 @@ public class TripDTO extends ResponseDTO{
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
     }
 }

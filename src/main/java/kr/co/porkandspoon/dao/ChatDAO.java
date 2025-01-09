@@ -6,6 +6,7 @@ import kr.co.porkandspoon.dto.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ChatDAO {
@@ -44,7 +45,7 @@ public interface ChatDAO {
      * author yh.kim, (25.01.06)
      * 채팅 메시지 조회
      */
-    List<ChatDTO> chatRoomMessage(String chatRoomId, String username);
+    List<ChatDTO> chatRoomMessage(Map<String, Object> params);
 
     /**
      * author yh.kim, (25.01.06)

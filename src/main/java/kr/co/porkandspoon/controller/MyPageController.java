@@ -413,7 +413,7 @@ public class MyPageController {
 
 		TripDTO tripDTO = myPageService.tripDetail(schedule_idx);
 
-		ModelAndView mav = new ModelAndView("/myPage/businessTripDetail");
+		ModelAndView mav = new ModelAndView("/myPage/businessTripUpdate");
 		mav.addObject("tripDTO", tripDTO);
 
 		return mav;
@@ -428,16 +428,10 @@ public class MyPageController {
 
 		logger.info(CommonUtil.toString(tripDTO));
 
-		return null;
+		tripDTO = myPageService.tripUpdate(tripDTO);
+
+		return tripDTO;
 	}
 
-
-	// 출장 리스트 이동 페이지
-	@GetMapping(value="/trip/update")
-	public ModelAndView tripUpdateView() {
-		return new ModelAndView("/myPage/businessTripUpdate");
-	}
-	
-		
 	
 }
