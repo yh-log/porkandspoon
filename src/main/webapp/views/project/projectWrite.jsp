@@ -6,15 +6,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>프로젝트</title>
 <!-- 부트스트랩 -->
 <meta name="_csrf" content="${_csrf.token}">
-	<meta name="_csrf_header" content="${_csrf.headerName}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-	<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 
 <!-- select -->
@@ -162,6 +162,20 @@
 	.selectStyle{
 		width: 230px;
 	}
+	#selectedUserTable {
+    border-collapse: collapse; /* 테이블 테두리를 한 줄로 만듦 */
+    border: none; /* 테이블 전체 테두리 제거 */
+	}
+	
+	#selectedUserTable th,
+	#selectedUserTable td {
+	    border: none; /* 각 셀의 테두리 제거 */
+	}
+	
+	#selectedUserTable thead th {
+	    border-bottom: 2px solid #ddd; /* 필요하면 헤더에만 밑줄 추가 */
+	}
+
 
 	
 	.card-body{
@@ -253,21 +267,23 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
+			         <form action="">
+			         
                      <table>
                         <tr>
                            <th class="align-l">프로젝트 명</th>
                            	<td>
                            		
-                           		<input class="form-control sor-1 "   type="text" placeholder="프로젝트 명을 입력해주세요." required="required"/>
+                           		<input class="form-control sor-1 " name="name"  type="text" placeholder="프로젝트 명을 입력해주세요." required="required"/>
                            	</td>
                         </tr>
                         <tr>
                            <th class="align-l">일정</th>
                            <td >
 	                           <div id="searchLayout" class="col-7 col-lg-7">
-		                           	<input class="form-control sor-1 short"  id="start_date" type="date"  required="required"/>
+		                           	<input class="form-control sor-1 short"  id="start_date" name="start_date" type="date"  required="required"/>
 		                           	~
-		                           	<input class="form-control sor-1 short"  type="date"  required="required"/>
+		                           	<input class="form-control sor-1 short"  type="date" name="end_date"  required="required"/>
 	                           </div>
                            </td>
                         </tr>
@@ -276,29 +292,24 @@
                            	<td>
                          		<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
+									<input class="form-check-input" type="radio" name="is_open" value="Y" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
 										공개 </label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+									<input class="form-check-input" type="radio" name="is_open" value="N" id="flexRadioDefault2" >
 									<label class="form-check-label" for="flexRadioDefault2">
 										비공개 </label>
 								</div>
 								</div>	
                            	</td>
                         </tr>
-                       <tr>
-						   <th class="align-l">인원 추가</th>
-						   <td>
-						   <button type="button" class="btn btn-primary" onclick="loadChartModal('chartInputModal')"><i class="bi bi-diagram-3"></i></button>
-						   </td>
-						</tr>
                      	</table>
-                  		</div>
 							<div id="btn-gap">							
-								<button class="btn btn-primary">등록</button>
+								<button class="btn btn-primary btn-popup">등록</button>
 								<button class="btn btn-outline-primary">취소</button>
 							</div>
+			         </form>
+                  		</div>
 							</div>
 						</div> 
 				</section>
@@ -316,8 +327,6 @@
 <!-- 조직도 노드 -->
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/charjstree.js'></script>
-<script src='/resources/js/deptInfo.js'></script>
-<script src='/resources/js/textEaditor.js'></script>
 
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
@@ -338,7 +347,6 @@
 
 
 <script>
-console.log('${userDTO.name}');
 
  /* 조직도노드  */
 	//초기 데이터
@@ -378,7 +386,7 @@ console.log('${userDTO.name}');
         	 var userName = response.name;
         	 var userPosition = response.position_content;
         	 var userDept = response.dept.text;
-        	 
+        	 console.log(userPosition);
              // 새로운 row 데이터 생성
              const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
 
@@ -388,6 +396,12 @@ console.log('${userDTO.name}');
 
              // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
              updateTableData('customTable', exampleData);
+            
+
+             // 삭제 버튼 이벤트 연결
+             bindRemoveUserEvent();
+         	
+
          },
          error: function(e) {
              console.log(e);
@@ -395,11 +409,36 @@ console.log('${userDTO.name}');
      });
  }
 
+ function setupModalEvents(modal) {
+	    var closeModal = modal.querySelector("#closeModal");
+	    var cancelButton = modal.querySelector("#cancelModal");
+	    var addButton = modal.querySelector("#addModal");
+
+	    // 확인 클릭 이벤트
+	    if (addButton) {
+	        addButton.addEventListener("click", function () {
+	            addBtnFn(approvalLines);
+	        });
+	    }
 	    
- 
- getSelectId(function (selectedId) {
-     addSelectedIdToRows(selectedId);
- });
+	    // 닫기 버튼 클릭 이벤트
+	    if (closeModal) {
+	        closeModal.addEventListener("click", function () {
+	            modal.style.display = "none";
+	            resetTableData();
+	        });
+	    }
+
+	    // 취소 버튼 클릭 이벤트
+	    if (cancelButton) {
+	        cancelButton.addEventListener("click", function () {
+	            modal.style.display = "none";
+	            resetTableData();
+	        });
+	    }
+
+	   
+	}
  
  
  function chartPrint(response) {
@@ -497,11 +536,98 @@ console.log('${userDTO.name}');
  	    exampleData.rows.splice(idx, 1);
  	    approvalLines.splice(idx, 1);
  	    console.log("approvalLines 수정 : ",approvalLines);
- 	 
+ 	   // 테이블에서 해당 행 삭제
+ 	   
+ 	   
      }else{
      	layerPopup( "본인은 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
      }
  });
+ 
+ 
+
+ 
+ 
+ 
+getSelectId(function (selectedId) {
+  addSelectedIdToRows(selectedId);
+});
+
+ function addBtnFn(approvalLines) {
+	    console.log("addBtnFn 호출됨. Approval Lines 데이터:", approvalLines);
+
+	    // selectedUserTable 테이블 업데이트
+	    const tbody = document.querySelector("#selectedUserTable tbody");
+	    tbody.innerHTML = ""; // 기존 내용을 초기화
+
+	    approvalLines.forEach((id) => {
+	        // approvalLines의 각 ID에 대해 initialData.rows에서 일치하는 데이터를 가져옴
+	        const row = exampleData.rows.find(r => r.includes(id));
+	        if (row) {
+	            const tr = document.createElement("tr");
+	            row.forEach((cellContent, index) => {
+	                if (index !== row.length - 1) { // 삭제 버튼을 제외하고 추가
+	                    const td = document.createElement("td");
+	                    td.innerHTML = cellContent;
+	                    tr.appendChild(td);
+	                }
+	            });
+	            tbody.appendChild(tr); // 생성된 행을 테이블에 추가
+	        } else {
+	            console.error(`ID(${id})에 해당하는 데이터를 찾을 수 없습니다.`);
+	        }
+	    });
+
+	    console.log("테이블 업데이트 완료. 업데이트된 테이블 데이터:", tbody.innerHTML);
+	}
+ 
+ 
+ 
+ 
+ 
+ 
+ $('.btn-popup').on(
+			'click',
+			function() {
+				layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', btn1Act,
+						btn2Act);
+			});
+	
+	/* 알림 팝업 */
+	function btn1Act() {
+		// 1번버튼 클릭시 수행할 내용
+		console.log('1번 버튼 동작');
+
+		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+		removeAlert(); // 기존팝업닫기
+		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+		layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+	}
+	
+	function btn2Act() {
+		// 2번버튼 클릭시 수행할 내용
+		console.log('2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+	}
+	
+	function secondBtn1Act() {
+		// 두번째팝업 1번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 1번 버튼 동작');
+		
+		 document.querySelector('form').submit();
+		
+		removeAlert(); // 팝업닫기
+		
+	}
+
+	function secondBtn2Act() {
+		// 두번째팝업 2번버튼 클릭시 수행할 내용
+		console.log('두번째팝업 2번 버튼 동작');
+		removeAlert(); // 팝업닫기
+		
+	}
+	
+ 
  
 </script>
 

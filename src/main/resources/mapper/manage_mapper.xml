@@ -10,6 +10,10 @@
  	SELECT name FROM user where position = 'po0'
  </select>
  
+ <!-- 직영점 이름 가져오기 -->
+ <select id="getSpotName" resultType="kr.co.porkandspoon.dto.ManageDTO">
+ 	SELECT id,name AS spotName FROM direct_store WHERE owner = #{owner}
+ </select>
  
  <!-- 브랜드 리스트 불러오기 -->
 	<select id="getBrandList" resultType="kr.co.porkandspoon.dto.ManageDTO">
@@ -176,7 +180,7 @@
 	    WHERE p.id IN (
 	        SELECT ds.id 
 	        FROM direct_store ds 
-	        WHERE ds.owner = #{owner} AND p.is_quit = 'N'
+	        WHERE ds.owner = #{owner} 
 	    )
 	</select>
 
@@ -185,11 +189,11 @@
 	</select>
 
 
-	<delete id="deletePartHistory" parameterType="map">
+	<delete id="deletePartHistory" parameterType="String">
 	    <![CDATA[
 	    DELETE FROM part_history
 	    WHERE part_idx = #{part_Idx}
-	      AND work_date >= #{string}
+	      AND work_date >= #{today}
 	    ]]>
 	</delete>
 

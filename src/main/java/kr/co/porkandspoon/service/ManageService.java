@@ -67,11 +67,12 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	    return 1;
 	}
 
-
+// 아르아이트 히스토리 테이블 날짜 변환후 인서트 기능
 	private void addPartHistory(String getpay, String partIdx, String workDay, String startTime, String endTime, String baseDateStr) {
 	    LocalDate baseDate = LocalDate.parse(baseDateStr); // 기준 날짜 (입사일 또는 수정일)
 	    LocalDate today = LocalDate.now(); // 현재 날짜
 	    LocalDate nextWorkDate = baseDate.with(TemporalAdjusters.nextOrSame(mapDayOfWeek(workDay))); // 기준 날짜 이후 첫 근무일
+	    logger.info("기준날짜 : {}",baseDateStr);
 	    int pay = Integer.parseInt(getpay);
 
 	    // 종료 조건: 해당 연말까지 반복
@@ -144,21 +145,35 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	        timeParams.put("end_time", endTimes.get(i));
 	        manageDAO.setPartTime(timeParams); // 새로운 데이터 삽입
 	    }
-
-	    LocalDate today = LocalDate.now(); // 수정일 기준
-	    manageDAO.deletePartHistory(part_Idx, today.toString()); // 수정일 이후 데이터 삭제
-
-	    String getpay = params.get("pay");
-	    for (int i = 0; i < workDates.size(); i++) {
-	        addPartHistory(
-	            getpay,
-	            part_Idx,
-	            workDates.get(i),
-	            startTimes.get(i),
-	            endTimes.get(i),
-	            today.toString() // 수정일 기준으로 처리
-	        );
-	    }
+	    
+	    String quit = params.get("is_quit");
+	   if (quit.equals("Y")) {
+		   
+		   LocalDate gettoday = LocalDate.now(); // 수정일 기준
+			String today = gettoday.toString();
+			logger.info(today);
+			manageDAO.deletePartHistory(part_Idx,today ); // 수정일 이후 데이터 삭제
+		
+	} else {
+		
+		LocalDate gettoday = LocalDate.now(); // 수정일 기준
+		String today = gettoday.toString();
+		logger.info(today);
+		manageDAO.deletePartHistory(part_Idx,today ); // 수정일 이후 데이터 삭제
+		
+		String getpay = params.get("pay");
+		for (int i = 0; i < workDates.size(); i++) {
+			addPartHistory(
+					getpay,
+					part_Idx,
+					workDates.get(i),
+					startTimes.get(i),
+					endTimes.get(i),
+					today // 수정일 기준으로 처리
+					);
+		}
+	}
+	    
 
 	    return 1;
 	}
@@ -569,7 +584,7 @@ Logger logger = LoggerFactory.getLogger(getClass());
 
 
 	public String getCEOInfo() {
-		// TODO Auto-generated method stub
+		
 		return manageDAO.getCEOInfo();
 	}
 
@@ -577,6 +592,12 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	public FileDTO getFile(String code_name, String id ) {
 		
 		return manageDAO.getFile(code_name,id);
+	}
+
+
+	public ManageDTO getSpotName(String owner) {
+		return manageDAO.getSpotName(owner);
+		
 	}
 
 

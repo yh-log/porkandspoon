@@ -47,7 +47,7 @@ public interface ManageDAO {
 
 	void setPartHistory(Map<String, Object> historyParams);
 
-	void deletePartHistory(String part_Idx, String string);
+	void deletePartHistory(String part_Idx, String today);
 
 	void editPartHistory(Map<String, String> params);
 	
@@ -169,6 +169,8 @@ public interface ManageDAO {
 	String getCEOInfo();
 
 	FileDTO getFile(String code_name, String id);
+
+	ManageDTO getSpotName(String owner);
 
 
 
