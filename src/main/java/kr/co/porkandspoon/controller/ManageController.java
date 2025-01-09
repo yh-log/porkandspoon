@@ -319,6 +319,9 @@ public class ManageController {
 		return new ModelAndView("/manage/restUpdate");
 	}
 
+
+
+
 	/**
 	 * author yh.kim, (25.01.03)
 	 * 휴점 등록 페이지 이동

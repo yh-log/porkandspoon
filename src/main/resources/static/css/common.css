@@ -287,7 +287,7 @@ header #chat i {
 	display: flex;
 	display: -moz-box;
 	display: -ms-flexbox;
-    min-height: calc(100vh - 144px - 1.5rem);
+    /*min-height: calc(100vh - 144px - 1.5rem);*/
 	background: #fff;
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);

@@ -60,6 +60,12 @@
 	<a href="/approval/listView/my">나의문서함</a> <br/>
 	<a href="/approval/listView/dept">부서문서함</a> <br/>
 
+	<a href="/trip/listView">개인 출장 기록 리스트 </a> <br/>
+	<a href="/trip/write">개인 출장 기록 작성</a> <br/>
+	<a href="/trip/detail">개인 출장 기록 상세</a> <br/>
+	<a href="/trip/update">개인 출장 기록 수정</a> <br/>
+
+
 
 
 

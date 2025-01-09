@@ -708,20 +708,9 @@ public class UserService {
 	 * 인사이동 리스트 조회
 	 */
 	public List<UserDTO> employeeTransferList
-		(int page, int cnt, String option, String keyword, String start_date, String end_date) {
+		(PagingDTO pagingDTO) {
 		
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
-		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		parmeterMap.put("start_date", start_date);
-		parmeterMap.put("end_date", end_date);
-		
-		List<UserDTO> result = userDao.employeeTransferList(parmeterMap);
+		List<UserDTO> result = userDao.employeeTransferList(pagingDTO);
 		
 		if(result.size() < 1) {
 			
@@ -737,20 +726,9 @@ public class UserService {
 	 * 직영점 이동 리스트 조회
 	 */
 	public List<UserDTO> storeTransferList
-		(int page, int cnt, String option, String keyword, String start_date, String end_date) {
-		
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
-		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		parmeterMap.put("start_date", start_date);
-		parmeterMap.put("end_date", end_date);
-		
-		List<UserDTO> result = userDao.storeTransferList(parmeterMap);
+		(PagingDTO pagingDTO) {
+
+		List<UserDTO> result = userDao.storeTransferList(pagingDTO);
 		
 		if(result.size() < 1) {
 			
@@ -766,18 +744,9 @@ public class UserService {
 	 * 미발령 직원 리스트 조회
 	 */
 	public List<UserDTO> notTransferList
-		(int page, int cnt, String option, String keyword) {
+		(PagingDTO pagingDTO) {
 		
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt; // 0
-		
-		Map<String, Object> parmeterMap = new HashMap<>();
-		parmeterMap.put("limit", limit);
-		parmeterMap.put("offset", offset);
-		parmeterMap.put("option", option);
-		parmeterMap.put("keyword", keyword);
-		
-		List<UserDTO> result = userDao.notTransferList(parmeterMap);
+		List<UserDTO> result = userDao.notTransferList(pagingDTO);
 		
 		
 		

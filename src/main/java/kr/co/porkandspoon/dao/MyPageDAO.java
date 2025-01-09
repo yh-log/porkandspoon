@@ -80,4 +80,23 @@ public interface MyPageDAO {
 	 * 출장 등록 시 캘린더 등록
 	 */
 	int tripCalenderWrite(TripDTO tripDTO);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 비활성화 시 캘린더 삭제
+	 */
+	int tripCalenderDelete(TripDTO tripDTO);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 수정
+	 */
+	int tripUpdate(TripDTO tripDTO);
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 수정 시 캘린더 수정
+	 */
+	int tripCalenderUpdate(TripDTO tripDTO);
+
 }

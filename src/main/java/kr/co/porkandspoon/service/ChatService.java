@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ChatService {
@@ -160,9 +162,19 @@ public class ChatService {
      * author yh.kim, (25.01.06)
      * 채팅 메시지 조회
      */
-    public List<ChatDTO> chatRoomMessage(String chatRoomId, String username) {
+    public List<ChatDTO> chatRoomMessage(String chatRoomId, String username, String page) {
 
-        List<ChatDTO> chatRoomList = chatDAO.chatRoomMessage(chatRoomId, username);
+        int limit = 10;
+        int pages = Integer.parseInt(page);
+        int offset = (pages - 1) * limit;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatRoomId", chatRoomId);
+        params.put("username", username);
+        params.put("limit", limit);
+        params.put("offset", offset);
+
+        List<ChatDTO> chatRoomList = chatDAO.chatRoomMessage(params);
 
         if(chatRoomList == null){
             return new ArrayList<>();
