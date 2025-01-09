@@ -295,6 +295,15 @@ public List<MailDTO> getSenderReceivers(String idx) {
 	return mailDAO.getSenderReceivers(idx);
 }
 
+public int copyMailRow(MailDTO mailDTO) {
+	return mailDAO.copyMailRow(mailDTO);
+}
+
+public int copyMailReceiverRow(String newIdx, String idx) {
+	return mailDAO.copyMailReceiverRow(newIdx,idx);
+}
+
+
 /*
  * public MailDTO deliverMail(String idx, String loginId) { return
  * mailDAO.deliverMail(idx,loginId); }

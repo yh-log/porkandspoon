@@ -242,8 +242,8 @@
 										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sd'}">
-										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, btn1Act)">삭제</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">다시보내기</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 재전송하시겠습니까?', '재전송', '취소', resend, removeAlert)">다시보내기</buttton>
 										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sv'}">
@@ -562,6 +562,36 @@ function drawList(list) {
 		];
 		toggleBookmarkAjax(checkedList);
     });
+	
+	// 다시보내기 (재전송)
+	function resend() {
+		var checkedEls = $('.list-area .form-check-input:checked');
+		var checkedIdx = [];
+		for (var checkedEl of checkedEls) {
+			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
+		}
+		console.log("checkedEls : ", checkedEls);
+		console.log("checkedIdx : ", checkedIdx);
+		
+		$.ajax({
+        	type : 'POST',
+	        url : '/mail/resend',
+	        data: JSON.stringify({ 
+	        	'idxList': checkedIdx 
+        	}), 
+	        contentType: 'application/json', 
+	        dataType : 'JSON',
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success : function(response){
+	        	location.reload();
+	        },error: function(e){
+	            console.log(e);
+	        }
+	    });
+	}
+	
 	
 	// 삭제 팝업 (취소버튼)
 	function btn1Act(){

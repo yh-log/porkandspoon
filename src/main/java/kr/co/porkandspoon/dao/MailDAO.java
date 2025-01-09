@@ -72,7 +72,17 @@ public interface MailDAO {
 
 	int moveSentToTrash(String idx, String loginId);
 
+	// check!!! 얘는 뭐지 일단 주석
+	//int getSenderReceivers(MailDTO mailDTO);
 	List<MailDTO> getSenderReceivers(String idx);
+
+	int copyMailRow(MailDTO mailDTO);
+
+	int copyMailReceiverRow(String newIdx, String idx);
+
+	
+
+	
 
 	//MailDTO deliverMail(String idx, String loginId);
 

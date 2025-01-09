@@ -78,6 +78,12 @@ ul, li {
 a {
 	color: var(--bs-body-color);
 }
+a:hover {
+	text-decoration: none;
+}
+a:visited{
+	color: unset;
+}
 
 /* float clearfix */
 .clearfix:before, .clearfix:after {

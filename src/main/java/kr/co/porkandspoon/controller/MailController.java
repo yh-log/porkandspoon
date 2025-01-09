@@ -431,12 +431,21 @@ public class MailController {
 	
 	
 	// 다시보내기
-	@GetMapping(value="/mail/resend/{idx}")
-	public Map<String, Object> resend(@PathVariable List<String> idx, @AuthenticationPrincipal UserDetails userDetails){
+	@Transactional
+	@PostMapping(value="/mail/resend")
+	public Map<String, Object> resend(@RequestBody Map<String, List<String>> params, @AuthenticationPrincipal UserDetails userDetails){
 		Map<String, Object> result = new HashMap<String, Object>();
 		boolean success = false;
 		String loginId = userDetails.getUsername();
-		
+		for (String idx : params.get("idxList")) {
+			MailDTO mailDTO = new MailDTO();
+			mailDTO.setIdx(idx);
+			mailService.copyMailRow(mailDTO);
+			String newIdx = mailDTO.getIdx();
+			mailService.copyMailReceiverRow(newIdx,idx);
+		}
+		success = true;
+		result.put("success", success);
 		return result;
 	}
 	

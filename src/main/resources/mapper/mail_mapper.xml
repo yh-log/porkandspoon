@@ -531,4 +531,22 @@
    		WHERE m.idx = #{idx}
 	</select>
 	
+	<insert id="copyMailRow" parameterType="kr.co.porkandspoon.dto.MailDTO"
+		useGeneratedKeys="true"
+		keyColumn="idx"
+		keyProperty="idx">
+		INSERT INTO mail (sender,title,content,send_date,send_status)
+		SELECT sender, title, content, NOW(), send_status 
+		FROM mail 
+		WHERE idx = #{idx}
+	</insert>
+	
+	<insert id="copyMailReceiverRow">
+		INSERT INTO mail_receive (idx, username)
+		SELECT #{newIdx}, username 
+		FROM mail_receive
+		WHERE idx = #{idx}
+	</insert>
+	
+	
 </mapper>
