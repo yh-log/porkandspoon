@@ -45,7 +45,7 @@ public class ManageController {
     @Autowired
     private UserDAO userDAO;
 
-	// 매장관리홈
+	// 매장관리홈 직영점주 사용하는 기능
 	@GetMapping(value="/ad/spotManage")
 	public ModelAndView spotManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String owner = userDetails.getUsername();
@@ -57,19 +57,15 @@ public class ManageController {
 		return mav;
 	}
 	
+	// 직영점 관리 해당 브랜드팀만 사용하는 기능
 	@GetMapping(value="/us/directManage")
 	public ModelAndView directManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String id = userDetails.getUsername();
 		List<ManageDTO> list = manageService.getDirectList(id);
-		 
-		
 		ManageDTO info = manageService.getBrandInfo(id);
-		
 		info.setCode_name("bl001");
 		FileDTO fileDTO = manageService.getFile(info.getCode_name(),info.getParent());
 		info.setFiledto(fileDTO);
-		
-		
 		ModelAndView mav = new ModelAndView("/manage/directManage");
 		mav.addObject("list",list);
 		mav.addObject("info",info);
@@ -77,6 +73,7 @@ public class ManageController {
 		return mav;
 	}
 	
+	//브랜드 관리 브랜드팀,직영점주 제외한 본사직원이 볼 수 있는 기능
 	@GetMapping(value="/ad/brandManage")
 	public ModelAndView brandManageView(@AuthenticationPrincipal UserDetails userDetails) {
 	    // CEO 정보 가져오기
@@ -106,12 +103,13 @@ public class ManageController {
 	
 	
 	
-	//아르바이트
+	//아르바이트 리스트 페이지 뷰 이동
 	@GetMapping(value="/ad/part")
 	public ModelAndView partListView() {
 		return new ModelAndView("/manage/partList");
 	}
 	
+	//아르바이트 리스트 정보 조회
 	@GetMapping(value="/ad/part/List")
 	public Map<String, Object> getPartList(@AuthenticationPrincipal UserDetails userDetails,
 			String pg,  String count, String opt, String keyword) {
@@ -168,8 +166,14 @@ public class ManageController {
 	
 	//아르바이트 등록
 	@GetMapping(value="/ad/part/Write")
-	public ModelAndView partWriteView() {
-		return new ModelAndView("/manage/partWrite");
+	public ModelAndView partWriteView(@AuthenticationPrincipal UserDetails userDetails) {
+		String owner = userDetails.getUsername();
+		ManageDTO mto = manageService.getSpotName(owner);
+		
+		
+		ModelAndView mav = new ModelAndView("/manage/partWrite");
+		mav.addObject("mto",mto);
+		return mav;
 	}
 	
 	@PostMapping(value = "/ad/part/Write")
@@ -195,30 +199,33 @@ public class ManageController {
 	
 	//아르바이트 상세페이지
 	@GetMapping(value="/ad/part/Detail/{part_idx}")
-	public ModelAndView partDetail(@PathVariable int part_idx) {
+	public ModelAndView partDetail(@PathVariable int part_idx,@AuthenticationPrincipal UserDetails userDetails) {
+		String owner = userDetails.getUsername();
 		ManageDTO dto =  manageService.partDetail(part_idx);
 		List<ManageDTO>  list =  manageService.scheduleDetail(part_idx);
-		
+		ManageDTO mto = manageService.getSpotName(owner);
 		ModelAndView mav = new ModelAndView("/manage/partDetail");
 		mav.addObject("info",dto);
 		mav.addObject("list",list);
-		
+		mav.addObject("mto",mto);
 		return mav;
 	}
 	
-	//아르바이트 수정
+	//아르바이트 수정 뷰이동
 	@GetMapping(value="/ad/part/Update/{part_idx}")
-	public ModelAndView partUpdateView(@PathVariable int part_idx) {
+	public ModelAndView partUpdateView(@PathVariable int part_idx,@AuthenticationPrincipal UserDetails userDetails) {
+		String owner = userDetails.getUsername();
 		ManageDTO dto =  manageService.partDetail(part_idx);
 		List<ManageDTO>  list =  manageService.scheduleDetail(part_idx);
-		
+		ManageDTO mto = manageService.getSpotName(owner);
 		ModelAndView mav = new ModelAndView("/manage/partUpdate");
 		mav.addObject("info",dto);
 		mav.addObject("list",list);
-		
+		mav.addObject("mto",mto);
 		return mav;
 	}
 	
+	//아르바이트 업데이트 기능 
 	@PostMapping(value = "/ad/part/Update")
 	public ModelAndView editPart(
 	    @AuthenticationPrincipal UserDetails userDetails,
