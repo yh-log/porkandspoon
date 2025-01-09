@@ -14,11 +14,17 @@ public interface FoodieDAO {
 	
 	int setStoreWrite(FoodieDTO dto);
 
-	void setReviewWrirte(FoodieDTO dto);
+	int setReviewWrirte(FoodieDTO dto);
 
 	List<FoodieDTO> getFoodieList();
 
 	List<FoodieDTO> getReviewList(FoodieDTO fdto);
+
+	int getstoreidx(FoodieDTO dto);
+
+	int setDeleteR(FoodieDTO dto);
+
+	int getStoreidx(FoodieDTO dto);
 
 
 }

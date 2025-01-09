@@ -24,14 +24,28 @@
 	</insert>
 	
 	<!-- 리뷰 등록 -->
-	<insert id="setReviewWrirte" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+	<insert
+		useGeneratedKeys="true" 
+	   	keyColumn="review_idx" 
+	   	keyProperty="review_idx" 
+		id="setReviewWrirte" 
+		parameterType="kr.co.porkandspoon.dto.FoodieDTO">
 		INSERT INTO food_review (store_idx, username, content, review_star)
 			VALUES(#{store_idx}, #{username}, #{content}, #{review_star})
 	</insert>
 	
 	<!-- 매장 리스트 가져오기 -->
 	<select id="getFoodieList" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
-		SELECT * FROM food_map
+		SELECT 
+	        fm.*,
+	        ROUND(AVG(fr.review_star), 1) AS total_review_star
+	    FROM 
+	        food_map fm
+	    LEFT JOIN 
+	        food_review fr 
+	        ON fm.store_idx = fr.store_idx
+	    GROUP BY 
+	        fm.store_idx
 	</select>
 	
 	<select id="getReviewList" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
@@ -50,6 +64,22 @@
 	        ON fr.store_idx = fm.store_idx  
 	    WHERE 
 	        fr.store_idx = #{store_idx}
+	        AND fr.use_yn = 'Y'  
+	    ORDER BY 
+	        fr.review_idx DESC
 	</select>
-
+	
+	<select id="getstoreidx" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		SELECT store_idx FROM food_review WHERE review_idx = #{review_idx}
+	</select>
+	
+	<update id="setDeleteR" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		UPDATE food_review
+	    SET use_yn = 'N'
+	    WHERE review_idx = #{review_idx}
+	</update>
+	
+	<select id="getStoreidx" parameterType="kr.co.porkandspoon.dto.FoodieDTO">
+		SELECT store_idx FROM food_review WHERE review_idx = #{review_idx}
+	</select>
 </mapper>
