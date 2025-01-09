@@ -5,13 +5,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>출장 수정</title>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	
 	<!-- 부트스트랩 -->
-	<link rel="shortcut icon"
-		href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+	<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 	<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 		
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
@@ -24,128 +23,17 @@
 	
 <style>
 
-    /* 기본 모달 스타일 */
-	.modal {
-	    display: none;
-	    position: fixed;
-	    top: 0;
-	    left: 0;
-	    width: 100%;
-	    height: 100%;
-	    background-color: rgba(0, 0, 0, 0.5);
-	    z-index: 1100;
-	}
-	
-	/* 모달 내부 콘텐츠 */
-	.modal-content {
-	    position: absolute;
-	    top: 50%;
-	    left: 50%;
-	    transform: translate(-50%, -50%);
-	    background: #fff;
-	    padding: 20px;
-	    border-radius: 8px;
-	    width: 400px;
-	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-
-	/* 모달 헤더 */
-	.modal-header {
-	    display: flex;
-	    justify-content: end;
-	    align-items: center;
-	    border-bottom: 1px none #ddd;
-	    margin-bottom: 15px;
-	}
-
-	/* 닫기(x) 버튼 */
-	.modal-close {
-	    font-size: 20px;
-	    cursor: pointer;
-	}
 	
 	/* 모달 바디 */
 	.modal-body .form-group {
 	    margin-bottom: 15px;
 	}
-	
-	.form-label {
-	    display: block;
-	    font-size: 14px;
-	    margin-bottom: 5px;
-	}
-	
-	.form-input {
-	    width: 100%;
-	    padding: 8px;
-	    font-size: 14px;
-	    border: 1px solid #ddd;
-	    border-radius: 4px;
-	}
-	
-	/* 모달 푸터 */
-	.modal-footer {
-	    display: flex;
-	    justify-content: center;
-	    gap: 10px;
-	}
-	
-	.write-btn{
-		border-bottom: 1px solid #E4E6E8;
-	}
-	
-	.list-form{
-		border: 1px solid #E4E6E8;
-		border-radius: 6px;
-		padding: 17px;
-		width: 40%;
-    	margin-top: 20px;
-    	display: flex;
-    	justify-content: space-between;
-    	height: 200px;
-	}
-	
-	.list-row{
-		padding: 0 16%;
-		display: flex;
-		justify-content: space-between;
-    	flex-wrap: wrap;
-	}
-	
-	.update{
-		display: flex;
-    	flex-direction: column;
-    	justify-content: space-between;
-    	align-items: flex-end;
-	}
-	
-	.write-form{
-		display: flex;
-	    align-items: flex-start;
-	    justify-content: space-between;
-	    margin: 20px;
-	}
-	
-	.write-form1{
-		display: flex;
-    	align-items: center;
-    	margin: 20px;
-	}
-	
-	.write-form2{
-		margin-left: 43px;
-	}
-	
+
 	.art{
     	height: 270px;
     	resize: none;
 	}
-	
-	.write-form-3{
-		display: flex;
-    	margin: 20px;
-	}
-	
+
 	.btn-room{
 		display: flex;
     	justify-content: center;
@@ -159,6 +47,19 @@
 		display: flex;
 		align-items: center;
 	}
+
+	td div.inline-layout{
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		white-space: nowrap;
+		gap: 10px;
+	}
+
+	.required-value{
+		color: var(--bs-danger);
+	}
+
 
 </style>
 </head>
@@ -188,50 +89,54 @@
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
                   <div class="col-12 col-lg-12">
-	                  <table class="align-l">
-	                  	<tr>
-	                  		<th>등록자</th>
-	                  		<td class="align-l">
-								${tripDTO.name}
-								<input type="hidden" name="username" value="${tripDTO.username}">
-							</td>
-	                  	</tr>
-						  <tr>
-							  <th>출장명</th>
-							  <td><input class="form-control sor-1" type="text" name="subject" value="${tripDTO.subject}"/></td>
-						  </tr>
-	                  	<tr>
-	                  		<th>시작 일시</th>
-	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="datetime-local" name="start_date" style="width: 23%;"/>	                  			
-	                  		</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>종료 일시</th>
-	                  		<td class="coutn-dis">
-	                  			<input class="form-control sor-1" type="datetime-local" name="end_date" style="width: 23%;"/>
-	                  		</td>
-	                  	</tr>
-						  <tr>
-							  <th>출장 장소</th>
-							  <td>
-								  <div class="inline-layout">
-									  <input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true" value="${tripDTO.address}"/>
-									  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
-								  </div>
-							  </td>
-						  </tr>
-	                  	<tr>
-	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content">${tripDTO.content}</textarea></td>
-	                  	</tr>
-	                  </table>
+					  <form>
+						  <table class="align-l">
+							<tr>
+								<th>등록자</th>
+								<td class="align-l">
+									${tripDTO.name}
+									<input type="hidden" name="username" value="${tripDTO.username}"/>
+									<input type="hidden" name="idx" value="${tripDTO.idx}"/>
+									<input type="hidden" name="schedule_idx" value="${tripDTO.schedule_idx}"/>
+								</td>
+							</tr>
+							  <tr>
+								  <th>출장명<span class="required-value">*</span></th>
+								  <td><input class="form-control sor-1" type="text" name="subject" value="${tripDTO.subject}" data-required="true"/></td>
+							  </tr>
+							<tr>
+								<th>시작 일시<span class="required-value">*</span></th>
+								<td class="coutn-dis">
+									<input class="form-control sor-1" id="startDate" type="datetime-local" name="start_date" style="width: 23%;" data-required="true"/>
+								</td>
+							</tr>
+							<tr>
+								<th>종료 일시<span class="required-value">*</span></th>
+								<td class="coutn-dis">
+									<input class="form-control sor-1" id="endDate" type="datetime-local" name="end_date" style="width: 23%;" data-required="true"/>
+								</td>
+							</tr>
+							  <tr>
+								  <th>출장 장소<span class="required-value">*</span></th>
+								  <td>
+									  <div class="inline-layout">
+										  <input type="text" name="address" class="form-control" id="roadAddress" disabled="disabled" data-required="true" value="${tripDTO.address}"/>
+										  <button type="button" class="btn btn-sm btn-outline-primary" onclick="addressSearch()"><i class="bi bi-geo-alt-fill"></i></button>
+									  </div>
+								  </td>
+							  </tr>
+							<tr>
+								<th>내용<span class="required-value">*</span></th>
+								<td><textarea class="form-control art" name="content">${tripDTO.content}</textarea></td>
+							</tr>
+						  </table>
+					  </form>
                   </div>
                	</div>
                	<div class="col-12 col-lg-12">
                		<div class="btn-room">
-	           			<div class="btn btn-primary">수정하기</div>
-	                	<div class="btn btn-primary">돌아가기</div>
+	           			<div class="btn btn-primary" onclick="layerPopup('출장을 수정하시겠습니까?', '확인', '취소', tripUpdate, removeAlert)">수정</div>
+	                	<div class="btn btn-outline-primary" onclick="location.href='/trip/detail/${tripDTO.schedule_idx}'">취소</div>
 	           		</div>
            		</div>
            	</div>
@@ -252,12 +157,61 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
-	let start_date = '${tripDTO.start_date}';
-	let startDate = start_date.slice(0, -3);
-	$('#startDate').val(startDate);
+	let start_date = '${tripDTO.start_date}'; // 예: '2025-01-22 19:41:00'
+	//let startDate = start_date.slice(0, -3).split(" "); // 초 부분 제거 -> '2025-01-22 19:41'
+	$('#startDate').val(start_date); // input에 값 설정
+	//let startDateVal = startDate.split(" "); // 공백으로 분리 -> ['2025-01-22', '19:41']
+	//let value = ; // '2025-01-22T19:41'
 
 	let end_date = '${tripDTO.end_date}';
-	let endDate = end_date.slice(0, -3);
-	$('#endDate').val(endDate);
+	//let endDate = end_date.slice(0, -3);
+	$('#endDate').val(end_date);
+
+	function validateForm(){
+		let requiredFields = document.querySelectorAll('[data-required="true"]');
+		let isVaild = true;
+
+		requiredFields.forEach(function (field){
+			if(!field.value.trim()){
+				field.classList.add('is-invalid'); // 클래스 추가
+				isValid = false;
+			}else {
+				field.classList.remove('is-invalid'); // 유효하면 클래스 제거
+			}
+		});
+
+		return isVaild;
+
+	}
+
+	function tripUpdate(){
+
+		let isFormValid = validateForm();
+
+		if (isFormValid) {
+			console.log('폼이 유효합니다.');
+
+			let form = document.querySelector('form');
+			let formData = new FormData(form);
+
+			formData.append('address', $('input[name="address"]').val());
+
+			fileAjax('PUT', '/trip/update', formData);
+
+		} else {
+			removeAlert();
+			console.log('폼에 잘못된 값이 있습니다.');
+			layerPopup("필수값을 입력해주세요.", "확인", false, removeAlert, removeAlert); // 실패 시 팝업
+		}
+	}
+
+	function fileSuccess(response){
+		removeAlert();
+		if(response.status === 200){
+			layerPopup(response.message, '확인', false, function(){location.href = '/trip/detail/' + response.schedule_idx;}, removeAlert);
+		}else{
+			layerPopup(response.message, '확인', false, removeAlert, removeAlert);
+		}
+	}
 </script>
 </html>

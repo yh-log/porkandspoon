@@ -780,15 +780,9 @@ public class UserController {
 	 * 인사이동 리스트 조회
 	 */
 	@GetMapping(value="/ad/employeeTransferList")
-	public List<UserDTO> employeeTransferList(
-			@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword,
-	        @RequestParam(defaultValue = "", value ="start_date" ) String start_date,
-	        @RequestParam(defaultValue = "", value = "end_date") String end_date){
+	public List<UserDTO> employeeTransferList(@ModelAttribute PagingDTO pagingDTO){
 		
-		List<UserDTO> result = userService.employeeTransferList(page, cnt, option, keyword, start_date, end_date);
+		List<UserDTO> result = userService.employeeTransferList(pagingDTO);
 		
 		return result;
 	}
@@ -798,15 +792,9 @@ public class UserController {
 	 * 직영점 이동 리스트 조회
 	 */
 	@GetMapping(value="/ad/storeTransferList")
-	public List<UserDTO> storeTransferList(
-		@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword,
-	        @RequestParam(defaultValue = "", value ="start_date" ) String start_date,
-	        @RequestParam(defaultValue = "", value = "end_date") String end_date){
+	public List<UserDTO> storeTransferList(@ModelAttribute PagingDTO pagingDTO){
 		
-		List<UserDTO> result = userService.storeTransferList(page, cnt, option, keyword, start_date, end_date);
+		List<UserDTO> result = userService.storeTransferList(pagingDTO);
 
 		return result;
 	}
@@ -816,13 +804,9 @@ public class UserController {
 	 * 미발령 직원 리스트 조회
 	 */
 	@GetMapping(value="/ad/notTransferList")
-	public List<UserDTO> notTransferList(
-		@RequestParam(value = "page", defaultValue = "1") int page, 
-	        @RequestParam(value = "cnt", defaultValue = "10") int cnt,
-	        @RequestParam(defaultValue = "", value = "option") String option,
-	        @RequestParam(defaultValue = "", value="keyword") String keyword){
+	public List<UserDTO> notTransferList(@ModelAttribute PagingDTO pagingDTO){
 		
-		List<UserDTO> result = userService.notTransferList(page, cnt, option, keyword);
+		List<UserDTO> result = userService.notTransferList(pagingDTO);
 
 		return result;
 	}

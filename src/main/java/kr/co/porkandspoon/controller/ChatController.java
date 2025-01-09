@@ -188,9 +188,10 @@ public class ChatController {
 	 */
 	@GetMapping(value = "/messages/{roomId}")
 	@ResponseBody
-	public List<ChatDTO> chatRoomMessage(@PathVariable String roomId, @RequestParam String username) {
+	public List<ChatDTO> chatRoomMessage(
+			@PathVariable String roomId, @RequestParam String username, @RequestParam String page) {
 
-		return chatService.chatRoomMessage(roomId, username);
+		return chatService.chatRoomMessage(roomId, username, page);
 	}
 
 	/**

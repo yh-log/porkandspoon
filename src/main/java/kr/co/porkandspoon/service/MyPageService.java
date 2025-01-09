@@ -147,6 +147,14 @@ public class MyPageService {
 			return tripDTO;
 		}
 
+		// 캘린더 테이블에서 삭제 필요
+		int tripCalenderDeleteRow = myPageDao.tripCalenderDelete(tripDTO);
+		if(tripCalenderDeleteRow == 0){
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장 캘린더 일정을 삭제하지 못했습니다.");
+			return tripDTO;
+		}
+
 		tripDTO.setStatus(200);
 		tripDTO.setMessage("출장을 삭제했습니다.");
 
@@ -155,7 +163,10 @@ public class MyPageService {
 	}
 
 
-
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 일정 데이터 가공
+	 */
 	public static String convertToTargetFormat(String dateString) {
 		// 'T'를 공백으로 대체하고 ":00" 추가
 		return dateString.replace("T", " ") + ":00";
@@ -170,13 +181,6 @@ public class MyPageService {
 		tripDTO.setStart_date(convertToTargetFormat(tripDTO.getStart_date()));
 		tripDTO.setEnd_date(convertToTargetFormat(tripDTO.getEnd_date()));
 
-		int writeRow = myPageDao.tripWrite(tripDTO);
-		if(writeRow == 0) {
-			tripDTO.setStatus(500);
-			tripDTO.setMessage("출장 등록에 실패했습니다.");
-			return tripDTO;
-		}
-
 		// 출장 캘린더 등록
 		int tripCalenderRow = myPageDao.tripCalenderWrite(tripDTO);
 		if(tripCalenderRow == 0) {
@@ -185,9 +189,48 @@ public class MyPageService {
 			return tripDTO;
 		}
 
+		int writeRow = myPageDao.tripWrite(tripDTO);
+		if(writeRow == 0) {
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장 등록에 실패했습니다.");
+			return tripDTO;
+		}
+
 		tripDTO.setStatus(200);
 		tripDTO.setMessage("출장 등록에 성공했습니다.");
 		return tripDTO;
 
+	}
+
+	/**
+	 * author yh.kim, (25.01.08)
+	 * 출장 수정
+	 */
+	public TripDTO tripUpdate(TripDTO tripDTO) {
+
+		tripDTO.setStart_date(convertToTargetFormat(tripDTO.getStart_date()));
+		tripDTO.setEnd_date(convertToTargetFormat(tripDTO.getEnd_date()));
+
+		// 출장 테이블 업데이트
+		int tripUpdateRow = myPageDao.tripUpdate(tripDTO);
+		if(tripUpdateRow == 0) {
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장 수정이 미완료되었습니다.");
+			return tripDTO;
+		}
+
+
+		// 캘린더 테이블 업데이트
+		int tripCalenderRow = myPageDao.tripCalenderUpdate(tripDTO);
+		if(tripCalenderRow == 0) {
+			tripDTO.setStatus(500);
+			tripDTO.setMessage("출장 수정이 미완료되었습니다.");
+			return tripDTO;
+		}
+
+		tripDTO.setStatus(200);
+		tripDTO.setMessage("출장 수정이 완료되었습니다.");
+
+		return tripDTO;
 	}
 }
