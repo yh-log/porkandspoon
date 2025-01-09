@@ -95,7 +95,7 @@
 						<li id="firstMenu"><a href="/ad/myPage">나의 정보</a></li>
 						<li id="secondMenu"><a href="#">출장</a></li>
 						<li id="secondMenu"><a href="/ad/myPageSign">서명관리</a></li>
-						<li id="secondMenu"><a href="/ad/myPageBuy">구매기록</a></li>
+						<li id="secondMenu" class="active"><a href="/ad/myPageBuy">구매/사용 기록</a></li>
 					</ul>
 				</section>
 				<section class="cont">

@@ -5,7 +5,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>식단표</title>
+<title>매장관리</title>
+<!-- 부트스트랩 -->
+<link rel="shortcut icon"
+	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -158,6 +162,17 @@ border-bottom: none;
     font-size: 16px;
 }
 
+  .modal-close {
+    cursor: pointer;
+  }
+
+.card-body{
+	display: flex;
+}
+.form-check .form-check-input {
+    float: left;
+    margin-left: -0.7em;
+}
 	
 </style>
 </head>
@@ -194,7 +209,7 @@ border-bottom: none;
 			      <div class="modal-content">
 			        <div class="modal-header">
 			            <h5 class="title">이번 주 주급 현황</h5>
-			            <button type="button" id="closeWeeklyPayModal" class="modal-close">X</button>
+			            <span class="modal-close" id="closeWeeklyPayModal" >&times;</span>
 			        </div>
 			        <div class="modal-body">
 			            <table id="weeklyPayTable" class="table">
@@ -226,7 +241,7 @@ border-bottom: none;
 					    <div class="modal-content">
 					        <div class="modal-header">
 					            <h5 class="title">스케줄 수정</h5>
-					            <button type="button" id="closeEditModal" class="modal-close">X</button>
+			                    <span class="modal-close" id="closeEditModal" >&times;</span>
 					        </div>
 					        <div class="modal-body">
 					        
@@ -263,8 +278,18 @@ border-bottom: none;
 					                    <tr>
 					                        <th>상태</th>
 					                        <td>
-					                            <label><input type="radio" name="is_done" value="Y" id="isDoneYes" /> 완료</label>
-					                            <label><input type="radio" name="is_done" value="N" id="isDoneNo" /> 미완료</label>
+					                        	<div class="card-body">
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="is_done"  value="N" id="isDoneYes" checked="checked"> 
+														<label class="form-check-label" for="flexRadioDefault1">완료 </label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="is_done"  value="Y"  id="isDoneNo" >
+														<label class="form-check-label" for="flexRadioDefault2">미완료 </label>
+													</div>
+											 </div>	
+					                        	
+					        
 					                        </td>
 					                    </tr>
 					                </table>
@@ -283,7 +308,7 @@ border-bottom: none;
 					    <div class="modal-content">
 					        <div class="modal-header">
 					            <h5 class="title">스케줄 등록</h5>
-					            <button type="button" id="closeRegisterModal" class="modal-close">X</button>
+					            <span class="modal-close" id="closeRegisterModal">&times;</span>
 					        </div>
 					        <div class="modal-body">
 					            <form id="registerEventForm">
@@ -318,8 +343,16 @@ border-bottom: none;
 					                    <tr>
 					                        <th>상태</th>
 					                        <td>
-					                            <label><input type="radio" name="registerIsDone" value="Y" id="registerIsDoneYes" /> 완료</label>
-					                            <label><input type="radio" name="registerIsDone" value="N" id="registerIsDoneNo" checked /> 미완료</label>
+					                            <div class="card-body">
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="is_done"  value="N" id="isDoneYes" checked="checked"> 
+														<label class="form-check-label" for="flexRadioDefault1">완료 </label>
+													</div>
+													<div class="form-check">
+														<input class="form-check-input" type="radio" name="is_done"  value="Y"  id="isDoneNo" >
+														<label class="form-check-label" for="flexRadioDefault2">미완료 </label>
+													</div>
+											 </div>	
 					                        </td>
 					                    </tr>
 					                </table>
@@ -493,6 +526,9 @@ $(document).ready(function () {
 
     loadEvents();
 
+    
+    
+    
   // 이름 데이터 로드 및 select 태그에 추가
 function loadPartNames(selectId, selectedValue = null) {
     $.ajax({
@@ -529,6 +565,10 @@ function loadPartNames(selectId, selectedValue = null) {
                 selectElement.appendChild(option);
             });
 
+            
+            
+            
+            
             // 이름 선택 시 이벤트 추가
             $(selectId).on('change', function () {
                 const selectedOption = this.options[this.selectedIndex];
@@ -546,6 +586,9 @@ function loadPartNames(selectId, selectedValue = null) {
                 }
             });
 
+            
+            
+            
             // hidden 필드 기본값 설정 (최초 선택된 값에 대해)
             if (selectElement.options.length > 0) {
                 const defaultOption = selectElement.options[selectElement.selectedIndex];
@@ -585,16 +628,18 @@ function openRegisterModal() {
 }
 
 function openEditModal(info) {
-    const eventData = {
-        history_idx: info.event.extendedProps.history_idx, // history_idx 가져오기
-        part_idx: info.event.extendedProps.part_idx, // part_idx 가져오기
-        part_name: info.event.extendedProps.part_name,
-        work_date: new Date(info.event.start).toISOString().slice(0, 10), // 날짜만 추출
-        start_time: new Date(info.event.start).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-        end_time: new Date(info.event.end).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-        pay: info.event.extendedProps.pay,
-        is_done: info.event.extendedProps.is_done
-    };
+	console.log(info);
+	 const eventData = {
+		        history_idx: info.event.extendedProps.history_idx,
+		        part_idx: info.event.extendedProps.part_idx,
+		        part_name: info.event.extendedProps.part_name,
+		        // 날짜 추출 (시간대 보정)
+		        work_date: formatDateForInput(info.event.start.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })),
+		        start_time: info.event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+		        end_time: info.event.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+		        pay: info.event.extendedProps.pay,
+		        is_done: info.event.extendedProps.is_done
+		    };
 
     console.log('수정할 이벤트 데이터:', eventData);
 
@@ -616,6 +661,16 @@ function openEditModal(info) {
     $('#editModalBox').fadeIn();
 }
 
+function formatDateForInput(dateString) {
+    // 'YYYY.M.D' 형식을 'YYYY-MM-DD'로 변환
+    const parts = dateString.split('.').map(function(str) {
+        return str.trim();
+    });
+    const year = parts[0];
+    const month = parts[1].padStart(2, '0'); // 두 자리로 맞춤
+    const day = parts[2].padStart(2, '0'); // 두 자리로 맞춤
+    return year + '-' + month + '-' + day; // 문자열 연결
+}
 
 $('#deleteEditMenu').on('click', function () {
     const historyIdx = $('#editHistoryIdx').val(); // 삭제하려는 이벤트의 history_idx 값
@@ -686,7 +741,7 @@ $('#deleteEditMenu').on('click', function () {
             work_date: $('#registerMenuDate').val(),
             start_time: $('#registerMenuStartTime').val(),
             end_time: $('#registerMenuEndTime').val(),
-            is_done: $('input[name="registerIsDone"]:checked').val(),
+            is_done: $('input[name="is_done"]:checked').val(),
         };
 
         console.log('등록된 데이터:', newEventData);
