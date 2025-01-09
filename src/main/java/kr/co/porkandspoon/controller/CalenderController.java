@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.service.CalenderService;
 import kr.co.porkandspoon.util.CommonUtil;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @RestController
 public class CalenderController {
@@ -32,8 +33,13 @@ public class CalenderController {
 	
 	// 일정 페이지 이동
 	@GetMapping(value="/calender")
-	public ModelAndView calenderView() {
-		return new ModelAndView("/calender/calender");
+	public ModelAndView calenderView(@AuthenticationPrincipal CustomUserDetails user) {
+		
+		ModelAndView mav = new ModelAndView("/calender/calender");
+		String username = user.getName();
+		mav.addObject("username", username);
+		
+		return mav;
 	}
 	
     // 일정 리스트 호출 ajax
@@ -57,7 +63,7 @@ public class CalenderController {
 
         // 필터가 비어있거나 null인 경우 모든 타입 포함
         if (filters == null || filters.isEmpty()) {
-            filters = Arrays.asList("C", "P", "T");
+            filters = Arrays.asList("");
         }
 
         // 필터링된 일정 조회

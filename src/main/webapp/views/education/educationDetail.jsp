@@ -198,84 +198,88 @@
 	
 	<div id="app">
    <jsp:include page="../sidebar.jsp" />
-   <div id="main">
-      <jsp:include page="../header.jsp" />
-      <div class="page-content">
-         <section id="menu">
-			<h4 class="menu-title">교육 등록 리스트</h4>
-			<ul>
-				<li id="firstMenu" class="active"><a href="#">교육 등록</a></li>
-				<li id="secondMenu"><a href="#">수강 기록</a></li>
-			</ul>
-		</section>
-         <section class="cont">
-            <div class="col-12 col-lg-12">
-               <div class="tit-area">
-                  <h5>교육 상세보기</h5>
-               </div>
-               <div class="cont-body"> 
-                  <!-- 여기에 내용 작성 -->
-                  <div class="col-12 col-lg-12">
-                  	<input type="hidden" value="${info.no}"/>
-	                  <table class="align-l">
-	                  	<tr>
-	                  		<th>등록자</th>
-	                  		<td class="align-l">${info.name}</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>카테고리</th>
-            				<c:if test="${info.category == 'duty'}">
-		                  		<td class="align-l">의무 교육</td>         				
-            				</c:if>
-            				<c:if test="${info.category == 'job'}">
-		                  		<td class="align-l">직무 교육</td>         				
-            				</c:if>
-            				<c:if test="${info.category == 'hygiene'}">
-		                  		<td class="align-l">위생 교육</td>         				
-            				</c:if>
-            				<c:if test="${info.category == 'operate'}">
-		                  		<td class="align-l">운영 교육</td>         				
-            				</c:if>		
-	                  	</tr>
-	                  	<tr>
-	                  		<th>부서</th>
-	                  		<td class="align-l">${info.text}</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>제목</th>
-	                  		<td class="align-l">${info.subject}</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>영상</th>
-							<td>	                        
-			                	<div class="responsive-iframe">
-                                	<div id="player"></div>
-                                </div>
-                    		</td>
-	                  	</tr>
-	                  	<tr>
-	                  		<th>내용</th>
-	                  		<td class="align-l">${info.content}</td>
-	                  	</tr>
-	                  </table>
-                  </div>
-               	</div>
-               	<div class="col-12 col-lg-12">
-               		<div class="btn-room">
-               			<sec:authorize access="hasRole('admin') or hasRole('superadmin')">
-		           			<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
-		           		</sec:authorize>
-		                <div class="btn btn-primary" onclick="back()">돌아가기</div>
-		                <sec:authorize access="hasRole('admin') or hasRole('superadmin')">
-		                	<div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
-		                </sec:authorize>
+	   <div id="main">
+	      <jsp:include page="../header.jsp" />
+	      <div class="page-content">
+	         <section id="menu">
+				<h4 class="menu-title">교육 등록 리스트</h4>
+				<ul>
+					<li id="firstMenu" class="active"><a href="#">교육 등록</a></li>
+					<li id="secondMenu"><a href="#">수강 기록</a></li>
+				</ul>
+			</section>
+	         <section class="cont">
+	            <div class="col-12 col-lg-12">
+	               <div class="tit-area">
+	                  <h5>교육 상세보기</h5>
+	               </div>
+	               <div class="cont-body"> 
+	                  <!-- 여기에 내용 작성 -->
+	                  <div class="col-12 col-lg-12">
+	                  	<input type="hidden" value="${info.no}"/>
+		                  <table class="align-l">
+		                  	<tr>
+		                  		<th>등록자</th>
+		                  		<td class="align-l">${info.name}</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>카테고리</th>
+	            				<c:if test="${info.category == 'duty'}">
+			                  		<td class="align-l">의무 교육</td>         				
+	            				</c:if>
+	            				<c:if test="${info.category == 'job'}">
+			                  		<td class="align-l">직무 교육</td>         				
+	            				</c:if>
+	            				<c:if test="${info.category == 'hygiene'}">
+			                  		<td class="align-l">위생 교육</td>         				
+	            				</c:if>
+	            				<c:if test="${info.category == 'operate'}">
+			                  		<td class="align-l">운영 교육</td>         				
+	            				</c:if>		
+		                  	</tr>
+		                  	<tr>
+		                  		<th>부서</th>
+		                  		<td class="align-l">${info.text}</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>제목</th>
+		                  		<td class="align-l">${info.subject}</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>영상</th>
+								<td>	                        
+				                	<div class="responsive-iframe">
+	                                	<div id="player"></div>
+	                                </div>
+	                    		</td>
+		                  	</tr>
+		                  	<tr>
+		                  		<th>내용</th>
+		                  		<td class="align-l">${info.content}</td>
+		                  	</tr>
+		                  </table>
+	                  </div>
+	               	</div>
+	               	<div class="col-12 col-lg-12">
+	               		<div class="btn-room">
+	               			<sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
+			           			<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
+			           		</sec:authorize>
+			           		<sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
+			                	<div class="btn btn-primary" onclick="location.href='/ma/education'">돌아가기</div>
+			                </sec:authorize>
+			                <sec:authorize access="hasRole('USER')">
+			                	<div class="btn btn-primary" onclick="location.href='/us/education'">돌아가기</div>
+			                </sec:authorize>			           					           			                			                			             
+			                <sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
+			                	<div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
+			                </sec:authorize>
+		           		</div>
 	           		</div>
-           		</div>
-           	</div>
-         </section>   
-         
-      </div>
-    </div>
+	           	</div>
+	         </section>                                
+	      </div>
+	    </div>
 	</div>
 		
 </body>
@@ -344,13 +348,9 @@
     }
 
     function eduUpdate() {
-        location.href="/ad/educationUpdate/${info.no}"
+        location.href="/us/educationUpdate/${info.no}"
     }
-
-    function back(){
-        location.href="/ad/education"
-    }
-    
+ 
 	function secondBtn1Act() {
 		// 두번째팝업 1번버튼 클릭시 수행할 내용
 		console.log('두번째팝업 1번 버튼 동작');

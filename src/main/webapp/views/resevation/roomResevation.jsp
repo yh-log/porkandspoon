@@ -429,7 +429,7 @@
 	$(document).on('click', '.remove-employee', function(){
 	    var employeeId = $(this).data('id'); // 버튼의 data-id에서 employeeId 추출
 	    console.log('삭제할 직원 ID:', employeeId);
-
+	    var idx = $(this).closest('tr').index();
 	    // 배열에서 제거
 	    selectedEmployees = selectedEmployees.filter(function(id){
 	        return id !== employeeId;
@@ -437,7 +437,7 @@
 
 	    // 테이블에서 해당 행 제거
 	    $(this).closest('tr').remove();
-
+	    exampleData.rows.splice(idx, 1);
 	    // 조직도에서 선택 해제
 	    $('#jstree').jstree('deselect_node', employeeId);
 	}); 

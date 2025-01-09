@@ -25,11 +25,11 @@
             u.username, u.name, c.content AS position_content	, u.parent, d.text
         FROM 
             user u
-        JOIN 
+        LEFT JOIN 
             department d
 	    ON  
 	        u.parent = d.id
-		JOIN
+		LEFT JOIN
 			code c
 		ON
 			u.position = c.name

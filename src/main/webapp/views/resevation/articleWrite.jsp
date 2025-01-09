@@ -197,7 +197,7 @@
 		                  	</tr>
 		                  	<tr>
 		                  		<th>등록자</th>
-		                  		<td class="align-l" id="writer">${info}</td>
+		                  		<td class="align-l" id="writer">${info.name}</td>
 		                  	</tr>
 		                  	<tr>
 		                  		<th>물품 명</th>
@@ -222,7 +222,7 @@
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
 										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault3" value="S">
-										<label class="form-check-label" for="flexRadioDefault3">단기 대여</label>
+										<label class="form-check-label" for="flexRadioDefault3">${info.name}단기 대여</label>
 									</div>
 		                  		</td>
 		                  	</tr>
@@ -270,7 +270,7 @@
 <script src='/resources/js/common.js'></script>
 
 <script>
-	
+	console.log('name : ','${info.name}');
 	// 물품 등록
 	function articleWrite() {
 		var subject = $('input[name="subject"]').val();

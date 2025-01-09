@@ -25,8 +25,8 @@ public class ResevationService {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	// 물품 등록(작성자 정보)
-	public UserDTO info(String loginId) {	
-		return resDao.info(loginId);
+	public UserDTO info(String userId) {	
+		return resDao.info(userId);
 	}
 
 	public int articleWrite(Map<String, Object> params) {

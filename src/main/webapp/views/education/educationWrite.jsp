@@ -331,9 +331,7 @@
 	            console.log("정규식 매치 실패"); // 디버깅용 로그
 	            return null;
 	        }
-	    }
-	
-	    
+	    }  
 	});
 	
 	function eduWrite() {

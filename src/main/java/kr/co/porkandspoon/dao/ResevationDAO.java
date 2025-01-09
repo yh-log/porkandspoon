@@ -11,7 +11,7 @@ import kr.co.porkandspoon.dto.UserDTO;
 @Mapper
 public interface ResevationDAO {
 
-	UserDTO info(String loginId);
+	UserDTO info(String userId);
 
 	int articleWrite(Map<String, Object> params);
 

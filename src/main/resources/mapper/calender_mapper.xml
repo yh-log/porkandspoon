@@ -40,7 +40,7 @@
 	
 	<!-- 캘린더 일정 상세보기 -->
     <select id="calenderDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-        SELECT * FROM schedule WHERE idx = #{idx}
+    	SELECT s.* , u.name FROM schedule s join `user` u on s.username = u.username where s.idx = #{idx}
     </select>
     
     <!-- 캘린더 일정 수정 -->
