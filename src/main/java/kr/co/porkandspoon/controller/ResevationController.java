@@ -114,10 +114,10 @@ public class ResevationController {
 	@GetMapping(value="/ad/room/write")
 	public ModelAndView roomWrtieView(@AuthenticationPrincipal UserDetails userDetails) {
 		
-		String loginId = userDetails.getUsername();
+		String userId = userDetails.getUsername();
 		
 		ModelAndView mav = new ModelAndView("/resevation/roomWrite");
-		mav.addObject("info",resService.info(loginId));
+		mav.addObject("info",resService.info(userId));
 		
 		return mav;
 	}
@@ -178,9 +178,9 @@ public class ResevationController {
 	public ModelAndView articleWrtieView(@AuthenticationPrincipal UserDetails userDetails) {
 		
 		String loginId = userDetails.getUsername();
-		
+		UserDTO dto = resService.info(loginId);
 		ModelAndView mav = new ModelAndView("/resevation/articleWrite");
-		mav.addObject("info",resService.info(loginId));
+		mav.addObject("info",dto);
 		
 		return mav;
 	}

@@ -136,16 +136,16 @@
          <section id="menu">
             <h4 class="menu-title">캘린더</h4>
 			<div>
-		        <input type="checkbox" id="filterAll" onchange="toggleAllFilters()" checked>
+		        <input type="checkbox" id="filterAll" class="form-check-input" onchange="toggleAllFilters()" checked>
 		        <label for="filterAll">전체</label>
 		
-		        <input type="checkbox" id="filterC" onchange="handleIndividualFilter()">
+		        <input type="checkbox" id="filterC" class="form-check-input" onchange="handleIndividualFilter()">
 		        <label for="filterC">공지</label>
 		
-		        <input type="checkbox" id="filterT" onchange="handleIndividualFilter()">
+		        <input type="checkbox" id="filterT" class="form-check-input" onchange="handleIndividualFilter()">
 		        <label for="filterT">팀</label>
 		
-		        <input type="checkbox" id="filterP" onchange="handleIndividualFilter()">
+		        <input type="checkbox" id="filterP" class="form-check-input" onchange="handleIndividualFilter()">
 		        <label for="filterP">개인</label>
    			</div>
             <div class="btn btn-primary full-size" onclick="loadModal('calender','Input')">일정추가</div>
@@ -332,6 +332,7 @@
 	 	                    start_date: schedule.start_date,
 	 	                    end_date: schedule.end_date,
 	 	                    username: schedule.username,
+	 	                   	name: schedule.name,
 	 	                    type: schedule.type
 	                };
 	
@@ -343,7 +344,6 @@
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("일정 상세 조회 실패:", error);
-	            alert("서버와 통신 중 문제가 발생했습니다.");
 	        }
 	    });
 	}
@@ -353,12 +353,12 @@
         console.log('셋모달데이타 : ',data);
         if (type === 'Input') {
             // 일정 추가 모드: 입력 필드 초기화
-            console.log("일정 추가 모드: 데이터 없음");
+            console.log("일정 추가 모드: 데이터 없음",data);
             document.getElementById("calendar_subject_input").value = '';
             document.getElementById("calendar_content_input").value = '';
             document.getElementById("calendar_start_date_input").value = '';
             document.getElementById("calendar_end_date_input").value = '';
-            document.getElementById("calendar_username_input").textContent = '${pageContext.request.userPrincipal.name}'; // 작성자 자동 입력
+            document.getElementById("calendar_username_input").textContent = '${username}'; // 작성자 자동 입력
         } else if (type === 'Info') {
             // 일정 상세 보기 모드: 데이터 주입
             console.log("일정 상세 보기 모드: 데이터 주입", data);
@@ -371,12 +371,13 @@
         	}
             
             document.getElementById("subject").textContent = data.subject;
-            document.getElementById("content").textContent = data.content;
+            $("#content").html(data.content);
             document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
             document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
-            document.getElementById("username").textContent = data.username;
+            document.getElementById("username").textContent = data.name;
             document.getElementById("event_id").value = data.idx;
         } else if (type === 'Edit') {
+        	
             // 일정 수정 모드: 데이터 주입
             console.log("일정 수정 모드: 데이터 주입", data);       
             document.getElementById("edit_calendar_event_id").value = data.idx;
@@ -385,7 +386,7 @@
             document.getElementById("calendar_start_date_edit").value = data.start_date;
             document.getElementById("calendar_end_date_edit").value = data.end_date;
             document.getElementById("calendar_type_edit").value = data.type
-            document.getElementById("edit_calendar_event_username").value = data.username;
+            document.getElementById("edit_calendar_event_username").value = data.name;
         }
     }
 

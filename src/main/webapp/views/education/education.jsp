@@ -112,7 +112,7 @@
 	.sun{
         border: 2px solid #E5D471;
         width: 100%;
-        height: 100%;
+        height: 620px;
         box-sizing: border-box;
         padding: 7px;
     }
@@ -121,25 +121,16 @@
         width: 100%;
         height: 100%;
     }
-    
-    @media print {
-  /* 전체 숨기기 및 .down 표시 */
-  body * {
-    display: none !important;
-  }
-  .down, .down * {
-    display: block !important;
-  }
-  .down {
-    position: static !important;
-    width: auto !important;
-    height: auto !important;
-  }
-  
-  /* 필요시 모달 관련 추가 조정 */
-  /* 예: 모달 배경 제거, 특정 폰트 크기 변경 등 */
-}
-    
+    .print-div {
+	  display: none;
+	}
+
+	@media print {
+	  .print-div {
+	    display: block;
+	  }
+	}
+       
 </style>
 
 
@@ -308,7 +299,7 @@
 				content += '<td>운영 교육</td>';
 			}
 			
-			content += '<td><a href="/ad/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
+			content += '<td><a href="/us/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
 			content += '<td>'+view.total_time+'</td>';
 			
 			var dateOnly = view.create_date.split('T')[0];
@@ -340,23 +331,31 @@
 		$("#subject").append(response.list.subject);
 		$("#totalTime").append(response.list.total_time);
 		$("#eduDate").append(response.list.reCreate_date);
-					
+		
+		// 이미지로 저장 기능			
 		$("#downLoad").on("click", function() {
 			html2canvas($('.down')[0]).then(function(canvas) {
 		        var img = document.createElement("a");
-		        img.download = "test.png";
+		        img.download = response.list.subject+"-이수증.png";
 		        img.href = canvas.toDataURL();
 		        document.body.appendChild(img);
 		        img.click();
 		    });
 		});
-			
+		
+		// 인쇄 및 pdf 저장 기능
 		$("#print").on("click", function() {
-		    // 모달이 열려 있는지 확인 또는 강제로 열기
-		    // 예시: $('#historyInfoModal').show();
-
+	    
+			var html = document.querySelector('html');
+		    var printContents = document.querySelector('.down').innerHTML;
+		    var printDiv = document.createElement('DIV');
+		    printDiv.className = 'print-div';
+		    html.appendChild(printDiv);
+		    printDiv.innerHTML = printContents;
+		    document.body.style.display = 'none';
 		    window.print();
-		    return false;
+		    document.body.style.display = 'block';
+		    printDiv.style.display = 'none';
 		});
 	}
 	

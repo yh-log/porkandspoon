@@ -270,7 +270,7 @@
 				content += '<td>운영 교육</td>';
 			}
 			
-			content += '<td><a href="/ad/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
+			content += '<td><a href="/us/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
 			content += '<td>'+view.total_time+'</td>';
 			
 			var dateOnly = view.create_date.split('T')[0];

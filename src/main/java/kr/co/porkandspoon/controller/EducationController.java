@@ -34,14 +34,14 @@ public class EducationController {
 	@Autowired EducationService eduService;
 	@Autowired AlarmService alarmService;
 	
-	// 등록 리스트
-	@GetMapping(value="/ad/education")
+	// 등록 리스트 뷰
+	@GetMapping(value="/ma/education")
 	public ModelAndView calenderView() {
 		return new ModelAndView("/education/educationList");
 	}
 	
 	// 교육 등록 뷰
-	@GetMapping(value="/ad/educationWrite")
+	@GetMapping(value="/ma/educationWrite")
 	public ModelAndView calenderWriteView(@AuthenticationPrincipal CustomUserDetails user) {
 		
 		String userName = user.getName();
@@ -85,7 +85,7 @@ public class EducationController {
 	}
 	
 	// 교육 수정 이동
-	@GetMapping(value="/ad/educationUpdate/{no}")
+	@GetMapping(value="/ma/educationUpdate/{no}")
 	public ModelAndView educationUpdateView(@AuthenticationPrincipal CustomUserDetails user,@PathVariable int no) {
 		
 		String userName = user.getName();
@@ -110,7 +110,7 @@ public class EducationController {
 	}
 	
 	// 교육 디테일 이동
-	@GetMapping(value="/ad/educationDetail/{no}")
+	@GetMapping(value="/us/educationDetail/{no}")
 	public ModelAndView educationDetailView(@AuthenticationPrincipal CustomUserDetails user,@PathVariable int no) {
 			
 		String userName = user.getName();
@@ -146,7 +146,7 @@ public class EducationController {
 	    return null;
     }
 	
-	// 교육 이수이력 등록
+	// 교육 이수이력 등록 ajax
 	@PostMapping(value="/educationHistory")
 	public Map<String,Object> educationHistory(@RequestParam Map<String, Object> params, @AuthenticationPrincipal CustomUserDetails user){
 		
@@ -166,7 +166,7 @@ public class EducationController {
 		return result;
 	}
 	
-	// 교육 삭제
+	// 교육 삭제 ajax
 	@DeleteMapping(value="/eduDelete")
 	public Map<String,Object> eduDelete(@RequestParam int no){
 		
@@ -176,7 +176,7 @@ public class EducationController {
 		return result;
 	}
 	
-	//수강 이력 히스토리
+	//수강 이력 히스토리 ajax
 	@GetMapping(value="/eduHistory")
 	public Map<String,Object> eduHistory(@RequestParam Map<String,Object> params){
 		logger.info("다 나오니!!! : "+params);
@@ -189,7 +189,7 @@ public class EducationController {
 	}
 	
 	// 직영점주가 보는 뷰
-	@GetMapping(value="/mEducation")
+	@GetMapping(value="/us/education")
 	public ModelAndView mEducation() {
 				
 		ModelAndView mav = new ModelAndView("/education/education");

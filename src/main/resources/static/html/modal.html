@@ -128,7 +128,7 @@
 	<div id="calenderInfoModal" class="modal-template">
 		<input type="hidden" id="event_id">
 	    <div class="modal-header">
-	        <span class="modal-close" id="closeModal">&times;</span>
+	        <span class="modal-close" id="closeModal" style="z-index: 1000;">&times;</span>
 	    </div>
 	     <label class="form-label" id="detail" style="font-weight: 600; display: flex; justify-content: center; font-size: large; transform: translateY(-20px);"></label>
 	    <div class="modal-body">
@@ -161,7 +161,7 @@
 	    <input type="hidden" id="edit_calendar_event_id">
 	    <input type="hidden" id="edit_calendar_event_username">
 	    <div class="modal-header">
-	        <span class="modal-close" id="closeModal">&times;</span>
+	        <span class="modal-close" id="closeModal" style="z-index: 1000;">&times;</span>
 	    </div>
 	    <label class="form-label" style="font-weight: 600; display: flex; justify-content: center; font-size: large; transform: translateY(-20px);">일정 수정</label>
 	    <div class="modal-body">
@@ -175,9 +175,9 @@
 	        </div>
 	        <div class="form-group">
 	            <label for="calendar_start_date_edit" class="form-label">시작일</label>
-	            <input type="datetime-local" id="calendar_start_date_edit" class="form-input">
-	            <label for="calendar_end_date_edit" class="form-label" style="margin-left: 15px;">종료일</label>
-	            <input type="datetime-local" id="calendar_end_date_edit" class="form-input" style="margin-left: 15px;">
+	            <input type="datetime-local" id="calendar_start_date_edit" class="form-input" style="margin-bottom: 12px;">
+	            <label for="calendar_end_date_edit" class="form-label" >종료일</label>
+	            <input type="datetime-local" id="calendar_end_date_edit" class="form-input" >
 	        </div>
 	        <div class="form-group">
 	            <label for="calendar_subject_edit" class="form-label">일정 제목</label>
