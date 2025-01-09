@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,11 +62,31 @@ public class FoodieController {
 		return dto;
 	}
 	
+	@PostMapping(value="/review/write")
+	public FoodieDTO setReviewW(@ModelAttribute FoodieDTO dto) {
+		logger.info(""+dto.getContent()+dto.getUsername()+dto.getStore_idx()+dto.getReview_star());
+		
+		if(foodieService.setReviewW(dto) > 0) {
+			dto.setStatus(200);
+			dto.setMessage("성공");
+			dto.setStore_idx(foodieService.getstoreidx(dto));
+		}else {
+			dto.setStatus(400);
+			dto.setMessage("실패");
+		}
+		return dto;
+	}
 	
-	
-	
-	
-	
+	@DeleteMapping(value="/review/delete")
+	public FoodieDTO setDeleteR(@ModelAttribute FoodieDTO dto) {
+		logger.info(""+dto.getReview_idx());
+		if(foodieService.serDeleteR(dto) > 0) {
+			dto.setStore_idx(foodieService.getStoreidx(dto));
+			dto.setStatus(200);
+			dto.setMessage("삭제성공");
+		}
+		return dto;
+	}
 	
 	
 	

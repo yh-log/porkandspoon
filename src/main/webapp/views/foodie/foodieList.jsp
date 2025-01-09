@@ -84,6 +84,46 @@
 	.trash {
 		text-align: right;
 	}
+	
+	.review-write-modal {
+	    border: 1px solid #d3d3d3;
+	    position: absolute;
+	    left: 50%;
+	    top: 246px;
+	    transform: translateX(-50%);
+	    width: 550px;
+	    height: 400px;
+	    padding: 30px;
+	    background: #fff;
+	    border-radius: 8px;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	}
+	
+	#review-write {
+		width: 100%;
+	    height: 100%;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    z-index: 996;
+	    display: block;
+	}
+	
+	.custom-infowindow {
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--bs-primary);
+    color: white;
+    font-weight: bold;
+    border: 2px solid #007BFF;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.custom-infowindow:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -121,7 +161,7 @@
 	                  	
 	                  	
 	                  	<!-- 등록 모달 -->
-		               <div id="modal" class="modal" style="display: none;">
+		               <div id="modal" class="modal store-write" style="display: none;">
 							<div class="modal-cont foodie-write">
 								<span class="close">×</span>
 								<div id="modal-body">
@@ -172,7 +212,7 @@
 											</div>
 											<div style="text-align: center;">
 										    	<button type="button" class="btn btn btn-primary" onclick="storeWrite()">등록</button>
-												<button class="btn btn-outline-primary">취소</button>
+												<a class="btn btn-outline-primary" onclick="storedelete()">취소</a>
 											</div>
 										</form>
 										<sec:authentication var="loggedInUser" property="principal.username" />
@@ -190,7 +230,7 @@
 									</div>
 									<div style="text-align: center;" class="review-star-num">
 									</div>
-									<div style="height: 441px; overflow: auto;">
+									<div style="height: 441px; overflow-y: auto; overflow-x: hidden; margin: 0 -10px;">
 										<table class="review-table">
 											<colgroup>
 												<col width="20%" />
@@ -203,17 +243,51 @@
 										</table>
 									</div>
 									<div style="text-align: center;">
-										<a class="btn btn-primary">리뷰등록</a>
+										<a class="btn btn-primary review-write-yes" onclick="reviewWrite()">리뷰등록</a>
 										<a class="btn btn-outline-primary review-modal-close">돌아가기</a>
 									</div>
 								</div>
 							</div>
 						</div>
 						
-						
-						
-						
-						
+						<div id="review-write" class="modal" style="display: none;">
+							<div class="modal-cont review-write-modal">
+								<div id="modal-body">
+									<div>
+										<h4 class="menu-title" style="text-align: center;">후기 등록</h4>
+									</div>
+									<div>
+										<table class="review-table">
+											<colgroup>
+												<col width="20%" />
+												<col width="80%" />
+											</colgroup>
+											<tbody>
+												<tr>
+													<th>작성자</th>
+													<td style="text-align: left;">${userName}</td>
+												</tr>
+											</tbody>
+										</table>
+										<div style="padding: 10px 0px;">
+											<input type="text" class="form-control" id="content-reivew" placeholder="후기를 등록하세요." style="height: 50px;">
+										</div>
+									</div>
+									<div>
+										<div style="text-align: center; padding: 20px 0px;"><h3 style="font-size: 19px;">당신의 별점은?</h3></div>
+										<div class="basic-star" style="text-align: center;">
+										    <div id="basic-st" class="star-rating star-width" style="width: 160px; height: 32px; background-size: 32px;" title="0/5">
+											    <div class="star-value" style="background-size: 32px; width: 0%;"></div>
+											</div>
+										</div>
+									</div>
+									<div style="text-align: center;">
+										<a class="btn btn-primary" onclick="setReview()">등록</a>
+										<a class="btn btn-outline-primary review-modal-modal-close">닫기</a>
+									</div>
+								</div>
+							</div>
+						</div>
 						
 						
 						
@@ -241,7 +315,77 @@
 <script src="/resources/assets/static/js/pages/rater-js.js"></script>
 <script>
 	
+	function reviewWrite(store_idx) {
+		console.log('매장값 :', store_idx);
+		$('#review-write').show();
+		$('#review-write').data('store-idx', store_idx); 
+
+	    // 별점 클릭 이벤트 설정
+	    var starContainer = document.getElementById('basic-st');
+	    var starElement = starContainer.querySelector('.star-value');
+
+	    starContainer.addEventListener('click', function (event) {
+	        var clickX = event.offsetX;
+	        var containerWidth = starContainer.clientWidth;
+	        
+	        // 클릭한 위치에 따라 별점 계산 (1~5)
+	        var ratingValue = Math.ceil((clickX / containerWidth) * 5);
+	        var starPercentage = (ratingValue / 5) * 100;
+
+	        // 별점 UI 업데이트 및 데이터 저장
+	        starElement.style.width = starPercentage + '%';
+	        $('#review-write').data('star-value', ratingValue); // 별점 값 저장
+	        console.log('선택한 별점:', ratingValue);
+	    });
+	}
 	
+	function setReview() {
+	    var store_idx = $('#review-write').data('store-idx'); // store_idx 가져오기
+	    var starValue = $('#review-write').data('star-value'); // star 값 가져오기
+	    var content = $('#content-reivew').val();
+	    var loggedInUser = '${loggedInUser}';
+
+	    console.log('등록할 매장 ID:', store_idx);
+	    console.log('선택한 별점:', starValue);
+	    console.log('후기 내용:', content);
+	    console.log('후기 내용:', loggedInUser);
+
+	    if (!content.trim()) {
+	    	layerPopup(
+		            '후기를 등록해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+	    }
+
+	    if (!starValue || starValue <= 0) {
+	    	layerPopup(
+		            '별점을 선택해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+	    }
+
+	    var url = '/review/write';
+	    var params = {
+	        store_idx: store_idx,
+	        review_star: starValue,
+	        content: content,
+	        username: loggedInUser
+	    };
+	    httpAjax('POST', url, params);
+	}
+
 	function openModal(data) {
 		var url = '/getReviewList';
 		var data = {store_idx: data};
@@ -274,7 +418,8 @@
 	        reviewstar = '<div id="review-star" class="star-rating" style="width: 160px; height: 32px; background-size: 32px;" data-rating="' + total + '" title="' + total + '/5">' +
 	            '<div class="star-value" style="background-size: 32px; width: ' + totals + '%;"></div>' +
 	            '</div>';
-	        $('.review-star-num').html(reviewstar);  
+	        $('.review-star-num').html(reviewstar); 
+	        $('.review-write-yes[onclick^="reviewWrite"]').attr('onclick', 'reviewWrite(' + response[0].store_idx + ')');
 	    }
 		
 		if(response.length > 0) {
@@ -289,7 +434,7 @@
 			content += '<th>' + item.name + '</th>';
 			content += '<td class="content-review">' + item.content + '</td>';
 			if (loggedInUser === item.username) {
-			    content += '<td class="trash"><i class="bi bi-trash btn-popup bi-icon" style="color:gray;" onclick="deleteboard(' + item.review_idx + ')"></i></td>';
+			    content += '<td class="trash"><i class="bi bi-trash btn-popup bi-icon" style="color:gray; cursor: pointer;" onclick="deleteReview(' + item.review_idx + ')"></i></td>';
 			} else {
 				content += '<td class="trash">' +
 		        '<div class="star-rating" style="width: 91px; height: 17px; background-size: 18px;" data-rating="' + item.review_star + '" title="' + item.review_star + '/5">' +
@@ -304,9 +449,25 @@
 	}
 
 	
+	function deleteReview(data) {
+		layerPopup(
+	            '리뷰를 삭제하시겠습니까?',
+	            '확인',
+	            '취소',
+	            deleteRe.bind(null, data),
+	            function () {
+	            	removeAlert();
+	            }
+	        );
+	        return;
+	}
 	
-	
-	
+	function deleteRe(data) {
+		console.log(data);
+		var url = '/review/delete';  
+	    var params = { review_idx: data };
+	    httpAjax('DELETE', url, params);
+	}
 	
 	
 	
@@ -317,6 +478,9 @@
 	
 	    // getAjax 함수 호출 (여러 매장의 데이터를 받아올 때 'JSON' 형식으로 받음)
 	    getAjax(url, 'JSON');
+	    $(document).on('reloadStoreList', function () {
+	        getAjax(url, 'JSON');
+	    });
 	});
 	
 	// AJAX 성공 시 호출되는 함수
@@ -345,25 +509,40 @@
 	        var marker = new kakao.maps.Marker({
 	            position: markerPosition
 	        });
-	
+	        var starValue = store.total_review_star ? parseFloat(store.total_review_star).toFixed(1) : '0.0';
+
+		     // 백분율 계산 (5점 기준)
+		     var starPercentage = (starValue / 5) * 100;
 	        // 마커를 지도에 표시
 	        marker.setMap(map);
-	
+			
 	        // 인포윈도우 표시 내용 (매장 이름)
-	        var iwContent = '<div style="width: auto;">' + store.store_name + '</div>';
-	        var iwPosition = marker.getPosition(); // 마커의 위치
-	
-	        // 인포윈도우 생성
-	        var infowindow = new kakao.maps.InfoWindow({
-	            position: iwPosition,
-	            content: iwContent
+	        var iwContent = 
+	        	'<div class="custom-infowindow" onclick="openModal(' + store.store_idx + ')" style="background: white; border: 2px solid var(--bs-primary); padding: 10px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); cursor: pointer; transition: background 0.3s ease, border 0.3s ease;" ' +
+	            'onmouseover="this.style.background=\'#cdd7fb\'; this.style.color=\'white\'; this.style.border=\'2px solid #0056b3\'" ' +
+	            'onmouseout="this.style.background=\'white\'; this.style.color=\'#333\'; this.style.border=\'2px solid var(--bs-primary)\'">' +
+
+	                // 매장 이름
+	                '<div class="info-header" style="font-weight: bold; color: var(--bs-primary); font-size: 18px;">' + store.store_name + '</div>' +
+
+	                // 별점 + 총 리뷰 점수 표시
+	                '<div class="info-body" style="margin-top: 3px; color: #333;">' +
+	                    '<div class="star-rating" style="width: 91px; height: 17px; background-size: 18px;" title="' + starValue + '/5">' +
+	                        '<div class="star-value" style="background-size: 18px; width: ' + starPercentage + '%; position: relative;"></div>' +
+	                    '<p style="font-size: 12px; color: #ababab;">' + starValue + '</p>' +
+	                    '</div>' +
+	                '</div>' +
+	            '</div>';
+
+	        var customOverlay = new kakao.maps.CustomOverlay({
+	            position: markerPosition,
+	            content: iwContent,
+	            xAnchor: 0.5,
+	            yAnchor: 1.2
 	        });
-	
-	        // 마커 위에 인포윈도우를 표시
-	        infowindow.open(map, marker);
-	        kakao.maps.event.addListener(marker, 'click', function() {
-	            openModal(store.store_idx); // 마커 클릭 시 store_idx를 이용해 모달 띄우기
-	        });
+
+	        // 마커 표시 시 기본적으로 커스텀 인포윈도우 열기
+	        customOverlay.setMap(map);
 	    });
 	}
 	
@@ -379,6 +558,10 @@
 	
 	$('.review-modal-close').on('click', function() {
 		$('#review').hide();
+	})
+	
+	$('.review-modal-modal-close').on('click', function() {
+		$('#review-write').hide();
 	})
 	
 	
@@ -458,6 +641,9 @@
 	    listEl.appendChild(fragment);
 	}
 
+	function storedelete() {
+		$('.store-write').hide();
+	}
 
 	function getListItem(index, places) {
 
@@ -507,6 +693,19 @@
 		        );
 		        return;
 	    }
+	    
+	    if (content == null || content.trim() === "") {
+	        layerPopup(
+	            '리뷰를 적어주세요.',
+	            '확인',
+	            null,
+	            function () {
+	                removeAlert();
+	            },
+	            function () {}
+	        );
+	        return;
+	    }
 
 	    var url = '/foodie/write';
 	    var params = {
@@ -526,7 +725,8 @@
 	function httpSuccess(response) {
 		console.log(response);
 		if (response.message === '매장등록') {
-			alert('성공');
+			$('.store-write').hide();
+			$(document).trigger('reloadStoreList');
 		}
 		
 		if(response.message === '매장중복') {
@@ -541,9 +741,21 @@
 	        );
 	        return;
 		}
+		
+		if(response.message === '성공') {
+			console.log('성공');
+			$('#review-write').hide(); // 모달 닫기
+			openModal(response.store_idx);
+		}		
+		
+		if(response.message === '삭제성공') {
+			console.log('성공');
+			removeAlert();
+			openModal(response.store_idx);
+		}		
 	}
 	
-
+	
 
 	
 </script>
