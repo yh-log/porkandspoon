@@ -39,5 +39,30 @@ public class FoodieService {
 	public List<FoodieDTO> getReviewList(FoodieDTO fdto) {
 		return foodieDAO.getReviewList(fdto);
 	}
-	
+
+
+
+	public int setReviewW(FoodieDTO dto) {
+		return foodieDAO.setReviewWrirte(dto);
+	}
+
+
+
+	public int getstoreidx(FoodieDTO dto) {
+		return foodieDAO.getstoreidx(dto);
+	}
+
+
+
+	public int serDeleteR(FoodieDTO dto) {
+		return foodieDAO.setDeleteR(dto);
+	}
+
+
+
+	public int getStoreidx(FoodieDTO dto) {
+		return foodieDAO.getStoreidx(dto);
+	}
+
+
 }
