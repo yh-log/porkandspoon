@@ -322,7 +322,7 @@
 		border: 1px solid #ccc;
 		padding: 10px;
 		height: auto; /* 부모 컨테이너에 따라 자동 조정 */
-		overflow-y: auto; /* 스크롤 활성화 */
+		overflow-y: auto; /* 스크롤 활성화 */ /*overflow-y: scroll; */
 		box-sizing: border-box; /* 패딩 포함 크기 계산 */
 	}
 
@@ -339,6 +339,12 @@
 	.chatUserEmail{
 		font-size: 14px;
 		color: gray;
+	}
+
+	#loading {
+		height: 5px;
+		background-color: transparent;
+		visibility: visible;
 	}
 
 </style>
@@ -401,6 +407,7 @@
 
 							<div id="chatingDivBox" style="display: none;">
 								<div class="form-control" id="chatMessageDivBox" style="border: 1px solid #ccc; padding: 10px; height: 550px; overflow-y: auto;">
+									<div id="loading"></div>
 									<!-- 수신된 메시지가 여기에 추가됩니다 -->
 								</div>
 								<div id="chat-input-box">
@@ -458,10 +465,10 @@
 
 	let currentRoomId = null; // 현재 열려 있는 채팅방 ID
 
+	let currentPage = 1;
+	let isLoading = false;
+
 	$(document).ready(function(){
-
-		console.log("Stomp 객체 확인:", typeof Stomp);
-
 		// WebSocket 클라이언트 초기화
 		stompClient = Stomp.over(new SockJS('/wsConnect'));
 
@@ -478,8 +485,8 @@
 			document.getElementById('userProfile').src = '/resource/img/person.png';
 		}
 
-
 		participationChatList(`${userDTO.username}`);
+
 
 
 	}); // document ready
@@ -508,7 +515,7 @@
 		});
 
 		if (isAlreadyAdded) {
-			alert("이미 추가된 사용자입니다!");
+			console.log('이미 추가된 사용자입니다.');
 			return; // 중복된 경우 함수 종료
 		}
 
@@ -553,8 +560,11 @@
 			$('#userChatList').append(content);
 		}
 
+		// 받아온 채팅 메시지 리스트
 		if(currentFunction === 'ML'){
 			console.log(response);
+
+
 
 			let chatName = response[0];
 
@@ -580,9 +590,23 @@
 				}
 
 				content += '</div>';
-				console.log('생성된 HTML:', content);
+				//console.log('생성된 HTML:', content);
 			})
-			$('#chatMessageDivBox').append(content);
+			//$('#chatMessageDivBox').append(content);
+
+			isLoading = false; // 메시지 로딩 완료
+
+			// `#loading`이 없으면 추가
+			if ($('#loading').length === 0) {
+				$('#chatMessageDivBox').prepend('<div id="loading" style="height: 5px;"></div>');
+			}
+
+			// 채팅 메시지 상단에 삽입
+			$('#chatMessageDivBox').prepend(content);
+			//$('#loading').after(content);
+
+			// 스크롤을 새로 추가된 메시지 위치로 조정
+			$('#chatMessageDivBox').scrollTop($('#chatMessageDivBox')[0].scrollHeight);
 
 		}
 
@@ -736,7 +760,7 @@
 		// 현재 열려 있는 채팅방 ID 갱신
 		currentRoomId = roomId;
 
-		chatRoomOpenValue = roomId;
+		//chatRoomOpenValue = roomId;
 
 		// WebSocket을 통한 구독 요청
 		stompClient.subscribe('/sub/chat/' + roomId, function (message) {
@@ -746,9 +770,7 @@
 			// 보낸 사람이 나인지 상대방인지 확인
 			const isSender = receivedMessage.username === '${userDTO.username}';
 
-
-
-			// 메시지 화면에 추가
+			// 메시지 화면에 추가 (서버에서 저장 실행)
 			if (isSender) {
 				// 내가 보낸 메시지 (Send)
 				$('#chatMessageDivBox').append(
@@ -785,7 +807,7 @@
 		console.log('실행!');
 		const username = '${userDTO.username}';
 		const content = $('#messageInput').val();
-		const roomId = chatRoomOpenValue;
+		const roomId = currentRoomId;
 
 		console.log('직원 아이디 => ', username);
 
@@ -807,12 +829,21 @@
 
 	});
 
+
+
+
+
 	// 채팅 메시지 조회
-	function loadChatMessages(roomId){
+	function loadChatMessages(roomId, pages = 1){
+
+		console.log('여기서 증가한 페이지는? ', currentPage);
 
 		console.log('메시지 요청 ', roomId);
+		console.log('페이지는 ', pages);
 
-		let chatDTO = {'username' : '${userDTO.username}', 'roomId' : roomId};
+		// 페이지 같이 넘겨야 함!
+
+		let chatDTO = {'username' : '${userDTO.username}', 'roomId' : roomId, 'page' : pages};
 		getAjax('/chat/messages/' + roomId, 'JSON', chatDTO)
 		currentFunction = 'ML';
 	}
@@ -836,7 +867,41 @@
 
 	});
 
+	const observer = new IntersectionObserver(function (entries){
+		console.log('감지된1');
+		if(entries[0].isIntersecting && !isLoading){
+			console.log('감지된2');
+			isLoading = true;
+			currentPage++;
+			loadChatMessages(currentRoomId, currentPage);
+		}
+	}, {
+		root: document.querySelector('#chatMessageDivBox'), // 스크롤 컨테이너 지정
+		threshold: 0.1 // 완전히 보일 때 실행
+	}); // 완전히 보일 때 실행
 
+	const loadTrigger = document.querySelector('#loading');
+	if (loadTrigger) {
+		observer.observe(loadTrigger); // 로딩 트리거 요소에 감지 기능 추가
+	} else {
+		console.error('#loading 요소를 찾을 수 없습니다.');
+	}
+
+
+	// 스크롤 이벤트로 추가 감지
+	$('#chatMessageDivBox').on('scroll', function () {
+		if ($(this).scrollTop() === 0 && !isLoading) { // 스크롤 상단 감지
+			console.log('스크롤 상단 감지');
+			isLoading = true;
+			currentPage++;
+			loadChatMessages(currentRoomId, currentPage);
+		}
+	});
+
+	// `#loading` 위치 보장
+	if ($('#loading').length === 0) {
+		$('#chatMessageDivBox').prepend('<div id="loading" style="height: 1px;"></div>');
+	}
 
 </script>
 

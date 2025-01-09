@@ -220,7 +220,7 @@
 	                  	</tr>
 	                  	<tr>
 	                  		<th>내용</th>
-	                  		<td><textarea class="form-control art" name="content">${tripDTO.content}</textarea></td>
+	                  		<td>${tripDTO.content}</td>
 	                  	</tr>
 	                  </table>
                   </div>
@@ -228,7 +228,7 @@
                	<div class="col-12 col-lg-12">
 					<div id="btn-gap">
 						<button type="button" class="btn btn-primary" onclick="location.href='/trip/update/${tripDTO.schedule_idx}'" style="float: left;">수정</button>
-						<button type="button" class="btn btn-outline-primary" onclick="tripDelete()" style="float: left;">삭제</button>
+						<button type="button" class="btn btn-outline-primary" onclick="layerPopup('출장을 삭제하시겠습니까?', '확인', '취소', tripDelete, removeAlert)" style="float: left;">삭제</button>
 						<button type="button" class="btn btn-outline-secondary" onclick="location.href='/trip/listView'" style="float: right;">목록</button>
 					</div>
            		</div>
@@ -264,21 +264,22 @@
 
 	function tripDelete(){
 		let schedule_idx = '${tripDTO.schedule_idx}';
+		let idx = '${tripDTO.idx}';
 		console.log('받은 ', schedule_idx);
 
-		let tripDTO = {'schedule_idx' : schedule_idx};
+		let tripDTO = {'schedule_idx' : schedule_idx, 'idx' : idx};
 
 		httpAjax('DELETE', '/trip/delete', tripDTO);
-
-
-
-
 
 	}
 
 	function httpSuccess(response){
+		console.log(response);
+		removeAlert();
 		if(response.status === 200){
-			location.href = '/trip/listView';
+			layerPopup(response.message, '확인', false, function(){location.href = '/trip/listView';}, removeAlert);
+		}else {
+			layerPopup(response.message, '확인', false, removeAlert, removeAlert);
 		}
 	}
 </script>

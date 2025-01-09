@@ -692,7 +692,7 @@
 	</update>
 
 	<!-- 인사이동 리스트 조회 -->
-	<select id="employeeTransferList" parameterType="map"
+	<select id="employeeTransferList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT
 		et.idx,
@@ -783,7 +783,7 @@
 
 
 	<!-- 직영점 이동 리스트 조회 -->
-	<select id="storeTransferList" parameterType="map"
+	<select id="storeTransferList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT
 		et.idx,
@@ -867,7 +867,7 @@
 	</select>
 
 	<!-- 미발령 직원 리스트 조회 -->
-	<select id="notTransferList" parameterType="map"
+	<select id="notTransferList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT
 		u.username,

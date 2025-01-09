@@ -135,6 +135,7 @@
 <%--<script src='/resources/js/common.js'></script>--%>
 <script>
 
+
 	var firstnewPage = 1;
 	var paginationInitialized = false;
 
@@ -221,8 +222,8 @@
 			content += '<td>' + item.schedule_idx + '</td>';
 			content += '<td colspan="2"><a href="/trip/detail/' + item.schedule_idx+  '" >' + item.subject + '</a></td>';
 
-			let start_date = item.start_date.split("T");
-			let end_date = item.end_date.split("T");
+			let start_date = item.start_date.slice(0, -3);
+			let end_date = item.end_date.slice(0, -3);
 
 			content += '<td>' + start_date[0] + '</td>';
 			content += '<td>' + end_date[0] + '</td>';
@@ -237,7 +238,6 @@
 		$('#tripList').append(content);
 
 	}
-
 
 </script>
 
