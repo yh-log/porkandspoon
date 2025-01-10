@@ -172,13 +172,37 @@ public interface ManageDAO {
 
 	ManageDTO getSpotName(String owner);
 
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 등록 시 과거 매출 내역 조회
+	 */
+    ManageDTO pastSeales(ManageDTO manageDTO);
 
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 등록
+	 */
+	int salesWrite(ManageDTO manageDTO);
 
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 수정
+	 */
+	int salesUpdate(ManageDTO manageDTO);
 
-	
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 매출 통계 월별 데이터 저장 스케쥴러
+	 * 매일 00:01 실행
+	 */
+//	int salesMonthScheduler(String year, String month, String day);
 
-	
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 매출 통계 일별 데이터 저장 스케쥴러
+	 * 매일 00:01 실행
+	 */
+//	int salesDailyScheduler(String year, String month, String day);
 
-	
 
 }
