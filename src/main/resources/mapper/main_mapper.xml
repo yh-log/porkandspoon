@@ -10,6 +10,7 @@
 		    m1.menu_name AS depth1_name,
 		    m1.url AS depth1_url,
 		    m1.role AS depth1_role,
+		    m1.icon AS depth1_icon,
 		    m2.menu_idx AS depth2_idx,
 		    m2.menu_name AS depth2_name,
 		    m2.url AS depth2_url,
@@ -17,8 +18,7 @@
 		FROM 
 		    menu m1
 		LEFT JOIN 
-		    menu m2 ON m1.menu_idx = m2.parent_idx AND m2.use_yn = 'Y'
-		    AND m2.`depth` = 2
+		    menu m2 ON m1.menu_idx = m2.parent_idx AND m2.use_yn = 'Y' AND m2.`depth` = 2
 		WHERE 
 		    m1.depth = 1
 		AND 
