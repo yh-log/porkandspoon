@@ -126,52 +126,52 @@
     SELECT CEIL(count(part_idx) / #{cnt}) AS pages
     FROM part
     <where>
-        is_quit = 'N' AND id = (select id from direct_store where owner = #{owner})
+        <if test="is_quit == 'all' or is_quit == null">
+            (is_quit = 'Y' OR is_quit = 'N')
+        </if>
+        <!-- is_quit가 "all"이 아닐 경우 특정 조건 -->
+        <if test="is_quit != 'all' and is_quit != null">
+            is_quit = #{is_quit}
+        </if>
+        AND id = (select id from direct_store where owner = #{owner})
         <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
             AND name LIKE CONCAT('%', #{keyword}, '%')
         </if>
     </where>
 	</select>
    
-   <select id="getPartList" resultType="kr.co.porkandspoon.dto.ManageDTO">
-    SELECT p.*, s.name as spotName
-    FROM part p
-    LEFT JOIN direct_store s ON p.id = s.id
+<select id="getPartList" resultType="kr.co.porkandspoon.dto.ManageDTO">
+    SELECT 
+        p.*, 
+        s.name AS spotName
+    FROM 
+        part p
+    LEFT JOIN 
+        direct_store s 
+    ON 
+        p.id = s.id
     <where>
-        p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})
-        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
+        <!-- is_quit가 "all"일 경우 모든 데이터 -->
+        <if test="is_quit == 'all' or is_quit == null">
+            (is_quit = 'Y' OR is_quit = 'N')
+        </if>
+        <!-- is_quit가 "all"이 아닐 경우 특정 조건 -->
+        <if test="is_quit != 'all' and is_quit != null">
+            is_quit = #{is_quit}
+        </if>
+        AND p.id = (SELECT id FROM direct_store WHERE owner = #{owner})
+        <if test="keyword != null and !keyword.equals('')">
             AND p.name LIKE CONCAT('%', #{keyword}, '%')
         </if>
     </where>
-    ORDER BY p.join_date DESC
+    ORDER BY 
+        p.join_date DESC
     LIMIT #{limit} OFFSET #{offset}
 </select>
 
 
- 	<select id="Quitcount" resultType="int" parameterType="int">
-    SELECT CEIL(count(part_idx) / #{cnt}) AS pages
-    FROM part
-    <where>
-        is_quit = 'Y' AND id = (select id from direct_store where owner = #{owner})
-        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
-            AND name LIKE CONCAT('%', #{keyword}, '%')
-        </if>
-    </where>
-	</select>
-   
-   <select id="getPartQuitList" resultType="kr.co.porkandspoon.dto.ManageDTO">
-    SELECT p.*, s.name as spotName
-    FROM part p
-    LEFT JOIN direct_store s ON p.id = s.id
-    <where>
-        p.is_quit = 'Y' AND p.id = (select id from direct_store where owner = #{owner})
-        <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
-            AND p.name LIKE CONCAT('%', #{keyword}, '%')
-        </if>
-    </where>
-    ORDER BY p.join_date DESC
-    LIMIT #{limit} OFFSET #{offset}
-	</select>
+
+ 	
 	   
 	<select id="getPartTime" resultType="kr.co.porkandspoon.dto.ManageDTO">
 	    SELECT ph.history_idx,ph.start_time,ph.end_time,ph.pay,ph.is_done,ph.work_date, p.name AS part_name, p.join_date,p.part_idx
