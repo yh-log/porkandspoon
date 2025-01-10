@@ -35,6 +35,8 @@ public class MainService {
             	depth1Menu.setDepth1_idx(depth1Idx);
             	depth1Menu.setDepth1_name((String) row.get("depth1_name"));
             	depth1Menu.setDepth1_url((String) row.get("depth1_url"));
+            	depth1Menu.setDepth1_role((String) row.get("depth1_role"));   
+            	depth1Menu.setDepth1_icon((String) row.get("depth1_icon"));   
             	depth1MenuMap.put(depth1Idx, depth1Menu);
                 menuList.add(depth1Menu);
             }
@@ -45,6 +47,7 @@ public class MainService {
             	depth2Menu.setDepth2_idx(depth2Idx);
             	depth2Menu.setDepth2_name((String) row.get("depth2_name"));
             	depth2Menu.setDepth2_url((String) row.get("depth2_url"));
+            	depth2Menu.setDepth2_role((String) row.get("depth2_role"));
                 depth1Menu.getChildMenus().add(depth2Menu);
             }
         }

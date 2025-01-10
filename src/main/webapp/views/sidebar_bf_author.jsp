@@ -179,7 +179,6 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 	console.log('dddddaaa');
-	var authority = "";
 	$.ajax({
 		type:'GET',
 		url:'/sidebar',
@@ -187,86 +186,46 @@
 		datatype:'JSON',
 		success:function(data){
 			console.log(data.menuList);
-			console.log("data.userRole.authority ::: ",data.userRole[0].authority.split('_')[1]);
-			authority = data.userRole[0].authority.split('_')[1];
 			drawMenu(data.menuList);
             
 		},
 		error:function(e){
-			console.log(e);v
+			console.log(e);
 		}
 	});
-		
 	
-		
-	console.log("권한!!!!!",'${userRole}');
+	
+	
 	function drawMenu(menuList){
 		var content ='';
 		for (var menu of menuList) {
-			//console.log('menu.depth1_role != null: ',menu.depth1_role != null);
-			//console.log('menu.depth1_role: ',menu.depth1_role);
-			//console.log('authority: ',authority);
-			//console.log("roleArr",roleArr);
-			if(menu.depth1_role != null ){
-				 var roles = menu.depth1_role.toUpperCase().split(',');
-				 console.log("roles",roles);
-				 console.log("roles.includes(authority)",roles.includes(authority));
-
-		            // 유저의 권한이 roles 배열에 포함되는지 확인
-	            if (roles.includes(authority)) {
-					showMenu(menu);
-				}
-			}else{
-				showMenu(menu);
-			}
-		}
-
-		function showMenu(menu){
-			console.log('menu.depth1_name: ',menu.depth1_name,' menu.depth1_role:',menu.depth1_role);
-
 			
-			content +='<li class="sidebar-item'; 
-			if(menu.childMenus.length > 0){
-				content +=' has-sub">';
-				content +='<a class="sidebar-link"> ';
-			}else{
-				content +='">';
-				content +='<a href="'+menu.depth1_url+'" class=\"sidebar-link\"> ';
-			}
-			content +='<i class="bi '+menu.depth1_icon+'"></i> ';
-			content +='<span>'+menu.depth1_name+'</span></a>';
-			console.log('menu.childMenus.length : ',menu.childMenus.length);
-			if(menu.childMenus.length > 0){
-				content +='<ul class="submenu">';
-				// 권한이 all이거나 해당 권한이 있는 경우가 아닌경우 ul도 안보이게
-				for (var menu2 of menu.childMenus) {
-					if(menu2.depth2_role != null ){
-						 var roles = menu2.depth2_role.toUpperCase().split(',');
-						 console.log("depth2 roles",menu2.depth2_name , '::',roles);
-						 console.log("depth2 roles.includes(authority)",roles.includes(authority));
-
-			            // 유저의 권한이 메뉴 권한에 포함되는지 확인
-			            if (roles.includes(authority)) {
-			            	content +='<li class="submenu-item ">';
-							content +='<a href="'+menu2.depth2_url+'" class="submenu-link">'+menu2.depth2_name+'</a>';
-							content +='</li>';
-						}
-		            // 권한이 all인 경우
-					}else{
+				content +='<li class="sidebar-item'; 
+				if(menu.childMenus.length > 0){
+					content +=' has-sub">';
+					content +='<a class=\"sidebar-link\"> ';
+				}else{
+					content +='">';
+					content +='<a href="'+menu.depth1_url+'" class=\"sidebar-link\"> ';
+				}
+				content +='<i class="bi bi-person-fill"></i> ';
+				content +='<span>'+menu.depth1_name+'</span></a>';
+				console.log('menu.childMenus.length : ',menu.childMenus.length);
+				if(menu.childMenus.length > 0){
+					for (var menu2 of menu.childMenus) {
+						content +='<ul class="submenu ">';
 						content +='<li class="submenu-item ">';
 						content +='<a href="'+menu2.depth2_url+'" class="submenu-link">'+menu2.depth2_name+'</a>';
 						content +='</li>';
+						content +='</ul>';
 					}
 				}
-			}
-		
-		content +='</ul>';
-		content +='</li>';
-		
-		}
 			
+			content +='</li>';
+			
+			
+		  }
 	     $('.sidebar-menu .menu').append(content);
-	     
 	}
 	
 	$(document).on('click','li.has-sub > a',function(){
