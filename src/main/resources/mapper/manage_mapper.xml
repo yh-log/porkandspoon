@@ -27,9 +27,14 @@
 	
 	<!-- 브랜드 정보 가져오기 -->
 	<select id="getBrandInfo">
-		SELECT u.name,u.parent,d.text FROM user u
-		JOIN department d ON u.parent = d.id
-   		WHERE u.parent = (SELECT parent FROM user WHERE username = #{id}) AND u.title = 'T' limit 1;
+		SELECT 
+		    COALESCE(u.name, '없음') AS name,
+		    d.id, 
+		    d.text AS department_name
+		FROM department d
+		LEFT JOIN user u ON u.parent = d.id AND u.title = 'T'
+		WHERE d.id = (SELECT parent FROM user WHERE username = #{id})
+		LIMIT 1;
 	</select>
 	
 	<!-- 직영점 리스트 불러오기 -->

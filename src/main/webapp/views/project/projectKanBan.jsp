@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +11,10 @@
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 <link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
+
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
+
 
 <!-- select -->
 <link rel="stylesheet"
@@ -25,21 +30,6 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-#home,#schedule{
-		width: 200px;
-	}
-
-	#searchLayout{
-	    display: flex;
-	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
-    	gap: 10px; /* 요소 간 간격 */
-	}
-	
-	.selectStyle{
-		width: 230px;
-	}
-
 	.tit-area{
 		display: flex; 
 	}
@@ -118,38 +108,6 @@
 	#bar{
 		margin-top: 10px;
 	}
-.kanban-board {
-  display: flex;
-  gap: 20px;
-}
-
-.kanban-column {
-  flex: 1;
-  background: #f7f7f7;
-  border-radius: 10px;
-  padding: 20px;
-}
-
-.kanban-item {
-  background: white;
-  padding: 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  cursor: grab;
-}
-
-.tit-area {
-  display: flex; /* Flexbox로 자식 요소 정렬 */
-  align-items: center; /* 세로 정렬 */
-  justify-content: space-between; /* 요소 간 간격 균등 */
-  gap: 20px; /* 요소 간 간격 */
-}
-
-.kanban-title {
-  flex: 1; /* 제목 영역 */
-  font-size: 20px;
-}
 
 .project-info {
   flex: 3; /* 정보 영역 */
@@ -174,41 +132,130 @@
   text-align: center;
   line-height: 20px;
 }
-.task-card {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #f9f9f9;
+
+
+
+.tit-area {
+  display: flex; /* Flexbox로 자식 요소 정렬 */
+  align-items: center; /* 세로 정렬 */
+  justify-content: space-between; /* 요소 간 간격 균등 */
+  gap: 20px; /* 요소 간 간격 */
+}
+
+.kanban-board {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.kanban-column {
+  flex: 1;
+  background: #f9f9f9; /* 더 밝은 색상으로 변경 */
+  border-radius: 10px;
+  padding: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* 입력창 스타일 */
-.task-card input {
-  display: block;
-  width: 100%;
+.kanban-column h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.kanban-item {
+  background: #ffffff; /* 작업 카드의 배경색 */
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: grab;
+}
+
+.kanban-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-item h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #444;
+}
+
+.kanban-item p {
+  font-size: 14px;
+  color: #666;
   margin-bottom: 10px;
-  padding: 5px;
+}
+
+.task-card {
+  position: relative;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 10px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.task-card input,
+.task-card textarea {
+  display: block;
+  width: calc(100% - 20px);
+  margin: 10px auto;
+  padding: 10px;
+  font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  background: #f9f9f9;
 }
 
 .task-card button {
   margin-right: 5px;
-  padding: 5px 10px;
+  padding: 7px 15px;
   border: none;
   border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
   cursor: pointer;
-}
-
-.task-card button.save {
   background-color: #007bff;
   color: white;
+  transition: background-color 0.3s ease;
 }
 
 .task-card button.cancel {
   background-color: #ddd;
+  color: #555;
 }
+
+.task-card button:hover {
+  background-color: #0056b3;
+}
+
+.add-task-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: white;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.add-task-btn:hover {
+  background-color: #218838;
+}
+
 
 </style>
 	
@@ -231,8 +278,8 @@
 				<section id="menu">
 					<h4 class="menu-title">프로젝트</h4>
 					<ul>
-						<li class="active"><a href="/ad/project/List">프로젝트 리스트</a></li>
-						<li><a href="/ad/project/Write">프로젝트 등록</a></li>
+						<li class="active"><a href="/project/List">프로젝트 리스트</a></li>
+						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
 				</section>
 				<section class="cont">
@@ -240,12 +287,12 @@
 						<div class="tit-area">
 						  <h5 class="kanban-title">칸반보드</h5>
 						  <div class="project-info">
-						    <h4>황금돼지를 잡아라!</h4>
-						    <p>참여인원: 5명</p>
-						    <p>일정: 2024.12.01 - 2024.12.31</p>
-						    <p>진행률:</p>
+						    <h4>${info.name}</h4>
+						    <p>참여인원:${info.count}명</p>
+						    <p>일정: ${info.start_date} ~ ${info.end_date}</p>
+						    <p>진행률: ${info.percent}%</p>
 						    <div class="progress-bar">
-						      <div class="progress" style="width: 75%;">75%</div>
+						      <div class="progress" style="width: ${info.percent}%;">${info.percent}%</div>
 						    </div>
 						  </div>
 						</div>
@@ -253,21 +300,71 @@
                   <!-- 여기에 내용 작성 -->
                 <div class="kanban-board">
 				  <div class="kanban-column" id="todo">
-				  <h4>처리 전</h4>
-				  <div class="task-list" id="todo-list">
-				    <!-- 작업 카드들이 추가되는 곳 -->
+				    <h4>처리 전</h4>
+				    <div class="task-list" id="todoList">
+				     <c:forEach var="task" items="${list}">
+		                <c:if test="${task.is_class == 'T'}">
+		                    <div class="kanban-item" data-kanban-idx="${task.kanban_idx}" data-project-idx="${task.project_idx}">
+
+		                    	 <select class="form-select task-status" name="is_class">
+					                <option value="T" <c:if test="${task.is_class == 'T'}">selected</c:if>>처리전</option>
+					                <option value="P" <c:if test="${task.is_class == 'P'}">selected</c:if>>진행중</option>
+					                <option value="D" <c:if test="${task.is_class == 'D'}">selected</c:if>>완료</option>
+					            </select>
+		                        <h4>${task.subject}</h4>
+		                        <p>${task.content}</p>
+		                      
+		                       
+		                    </div>
+		                </c:if>
+		            </c:forEach>
+				    </div>
+				    <button class="add-task-btn" >+</button>
 				  </div>
-				  <button class="add-task-btn" onclick="createTaskCard()">+</button>
-				</div>
-								  
-				  
+				
 				  <div class="kanban-column" id="in-progress">
 				    <h4>진행 중</h4>
+				    <div class="task-list" id="inProgressList">
+				    	 <c:forEach var="task" items="${list}">
+			                <c:if test="${task.is_class == 'P'}">
+			                    <div class="kanban-item" data-kanban-idx="${task.kanban_idx}" data-project-idx="${task.project_idx}">
+
+			                    	 <select class="form-select task-status" name="is_class">
+						                <option value="T" <c:if test="${task.is_class == 'T'}">selected</c:if>>처리전</option>
+						                <option value="P" <c:if test="${task.is_class == 'P'}">selected</c:if>>진행중</option>
+						                <option value="D" <c:if test="${task.is_class == 'D'}">selected</c:if>>완료</option>
+						            </select>
+			                        <h4>${task.subject}</h4>
+			                        <p>${task.content}</p>
+			                     	 
+			                    </div>
+			                </c:if>
+			            </c:forEach>
+				    </div>
 				  </div>
+				
 				  <div class="kanban-column" id="done">
 				    <h4>완료</h4>
+				    <div class="task-list" id="doneList" >
+				    	<c:forEach var="task" items="${list}">
+			                <c:if test="${task.is_class == 'D'}">
+			                    <div class="kanban-item" data-kanban-idx="${task.kanban_idx}" data-project-idx="${task.project_idx}" >
+			                     <select class="form-select task-status" name="is_class">
+					                <option value="T" <c:if test="${task.is_class == 'T'}">selected</c:if>>처리전</option>
+					                <option value="P" <c:if test="${task.is_class == 'P'}">selected</c:if>>진행중</option>
+					                <option value="D" <c:if test="${task.is_class == 'D'}">selected</c:if>>완료</option>
+					            </select>
+			                        <h4>${task.subject}</h4>
+			                        <p>${task.content}</p>
+			                         
+			                    </div>
+			                </c:if>
+			            </c:forEach>
+				    
+				    </div>
 				  </div>
 				</div>
+
                   
                </div>
           
@@ -309,9 +406,16 @@
 
 <script>
 
-function createTaskCard() {
+document.querySelector('.kanban-board').addEventListener('change', function(event) {
+	  if (event.target.classList.contains('task-status')) {
+	    moveTask(event.target);
+	  }
+	});
+
+	function createTaskCard(listId) {
 	  // 작업 리스트 가져오기
-	  const taskList = document.getElementById('todo-list');
+	  const taskList = document.getElementById(listId);
+	  console.log("createTaskCard called"); // 실행 확인용 로그
 
 	  // 새로운 작업 카드 생성
 	  const taskCard = document.createElement('div');
@@ -319,41 +423,155 @@ function createTaskCard() {
 
 	  // 작업 카드 내부 HTML
 	  taskCard.innerHTML = `
-	    <input type="text" placeholder="제목을 입력하세요" class="task-title">
-	    
-	    <textarea id="content" class="form-control art task-content" placeholder="내용을 입력하세요" name="content"></textarea>
-	    <button class="save" onclick="saveTask(this)">저장</button>
-	    <button class="cancel" onclick="cancelTask(this)">취소</button>
+	    <input type="text"  placeholder="제목을 입력하세요"  id="subject" name= "subject" class="task-title">
+	    <input type="text"  name= "project_idx" id="project_idx" hidden=""  value="${idx}" class="task-title" >
+	    <textarea class="form-control art task-content" id="content" name="content"  placeholder="내용을 입력하세요" ></textarea>
+	    <button class="save">저장</button>
+	    <button class="cancel">취소</button>
 	  `;
+
+	  // 이벤트 바인딩
+	  taskCard.querySelector('.save').addEventListener('click', function () {
+	    saveTask(this);
+	  });
+	  taskCard.querySelector('.cancel').addEventListener('click', function () {
+	    taskCard.remove();
+	  });
 
 	  // 작업 리스트에 추가
 	  taskList.appendChild(taskCard);
 	}
-
-	// 저장 버튼 클릭 시
-	function saveTask(button) {
-	  const taskCard = button.parentElement;
-	  const title = taskCard.querySelector('.task-title').value.trim();
-	  const content = taskCard.querySelector('.task-content').value.trim();
-
-	  if (title && content) {
-	    // 저장된 내용을 표시
-	    taskCard.innerHTML = `
-	      <h4>${title}</h4>
-	      <p>${content}</p>
-	    `;
-	  } else {
-	    alert('제목과 내용을 입력하세요!');
-	  }
-	}
-
-	// 취소 버튼 클릭 시
-	function cancelTask(button) {
-	  const taskCard = button.parentElement;
-	  taskCard.remove(); // 작업 카드 삭제
-	}
-
 	
+	
+	
+	function saveTask(button) {
+	    const taskCard = $(button).closest('.task-card');
+
+	    // jQuery로 input, textarea 값 가져오기
+	    const title = taskCard.find('input[name="subject"]').val(); // 제목 값 가져오기
+	    const content = taskCard.find('textarea[name="content"]').val(); // 내용 값 가져오기
+	    const projectIdx = taskCard.find('input[name="project_idx"]').val(); // 프로젝트 idx 값 가져오기
+
+	    console.log("title: " + title);
+	    console.log("content: " + content);
+	    console.log("projectIdx: " + projectIdx);
+
+	    // CSRF 토큰 가져오기
+	    const csrfToken = $('meta[name="_csrf"]').attr('content');
+	    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+	    if (title && content) {
+	        // AJAX 요청으로 데이터 서버에 전송
+	        $.ajax({
+	            url: "/project/saveTask", // 서버에 데이터를 저장할 엔드포인트
+	            method: "POST",
+	            contentType: "application/json",
+	            headers: {
+	                [csrfHeader]: csrfToken // CSRF 헤더 추가
+	            },
+	            data: JSON.stringify({
+	                project_idx: projectIdx,
+	                subject: title,
+	                content: content,
+	                is_class: "T", // 초기 상태는 "처리 전" (T)
+	            }),
+	            success: function (response) {
+	                console.log(response);
+	                const kanbanIdx = response.kanban_idx;
+	                console.log("kanbanIdx: " + kanbanIdx);
+
+	                // 기존 taskCard 내용 제거
+	                taskCard.empty();
+
+	                // 상태 선택박스 추가
+	                const select = $('<select>')
+	                    .addClass('form-select task-status')
+	                    .append('<option value="T" selected>처리 전</option>')
+	                    .append('<option value="P">진행 중</option>')
+	                    .append('<option value="D">완료</option>')
+	                    .on('change', function () {
+	                        moveTask(this);
+	                    });
+
+	                // 제목, 내용, kanbanIdx 추가
+	                const titleElem = $('<h4>').text(title);
+	                const contentElem = $('<p>').text(content);
+	                const kanbanIdxElem = $('<p>').text(kanbanIdx).hide();
+
+	                // taskCard에 새롭게 추가
+	                taskCard.append(select)
+	                    .append(titleElem)
+	                    .append(contentElem)
+	                    .append(kanbanIdxElem);
+
+	                alert("작업이 저장되었습니다!");
+	            },
+	            error: function (xhr, status, error) {
+	                console.error("작업 저장 중 오류가 발생했습니다:", error);
+	                alert("작업 저장 중 오류가 발생했습니다.");
+	            }
+	        });
+	    } else {
+	        alert('제목과 내용을 입력하세요!');
+	    }
+	}
+
+
+	function moveTask(select) {
+		  // 이동할 taskCard 및 상태 가져오기
+		  const taskCard = select.closest('.kanban-item');
+		  const status = select.value;
+
+		  // 상태에 따른 targetColumn 설정
+		  const targetColumn = document.getElementById(
+		    status === 'T' ? 'todoList' : status === 'P' ? 'inProgressList' : 'doneList'
+		  );
+
+		  if (targetColumn) {
+		    // UI에서 카드 이동
+		    targetColumn.appendChild(taskCard);
+
+		    const kanbanIdx = taskCard.dataset.kanbanIdx; // Kanban 카드 ID
+		    const projectIdx = taskCard.dataset.projectIdx;
+		 
+		    const csrfToken = $('meta[name="_csrf"]').attr('content'); // CSRF 토큰
+		    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+
+		    console.log("kanbanIdx: " + kanbanIdx);
+		    console.log("projectIdx: " + projectIdx);
+			
+			
+		    if (!kanbanIdx || !projectIdx) {
+		        console.error("kanbanIdx 또는 projectIdx가 정의되지 않았습니다!");
+		        return;
+		      }
+
+		    // AJAX 요청으로 상태값만 업데이트
+		    $.ajax({
+		      url: '/project/updateStatus', // 상태값 업데이트용 엔드포인트
+		      method: 'PUT',
+		      contentType: 'application/json',
+		      headers: {
+		        [csrfHeader]: csrfToken // CSRF 헤더 추가
+		      },
+		      data: JSON.stringify({
+		        kanban_idx: kanbanIdx,
+		        project_idx: projectIdx, // Kanban 카드 ID
+		        is_class: status // 변경된 상태값
+		      }),
+		      success: function () {
+		        console.log('상태가 업데이트되었습니다.');
+		      },
+		      error: function (xhr, status, error) {
+		        console.error('상태 업데이트 중 오류가 발생했습니다.', error);
+		        alert('상태 업데이트 중 오류가 발생했습니다.');
+		      }
+		    });
+		  } else {
+		    console.error('Target column not found for status:', status);
+		  }
+		}
+
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
