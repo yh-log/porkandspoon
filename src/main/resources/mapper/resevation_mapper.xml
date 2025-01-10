@@ -281,10 +281,15 @@
 		SELECT * FROM item WHERE selection = #{selection}
 	</select>
 	
+	<!-- 물품 예약 등록 -->
 	<insert id="itemWrite" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
 		INSERT INTO item_schedule(no, username, start_date, end_date, subject, content)
         							VALUES(#{no},#{username},#{start_date},#{end_date},#{subject},#{content})
 	</insert>
+	
+	<update id="noRes" parameterType="kr.co.porkandspoon.dto.CalenderDTO">
+		UPDATE item SET is_item = 'N' WHERE no = #{no}
+	</update>
 	
 	<!-- 예약 일정 상세보기 -->
     <select id="resDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.CalenderDTO">
