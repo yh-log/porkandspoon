@@ -402,8 +402,87 @@
 
     <!-- author yh.kim, (25.01.10)
                 매출 통계 월별 데이터 저장 스케쥴러 -->
-
+    <insert id="salesMonthScheduler" parameterType="String">
+        INSERT INTO statistics_month (sale, id, parent, year, month, day)
+        SELECT
+            c.sale, c.id, ds.parent, #{year}, #{month}, #{day}
+        FROM chart c LEFT JOIN direct_store ds ON c.id = ds.id
+        WHERE c.create_date = SUBDATE(CURDATE(), 0)
+    </insert>
 
     <!-- author yh.kim, (25.01.10)
                 매출 통계 일별 데이터 저장 스케쥴러 -->
+    <insert id="salesDailyScheduler" parameterType="String">
+        INSERT INTO statistics_day (sale, id, `year`, `month`, `day`, week)
+        SELECT sale, id, #{year}, #{month}, #{day}, DAYOFWEEK(create_date)
+        FROM chart WHERE create_date = SUBDATE(CURDATE(), 0)
+    </insert>
+
+    <!-- author yh.kim, (25.01.10)
+         직영점 매출 통계 조회 (요일별) -->
+    <select id="getWeekChartStatistics" parameterType="String" resultType="kr.co.porkandspoon.dto.ChartDTO">
+        <![CDATA[
+        SELECT SUM(sd.sale) AS weekSum, week FROM statistics_day sd
+        WHERE sd.id = #{id}
+          AND  STR_TO_DATE(CONCAT(sd.year, '-', sd.month, '-', sd.day), '%Y-%m-%d') < CURDATE()
+          AND sd.year = #{year}
+        GROUP BY sd.week
+        ]]>
+    </select>
+
+    <!-- author yh.kim, (25.01.10)
+         직영점 매출 통계 조회 (연도 월별) -->
+    <select id="getMonhtChartStatistics" parameterType="String" resultType="kr.co.porkandspoon.dto.ChartDTO">
+        <![CDATA[
+        SELECT SUM(sm.sale) AS monthSum, sm.`month` FROM statistics_month sm
+        WHERE sm.id = #{id}
+          AND  STR_TO_DATE(CONCAT(sm.year, '-', sm.month, '-', sm.day), '%Y-%m-%d') < CURDATE()
+          AND sm.`year` = #{year}
+        GROUP BY sm.month
+        ]]>
+    </select>
+
+    <!-- author yh.kim, (25.01.10)
+         브랜드별 매출 통계 조회 (브랜드별 연간) -->
+    <select id="getChartDirectStatistics" parameterType="String" resultType="kr.co.porkandspoon.dto.ChartDTO">
+        <![CDATA[
+            SELECT SUM(sm.sale) AS brandSum, sm.parent, d.`text` AS brand
+            FROM statistics_month sm LEFT JOIN department d ON sm.parent = d.id
+            WHERE sm.`year` = #{year}  AND  STR_TO_DATE(CONCAT(sm.year, '-', sm.month, '-', sm.day), '%Y-%m-%d') < CURDATE()
+            GROUP BY sm.parent
+        ]]>
+    </select>
+
+    <!-- author yh.kim, (25.01.10)
+         브랜드별 매출 통계 조회 (브랜드 총합 월간) -->
+    <select id="getMonhtDirectStatistics" parameterType="map" resultType="kr.co.porkandspoon.dto.ChartDTO">
+        <![CDATA[
+            SELECT SUM(sm.sale) AS monthSum, sm.`month`
+            FROM statistics_month sm
+            WHERE sm.`year` = #{year} AND  STR_TO_DATE(CONCAT(sm.year, '-', sm.month, '-', sm.day), '%Y-%m-%d') < CURDATE()
+        ]]>
+        <if test="ctype != null and !ctype.equals('')">
+            <![CDATA[
+                    AND sm.parent = #{id}
+                ]]>
+        </if>
+        <![CDATA[
+            GROUP BY sm.`month`
+        ]]>
+    </select>
+
+    <!-- author yh.kim, (25.01.10)
+         브랜드 직영점 별 매출 통계 -->
+    <select id="getChartBrandStatistics" parameterType="map" resultType="kr.co.porkandspoon.dto.ChartDTO">
+        <![CDATA[
+        SELECT SUM(sm.sale) AS brandSum, sm.parent, sm.id, ds.name AS brand
+        FROM statistics_month sm LEFT JOIN direct_store ds ON sm.id = ds.id
+        WHERE sm.`year` = #{year}  AND  STR_TO_DATE(CONCAT(sm.year, '-', sm.month, '-', sm.day), '%Y-%m-%d') < CURDATE()
+          AND sm.parent = #{id}
+        GROUP BY sm.id
+
+        ]]>
+    </select>
+
+
 </mapper>
