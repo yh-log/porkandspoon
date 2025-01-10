@@ -30,16 +30,12 @@ public interface ManageDAO {
 
 	
 	//아르바이트 재직자 리스트
-	int count(int cnt, String opt, String keyword, String owner);
+	int count(int cnt, String opt, String keyword, String owner, String is_quit);
 
-	List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset, String owner);
+	List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset, String owner, String is_quit);
 
 	
-	//아르바이트 퇴직자 리스트
-	int Quitcount(int cnt, String opt, String keyword, String owner);
-
-	List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset, String owner);
-
+	
 	
 	//아르바이트 스케줄관리
 	List<ManageDTO> getPartTime(String owner);

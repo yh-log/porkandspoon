@@ -180,30 +180,20 @@ Logger logger = LoggerFactory.getLogger(getClass());
 
 
 
-	public int count(int cnt, String opt, String keyword, String owner) {
+	public int count(int cnt, String opt, String keyword, String owner, String is_quit) {
 		
-		return manageDAO.count(cnt,opt,keyword,owner);
+		return manageDAO.count(cnt,opt,keyword,owner,is_quit);
 	}
 
 
-	public List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset, String owner) {
+	public List<ManageDTO> getPartList(String opt, String keyword, int limit, int offset, String owner, String is_quit) {
 		
-		return manageDAO.getPartList(opt,keyword,limit,offset,owner);
-	}
-
-
-
-	public int Quitcount(int cnt, String opt, String keyword, String owner) {
-		
-		return manageDAO.Quitcount(cnt,opt,keyword,owner);
+		return manageDAO.getPartList(opt,keyword,limit,offset,owner,is_quit);
 	}
 
 
 
-	public List<ManageDTO> getPartQuitList(String opt, String keyword, int limit, int offset, String owner) {
-		
-		return manageDAO.getPartQuitList(opt,keyword,limit,offset,owner);
-	}
+	
 
 
 

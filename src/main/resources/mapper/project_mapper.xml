@@ -19,10 +19,6 @@
         <association property="dept" resultMap="DeptMap"/>
     </resultMap>
 	 
-	 
-	 
-	 
-	 
 	<select id="getUserInfo" resultMap="UserMap">
         SELECT 
             u.username, u.name, c.content AS position_content	, u.parent, d.text
@@ -40,7 +36,25 @@
             u.username = #{userId}
     </select>
 	
+	<insert id="setProject" parameterType="Map">
+		INSERT INTO project(username,name,start_date,end_date,is_open)VALUES(#{username},#{name},#{start_date},#{end_date},#{is_open})
+	</insert>
 
+	<select id="getProject" resultType="kr.co.porkandspoon.dto.ProjectDTO">
+  		SELECT p.*, COUNT(pp.username) AS count FROM project p
+			LEFT JOIN project_people pp ON p.project_idx = pp.project_idx
+			WHERE p.username = #{loginId}
+			    OR p.is_open = 'Y' 
+			    OR p.project_idx IN (
+			        SELECT project_idx 
+			        FROM project_people 
+			        WHERE username = #{loginId})
+			GROUP BY 
+			    p.project_idx;
+	</select>
 
+	<select id="getKanBanInfo" resultType="kr.co.porkandspoon.dto.ProjectDTO">
+		select * from project_content where project_idx = #{project_idx}
+	</select>
 
 </mapper>
