@@ -123,11 +123,8 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">교육 등록 리스트</h4>
-					<ul>
-						<li id="firstMenu"  ><a href="#">교육 등록</a></li>
-						<li id="secondMenu" class="active" ><a href="#">수강 기록</a></li>
-					</ul>
+					<h4 class="menu-title">교육</h4>
+					<div><a href="/ad/educationWrite" class="btn btn-primary full-size">등록</a></div>
 				</section>
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
@@ -156,7 +153,7 @@
 							<nav aria-label="Page navigation" style="margin-top: 35px;">
 								<ul class="pagination justify-content-center" id="pagination"></ul>
 							</nav>
-							<div class="btn-trip"><a href="/ad/educationWrite" class="btn btn-primary">등록</a></div>
+							
 							
 							<div id="modalBox" class="modal" style="display: none;">
 					   			<div class="modal-content"></div>

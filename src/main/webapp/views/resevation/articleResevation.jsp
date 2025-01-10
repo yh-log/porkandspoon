@@ -148,7 +148,18 @@
 				<p style="margin: 10px; cursor: pointer;" class="category-title">노트북</p>
 				<ul class="item-list" style="display: none;">
 					<c:forEach items="${note}" var="item">
-						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+						<c:choose>
+			            	<c:when test="${item.is_item == 'N'}">
+				                <li style="cursor: not-allowed; color: grey;">
+				                    ${item.item_name} (예약됨)
+				                </li>
+			            	</c:when>
+			            	<c:otherwise>
+			                	<li onclick="detail('${item.no}')" style="cursor: pointer;">
+			                    ${item.item_name}
+			                	</li>
+			            	</c:otherwise>
+			       		</c:choose>
 					</c:forEach>
 				</ul>
 			</div>
@@ -156,7 +167,18 @@
 				<p style="margin: 10px; cursor: pointer;" class="category-title">빔 프로젝터</p>
 				<ul class="item-list" style="display: none;">
 					<c:forEach items="${project}" var="item">
-						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+						<c:choose>
+			            	<c:when test="${item.is_item == 'N'}">
+				                <li style="cursor: not-allowed; color: grey;">
+				                    ${item.item_name} (예약됨)
+				                </li>
+			            	</c:when>
+			            	<c:otherwise>
+			                	<li onclick="detail('${item.no}')" style="cursor: pointer;">
+			                    ${item.item_name}
+			                	</li>
+			            	</c:otherwise>
+			       		</c:choose>
 					</c:forEach>
 				</ul>
 			</div>
@@ -164,7 +186,18 @@
 				<p style="margin: 10px; cursor: pointer;" class="category-title">차량</p>
 				<ul class="item-list" style="display: none;">
 					<c:forEach items="${car}" var="item">
-						<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
+						<c:choose>
+			            	<c:when test="${item.is_item == 'N'}">
+				                <li style="cursor: not-allowed; color: grey;">
+				                    ${item.item_name} (예약됨)
+				                </li>
+			            	</c:when>
+			            	<c:otherwise>
+			                	<li onclick="detail('${item.no}')" style="cursor: pointer;">
+			                    ${item.item_name}
+			                	</li>
+			            	</c:otherwise>
+			       		</c:choose>
 					</c:forEach>
 				</ul>
 			</div>
