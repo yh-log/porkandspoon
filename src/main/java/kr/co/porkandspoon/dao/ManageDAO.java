@@ -1,14 +1,11 @@
 package kr.co.porkandspoon.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.RestDTO;
-import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.dto.*;
 import org.apache.ibatis.annotations.Mapper;
-
-import kr.co.porkandspoon.dto.ManageDTO;
 
 @Mapper
 public interface ManageDAO {
@@ -191,14 +188,42 @@ public interface ManageDAO {
 	 * 매출 통계 월별 데이터 저장 스케쥴러
 	 * 매일 00:01 실행
 	 */
-//	int salesMonthScheduler(String year, String month, String day);
+	int salesMonthScheduler(String year, String month, String day);
 
 	/**
 	 * author yh.kim, (25.01.09)
 	 * 매출 통계 일별 데이터 저장 스케쥴러
 	 * 매일 00:01 실행
 	 */
-//	int salesDailyScheduler(String year, String month, String day);
+	int salesDailyScheduler(String year, String month, String day);
 
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 직영점 매출 통계 조회 (요일별)
+	 */
+	List<ChartDTO> getWeekChartStatistics(String id, String year);
 
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 직영점 매출 통계 조회 (연도 월별)
+	 */
+	List<ChartDTO> getMonhtChartStatistics(String id, String year);
+
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 브랜드별 매출 통계 조회 (브랜드별 연간)
+	 */
+	List<ChartDTO> getChartDirectStatistics(Map<String, String> params);
+
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 브랜드별 매출 통계 조회 (브랜드 총합 월간)
+	 */
+	List<ChartDTO> getMonhtDirectStatistics(Map<String, String> params);
+
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 브랜드 직영점 별 매출 통계
+	 */
+	List<ChartDTO> getChartBrandStatistics(Map<String, String> params);
 }

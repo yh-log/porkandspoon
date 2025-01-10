@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kr.co.porkandspoon.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import kr.co.porkandspoon.dao.UserDAO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.ManageDTO;
-import kr.co.porkandspoon.dto.MealDTO;
-import kr.co.porkandspoon.dto.RestDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.ManageService;
 import kr.co.porkandspoon.util.CommonUtil;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
@@ -58,7 +54,7 @@ public class ManageController {
 	}
 	
 	// 직영점 관리 해당 브랜드팀만 사용하는 기능
-	@GetMapping(value="/us/directManage")
+	@GetMapping(value="/ma/directManage")
 	public ModelAndView directManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String id = userDetails.getUsername();
 		List<ManageDTO> list = manageService.getDirectList(id);
@@ -465,6 +461,32 @@ public class ManageController {
 		manageDTO = manageService.salesWrite(manageDTO);
 
 		return manageDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 직영점 매출 통계 조회
+	 */
+	@GetMapping(value = "/chart/store/statistics")
+	public List<ChartDTO> getChartStatistics(@RequestParam String id, @RequestParam String year){
+		// 추가로 날짜 데이터 받기! JSP 수정 후
+
+		List<ChartDTO> chartDTO = manageService.getChartStatistics(id, year);
+
+		return chartDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 브랜드별 매출 통계 조회
+	 */
+	@GetMapping(value = "/chart/direct/statistics")
+	public List<ChartDTO> getChartDirectStatistics(@RequestParam String id, @RequestParam String year, @RequestParam String type){
+
+		logger.info("받아온 타이븐!!!!!!!!! " + type);
+		List<ChartDTO> chartDTO = manageService.getChartDirectStatistics(id, year, type);
+
+		return chartDTO;
 	}
 
 }
