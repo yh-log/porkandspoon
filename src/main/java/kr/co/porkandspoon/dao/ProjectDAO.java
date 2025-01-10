@@ -17,7 +17,17 @@ public interface ProjectDAO {
 
 	List<ProjectDTO> getProject(String loginId);
 
-	ProjectDTO getKanBanInfo(int project_idx);
+	List<ProjectDTO> getKanBanInfo(int project_idx);
+
+	int setTask(Map<String, String> params);
+
+	int editStatus(Map<String, String> params);
+
+	ProjectDTO getProjectInfo(int project_idx);
+
+	String getPercent(String loginId);
+
+	int editPercent(Map<String, String> params);
 
 	
 

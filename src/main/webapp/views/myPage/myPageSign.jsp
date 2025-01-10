@@ -94,8 +94,8 @@
 				<section id="menu">
 					<h4 class="menu-title">나의 정보</h4>
 					<ul>
-						<li id="firstMenu"><a href="/ad/myPage">나의 정보</a></li>
-						<li id="secondMenu"><a href="#">출장</a></li>
+						<li id="firstMenu"><a href="/myPageView">나의 정보</a></li>
+						<li id="secondMenu"><a href="/trip/list">출장</a></li>
 						<li id="secondMenu" class="active"><a href="/ad/myPageSign">서명관리</a></li>
 						<li id="secondMenu"><a href="/ad/myPageBuy">구매/사용 기록</a></li>
 					</ul>
