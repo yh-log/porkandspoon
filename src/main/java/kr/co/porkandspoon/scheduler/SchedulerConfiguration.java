@@ -29,5 +29,27 @@ public class SchedulerConfiguration {
         manageService.restCheckScheduler();
     }
 
+    /**
+     * author yh.kim, (25.01.09)
+     * 매출 통계 월별 데이터 저장 스케쥴러
+     * 매일 00:01 실행
+     */
+    @Scheduled(cron = "0 1 0 * * *")
+    public void salesMonthScheduler(){
+        logger.info("salesMonthScheduler");
+        manageService.salesMonthScheduler();
+    }
+
+    /**
+     * author yh.kim, (25.01.09)
+     * 매출 통계 일별 데이터 저장 스케쥴러
+     * 매일 00:01 실행
+     */
+    @Scheduled(cron = "0 1 0 * * *")
+    public void salesDailyScheduler(){
+        logger.info("salesMonthScheduler");
+        manageService.salesDailyScheduler();
+    }
+
 
 }

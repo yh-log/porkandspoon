@@ -99,6 +99,8 @@ public class TestController {
 		// % : 100을 곱한 후 마지막에 "%" 붙임 -> 12346.679%
 		String num4 = CommonUtil.addCommaToNumber(123.466789, "###.###%");
 		System.out.println("변환한 숫자 ============== " + num4);
+
+
 		
 		return new ModelAndView("login");
 	}

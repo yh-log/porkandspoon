@@ -3,6 +3,7 @@ package kr.co.porkandspoon.service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
@@ -590,14 +591,108 @@ Logger logger = LoggerFactory.getLogger(getClass());
 		
 	}
 
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 등록 시 과거 매출 내역 조회
+	 */
+	public ManageDTO pastSeales(ManageDTO manageDTO) {
 
-	
+		manageDTO = manageDAO.pastSeales(manageDTO);
+
+		if (manageDTO.getSale() == 0){
+			manageDTO.setStatus(204);
+			manageDTO.setMessage("과거 정보가 없습니다.");
+			return manageDTO;
+		}
+
+		manageDTO.setStatus(200);
+		manageDTO.setMessage("과거 매출 정보를 불러왔습니다.");
+
+		return manageDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 등록 or 수정
+	 */
+	public ManageDTO salesWrite(ManageDTO manageDTO) {
+
+		// text 가 N일 경우 isnert
+		if(manageDTO.getText().equals("N")){
+			int writeRow = manageDAO.salesWrite(manageDTO);
+			if(writeRow == 0){
+				manageDTO.setStatus(500);
+				manageDTO.setMessage("매출 등록에 실패했습니다.");
+				return manageDTO;
+			}
+		// text 가 U일 경우 update
+		}else{
+			int updateRow = manageDAO.salesUpdate(manageDTO);
+			if(updateRow == 0){
+				manageDTO.setStatus(500);
+				manageDTO.setMessage("매출 수정에 실패했습니다.");
+				return manageDTO;
+			}
+		}
+
+		manageDTO.setStatus(200);
+		manageDTO.setMessage("매출 등록에 성공했습니다.");
 
 
-	
+		return manageDTO;
+
+	}
+
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 매출 통계 월별 데이터 저장 스케쥴러
+	 * 매일 00:01 실행
+	 */
+	public void salesMonthScheduler() {
+
+		LocalDateTime time = LocalDateTime.now();
+		String date = CommonUtil.formatDateTime(time.minusDays(1), "yyyy-MM-dd");
+
+		String year = date.split("-")[0];
+		String month = date.split("-")[1];
+		String day = date.split("-")[2];
+
+//		int insertRow = manageDAO.salesMonthScheduler(year, month, day);
+//		logger.info("입력된 월별 데이터 된 로우 => " + insertRow);
+	}
+
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 매출 통계 일별 데이터 저장 스케쥴러
+	 * 매일 00:01 실행
+	 */
+	public void salesDailyScheduler() {
+
+		LocalDateTime time = LocalDateTime.now();
+		String date = CommonUtil.formatDateTime(time.minusDays(1), "yyyy-MM-dd");
+
+		String year = date.split("-")[0];
+		String month = date.split("-")[1];
+		String day = date.split("-")[2];
+
+//		int insertRow = manageDAO.salesDailyScheduler(year, month, day);
+//		logger.info("입력된 일별 데이터 된 로우 => " + insertRow);
+	}
 
 
-	
-		
-	
+	/**
+	 *
+	 * -- 월별 통계 데이터 삽입
+	 * INSERT INTO statistics_month (sale, id, parent, year, month, day)
+	 * SELECT
+	 *     c.sale, c.id, ds.parent, '2025', '01', '09'
+	 * FROM chart c LEFT JOIN direct_store ds ON c.id = ds.id
+	 * WHERE c.create_date = SUBDATE(CURDATE(), 0);
+	 * -- 원래 1 이어야 하는데 TIME이 다르게 잡혀있어서 0으로 설정함
+	 *
+	 * -- 일별 데이터 삽입 (요일 추가) 일요일 1 ~ 토요일 7
+	 * INSERT INTO statistics_month (sale, id, `year`, `month`, `day`, weekday)
+	 * SELECT sale, id, '2025', '01', '09', '요일!!', SELECT DAYOFWEEK(c.create_date)
+	 * FROM chart WHERE create_date = SUBDATE(CURDATE(), 0);
+	 */
 }
