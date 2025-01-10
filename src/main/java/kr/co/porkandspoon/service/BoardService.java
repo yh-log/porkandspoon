@@ -330,6 +330,10 @@ public class BoardService {
 		return boardDAO.getUsername(params);
 	}
 
+	public List<BoardDTO> getTeamCode() {
+		return boardDAO.getTeamCode();
+	}
+
 
 
 	

@@ -8,7 +8,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>라이브러리</title>
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -144,6 +144,9 @@
       <div class="page-content">
          <section id="menu">
             <h4 class="menu-title">공지사항</h4>
+            <ul>
+				<li><a href="/lbboardlist/View">전체 게시글</a>
+            </ul>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
@@ -248,7 +251,7 @@
 								</c:if>
 							</div>
 							<div class="col-sm-9"></div>
-							<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-primary">목록</a></div>
+							<div class="col-sm-1"><a href="/lbboardlist/View" class="btn btn-primary" style="color: white;">목록</a></div>
 				    	</div>
 					</div>
                	  </div>

@@ -6,7 +6,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>공통 레이아웃 CSS</title>
+	<title>공지사항</title>
 	
 <!-- 파일 업로더 -->
 <link rel="stylesheet"
@@ -39,7 +39,7 @@
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 	<link rel="stylesheet" href="/resources/css/common.css">
-	
+	<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}"> 
@@ -83,6 +83,9 @@
       <div class="page-content">
          <section id="menu">
             <h4 class="menu-title">공지사항</h4>
+            <ul>
+			<li><a href="/board/View">전체 게시글</a>
+           </ul>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">
@@ -90,7 +93,7 @@
                   <h5>글쓰기</h5>
                </div>
                <div class="cont-body">
-               <form id="writeData">
+               <form id="writeData" enctype="multipart/form-data">
 	               <p id="currentUser" style="display:none;"><sec:authentication property="principal.username"/></p>
 		                  <table>
 							<colgroup>
@@ -112,7 +115,7 @@
 									<th class="table-text table-text-text" style="vertical-align: top;">파일첨부</th>
 									<td>
 										<div class="mb-3">
-										 	<input class="form-control" type="file" id="formFileMultiple" name="filepond" multiple="">
+											<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" multiple="" name="filepond" id="formFileMultiple"/>
 										</div>
 									</td>
 								</tr>
@@ -165,7 +168,19 @@
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script>
+const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
+    allowMultiple: true,
+    maxFiles: 3,
+    allowImagePreview: false,
+    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
+    instantUpload: false
+});
+
+
+
 	$(document).ready(function () {
 		var username = $('#currentUser').text().trim();
 		$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
@@ -173,7 +188,19 @@
 		const params = {username: username};
 		httpAjax('GET', url, params);
 		
+		
+		getAjax('/getTeamCode', 'JSON');
+		
 	});
+	
+	function getSuccess(response) {
+		var selectElement = $('#basicSelect');
+	    selectElement.empty(); // 기존 옵션 초기화
+
+	    response.forEach(function(item) {
+	        selectElement.append('<option value="' + item.id + '">' + item.text + '</option>');
+	    });
+	}
 	
 	function httpSuccess(response) {
 		
@@ -197,7 +224,8 @@
         removeAlert(); // 팝업 닫기
         var subject = $('input[name="subject"]').val().trim(); 
         var content = $('textarea[name="contentss"]').val().trim(); 
-
+        var files = $('input[name="filepond"]')[0].files; 
+		console.log(files);
         if (!subject || !content) {
         	layerPopup(
     	            '제목과 내용 모두 입력해주세요.',
@@ -210,6 +238,7 @@
     	        );
     	        return;
         }
+        
         
         url = '/board/write';
         textEaditorWrite(url);

@@ -7,7 +7,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>공통 레이아웃 CSS</title>
+	<title>공지사항</title>
 	
 <!-- 파일 업로더 -->
 <link rel="stylesheet"
@@ -84,6 +84,9 @@
       <div class="page-content">
          <section id="menu">
             <h4 class="menu-title">공지사항</h4>
+            <ul>
+				<li><a href="/board/View">전체 게시글</a>
+            </ul>
          </section>
          <section class="cont">
             <div class="col-12 col-lg-12">

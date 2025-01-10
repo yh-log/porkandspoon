@@ -532,4 +532,11 @@ public class BoardController {
 		return new ModelAndView("/board/lbboardUpdate");
 	}
 
+	@GetMapping(value="/getTeamCode")
+	public List<BoardDTO> getTeamCode() {
+		logger.info("실행");
+		List<BoardDTO> dto = boardService.getTeamCode();
+		return dto;
+	}
+	
 }

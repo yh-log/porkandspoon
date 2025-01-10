@@ -28,6 +28,13 @@ public class BoardDTO {
 	private int sort_order;
 	private String name;
 	private String from_idx;
+	private String id;
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getFrom_idx() {
 		return from_idx;
 	}

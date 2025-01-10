@@ -71,6 +71,8 @@ public interface BoardDAO {
 	List<BoardDTO> lbboardList(Map<String, Object> parmeterMap);
 
 	int lbboardDelete(int board_idx);
+
+	List<BoardDTO> getTeamCode();
     
     
     
