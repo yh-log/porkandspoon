@@ -8,14 +8,14 @@ public class CalenderDTO extends ResponseDTO{
 	// 일정 테이블
 	private String idx;
 	private String username;
-	private LocalDateTime start_date;
-	private LocalDateTime end_date;
+	private String start_date;
+	private String end_date;
 	private String updater;
 	private String subject;
 	private String content;
 	private String type; // 캘린더 유형(전사P,팀T,개인S)
 	private String reservation_type;
-	private String no; // 물품,회의실 no
+	private int no; // 물품,회의실 no
 	private String personnel;
 	private String id; // 부서,직영 코드
 	private String name;
@@ -50,6 +50,25 @@ public class CalenderDTO extends ResponseDTO{
 	public void setAttendees(List<String> attendees) {
 		this.attendees = attendees;
 	}
+	
+	public String getStart_date() {
+		return start_date;
+	}
+	public void setStart_date(String start_date) {
+		this.start_date = start_date;
+	}
+	public String getEnd_date() {
+		return end_date;
+	}
+	public void setEnd_date(String end_date) {
+		this.end_date = end_date;
+	}
+	public LocalDateTime getCreate_date() {
+		return create_date;
+	}
+	public void setCreate_date(LocalDateTime create_date) {
+		this.create_date = create_date;
+	}
 	public String getSelection() {
 		return selection;
 	}
@@ -67,12 +86,6 @@ public class CalenderDTO extends ResponseDTO{
 	}
 	public void setIs_active(String is_active) {
 		this.is_active = is_active;
-	}
-	public LocalDateTime getCreate_date() {
-		return create_date;
-	}
-	public void setCreate_date(LocalDateTime create_date) {
-		this.create_date = create_date;
 	}
 	public String getCategory() {
 		return category;
@@ -146,18 +159,6 @@ public class CalenderDTO extends ResponseDTO{
 	public void setIdx(String idx) {
 		this.idx = idx;
 	}
-	public LocalDateTime getStart_date() {
-		return start_date;
-	}
-	public void setStart_date(LocalDateTime string) {
-		this.start_date = string;
-	}
-	public LocalDateTime getEnd_date() {
-		return end_date;
-	}
-	public void setEnd_date(LocalDateTime end_date) {
-		this.end_date = end_date;
-	}
 	public String getUsername() {
 		return username;
 	}
@@ -188,10 +189,10 @@ public class CalenderDTO extends ResponseDTO{
 	public void setReservation_type(String reservation_type) {
 		this.reservation_type = reservation_type;
 	}
-	public String getNo() {
+	public int getNo() {
 		return no;
 	}
-	public void setNo(String no) {
+	public void setNo(int no) {
 		this.no = no;
 	}
 	public String getPersonnel() {
