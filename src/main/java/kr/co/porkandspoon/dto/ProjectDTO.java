@@ -11,14 +11,20 @@ public class ProjectDTO extends ResponseDTO {
 	private String updater;
 	private Date start_date; 
 	private Date end_date; 
-	private LocalDateTime create_date;
-	private LocalDateTime update_date;
-	private LocalDateTime update_start_date;
-	private LocalDateTime update_end_date;
+	private String create_date; // 변경된 타입
+	private String update_date;
+	private Date update_start_date;
+	private Date update_end_date;
 	private int percent;
 	private int count;
 	private String is_open;
 	
+	//칸반보드
+	private String creater;
+	private int kanban_idx;
+	private String subject;
+	private String content;
+	private String is_class;
 	
 	
 	
@@ -65,28 +71,28 @@ public class ProjectDTO extends ResponseDTO {
 	public void setUpdater(String updater) {
 		this.updater = updater;
 	}
-	public LocalDateTime getCreate_date() {
+	public String getCreate_date() {
 		return create_date;
 	}
-	public void setCreate_date(LocalDateTime create_date) {
+	public void setCreate_date(String create_date) {
 		this.create_date = create_date;
 	}
-	public LocalDateTime getUpdate_date() {
+	public String getUpdate_date() {
 		return update_date;
 	}
-	public void setUpdate_date(LocalDateTime update_date) {
+	public void setUpdate_date(String update_date) {
 		this.update_date = update_date;
 	}
-	public LocalDateTime getUpdate_start_date() {
+	public Date getUpdate_start_date() {
 		return update_start_date;
 	}
-	public void setUpdate_start_date(LocalDateTime update_start_date) {
+	public void setUpdate_start_date(Date update_start_date) {
 		this.update_start_date = update_start_date;
 	}
-	public LocalDateTime getUpdate_end_date() {
+	public Date getUpdate_end_date() {
 		return update_end_date;
 	}
-	public void setUpdate_end_date(LocalDateTime update_end_date) {
+	public void setUpdate_end_date(Date update_end_date) {
 		this.update_end_date = update_end_date;
 	}
 	public int getPercent() {
@@ -100,6 +106,36 @@ public class ProjectDTO extends ResponseDTO {
 	}
 	public void setCount(int count) {
 		this.count = count;
+	}
+	public int getKanban_idx() {
+		return kanban_idx;
+	}
+	public void setKanban_idx(int kanban_idx) {
+		this.kanban_idx = kanban_idx;
+	}
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
+	public String getIs_class() {
+		return is_class;
+	}
+	public void setIs_class(String is_class) {
+		this.is_class = is_class;
+	}
+	public String getCreater() {
+		return creater;
+	}
+	public void setCreater(String creater) {
+		this.creater = creater;
 	}
 	
 	

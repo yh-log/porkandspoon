@@ -162,7 +162,7 @@
 				                <p id="first">참여인원: ${project.count} 명</p>
 				                <p>일정: ${project.start_date} ~ ${project.end_date}</p>
 				                <p>진행률</p>
-				                <div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+				                <div id="bar" style="width: 230%; background-color: #fff; border: 1px solid var(--bs-primary);">
 				                    <c:choose>
 									    <c:when test="${project.percent > 0}">
 									        <div style="width: ${project.percent}%; background-color: var(--bs-primary); color: white; text-align: center;">
@@ -215,31 +215,7 @@
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
 
-<!-- rating.js(별점)  -->
-<script src="/resources/assets/extensions/rater-js/index.js?v=2"></script>
-<script src="/resources/assets/static/js/pages/rater-js.js"></script>
-
-<!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
 <script>
 	
 	
