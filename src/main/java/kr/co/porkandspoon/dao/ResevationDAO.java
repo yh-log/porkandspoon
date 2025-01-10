@@ -71,7 +71,9 @@ public interface ResevationDAO {
 
 	int roomDelete(String idx);
 
-	void noRes(CalenderDTO calederDto);
+	int isDuplicate(int no, String start_date, String end_date);
+
+	
 
 
 

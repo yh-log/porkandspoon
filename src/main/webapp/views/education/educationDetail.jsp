@@ -264,13 +264,8 @@
 	               		<div class="btn-room">
 	               			<sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
 			           			<div class="btn btn-primary" onclick="eduUpdate()">수정하기</div>
-			           		</sec:authorize>
-			           		<sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
-			                	<div class="btn btn-primary" onclick="location.href='/ma/education'">돌아가기</div>
-			                </sec:authorize>
-			                <sec:authorize access="hasRole('USER')">
-			                	<div class="btn btn-primary" onclick="location.href='/us/education'">돌아가기</div>
-			                </sec:authorize>			           					           			                			                			             
+			           		</sec:authorize>	
+			                <div class="btn btn-primary" onclick="back()">돌아가기</div>           					           			                			                			             
 			                <sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
 			                	<div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
 			                </sec:authorize>
@@ -374,6 +369,10 @@
 		console.log('삭제 완료');
 		removeAlert(); // 팝업닫기
 		location.href="/ad/education"
+	}
+	
+	function back() {
+		history.back();
 	}
 	
 	

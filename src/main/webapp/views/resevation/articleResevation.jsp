@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	
 	
 	<!-- fullcalender -->
 	<script src='/resources/js/calender/main.js'></script>
@@ -28,10 +28,17 @@
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
-	<link rel="stylesheet" href="/resources/css/common.css">	
+	<link rel="stylesheet" href="/resources/css/common.css">		
 	
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
+	
+
+	<!-- jQuery DateTimePicker CSS (CDN) -->
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"/>
+
+	
+
 	
 <style>
      #calendarBox{
@@ -48,7 +55,7 @@
 	    width: 100%;
 	    height: 100%;
 	    background-color: rgba(0, 0, 0, 0.5);
-	    z-index: 1100;
+	    z-index: 900;
 	}
 	
 	/* 모달 내부 콘텐츠 */
@@ -148,18 +155,7 @@
 				<p style="margin: 10px; cursor: pointer;" class="category-title">노트북</p>
 				<ul class="item-list" style="display: none;">
 					<c:forEach items="${note}" var="item">
-						<c:choose>
-			            	<c:when test="${item.is_item == 'N'}">
-				                <li style="cursor: not-allowed; color: grey;">
-				                    ${item.item_name} (예약됨)
-				                </li>
-			            	</c:when>
-			            	<c:otherwise>
-			                	<li onclick="detail('${item.no}')" style="cursor: pointer;">
-			                    ${item.item_name}
-			                	</li>
-			            	</c:otherwise>
-			       		</c:choose>
+	                	<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
 					</c:forEach>
 				</ul>
 			</div>
@@ -167,18 +163,7 @@
 				<p style="margin: 10px; cursor: pointer;" class="category-title">빔 프로젝터</p>
 				<ul class="item-list" style="display: none;">
 					<c:forEach items="${project}" var="item">
-						<c:choose>
-			            	<c:when test="${item.is_item == 'N'}">
-				                <li style="cursor: not-allowed; color: grey;">
-				                    ${item.item_name} (예약됨)
-				                </li>
-			            	</c:when>
-			            	<c:otherwise>
-			                	<li onclick="detail('${item.no}')" style="cursor: pointer;">
-			                    ${item.item_name}
-			                	</li>
-			            	</c:otherwise>
-			       		</c:choose>
+	                	<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
 					</c:forEach>
 				</ul>
 			</div>
@@ -186,18 +171,7 @@
 				<p style="margin: 10px; cursor: pointer;" class="category-title">차량</p>
 				<ul class="item-list" style="display: none;">
 					<c:forEach items="${car}" var="item">
-						<c:choose>
-			            	<c:when test="${item.is_item == 'N'}">
-				                <li style="cursor: not-allowed; color: grey;">
-				                    ${item.item_name} (예약됨)
-				                </li>
-			            	</c:when>
-			            	<c:otherwise>
-			                	<li onclick="detail('${item.no}')" style="cursor: pointer;">
-			                    ${item.item_name}
-			                	</li>
-			            	</c:otherwise>
-			       		</c:choose>
+	                	<li onclick="detail('${item.no}')" style="cursor: pointer;">${item.item_name}</li>
 					</c:forEach>
 				</ul>
 			</div>
@@ -240,17 +214,21 @@
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/calenderJH.js'></script>
 
+<!-- jQuery DateTimePicker JS (CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+<!-- 한국어 로케일 파일 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/i18n/jquery.datetimepicker.ko.js"></script>
+
 <script>
 
 	var section= 'item';
 	
-	
-
 	$(document).ready(function(){
 	    // 카테고리 제목 클릭 시 슬라이드 토글
 	    $('.category-title').click(function(){
 	        $(this).next('.item-list').slideToggle();
 	    });
+	    
 	    getAjax('/itemList','JSON');
 	    dataSetting('item', 'Input');
 	    
@@ -265,10 +243,9 @@
 	            $('#category_items_group').hide();
 	            $('#category_items').empty().append('<option value="">-- 선택하세요 --</option>');
 	        }
-	    });
-	    
+	    });       
 	});
-
+	
 	function detail(no) {
 		console.log("등장",no);
 		
@@ -377,6 +354,13 @@
 	    var end_date = $('#calendar_end_date_input').val();
 	    var subject = $('#calendar_subject_input').val();
 	    var content = $('#calendar_content_input').val();
+	    console.log('날짜 제대로 받니? 실행 : ',start_date,end_date);
+	    
+	    if(!selection || !start_date || !end_date || !subject || !content){
+	    	layerPopup("항목을 입력해주세요", "확인", false, removeAlert, removeAlert);
+	    	return false;
+	    }
+	    
 	    
 	    var data = {
 	            no: no, // 물품 번호 (int 타입)
@@ -390,8 +374,6 @@
 	    // 서버 요청
         httpAjax('POST', '/itemWrite', data);
 
-        // 모달 닫기 및 초기화
-        initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
 	}
 		
 	// 일정 등록 ajax
@@ -409,7 +391,15 @@
 	            xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
 	        },
 	        success: function(response) {
-	            httpSuccess(response); // 성공 콜백
+	        	
+	        	if(response.success){
+	        		httpSuccess(response); // 성공 콜백
+	        		 // 모달 닫기 및 초기화
+	                initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+	        	}else{
+	        		layerPopup("중복된 날짜 입니다.", "확인", false, removeAlert, removeAlert);
+	        	}
+	            
 	        },
 	        error: function(e) {
 	            console.log(e); // 에러 로그 출력
@@ -462,6 +452,21 @@
 	// 데이터 주입 함수 수정
     function setModalData(type, data) {
         console.log('셋모달데이타 실행 : ',data);
+        // 한국어로 로케일 설정
+        $.datetimepicker.setLocale('ko');
+        // 데이트타임피커 라이브러리
+	    $('#calendar_start_date_input, #calendar_end_date_input').datetimepicker({
+	        format: 'Y-m-d H:00', // 분은 고정(00)되어 표시
+	        step: 60,             // 분 간격을 60분으로 설정하여 분 선택 불가
+	        datepicker: true,
+	        timepicker: true
+	    });
+	    $('#calendar_start_date_edit, #calendar_end_date_edit').datetimepicker({
+	        format: 'Y-m-d H:00', // 분은 고정(00)되어 표시
+	        step: 60,             // 분 간격을 60분으로 설정하여 분 선택 불가
+	        datepicker: true,
+	        timepicker: true
+	    });
         if (type === 'Input') {
             // 일정 추가 모드: 입력 필드 초기화
             console.log("일정 추가 모드: 데이터 없음");
@@ -471,7 +476,7 @@
             document.getElementById("calendar_end_date_input").value = '';
             document.getElementById("calendar_type").value = '';
             document.getElementById("category_items").value = '';
-            document.getElementById("calendar_username_input").textContent = '${info}'; // 작성자 자동 입력
+            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
         } else if (type === 'Info') {
             // 일정 상세 보기 모드: 데이터 주입
             console.log("일정 상세 보기 모드: 데이터 주입", data);
@@ -501,7 +506,7 @@
             document.getElementById("calendar_end_date_edit").value = data.end_date;
             document.getElementById("calendar_type").value = data.selection;
             document.getElementById("category_items").value = data.item_name;
-            document.getElementById("calendar_username_edit").textContent = '${info}';
+            document.getElementById("calendar_username_edit").textContent = '${info.name}';
             console.log("이름 받다", '${info}');  
             fetchCategoryItems(data.selection,data.no);
         }
@@ -560,6 +565,11 @@
 	    var end_date = $('#calendar_end_date_edit').val();
 	    var subject = $('#calendar_subject_edit').val();
 	    var content = $('#calendar_content_edit').val();
+	    
+	    if(!selection || !start_date || !end_date || !subject || !content){
+	    	layerPopup("항목을 입력해주세요", "확인", false, removeAlert, removeAlert);
+	    	return false;
+	    }
 	          	      	       		
        	// 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
        	var params = {
@@ -601,7 +611,6 @@
            	}
        	});
 	}
-
 	
    	function secondBtn1Act() {
 		// 두번째팝업 1번버튼 클릭시 수행할 내용
@@ -617,9 +626,10 @@
 	}
 	
 	
-	
-	
-	
+
+    
+
+		
 	
 	
 	
