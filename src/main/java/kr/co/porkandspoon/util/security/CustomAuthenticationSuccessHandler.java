@@ -58,7 +58,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		logger.info("User '{}' logged in successfully. Failed attempts reset.", username);
 
 		// 기본 성공 페이지로 이동
-		response.sendRedirect("/loginTestView");
+		response.sendRedirect("/main");
 	}
 	
 

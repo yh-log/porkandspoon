@@ -167,7 +167,7 @@
 							</form>
 							<!-- 에러 메시지 처리 -->
 							<c:if test="${param.error eq 'true'}">
-								<p style="color: red;">로그인 실패: 비밀번호가 틀렸습니다.</p>
+								<p style="color: red;">아이디 / 비밀번호를 확인해주세요.</p>
 							</c:if>
 							<c:if test="${param.error eq 'locked'}">
 								<p style="color: red;">계정이 잠겨 있습니다. 관리자에게 문의하세요.</p>

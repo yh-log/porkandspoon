@@ -18,6 +18,8 @@ public class Empl {
 	private String role;
 
 	private String name;
+	
+	private String user_yn;
 
 	//@Transient // DB에 관리되지 않도록 하기 위해 선언
 	
@@ -53,8 +55,12 @@ public class Empl {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
-	
+	public String getUser_yn() {
+		return user_yn;
+	}
 
+	public void setUser_yn(String user_yn) {
+		this.user_yn = user_yn;
+	}
 }

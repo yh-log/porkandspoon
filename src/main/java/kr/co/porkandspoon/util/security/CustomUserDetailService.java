@@ -31,6 +31,12 @@ public class CustomUserDetailService implements UserDetailsService {
 		Empl empl = emplRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
+
+		// user_yn 검증 로직
+		if (!"Y".equalsIgnoreCase(empl.getUser_yn())) {
+			throw new LockedException("Account is not active.");
+		}
+
 		// 비밀번호가 1111인지 확인하고 잠금 해제
 		if ("1111".equals(empl.getPassword())) {
 			resetFailedAttempts(username);
