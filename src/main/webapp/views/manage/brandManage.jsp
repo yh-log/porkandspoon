@@ -8,25 +8,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>브랜드 관리</title>
 <!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 <link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 <!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
-
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/toastify-js/src/toastify.css">
-
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
+<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">

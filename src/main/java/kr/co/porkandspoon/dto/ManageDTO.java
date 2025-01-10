@@ -40,6 +40,9 @@ public class ManageDTO extends ResponseDTO {
 	private String address_detail;
 	private String owner;
 	private String parent;
+
+	private int sale;
+	private String username;
 	//브랜드 리스트
 	
 	
@@ -302,6 +305,21 @@ public class ManageDTO extends ResponseDTO {
 	public void setParent(String parent) {
 		this.parent = parent;
 	}
-	
+
+	public int getSale() {
+		return sale;
+	}
+
+	public void setSale(int sale) {
+		this.sale = sale;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }
 

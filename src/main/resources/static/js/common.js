@@ -382,3 +382,25 @@ function httpVariousAjax(type, url, params, content){
     });
 }
 
+/**
+ * author yh.kim
+ * 필수값 체크 함수
+ * 사용 : 필수값 체크 원하는 요소에 data-required="true" 내용 추가 후 사용
+ */
+function validateForm(){
+    let requiredFields = document.querySelectorAll('[data-required="true"]');
+    let isVaild = true;
+
+    requiredFields.forEach(function (field){
+        if(!field.value.trim()){
+            field.classList.add('is-invalid'); // 클래스 추가
+            isValid = false;
+        }else {
+            field.classList.remove('is-invalid'); // 유효하면 클래스 제거
+        }
+    });
+
+    return isVaild;
+
+}
+

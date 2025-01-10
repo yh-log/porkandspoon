@@ -42,7 +42,7 @@
 	
 	<!-- 직영점 정보 가져오기 -->
  	<select id="getDirectInfo" resultType="kr.co.porkandspoon.dto.ManageDTO">
- 		SELECT ds.address,ds.address_detail,ds.name as spotName,u.name FROM direct_store ds
+ 		SELECT ds.address,ds.address_detail,ds.name as spotName,u.name, u.username, ds.id FROM direct_store ds
  		 LEFT JOIN user u ON ds.owner = u.username WHERE ds.owner = #{owner}
  	</select>	
  	
@@ -371,11 +371,39 @@
     </select>
 
     <!-- author yh.kim, (25.01.04)
-                        휴점 활성 여부 체크 스케쥴러 -->
+            휴점 활성 여부 체크 스케쥴러 -->
     <update id="restCheckScheduler">
         UPDATE direct_store ds
             JOIN rest r ON ds.id = r.id
             SET ds.is_close = 'N'
         WHERE DATE(r.end_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
     </update>
+
+    <!-- author yh.kim, (25.01.09)
+               직영점 기존 매출 여부 조회 -->
+    <select id="pastSeales" parameterType="kr.co.porkandspoon.dto.ManageDTO" resultType="kr.co.porkandspoon.dto.ManageDTO">
+        SELECT COALESCE(
+            (SELECT sale
+                FROM chart
+            WHERE id = #{id} AND create_date = #{create_date}),0) AS sale
+    </select>
+
+    <!-- author yh.kim, (25.01.09)
+                직영점 매출 등록 -->
+    <insert id="salesWrite" parameterType="kr.co.porkandspoon.dto.ManageDTO">
+        INSERT INTO chart (id, sale, create_date, creater) VALUES (#{id}, #{sale}, #{create_date}, #{username})
+    </insert>
+
+    <!-- author yh.kim, (25.01.09)
+                직영점 매출 수정 -->
+    <update id="salesUpdate" parameterType="kr.co.porkandspoon.dto.ManageDTO">
+        UPDATE chart SET sale = #{sale} WHERE id = #{id} AND create_date = #{create_date}
+    </update>
+
+    <!-- author yh.kim, (25.01.10)
+                매출 통계 월별 데이터 저장 스케쥴러 -->
+
+
+    <!-- author yh.kim, (25.01.10)
+                매출 통계 일별 데이터 저장 스케쥴러 -->
 </mapper>
