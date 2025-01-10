@@ -214,11 +214,9 @@
 		justify-content: center;
 	}
 	.short{
-		width: 200px;
+		width: 300px;
 	}
-	#start_date{
-		margin-left: 800px;
-	}
+	
 	
 	.jstree-container {
     width: 100%;
@@ -231,6 +229,9 @@
     height: 100%;
     overflow-y: auto;
 }
+.required-value{
+		color: var(--bs-danger);
+	}	
 	
 </style>
 </head>
@@ -251,8 +252,8 @@
 				<section id="menu">
 					<h4 class="menu-title">프로젝트</h4>
 					<ul>
-						<li><a href="/ad/project/List">프로젝트 리스트</a></li>
-						<li class="active"><a href="/ad/project/Write">프로젝트 등록</a></li>
+						<li><a href="/project/List">프로젝트 리스트</a></li>
+						<li class="active"><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
 				</section>
 				<section class="cont">
@@ -261,24 +262,22 @@
 							<h5>프로젝트 등록</h5>
 						</div>
 						<div class="cont-body">
-						
-	               		
-					
+
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-			         <form action="">
-			         
+			         <form action="/project/Write" method="post">
+			         <input type="hidden" name="_csrf" value="${_csrf.token}" />
                      <table>
                         <tr>
-                           <th class="align-l">프로젝트 명</th>
+                           <th class="align-l">프로젝트 명<span class="required-value">*</span></th>
                            	<td>
                            		
                            		<input class="form-control sor-1 " name="name"  type="text" placeholder="프로젝트 명을 입력해주세요." required="required"/>
-                           	</td>
+                           		
                         </tr>
                         <tr>
-                           <th class="align-l">일정</th>
+                           <th class="align-l">일정<span class="required-value">*</span></th>
                            <td >
 	                           <div id="searchLayout" class="col-7 col-lg-7">
 		                           	<input class="form-control sor-1 short"  id="start_date" name="start_date" type="date"  required="required"/>
@@ -305,7 +304,7 @@
                         </tr>
                      	</table>
 							<div id="btn-gap">							
-								<button class="btn btn-primary btn-popup">등록</button>
+								<button type="button" class="btn btn-primary btn-popup">등록</button>
 								<button class="btn btn-outline-primary">취소</button>
 							</div>
 			         </form>
@@ -589,7 +588,7 @@ getSelectId(function (selectedId) {
  $('.btn-popup').on(
 			'click',
 			function() {
-				layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', btn1Act,
+				layerPopup('프로젝트를 등록하시겠습니까?', '확인', '취소', btn1Act,
 						btn2Act);
 			});
 	
@@ -601,12 +600,35 @@ getSelectId(function (selectedId) {
 		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
 		removeAlert(); // 기존팝업닫기
 		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+		
+		// 필수 항목 검사
+	    const requiredFields = document.querySelectorAll('.required-value');
+	    let allFieldsFilled = true;
+
+	    requiredFields.forEach(field => {
+	        const input = field.closest('tr').querySelector('input, select');
+	        if (input && !input.value.trim()) {
+	            allFieldsFilled = false;
+	        	removeAlert(); // 기존팝업닫기
+	        }
+	    });
+
+	    if (!allFieldsFilled) {
+	        // 필수 항목이 비어 있을 경우 팝업 표시
+	        layerPopup("필수 항목을 입력해주세요!", "확인", false, removeAlert, removeAlert);
+
+
+	        removeAlert(); // 기존팝업닫기
+	    }
+
+	    // 모든 필수 항목이 입력된 경우 진행
+	    layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
 	}
 	
 	function btn2Act() {
 		// 2번버튼 클릭시 수행할 내용
 		console.log('2번 버튼 동작');
+		
 		removeAlert(); // 팝업닫기
 	}
 	

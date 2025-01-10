@@ -73,20 +73,24 @@
 	}
 	
 	 .filter-option {
-	    cursor: pointer;
+    cursor: pointer;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    text-align: left;
+    display: inline-block;
+    font-weight: normal; /* 기본 글씨 두께 */
+}
 
-	}
+.filter-option.active {
+    font-weight: bold; /* 활성화된 버튼은 두꺼운 글씨 */
+    border-radius: 5px; /* 선택된 버튼 스타일 */
+}
+
+
 	
-	.filter-option:hover {
-    background-color: #e9ecef;
-	}
 	
 	
-	.filter-option.active {
-	    background-color: #007bff;
-	    color: #fff;
-	    border-color: #007bff;
-	}
+	
 
 </style>
 </head>
@@ -124,13 +128,17 @@
 						</div>
 						<div class="cont-body">
 							<div class="row">
-								<h5><a onclick="location.href='/ad/part/Quit'">퇴사자 리스트 보러가기</a></h5>
-								<div class="col-5 col-lg-5"></div>
+							
+								<div class="col-5 col-lg-5">
+								
+								 <div style="display: flex; gap: 10px;">								 
+									<span class="filter-option active" data-filter="all">전체</span>
+								    <span class="filter-option" data-filter="N">재직자</span>
+								    <span class="filter-option" data-filter="Y">퇴사자</span>
+								 </div>
+								</div>
 								<div id="searchLayout"  class="col-7 col-lg-7">
-								<span class="filter-option active" data-filter="all">전체</span>
-							    <span class="filter-option" data-filter="N">재직자</span>
-							    <span class="filter-option" data-filter="Y">퇴사자</span>
-									<select id="searchOption" class="form-select selectStyle">
+										<select id="searchOption" class="form-select selectStyle">
 										<option value="name">이름</option>
 									</select>
 									<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
@@ -153,7 +161,7 @@
 										<th >나이</th>
 										<th>직영점이름</th>
 										<th>입사일</th>
-										<th></th>
+										<th>삭제</th>
 									</tr>
 								</thead>
 								<tbody id="list">
@@ -203,10 +211,20 @@ var show = 1;
 var count = 10; // 한 페이지당 항목 수
 var url = '/ad/part/List'; // 서버 요청 URL
 var paginationInitialized = false;
+var currentFilter = "all"; // 초기 필터는 "전체"
 
 $(document).ready(function () {
-    pageCall(show); // 초기 페이지 호출
 
+	    // 필터 버튼 클릭 이벤트
+	    $('.filter-option').on('click', function () {
+	        $('.filter-option').removeClass('active'); // 모든 필터 버튼에서 active 제거
+	        $(this).addClass('active'); // 클릭된 필터 버튼에 active 추가
+
+	        currentFilter = $(this).data('filter'); // 선택된 필터 값 가져오기
+	        pageCall(1); // 첫 페이지 호출
+	    });
+
+    
     // 검색 버튼 클릭 이벤트 추가
     $('.btn-primary').on('click', function () {
         pageCall(1); // 첫 번째 페이지에서 검색 시작
@@ -218,18 +236,26 @@ $(document).ready(function () {
             pageCall(1);
         }
     });
+    
+    pageCall(show); // 초기 페이지 호출
+    
+    
 });
 
 function pageCall(pg) {
 	console.log(pg);
     var keyword = $('#searchKeyword').val(); // 검색어
     var opt = $('#searchOption').val(); // 검색 옵션
-
+    var isQuit = currentFilter; // 필터 값 그대로 사용 ("all", "N", "Y")
+	
+    
+    console.log("상태값이 뭐냐!!!!1"+isQuit);
     var requestData = {
         pg: pg,
         count: count,
         opt: opt,
-        keyword: keyword
+        keyword: keyword,
+        is_quit: isQuit
     };
 
     $.ajax({

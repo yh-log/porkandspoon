@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>구내식당</title>
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">

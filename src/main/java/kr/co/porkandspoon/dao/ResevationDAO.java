@@ -71,6 +71,8 @@ public interface ResevationDAO {
 
 	int roomDelete(String idx);
 
+	void noRes(CalenderDTO calederDto);
+
 
 
 }

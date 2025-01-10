@@ -320,7 +320,13 @@
 	 
 	 function addSelectedIdToRows(selectedId) {
 	     console.log("가져온 ID:", selectedId);
-	          
+	  	// 중복 체크
+	     if(selectedEmployees.includes(selectedId)) {
+	    	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
+	         return;
+	     }
+	     selectedEmployees.push(selectedId);
+	     console.log("가져온 selectedEmployees:", selectedEmployees);
 	     $.ajax({
 	         type: 'GET',
 	         url: '/getUserInfo/'+selectedId,
@@ -332,7 +338,6 @@
 	        	 console.log("유저정보: ",response.position_content);
 	        	 console.log("유저정보: ",response.dept.text);
 	        	 
-	        	 selectedEmployees.push(response.username);
 	        	 console.log('담겨? : ',selectedEmployees);
 	        	 userName = response.name;
 	        	 userPosition = response.position_content;
@@ -342,8 +347,8 @@
 			     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'];
 	
 			     // 기존 rows에 추가
-			     exampleData.rows.push(newRow);
-			
+			     initialData.rows.push(newRow);
+			     exampleData.rows.push(newRow);				
 			     // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
 			     updateTableData('customTable', exampleData);
 			},
@@ -358,21 +363,44 @@
 	     addSelectedIdToRows(selectedId);
 	 });
 	 
-	/*  function addBtnFn() {
-		console.log('조직도 인원 저장');
-		$('#selected_employees').empty();
-	    selectedEmployees.forEach(function(employee){
-	    	console.log('뭐지',employee);
-	        var employeeTag = $('<div class="employee-tag" data-id="' + employee.username + '"></div>');
-	        employeeTag.append('<span>'+ employee.dept.text +' '+ employee.name + ' '+ employee.position_content + '</span>');
-	        employeeTag.append('<span class="remove-employee">&times;</span>');
-	        $('#selected_employees').append(employeeTag);
-	    });
-	    	    
-	    // 조직도 모달 닫기
-	    $('#chartModalBox').hide();
-	} */
+	/* $(document).on('click', '#chartModalBox #orgBody .btn', function() {
+	    var idx = $(this).closest('tr').index();
+	    console.log(idx);
+
+	    $(this).closest('tr').remove();
+	    initialData.rows.splice(idx, 1);
+	    exampleData.rows.splice(idx, 1);
+	    selectedEmployees.splice(idx, 1);
+	    console.log("selectedEmployees 수정 : ",selectedEmployees);
+		   	   
+	}); */
 	
+	$(document).on('click', '.remove-employee', function() {
+	    var employeeId = $(this).data('id');
+	    console.log('삭제할 직원 ID:', employeeId);
+
+	    // 1. selectedEmployees 배열에서 해당 직원 제거
+	    selectedEmployees = selectedEmployees.filter(function(id) {
+	         return id !== employeeId;
+	    });
+
+	    // 2. exampleData.rows에서 해당 직원의 행 제거
+	    exampleData.rows = exampleData.rows.filter(function(row) {
+	       // row[3]에는 "삭제" 버튼 HTML이 포함되어 있음.
+	       // 이 HTML 내에 data-id 속성으로 employeeId가 포함되어 있는지 검사
+	       return row[3].indexOf('data-id="' + employeeId + '"') === -1;
+	    });
+
+	    // 3. 테이블 UI 갱신
+	    updateTableData('customTable', exampleData);
+
+	    // 4. 선택된 조직도 노드 해제 (필요한 경우)
+	    $('#jstree').jstree('deselect_node', employeeId);
+
+	    console.log("업데이트된 selectedEmployees:", selectedEmployees);
+	});
+
+	 	
 	function addBtnFn() {
         console.log('조직도 인원 저장');
         $('#selected_employees').empty();
@@ -389,7 +417,6 @@
                     var deptText = (response.dept && response.dept.text) ? response.dept.text : '부서 없음';
                     var employeeTag = $('<div class="employee-tag" data-id="' + response.username + '"></div>');
                     employeeTag.append('<span>' + deptText + ' ' + response.name + ' ' + response.position_content + '</span>');
-                    employeeTag.append('<span class="remove-employee">&times;</span>');
                     $('#selected_employees').append(employeeTag);
     
                     // 테이블에 참석자 정보 추가
@@ -411,40 +438,7 @@
         // 조직도 모달 닫기
         $('#chartModalBox').hide();
     }
-	 
-/* 	// 참석자 삭제 기능 추가
-	$(document).on('click', '.remove-employee', function(){
-		var parentDiv = $(this).parent('.employee-tag');
-	    var employeeId = parentDiv.data('id');
-	    // 배열에서 제거
-	    selectedEmployees = selectedEmployees.filter(function(id){
-	    	return id !== employeeId;
-	    });
-	    // UI에서 제거
-	    parentDiv.remove();
-	    // 조직도에서 선택 해제
-	    $('#jstree').jstree('deselect_node', employeeId);
-	}); */
-	
-	$(document).on('click', '.remove-employee', function(){
-	    var employeeId = $(this).data('id'); // 버튼의 data-id에서 employeeId 추출
-	    console.log('삭제할 직원 ID:', employeeId);
-	    var idx = $(this).closest('tr').index();
-	    // 배열에서 제거
-	    selectedEmployees = selectedEmployees.filter(function(id){
-	        return id !== employeeId;
-	    });
-
-	    // 테이블에서 해당 행 제거
-	    $(this).closest('tr').remove();
-	    exampleData.rows.splice(idx, 1);
-	    // 조직도에서 선택 해제
-	    $('#jstree').jstree('deselect_node', employeeId);
-	}); 
-
-	 
-	 
-	 
+	  
 	 function handleAddSchedule() {
 			console.log('예약 등록 클릭',selectedEmployees);
 						
@@ -615,7 +609,7 @@
 	            $('#selected_employees_edit').empty();
 	            selectedEmployees = [];
 	            exampleData.rows = []; // 테이블 데이터 초기화
-	            var editList = document.getElementById("selected_employees_edit");
+	            var editList = document.getElementById("selected_employees");
 	            if(data.attendees && data.attendees.length > 0){
 	                data.attendees.forEach(function(attendeeUsername) {
 	                    $.ajax({
@@ -623,6 +617,7 @@
 	                        url: '/getUserInfo/' + attendeeUsername,
 	                        dataType: 'JSON',
 	                        success: function(response) {
+	                        	console.log("조직도 모달", response);
 	                            var deptText = (response.dept && response.dept.text) ? response.dept.text : '부서 없음';
 	                            var cont = '<p style="margin: 0;" data-id="' + response.username + '">'
 	                                     + deptText + ' ' 
@@ -639,7 +634,7 @@
 	                                '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'
 	                            ];
 	                            exampleData.rows.push(newRow);
-	                                                                                  
+	                            updateTableData('customTable', exampleData);
 	                        },
 	                        error: function(e) {
 	                            console.log(e);

@@ -89,8 +89,12 @@ public class ResevationService {
 	public List<CalenderDTO> selectList(String selection) {		
 		return resDao.selection(selection);
 	}
-
+	
+	@Transactional
 	public int itemWrite(CalenderDTO calederDto) {
+		
+		resDao.noRes(calederDto);
+		
 		return resDao.itemWrite(calederDto);
 	}
 
