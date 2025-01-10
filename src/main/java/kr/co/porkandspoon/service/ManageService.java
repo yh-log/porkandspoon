@@ -6,24 +6,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import kr.co.porkandspoon.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.ManageDAO;
-import kr.co.porkandspoon.dto.FileDTO;
-import kr.co.porkandspoon.dto.ManageDTO;
-import kr.co.porkandspoon.dto.RestDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 @Service
@@ -657,8 +651,8 @@ Logger logger = LoggerFactory.getLogger(getClass());
 		String month = date.split("-")[1];
 		String day = date.split("-")[2];
 
-//		int insertRow = manageDAO.salesMonthScheduler(year, month, day);
-//		logger.info("입력된 월별 데이터 된 로우 => " + insertRow);
+		int insertRow = manageDAO.salesMonthScheduler(year, month, day);
+		logger.info("입력된 월별 데이터 된 로우 => " + insertRow);
 	}
 
 	/**
@@ -675,24 +669,52 @@ Logger logger = LoggerFactory.getLogger(getClass());
 		String month = date.split("-")[1];
 		String day = date.split("-")[2];
 
-//		int insertRow = manageDAO.salesDailyScheduler(year, month, day);
-//		logger.info("입력된 일별 데이터 된 로우 => " + insertRow);
+		int insertRow = manageDAO.salesDailyScheduler(year, month, day);
+		logger.info("입력된 일별 데이터 된 로우 => " + insertRow);
 	}
 
+	/**
+	 * author yh.kim, (25.01.10)
+	 * 직영점 매출 통계 조회
+	 */
+	public List<ChartDTO> getChartStatistics(String id, String year) {
+
+		List<ChartDTO> chartDTO = new ArrayList<>();
+
+		chartDTO.addAll(manageDAO.getWeekChartStatistics(id, year));
+		logger.info("첫 " + CommonUtil.toString(chartDTO));
+
+		chartDTO.addAll(manageDAO.getMonhtChartStatistics(id, year));
+		logger.info("둘 " + CommonUtil.toString(chartDTO));
+
+		return chartDTO;
+	}
 
 	/**
-	 *
-	 * -- 월별 통계 데이터 삽입
-	 * INSERT INTO statistics_month (sale, id, parent, year, month, day)
-	 * SELECT
-	 *     c.sale, c.id, ds.parent, '2025', '01', '09'
-	 * FROM chart c LEFT JOIN direct_store ds ON c.id = ds.id
-	 * WHERE c.create_date = SUBDATE(CURDATE(), 0);
-	 * -- 원래 1 이어야 하는데 TIME이 다르게 잡혀있어서 0으로 설정함
-	 *
-	 * -- 일별 데이터 삽입 (요일 추가) 일요일 1 ~ 토요일 7
-	 * INSERT INTO statistics_month (sale, id, `year`, `month`, `day`, weekday)
-	 * SELECT sale, id, '2025', '01', '09', '요일!!', SELECT DAYOFWEEK(c.create_date)
-	 * FROM chart WHERE create_date = SUBDATE(CURDATE(), 0);
+	 * author yh.kim, (25.01.10)
+	 * 브랜드별 매출 통계 조회
 	 */
+	public List<ChartDTO> getChartDirectStatistics(String id, String year, String type) {
+
+		List<ChartDTO> chartDTO = new ArrayList<>();
+
+		Map<String, String> params = new HashMap<>();
+		params.put("id", id);
+		params.put("year", year);
+		params.put("ctype", type);
+
+		if(type.equals("S")){
+			chartDTO.addAll(manageDAO.getChartBrandStatistics(params));
+			logger.info("첫 " + CommonUtil.toString(chartDTO));
+		}else {
+			chartDTO.addAll(manageDAO.getChartDirectStatistics(params));
+			logger.info("첫 " + CommonUtil.toString(chartDTO));
+
+		}
+
+		chartDTO.addAll(manageDAO.getMonhtDirectStatistics(params));
+		logger.info("둘 " + CommonUtil.toString(chartDTO));
+
+		return chartDTO;
+	}
 }
