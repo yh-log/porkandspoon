@@ -162,6 +162,23 @@
     margin: 0;
   }
 
+	 #chartDiv{
+		 justify-content: center;
+		 display: flex;
+		 width: 100%;
+		 align-items: center;
+		 margin-top: 5px;
+		 gap: 10px;
+		 position: relative; /*select 만 왼쪽으로 배치하기 위해 추가*/
+	 }
+
+	 #chartDiv select{
+		 width: auto;
+		 position: absolute;
+		 right: 0px;
+		 top: 15px;
+	 }
+
 
 
 </style>
@@ -226,14 +243,19 @@
 			  <!-- 하단 영역 -->
 			<!-- 하단 영역 -->
 			  <div class="bottom-section">
-			    <div class="bottom-left">
-			      <h4>브랜드별 매출</h4>
-			      <canvas id="pieChart"></canvas>
-			    </div>
-			    <div class="bottom-right">
-			      <h4>브랜드 총 매출 그래프</h4>
-			      <canvas id="barChart"></canvas>
-			    </div>
+				  <div class="bottom-left">
+					  <h4>브랜드별 매출</h4>
+					  <canvas id="pieChart"></canvas>
+				  </div>
+				  <div class="bottom-right">
+					  <div id="chartDiv">
+						  <h4>브랜드 총 매출</h4>
+						  <select class="form-control" id="monthChartDate" onchange="chartDataImport()">
+
+						  </select>
+					  </div>
+					  <canvas id="barChart"></canvas>
+				  </div>
 			  </div>
 			</div>
 		
@@ -283,64 +305,162 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
-// 원형 차트
-const pieCtx = document.getElementById('pieChart').getContext('2d');
-const pieChart = new Chart(pieCtx, {
-  type: 'pie',
-  data: {
-      labels: ['커핑머핑', '영원', '돼미남', '스시곤조', '떡본김에'],
-      datasets: [{
-          data: [15, 20, 25, 10, 15], // 임의 데이터
-          backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff'],
-          borderWidth: 1
-      }]
-  },
-  options: {
-      responsive: true,
-      plugins: {
-          legend: {
-              position: 'bottom', // 범례를 아래로 이동
-          },
-      }
-  }
-});
+	$(document).ready(function () {
 
 
-//막대 그래프
-const barCtx = document.getElementById('barChart').getContext('2d');
-const barChart = new Chart(barCtx, {
-  type: 'bar',
-  data: {
-      labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-      datasets: [{
-          label: '월별 매출',
-          data: [15000000000, 18000000000, 13000000000, 14000000000, 20000000000, 22000000000, 21000000000, 19000000000, 17000000000, 23000000000, 25000000000, 24000000000],
-          backgroundColor: '#36a2eb',
-          borderColor: '#36a2eb',
-          borderWidth: 1,
-      }]
-  },
-  options: {
-      responsive: true,
-      maintainAspectRatio: false, // 그래프 비율 유지 해제
-      plugins: {
-          legend: {
-              display: true,
-              position: 'top'
-          },
-      },
-      scales: {
-          y: {
-              beginAtZero: true,
-              ticks: {
-                  callback: function(value) {
-                      return (value / 10000000000).toLocaleString() + '백억'; // y축 값을 백억 단위로 변환
-                  }
-              }
-          }
-      }
-  }
-});
+		// 년도 추가 (2020년부터 현재년도까지)
+		const currentYear = new Date().getFullYear();
+		const yearSelect = document.getElementById("monthChartDate");
+		for (let year = 2020; year <= currentYear; year++) {
+			let option = document.createElement("option");
+			option.value = year;
+			option.textContent = year;
+			// 현재 연도를 기본 선택
+			if (year === currentYear) {
+				option.selected = true; // 현재 연도에 selected 속성 추가
+			}
+			yearSelect.appendChild(option);
+		}
+
+		chartDataImport();
+	});
+
+	// 직영점 차트 데이터 가져오기
+	function chartDataImport(){
+		const yearSelect = document.getElementById("monthChartDate");
+		const year = yearSelect.value;
+
+		$.ajax({
+			type: 'GET',
+			url: '/chart/direct/statistics',
+			data: {'id': 'id', 'year': year, 'type' : ''},
+			dataType: 'JSON',
+			success: function (response){
+				console.log(response);
+				printChartMonth(response);
+			}, error: function(e){
+				console.log('차트 에러 => ', e);
+			}
+		})
+	}
+	// 값 저장을 위해 전역변수로 선언
+	let pieChart, barChart;
+
+	function printChartMonth(response) {
+
+		console.log(response);
+
+		// 브랜드 별 (원형 그래프)
+		const labels = [];
+		const data = []; // 초기값을 0으로 설정
+		const color = [];
+
+		let i = 0;
+		response.forEach(item => {
+			if (item.brand !== null && item.brand !== '') {
+				labels[i] = item.brand;
+				data[i] = item.brandSum;
+				color[i] = getRandomColor();
+				i++;
+			}
+		});
+
+		// 기존 데이터 있으면 파괴
+		if (pieChart) {
+			pieChart.destroy();
+		}
+
+		//원형 차트
+		const pieCtx = document.getElementById('pieChart').getContext('2d');
+		pieChart = new Chart(pieCtx, {
+			type: 'pie',
+			data: {
+				labels: labels,
+				datasets: [{
+					data: data, // (여기에 받아온 데이터 가공해서 넣기)
+					backgroundColor: color,
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				plugins: {
+					legend: {
+						position: 'bottom', // 범례를 아래로 배치
+					},
+				}
+			}
+		});
+
+
+		const labelsMon = [];
+		const dataMon = new Array(12).fill(0); // [0,0,0,0,0,0,0,0,0,0,0,0]
+
+		// 1~12월 설정
+		for (let i = 0; i < 12; i++) {
+			labelsMon[i] = (i + 1) + '월';
+		}
+
+		// response 데이터를 순회하며 monthSum과 month가 유효한 경우에만 데이터 추가
+		response.forEach(item => {
+			// month가 1~12 사이인지 체크
+			if (item.monthSum && item.month >= 1 && item.month <= 12) {
+				// 예: month가 1이면 dataMon[0]에 값 세팅
+				dataMon[item.month - 1] = item.monthSum;
+			}
+		});
+
+		if (barChart) {
+			barChart.destroy();
+		}
+
+		// 막대 그래프
+		const barCtx = document.getElementById('barChart').getContext('2d');
+		barChart = new Chart(barCtx, {
+			type: 'bar',
+			data: {
+				labels: labelsMon,
+				datasets: [{
+					label: '월별 매출',
+					data: dataMon,
+					backgroundColor: '#36a2eb',
+					borderColor: '#36a2eb',
+					borderWidth: 1,
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false, // 그래프 비율 유지 해제
+				plugins: {
+					legend: {
+						display: true,
+						position: 'top'
+					},
+				},
+				scales: {
+					y: {
+						beginAtZero: true,
+						ticks: {
+							callback: function (value) {
+								const unit = value / 1000;
+								return unit.toFixed(1) + '천'; // y축 값을 억 단위로 표시
+							}
+						}
+					}
+				}
+			}
+		});
+	}
+
+	// 색상 랜덤 생성
+	function getRandomColor() {
+		let letters = "0123456789ABCDEF";
+		let color = "#";
+		for (let i = 0; i < 6; i++) {
+			color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
+	}
 
 
 
