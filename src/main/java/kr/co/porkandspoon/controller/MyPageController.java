@@ -50,9 +50,9 @@ public class MyPageController {
 	 * author yh.kim (24.12.26)
 	 * 마이페이지 이동
 	 */
-	@GetMapping(value="/myPageView/{username}")
-	public ModelAndView myPageView(@PathVariable String username) {
-		
+	@GetMapping(value="/myPageView")
+	public ModelAndView myPageView(@AuthenticationPrincipal UserDetails userDetails) {
+		String username = userDetails.getUsername();
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/myPage/myPage");
 		mav.addObject("username", username);

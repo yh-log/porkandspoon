@@ -30,14 +30,40 @@ public class ProjectService {
 	}
 
 	public List<ProjectDTO> getProject(String loginId) {
-		// TODO Auto-generated method stub
+		
 		return projectDAO.getProject(loginId);
 	}
 
-	public ProjectDTO getKanBanInfo(int project_idx) {
-		// TODO Auto-generated method stub
+	public List<ProjectDTO> getKanBanInfo(int project_idx) {
+		
 		return projectDAO.getKanBanInfo(project_idx);
 	}
+
+	public int  setTask(Map<String, String> params) {
+		return projectDAO.setTask(params);
+	}
+
+	public int  editStatus(Map<String, String> params) {
+		
+		projectDAO.editPercent(params);
+		return projectDAO.editStatus(params);
+		
+	}
+
+	public ProjectDTO getProjectInfo(int project_idx) {
+
+		return projectDAO.getProjectInfo(project_idx);
+	}
+
+	public String getPercent(String loginId) {
+		
+		return projectDAO.getPercent(loginId);
+		
+	}
+
+	
+
+	
 	
 	// 매장 위도, 경도 중복 검사
 	
