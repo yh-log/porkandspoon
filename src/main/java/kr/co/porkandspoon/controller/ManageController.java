@@ -462,4 +462,30 @@ public class ManageController {
 		return restDTOS;
 	}
 
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 등록 시 과거 매출 내역 조회
+	 */
+	@GetMapping(value = "/us/pastSeales")
+	public ManageDTO pastSeales(@ModelAttribute ManageDTO manageDTO){
+
+		logger.info("받아온 정보 => " + CommonUtil.toString(manageDTO));
+
+		manageDTO = manageService.pastSeales(manageDTO);
+
+		return manageDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.09)
+	 * 직영점 매출 등록 or 수정
+	 */
+	@PostMapping(value = "/us/salesWrite")
+	public ManageDTO salesWrite(@ModelAttribute ManageDTO manageDTO){
+
+		manageDTO = manageService.salesWrite(manageDTO);
+
+		return manageDTO;
+	}
+
 }

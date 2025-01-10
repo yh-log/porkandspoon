@@ -8,32 +8,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>매장관리</title>
 <!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 <link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
-<!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
-
-<!-- 파일 업로더 -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond/filepond.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.css">
-<link rel="stylesheet"
-	href="/resources/assets/extensions/toastify-js/src/toastify.css">
-
-
+<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
 
+	<meta name="_csrf" content="${_csrf.token}">
+	<meta name="_csrf_header" content="${_csrf.headerName}">
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
 
 	#modalBox {
@@ -49,7 +36,7 @@
     font-size: 40px;
     font-weight: 300;
     position: absolute;
-    z-index: 996;
+   /* z-index: 996;*/
     top: 24px;
     right: 24px;
     display: inline-block;
@@ -139,66 +126,66 @@ border-bottom: none;
 	}
 	
 
-/* 하단 영역 */
-.bottom-section {
-  display: flex;
-  gap: 20px;
-  height: auto; /* 고정 높이 제거 */
-}
+	/* 하단 영역 */
+	.bottom-section {
+	  display: flex;
+	  gap: 20px;
+	  height: auto; /* 고정 높이 제거 */
+	}
 
-/* 하단 왼쪽 */
-.bottom-left {
-  flex: 1;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* 그래프 가운데 정렬 */
-  justify-content: center;
-}
+	/* 하단 왼쪽 */
+	.bottom-left {
+	  flex: 1;
+	  background-color: #ffffff;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center; /* 그래프 가운데 정렬 */
+	  justify-content: center;
+	}
 
-/* 하단 오른쪽 */
-.bottom-right {
-  flex: 3.5;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden; /* 영역을 넘어가지 않도록 설정 */
-  max-height: 500px; /* 최대 높이 제한 */
-}
+	/* 하단 오른쪽 */
+	.bottom-right {
+	  flex: 3.5;
+	  background-color: #ffffff;
+	  padding: 20px;
+	  border-radius: 10px;
+	  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	  justify-content: center;
+	  overflow: hidden; /* 영역을 넘어가지 않도록 설정 */
+	  max-height: 500px; /* 최대 높이 제한 */
+	}
 
-.chart-placeholder {
-  width: 100%;
-  height: 100%; /* 자동 크기 조정 */
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  color: #aaa;
-}
+	.chart-placeholder {
+	  width: 100%;
+	  height: 100%; /* 자동 크기 조정 */
+	  background-color: #f0f0f0;
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  border-radius: 5px;
+	  color: #aaa;
+	}
 
-#pieChart {
-  height: 400px; /* 세로 길이를 늘림 */
-}
+	#pieChart {
+	  height: 400px; /* 세로 길이를 늘림 */
+	}
 
-#barChart {
-  width: 100%; /* 부모 컨테이너에 맞게 너비를 설정 */
-  height: auto; /* 높이를 자동 조정 */
-}
+	#barChart {
+	  width: 100%; /* 부모 컨테이너에 맞게 너비를 설정 */
+	  height: auto; /* 높이를 자동 조정 */
+	}
 
-/* 공통 스타일 */
-h3, h4 {
-  margin-bottom: 10px;
-  font-weight: bold;
-}
+	/* 공통 스타일 */
+	h3, h4 {
+	  margin-bottom: 10px;
+	  font-weight: bold;
+	}
 
    /* 버튼 컨테이너 설정 */
     .button-container {
@@ -218,9 +205,9 @@ h3, h4 {
         padding: 5px; /* 내부 여백 */
     }
 
-.modal-close {
-    cursor: pointer;
-  }
+	.modal-close {
+		cursor: pointer;
+	  }
 </style>
 </head>
 
@@ -278,24 +265,21 @@ h3, h4 {
 				<div id="salesModalBox" class="modal" style="display: none;">
 					    <div class="modal-content">
 					        <div class="modal-header">
-					            <h5 class="title">스케줄 수정</h5>
 					             <span class="modal-close" id="closeSalesModal" >&times;</span>
 					        </div>
 					        <div class="modal-body">
-					        
-					            
 					                <table class="modal-table">
 					                    <tr>
-					                        <th>등록일</th>
-					                        <td><input type="date" id="Create_Date" name="create_date"  class="form-control" /></td>
+					                        <th>지점명</th>
+					                        <td style="float: left;">${info.spotName}</td>
 					                    </tr>
 					                    <tr>
-					                        <th>지점명</th>		
-					                        <td>${info.spotName}</td>
+					                        <th>등록일</th>
+					                        <td><input type="date" id="Create_Date" name="create_date"  class="form-control" onchange="findSealesDate()"/></td>
 					                    </tr>
 					                    <tr>
 					                        <th>일 매출</th>
-					                        <td><input type="text" id="Sales" name="sales" class="form-control" /></td>
+					                        <td><input type="text" id="Sales" name="sales" class="form-control" data-required="true"/></td>
 					                    </tr>
 					                   
 					                </table>
@@ -303,8 +287,7 @@ h3, h4 {
 					        </div>
 					        <div class="modal-footer">
 					            <button type="button" id="saveEditMenu" class="btn btn-primary">등록</button>
-					            <button type="button" id="deleteEditMenu" class="btn btn-danger" hidden="">수정</button>
-					            <button type="button" id="cancelEditModal" class="btn btn-secondary">삭제</button>
+					            <button type="button" id="cancelEditModal" class="btn btn-outline-secondary">취소</button>
 					        </div>
 					    </div>
 					</div>
@@ -335,163 +318,168 @@ h3, h4 {
 <!-- 부트스트랩 -->
 <script src="/resources/assets/static/js/components/dark.js"></script>
 <script
-	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+		src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- Need: Apexcharts(차트) -->
 <script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="/resources/assets/static/js/pages/dashboard.js"></script>
 
-<!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
-<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
-
-<!-- 파일업로더 -->
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-size/filepond-plugin-file-validate-size.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-file-validate-type/filepond-plugin-file-validate-type.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-crop/filepond-plugin-image-crop.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-exif-orientation/filepond-plugin-image-exif-orientation.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-filter/filepond-plugin-image-filter.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-preview/filepond-plugin-image-preview.min.js"></script>
-<script
-	src="/resources/assets/extensions/filepond-plugin-image-resize/filepond-plugin-image-resize.min.js"></script>
-<script src="/resources/assets/extensions/filepond/filepond.js"></script>
-<script src="/resources/assets/static/js/pages/filepond.js"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-
+<script src='/resources/js/common.js'></script>
 
 <script>
 
 $(document).ready(function () {
-    // 매출 등록 모달 열기
-    $('.btn-primary').on('click', function () {
-        setTodayDate(); // 등록일 필드에 오늘 날짜 설정
-        $('#salesModalBox').fadeIn(); // 모달 열기
-    });
-
-    // 매출 등록 모달 닫기
-    $('#closeSalesModal, #cancelEditModal').on('click', function () {
-        $('#salesModalBox').fadeOut(); // 모달 닫기
-    });
-
-    // 등록 버튼 클릭 시 Ajax 요청
-    $('#saveEditMenu').on('click', function () {
-        // 입력된 값 가져오기
-        const salesData = {
-            create_date: $('#Create_Date').val(), // 등록일
-            spot_name: '${info.spotName}', // 지점명 (템플릿에서 가져옴)
-            sales: $('#Sales').val(), // 일 매출
-        };
-
-        // 데이터 검증 (예: 필수 값 체크)
-        if (!salesData.create_date || !salesData.sales) {
-            alert('모든 필드를 입력해 주세요.');
-            return;
-        }
-
-        console.log('전송 데이터:', salesData); // 디버깅용 로그
-
-        // Ajax 요청
-        $.ajax({
-            url: '/ad/sales/Write', // 서버로 전송할 URL
-            method: 'POST',
-            contentType: 'application/json', // JSON 형식으로 전송
-            data: JSON.stringify(salesData),
-            beforeSend: function (xhr) {
-                // CSRF 토큰 설정 (Spring Security 사용 시 필요)
-                xhr.setRequestHeader($('meta[name="_csrf_header"]').attr('content'), $('meta[name="_csrf"]').attr('content'));
-            },
-            success: function (response) {
-                console.log('등록 성공:', response); // 서버 응답 확인
-                alert('매출 등록이 성공적으로 완료되었습니다.');
-                $('#salesModalBox').fadeOut(); // 모달 닫기
-                location.reload(); // 페이지 새로고침 (필요 시)
-            },
-            error: function (error) {
-                console.error('등록 실패:', error); // 에러 확인
-                alert('매출 등록에 실패했습니다. 다시 시도해 주세요.');
-            }
-        });
-    });
-
-    // 오늘 날짜를 등록일 필드에 설정하는 함수
-    function setTodayDate() {
-        const today = new Date(); // 오늘 날짜 객체 생성
-        const year = today.getFullYear(); // 연도 추출
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 추출 및 두 자리로 변환
-        const day = String(today.getDate()).padStart(2, '0'); // 일 추출 및 두 자리로 변환
-        const todayString = year + '-' + month + '-' + day; // 문자열 더하기로 날짜 형식 생성
-        $('#Create_Date').val(todayString); // 등록일 필드에 설정
-    }
 
 });
 
-//원형 차트
-const pieCtx = document.getElementById('pieChart').getContext('2d');
-const pieChart = new Chart(pieCtx, {
-    type: 'pie',
-    data: {
-        labels: ['월', '화', '수', '목', '금', '토', '일'],
-        datasets: [{
-            data: [15, 20, 25, 10, 15, 10, 5], // 임의 데이터
-            backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#c9cbcf'],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                position: 'bottom', // 범례를 아래로 배치
-            },
-        }
-    }
-});
+	// 매출 등록 모달 열기
+	$('.btn-primary').on('click', function () {
+		setTodayDate(); // 등록일 필드에 오늘 날짜 설정
+		$('#salesModalBox').fadeIn(); // 모달 열기
+	});
 
-// 막대 그래프
-const barCtx = document.getElementById('barChart').getContext('2d');
-const barChart = new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-        datasets: [{
-            label: '월별 매출',
-            data: [1.5, 1.8, 1.3, 1.4, 2.0, 2.2, 2.1, 1.9, 1.7, 2.3, 2.5, 2.4], // 데이터를 억 단위로 조정
-            backgroundColor: '#36a2eb',
-            borderColor: '#36a2eb',
-            borderWidth: 1,
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false, // 그래프 비율 유지 해제
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            },
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function(value) {
-                        return value.toFixed(1) + '억'; // y축 값을 억 단위로 표시
-                    }
-                }
-            }
-        }
-    }
-});
+	// 매출 등록 모달 닫기
+	$('#closeSalesModal, #cancelEditModal').on('click', function () {
+		$('#salesModalBox').fadeOut(); // 모달 닫기
+	});
+
+// 오늘 날짜를 등록일 필드에 설정하는 함수
+function setTodayDate() {
+	const today = new Date(); // 오늘 날짜 객체 생성
+	const year = today.getFullYear(); // 연도 추출
+	const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 추출 및 두 자리로 변환
+	const day = String(today.getDate()).padStart(2, '0'); // 일 추출 및 두 자리로 변환
+	const todayString = year + '-' + month + '-' + day; // 문자열 더하기로 날짜 형식 생성
+	$('#Create_Date').val(todayString); // 등록일 필드에 설정
+}
+
+
+	let message = '매출을 등록하시겠습니까?';
+	let type = 'N';
+
+	function findSealesDate(){
+		let storieId = '${info.id}';
+		let create_date = $('input[name="create_date"]').val();
+
+		let storeData = {'id' : storieId, 'create_date' : create_date};
+		getAjax('/us/pastSeales', 'JSON', storeData)
+	}
+
+	function getSuccess(response){
+		console.log(response);
+		if(response.status === 200){
+			let findSeales = response.sale;
+			console.log(findSeales);
+			$('input[name="sales"]').val(response.sale);
+
+			message = '매출을 수정하시겠습니까?';
+			type = 'U';
+		}else{
+			message = '매출을 등록하시겠습니까?';
+			type = 'N';
+		}
+	}
+
+
+
+	$('#saveEditMenu').on('click', function(){
+
+		let isFormValid = validateForm();
+
+		console.log(isFormValid);
+		console.log($('input[name="sales"]').val());
+
+		if(!isFormValid){
+			console.log('잘못된 값');
+			layerPopup('필수값을 입력해주세요', '확인', false, removeAlert, removeAlert);
+		}else{
+			layerPopup(message, '확인', '취소', salseWrite, removeAlert);
+			//$('#salesModalBox').hide();
+		}
+	});
+
+	function salseWrite(){
+		const id = '${info.id}';
+		const create_date = $('input[name="create_date"]').val();
+		const sale = $('input[name="sales"]').val();
+		const username = '${info.username}';
+
+		const storeDTO = {'id' : id, 'create_date' : create_date, 'sale' : sale, 'username' : username, 'text' : type};
+
+		httpAjax('POST', '/us/salesWrite', storeDTO);
+	}
+
+	function httpSuccess(response){
+		removeAlert();
+		console.log(response);
+		if (response.status){
+			layerPopup(response.message, '확인', false, removeAlert, removeAlert);
+		}
+	}
+
+
+	//원형 차트
+	const pieCtx = document.getElementById('pieChart').getContext('2d');
+	const pieChart = new Chart(pieCtx, {
+		type: 'pie',
+		data: {
+			labels: ['월', '화', '수', '목', '금', '토', '일'],
+			datasets: [{
+				data: [15, 20, 25, 10, 15, 10, 5], // 임의 데이터
+				backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff', '#ff9f40', '#5CD1E5'],
+				borderWidth: 1
+			}]
+		},
+		options: {
+			responsive: true,
+			plugins: {
+				legend: {
+					position: 'bottom', // 범례를 아래로 배치
+				},
+			}
+		}
+	});
+
+	// 막대 그래프
+	const barCtx = document.getElementById('barChart').getContext('2d');
+	const barChart = new Chart(barCtx, {
+		type: 'bar',
+		data: {
+			labels: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+			datasets: [{
+				label: '월별 매출',
+				data: [1.5, 1.8, 1.3, 1.4, 2.0, 2.2, 2.1, 1.9, 1.7, 2.3, 2.5, 2.4], // 데이터를 억 단위로 조정
+				backgroundColor: '#36a2eb',
+				borderColor: '#36a2eb',
+				borderWidth: 1,
+			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false, // 그래프 비율 유지 해제
+			plugins: {
+				legend: {
+					display: true,
+					position: 'top'
+				},
+			},
+			scales: {
+				y: {
+					beginAtZero: true,
+					ticks: {
+						callback: function(value) {
+							return value.toFixed(1) + '억'; // y축 값을 억 단위로 표시
+						}
+					}
+				}
+			}
+		}
+	});
+
+
 
 
 </script>
