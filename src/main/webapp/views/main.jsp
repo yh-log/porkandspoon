@@ -100,9 +100,14 @@
 	.notice table {
 	    table-layout: unset;
 	}
+	.notice table tr {
+	    border-top: 1px solid #ddd;
+	    border-bottom: none;
+	}
 	.notice table td,
 	.notice table th {
-    	padding: 14px 8px;
+		background: none;
+    	padding: 12px 8px;
     }
     .notice table th:first-child,
     .notice table td:first-child {
@@ -283,10 +288,34 @@
 							</div>
 							<div class="sec col-6 col-lg-6">
 								<div class="sec-cont">
-										<h5 class="sec-tit">결재할 문서</h5>
-										ffffff<br>
-										ffffff<br>
-										ffffff<br>
+									<h5 class="sec-tit">결재할 문서</h5>
+										
+									<div class="cont-body">
+										<table class="list">
+											<colgroup>
+												<col>
+												<col width="30%">
+												<col>
+												<col>
+												<col>
+											</colgroup>
+											<thead>
+												<tr>
+													<th>문서번호</th>
+													<th class="align-l">제목</th>
+													<th>기안자</th>
+													<th>부서</th>
+													<th>기안일자</th>
+												</tr>
+											</thead>
+											<tbody>
+											</tbody>
+										</table>
+			
+						
+									</div>
+								
+
 								</div>
 							</div>
 						</div>
@@ -371,10 +400,10 @@
 	var paginationInitialized = false;
 
 	$(document).ready(function () {
-		pageCall(firstPage);
+		noticeCall(firstPage);
 	});
 
-	function pageCall(page = 1) {
+	function noticeCall(page = 1) {
 	    //var option = $('#searchOption').val();
 	    //var keyword = $('input[name="search"]').val();  // 검색어
 	
@@ -389,7 +418,7 @@
 	        },
 	        datatype: 'JSON',
 	        success: function(response) {
-	            //console.log("응답 데이터:", response);
+	            console.log("응답 데이터:", response);
 	            // 데이터 처리
 	            if (response && response.length > 0) {
 	                getBoardSuccess(response); // 검색 결과를 테이블에 렌더링
@@ -780,6 +809,126 @@
 		console.log('두번째팝업 1번 버튼 동작');
 		removeAlert(); // 팝업닫기
 	}	
+	
+	
+	/* 결재할 문서 */
+	//var listType = '${listType}';
+	//console.log("listType : ",listType);
+	var show = 1;
+	//var paginationInitialized = false;
+	//var option = '';
+	//var search = '';
+	//var filter = '';
+	
+	var totalCount = 0;
+    var pageSize = 5;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
+    var totalPage = 0;
+	var filterElem = '';
+	
+	pageCall(show);
+	
+	function pageCall(page) {
+
+		
+		$.ajax({
+			type:'GET',
+			url:'/approval/list/tobe',
+			data:{
+				'page':page,
+				'cnt':5,
+				'listType': 'tobe'
+			},
+			datatype:'JSON',
+			success:function(data){
+				console.log(data);
+
+				if(data.approvalList.length > 0){
+					totalCount = data.approvalList[0].total_count;  // 총 게시글 수
+		           // totalPage = Math.ceil(totalCount / pageSize);  // 총 페이지 수 계산
+				}
+				console.log("totalCount",totalCount,"totalPage",totalPage);
+				drawList(data.approvalList);
+	            
+	            
+				 
+			},
+			error:function(e){
+				console.log(e);
+			}
+		});
+	}
+
+	function drawList(list) {
+		var content ='';
+		var approvalDate = '';
+		var type1='';
+		var type2='';
+		if(totalCount == 0){
+			content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
+			$('.list tbody').html(content);
+			return false;
+		}
+		for (var view of list) {
+			if(view.approval_date != null){
+				approvalDate = view.approval_date.split(' ')[0];
+			}else{
+				approvalDate = '-';
+			}
+			
+			content +='<tr>';
+			
+            content += '<td>'+view.document_number+'</td>';
+            content += '<td class="align-l elipsis subject" onclick="location.href=\'/approval/detail/'+view.draft_idx+'\'">'+view.subject+'</td>';
+            content +='<td>'+view.name+'</td>';
+			content +='<td>'+view.dept_text+'</td>';	
+            content += '<td>'+view.create_date+'</td>';
+			content +='</tr>';
+			console.log("view.draft_idx",view.draft_idx);
+		  }
+	     $('.list tbody').html(content);
+	   }
+	
+	$(document).on('click','.list td.delete',function(){
+		var draftIdx = $(this).data('draftidx');
+		layerPopup('해당 기안문을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
+		
+		// 기안문 삭제
+		function deleteAct() {
+			console.log("draftIdx값좀 받아와라 : "+draftIdx);
+			$.ajax({
+		        type : 'PUT',
+		        url : '/approval/changeStatusToDelete/'+draftIdx,
+		        data : {},
+		        dataType : 'JSON',
+		        beforeSend: function(xhr) {
+		            xhr.setRequestHeader(csrfHeader, csrfToken);
+		        },
+		        success : function(response){
+		        	 if(response.success){
+		     		 	removeAlert(); 
+		      			layerPopup('삭제 완료되었습니다.', '확인', false, btn1Act, btn1Act);
+		     		 }else{
+		     		 	removeAlert(); 
+		      			layerPopup('삭제 실패하였습니다.', '재시도', '취소', deleteAct, btn1Act);
+		     		 }
+		        },error: function(e){
+		            console.log(e);
+		        }
+		    });
+		}
+	});
+	
+		
+		
+		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+		
+		function btn1Act() {
+			location.reload();
+			removeAlert(); 
+		}
+	
+	
 </script>
 
 </html>
