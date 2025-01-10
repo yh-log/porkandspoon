@@ -112,19 +112,26 @@ public class ManageController {
 	//아르바이트 리스트 정보 조회
 	@GetMapping(value="/ad/part/List")
 	public Map<String, Object> getPartList(@AuthenticationPrincipal UserDetails userDetails,
-			String pg,  String count, String opt, String keyword) {
+			String pg,  String count, String opt, String keyword,String is_quit) {
 		String owner = userDetails.getUsername();
+		logger.info("가져왔니 ?: {}",is_quit);
+		logger.info("가져왔니 ?: {}",pg);
+		logger.info("가져왔니 ?: {}",count);
+		logger.info("가져왔니 ?: {}",keyword);
+		
+		
 		int page = Integer.parseInt(pg);
 	    int cnt = Integer.parseInt(count);
 	    int limit = cnt;
 	    int offset = (page - 1) * cnt;
-	    int totalPages = manageService.count(cnt, opt, keyword,owner);
+	    int totalPages = manageService.count(cnt, opt, keyword,owner,is_quit);
 	    
-	    List<ManageDTO> list = manageService.getPartList(opt, keyword, limit, offset,owner);
+	    List<ManageDTO> list = manageService.getPartList(opt, keyword, limit, offset,owner,is_quit);
 
 	    // 로그 출력
 	    logger.info("opt: {}", opt);
 	    logger.info("keyword: {}", keyword);
+	    logger.info("가져왔니 ?: {}",offset);
 
 	    Map<String, Object> result = new HashMap<>();
 	    result.put("totalPages", totalPages);
@@ -134,34 +141,6 @@ public class ManageController {
 	    return result;
 	}
 	
-	@GetMapping(value="/ad/part/Quit")
-	public ModelAndView partQuitListView() {
-		return new ModelAndView("/manage/partQuitList");
-	}
-	
-	@GetMapping(value="/ad/part/QuitList")
-	public Map<String, Object> getPartQuitList(@AuthenticationPrincipal UserDetails userDetails,
-			String pg,  String count, String opt, String keyword) {
-		String owner = userDetails.getUsername();
-		int page = Integer.parseInt(pg);
-	    int cnt = Integer.parseInt(count);
-	    int limit = cnt;
-	    int offset = (page - 1) * cnt;
-	    int totalPages = manageService.Quitcount(cnt, opt, keyword,owner);
-	    
-	    List<ManageDTO> list = manageService.getPartQuitList(opt, keyword, limit, offset,owner);
-
-	    // 로그 출력
-	    logger.info("opt: {}", opt);
-	    logger.info("keyword: {}", keyword);
-
-	    Map<String, Object> result = new HashMap<>();
-	    result.put("totalPages", totalPages);
-	    result.put("currpage", page);
-	    result.put("list", list);
-
-	    return result;
-	}
 	
 	
 	//아르바이트 등록

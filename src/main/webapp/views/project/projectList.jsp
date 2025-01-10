@@ -1,11 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>	
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>공통 레이아웃 CSS</title>
+<title>프로젝트</title>
 <!-- 부트스트랩 -->
 <link rel="shortcut icon"
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
@@ -140,8 +141,8 @@
 				<section id="menu">
 					<h4 class="menu-title">프로젝트</h4>
 					<ul>
-						<li class="active"><a href="/ad/project/List">프로젝트 리스트</a></li>
-						<li><a href="/ad/project/Write">프로젝트 등록</a></li>
+						<li class="active"><a href="/project/List">프로젝트 리스트</a></li>
+						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
 				</section>
 				<section class="cont">
@@ -154,110 +155,37 @@
                   
 					                  
                   <div class="row list-row">
-                  		<div class="list-form" onclick="location.href='/ad/project/KanBan'">
-	                  		<div>
-	                  			<h4 >황금돼지를 잡아라!</h4>
-	                  			<p id="first">참여인원 : </p>
-	                  			<p>일정 : </p>
-	                  			<p>진행률 </p>
-								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
-							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
-							        75%
-							    </div>
-							</div>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button onclick="location.href='/ad/project/Update'" class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4 onclick="location.href='/ad/project/KanBan'">황금돼지를 잡아라!</h4>
-	                  			<p id="first">참여인원 : </p>
-	                  			<p>일정 : </p>
-	                  			<p>진행률 </p>
-								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
-							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
-							        75%
-							    </div>
-							</div>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4  onclick="location.href='/ad/project/KanBan'">황금돼지를 잡아라!</h4>
-	                  			<p id="first">참여인원 : </p>
-	                  			<p>일정 : </p>
-	                  			<p>진행률 </p>
-								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
-							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
-							        75%
-							    </div>
-							</div>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4 onclick="location.href='/ad/project/KanBan'">황금돼지를 잡아라!</h4>
-	                  			<p id="first">참여인원 : </p>
-	                  			<p>일정 : </p>
-	                  			<p>진행률 </p>
-								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
-							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
-							        75%
-							    </div>
-							</div>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4  onclick="location.href='/ad/project/KanBan'">황금돼지를 잡아라!</h4>
-	                  			<p id="first">참여인원 : </p>
-	                  			<p>일정 : </p>
-	                  			<p>진행률 </p>
-								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
-							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
-							        75%
-							    </div>
-							</div>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-                  			</div>
-                  		</div>
-                  		<div class="list-form">
-	                  		<div>
-	                  			<h4 onclick="location.href='/ad/project/KanBan'">황금돼지를 잡아라!</h4>
-	                  			<p id="first">참여인원 : </p>
-	                  			<p>일정 : </p>
-	                  			<p>진행률 </p>
-								<div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
-							    <div style="width: 75%; background-color: var(--bs-primary); color: white; text-align: center;">
-							        75%
-							    </div>
-							</div>
-                  			</div>
-                  			<div class="update">
-	                  			<div><i class="bi bi-trash" ></i></div>
-	                  			<button class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);" >수정</button>
-                  			</div>
-                  		</div>
-                  	
-                  </div>
+				    <c:forEach var="project" items="${list}">
+				        <div class="list-form" onclick="location.href='/project/KanBan/${project.project_idx}'">
+				            <div>
+				                <h4>${project.name}</h4>
+				                <p id="first">참여인원: ${project.count} 명</p>
+				                <p>일정: ${project.start_date} ~ ${project.end_date}</p>
+				                <p>진행률</p>
+				                <div id="bar" style="width: 260%; background-color: #fff; border: 1px solid var(--bs-primary);">
+				                    <c:choose>
+									    <c:when test="${project.percent > 0}">
+									        <div style="width: ${project.percent}%; background-color: var(--bs-primary); color: white; text-align: center;">
+									            ${project.percent}%
+									        </div>
+									    </c:when>
+									    <c:otherwise>
+									        <div style="width: 10px; background-color: var(--bs-secondary); color: gray; text-align: center;">
+									            0%
+									        </div>
+									    </c:otherwise>
+									</c:choose>
+				                </div>
+				            </div>
+				            <div class="update">
+				               <c:if test="${project.username == loginId}">
+				                <div><i class="bi bi-trash"></i></div>
+								    <button onclick="location.href='/project/Update/${project.project_idx}'" class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
+								</c:if>
+				            </div>
+				        </div>
+				    </c:forEach>
+				</div>
                </div>
           
          </section>   
