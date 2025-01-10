@@ -49,7 +49,7 @@
 	    width: 100%;
 	    height: 100%;
 	    background-color: rgba(0, 0, 0, 0.5);
-	    z-index: 1100;
+	    z-index: 900;
 	}
 	
 	/* 모달 내부 콘텐츠 */
@@ -316,7 +316,10 @@
 	}
 	
 	// 일정 상세보기
-	function scheduleDetail(idx) {
+	function scheduleDetail(info) {
+		var idx = info.event.id;
+		console.log("클릭한 일정의 idx:", idx);
+		console.log("클릭한 일정의 타입:", info.event.groupId);
 	    $.ajax({
 	        type: 'GET',
 	        url: '/calenderDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
@@ -325,19 +328,15 @@
 	            if (response.success) {
 	                var schedule = response.schedule;
 	                console.log('상세보기 파람스 주입 : ',schedule.idx);
-	                var params = {
-	                		idx: schedule.idx,
-	                		subject: schedule.subject,
-	 	                    content: schedule.content,
-	 	                    start_date: schedule.start_date,
-	 	                    end_date: schedule.end_date,
-	 	                    username: schedule.username,
-	 	                   	name: schedule.name,
-	 	                    type: schedule.type
-	                };
-	
+	                
 	                // 모달 열기
-	                loadModal("calender", "Info", params);
+	                if(info.event.groupId == 'A'){
+	                	loadModal("item", "Info", params);
+	                }else if(info.event.groupId == 'R'){
+	                	loadModal("room", "Info", params);
+	                }else{
+		                loadModal("calender", "Info", params);	                	
+	                }
 	            } else {
 	                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
 	            }

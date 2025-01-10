@@ -72,9 +72,9 @@ function initializeCalendar(event) {
         },
         eventClick: function(info){
         	formattedDate = info.dateStr;
-        	var idx = info.event.id; // FullCalendar의 id 필드에서 idx를 가져옴
-    		console.log("클릭한 일정의 idx:", idx);
-        	scheduleDetail(idx);
+        	//var idx = info.event.id; // FullCalendar의 id 필드에서 idx를 가져옴
+    		console.log("클릭한 일정의 idx:", info);
+        	scheduleDetail(info);
         },
         // 일정 수정 가능 여부 설정
         editable: false,
@@ -145,12 +145,14 @@ var typeColorMap = {
 function getSuccess(response){
 	var event = [];
 	console.log('getSuccess response:', response);
+	
     response.result.forEach(function(item){
         event.push({
         	id: item.idx,
             title : item.subject,
             start : item.start_date,
             end : item.end_date,
+            groupId: item.type,
             color: typeColorMap[item.type]?.background || '#3788d8', // 배경색
         	textColor: typeColorMap[item.type]?.text || '#000000',   // 글자색
         });

@@ -53,7 +53,7 @@
 	    width: 100%;
 	    height: 100%;
 	    background-color: rgba(0, 0, 0, 0.5);
-	    z-index: 1100;
+	    z-index: 900;
 	}
 	
 	/* 모달 내부 콘텐츠 */
@@ -322,7 +322,7 @@
 	     console.log("가져온 ID:", selectedId);
 	  	// 중복 체크
 	     if(selectedEmployees.includes(selectedId)) {
-	    	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
+	    	 layerPopup( "이미 등록된 참석자입니다.","확인",false,removeAlert,removeAlert);
 	         return;
 	     }
 	     selectedEmployees.push(selectedId);
