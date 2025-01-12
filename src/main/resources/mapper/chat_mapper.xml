@@ -135,4 +135,11 @@
         UPDATE chat_room_user SET use_yn = 'N' WHERE roomId = #{roomId} AND username = #{username}
     </update>
 
+
+    <!-- author yh.kim, (25.01.12)
+        채팅방 이름 변경 -->
+    <update id="chatRoomNameChange" parameterType="kr.co.porkandspoon.dto.ChatDTO">
+        UPDATE chat_room_user SET custom_name = #{custom_name} WHERE roomId = #{roomId} AND username = #{username}
+    </update>
+
 </mapper>

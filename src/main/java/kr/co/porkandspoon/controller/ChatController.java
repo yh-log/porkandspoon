@@ -215,4 +215,19 @@ public class ChatController {
 		chatService.chatRoomDelete(chatDTO);
 	}
 
+	/**
+	 * author yh.kim, (25.01.12)
+	 * 채팅방 이름 변경
+	 */
+	@PostMapping(value = "/roomNameChange")
+	@ResponseBody
+	public ChatDTO chatRoomNameChange(ChatDTO chatDTO) {
+
+		logger.info(CommonUtil.toString(chatDTO));
+
+		chatDTO = chatService.chatRoomNameChange(chatDTO);
+
+		return chatDTO;
+	}
+
 }
