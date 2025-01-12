@@ -249,16 +249,19 @@ $(document).ready(function () {
     // 메뉴 클릭 이벤트
     $('#firstMenu').on('click', function () {
         currentUrl = '/ad/employeeTransferList';
+		$('input[name="search"]').val('');
         resetPaginationAndFetchData(); // 페이지 초기화 및 데이터 요청
     });
 
     $('#secondMenu').on('click', function () {
         currentUrl = '/ad/storeTransferList';
+		$('input[name="search"]').val('');
         resetPaginationAndFetchData(); // 페이지 초기화 및 데이터 요청
     });
 
     $('#thirdMenu').on('click', function () {
         currentUrl = '/ad/notTransferList';
+		$('input[name="search"]').val('');
         resetPaginationAndFetchData(); // 페이지 초기화 및 데이터 요청
     });
 
@@ -266,9 +269,16 @@ $(document).ready(function () {
     $('#searchBtn').on('click', function (event) {
         event.preventDefault(); // 기본 동작 중지
         resetPaginationAndFetchData(); // 페이지 초기화 및 데이터 요청
+
     });
 
 	$('#firstMenu').trigger('click');
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+	// 오늘 날짜를 yyyy-MM-dd 형식으로 얻기
+	const today = new Date().toISOString().split("T")[0];
+	document.querySelector("input[name='transfer_date']").value = today;
 });
 
 // 페이지네이션 초기화 및 데이터 요청
@@ -521,9 +531,6 @@ function addSelectedIdToRows(selectedId) {
 			data: { selectedId: selectedId },
 			success: function(response){
 
-
-
-
 				console.log(response);
 
 				var userResult = response[0];
@@ -760,6 +767,38 @@ function hideAndClearModal() {
 // 닫기 버튼과 취소 버튼 클릭 이벤트 설정
 document.getElementById("closeModal").addEventListener("click", hideAndClearModal);
 document.getElementById("cancelModal").addEventListener("click", hideAndClearModal);
+
+function httpVariousSuccess(response){
+	console.log('성공 후 - ', response);
+	if(response){
+		layerPopup('인사이동이 완료되었습니다.', '확인', false, removeAlert, removeAlert);
+		console.log('성공');
+		const modal = document.getElementById("chartModalBox");
+		modal.style.display = "none";
+	}
+}
+
+// 시작일과 종료일 요소 가져오기
+const startDateInput = document.querySelector('input[name="start_date"]');
+const endDateInput = document.querySelector('input[name="end_date"]');
+
+// 유효성 검사 함수
+function validateDateRange() {
+	// 두 값이 모두 있을 때만 비교
+	if (startDateInput.value && endDateInput.value) {
+		const startDate = new Date(startDateInput.value);
+		const endDate = new Date(endDateInput.value);
+
+		if (endDate < startDate) {
+			layerPopup('시작일 이후로 입력해주세요.', '확인', false, removeAlert, removeAlert);
+			endDateInput.value = ""; // 종료일 초기화
+		}
+	}
+}
+
+// 시작일, 종료일 둘 다 바뀔 때마다 검사
+startDateInput.addEventListener("change", validateDateRange);
+endDateInput.addEventListener("change", validateDateRange);
 
 </script>
 

@@ -154,9 +154,9 @@
 		UPDATE user SET
 		name = #{name},
 		email = #{email},
-		phone = #{phone},
-		<if test="company_num != null and company_num != ''">company_num = #{company_num}</if>
-
+		phone = #{phone}
+		<if test="company_num != null and company_num != ''">,company_num = #{company_num}</if>
+		<if test="leave_date != null and leave_date != ''">,leave_date = #{leave_date}</if>
 		WHERE username = #{username}
 	</update>
 
@@ -459,7 +459,7 @@
 		parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		INSERT INTO direct_store(id, parent, name, owner,
 		use_yn, address, address_detail, creater, use_date, content)
-		VALUES(#{id}, #{parent}, #{name}, #{owner}, #{use_yn}, #{address},
+		VALUES(#{id}, #{parent}, #{name}, #{user_name}, #{use_yn}, #{address},
 		#{address_detail}, 'admin', #{use_date}, #{content})
 	</insert>
 
@@ -470,7 +470,7 @@
 		parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		UPDATE direct_store SET name = #{name}, use_yn =
 		#{use_yn}, address = #{address}, address_detail = #{address_detail},
-		owner = #{owner}, content = #{content}, use_date = #{use_date},
+		owner = #{user_name}, content = #{content}, use_date = #{use_date},
 		creater = #{creater} WHERE id = #{id}
 	</update>
 
@@ -688,7 +688,7 @@
 	<update id="storeUseUpdate"
 		parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		UPDATE direct_store SET use_yn = 'N', use_date =
-		#{use_date} WHERE parent = #{id}
+		#{use_date}, owner = '미발령' WHERE parent = #{id}
 	</update>
 
 	<!-- 인사이동 리스트 조회 -->
@@ -984,7 +984,7 @@
 	<!-- 직원 퇴사 처리 -->
 	<update id="usrQuitDelete"
 		parameterType="kr.co.porkandspoon.dto.UserDTO">
-		UPDATE user SET user_yn = 'Y', leave_date =
+		UPDATE user SET user_yn = 'N', leave_date =
 		#{transfer_date} WHERE username= #{username}
 	</update>
 
@@ -1080,6 +1080,38 @@
 		직영점 직원 부서 변경 (비활성화 시) -->
 	<update id="storeUserUpdate">
 		UPDATE user AS u JOIN direct_store AS d ON u.username = d.owner SET u.parent = 'NO1000' WHERE d.parent = #{id}
+	</update>
+
+	<!-- author yh.kim (25. 01. 11)
+		직원 등록 시 직영점 조회 -->
+	<select id="storeIdList" parameterType="String" resultType="kr.co.porkandspoon.dto.DeptDTO">
+		SELECT ds.id, ds.name FROM direct_store ds WHERE parent = #{parent} AND owner = '미발령'
+	</select>
+
+	<!-- author yh.kim (25. 01. 11)
+		직원 등록 시 직영점 정보 업데이트 -->
+	<update id="userStoreUpdate" parameterType="kr.co.porkandspoon.dto.UserDTO">
+		UPDATE direct_store SET owner = #{username} WHERE id = #{parent}
+	</update>
+
+	<!-- author yh.kim (25. 01. 11)
+		퇴사 직원 조회 및 처리 스케줄러 -->
+	<update id="resignationProcessing">
+		UPDATE user SET user_yn = 'N'
+		WHERE DATE(leave_date) = CURDATE()
+	</update>
+
+	<!-- author yh.kim (25. 01. 11)
+		직영점 비활성화 시 직원 업데이트 -->
+	<update id="storeUserUserUpdate" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		UPDATE user SET parent = 'NO1000' WHERE username = #{user_name}
+	</update>
+
+	<!-- author yh.kim (25. 01. 11)
+		직영점 비활성화 시 owner 업데이트 -->
+	<update id="storeUseYnUpdate"
+			parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		UPDATE direct_store SET owner = '미발령' WHERE id = #{id}
 	</update>
 
 </mapper>

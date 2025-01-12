@@ -319,7 +319,6 @@ public class UserController {
 				dto.setStatus(202);
 				dto.setMessage("인증 번호 확인 완료 비밀번호 변경 페이지로 이동");
 				logger.info("리턴할 dto => " + CommonUtil.toString(dto));
-			
 			}
 			
 		}else {
@@ -900,5 +899,17 @@ public class UserController {
 		List<DeptDTO> result = userService.storeTransferInfo(selectedId);
 		
 		return result;
+	}
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 직원 등록 시 직영점 조회
+	 */
+	@GetMapping(value = "/ad/storeList")
+	public List<DeptDTO> storeIdList(@RequestParam String parent){
+
+		List<DeptDTO> deptDTO = userService.storeIdList(parent);
+
+		return deptDTO;
 	}
 }

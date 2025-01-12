@@ -101,6 +101,7 @@ public class TestController {
 		System.out.println("변환한 숫자 ============== " + num4);
 
 
+		System.out.println(encoder.encode("1111"));
 		
 		return new ModelAndView("login");
 	}

@@ -12,6 +12,9 @@ public class CustomUserDetails extends User {
     private int failedAttempts; // 로그인 실패 횟수
     private boolean accountLocked; // 계정 잠금 여부
 
+    // 추가: 기본 비밀번호 여부
+    private boolean defaultPassword;
+
     public CustomUserDetails(Empl empl) {
         super(empl.getUsername(), empl.getPassword(), AuthorityUtils.createAuthorityList("ROLE_" + empl.getRole().toUpperCase()));
         this.name = empl.getName();
@@ -37,6 +40,15 @@ public class CustomUserDetails extends User {
 
     public void setAccountLocked(boolean accountLocked) {
         this.accountLocked = accountLocked;
+    }
+
+    // 추가: getter/setter
+    public boolean isDefaultPassword() {
+        return defaultPassword;
+    }
+
+    public void setDefaultPassword(boolean defaultPassword) {
+        this.defaultPassword = defaultPassword;
     }
 
 }

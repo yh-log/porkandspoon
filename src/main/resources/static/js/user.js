@@ -123,16 +123,18 @@ function findUserInfo(){
 	
 // 인증코드 확인 시 실행 함수
 function findUserSubmit(){
-	
-	var params = {
+
+    const params = {
 			'authentication' : $('input[name="certification"]').val(),
 			'idx' : $('input[name="idx"]').val(),
 			'name' : $('input[name="name"]').val(), 
 			'email' : $('input[name="email"]').val(),
-			'type' : $('input[name="type"').val()	
+			'type' : $('input[name="type"]').val()
 		};
+
+    const type = $('input[name="type"]').val();
 		
-	if ($('input[name="type"]').val() === 'pw') {
+	if (type === 'pw') {
         params['username'] = $('input[name="username"]').val(); // 비밀번호 찾기라면 username 추가
     }
     console.log('찾기 버튼 시 데이터 =>', params);
@@ -207,6 +209,7 @@ function httpSuccess(response){
 		location.href = '/displayUserId/'+response.username;
 	}
 	
+    // 비밀번호 변경 페이지 이동
 	if(response.status === 202){
 		location.href = '/changePassword/'+response.username;
 	}
