@@ -111,7 +111,7 @@
 						<li><a href="/approval/listView/sv">임시저장 문서</a></li>
 						<li class="active"><a href="/approval/listView/line">나의 결재라인</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">사사이드바 버튼</div>
+					<div class="btn btn-primary full-size" onclick="location.href='/approval/write'">결재작성</div>
 				</section>
 				<section class="cont">
 
@@ -160,6 +160,13 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	<!-- 조직도 모달 사용 시 추가 -->
+	<div id="chartModalBox" class="modal" style="display: none;">
+    	<div class="chartModal-content"></div>
+	</div>
+	<input type="hidden" id="selectedNodeInput" value=""/>
 </body>
 
 <!-- 부트스트랩 -->
@@ -170,7 +177,10 @@
 <script src="/resources/js/jquery.twbsPagination.js"
 	type="text/javascript"></script>
 	
-
+<!-- jstree -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<!-- 조직도 js -->
+<script src='/resources/js/charjstree.js'></script>
 <script>
 var show = 1;
 

@@ -305,12 +305,9 @@
      		</i>
      	</a>
      	
-   	   <form method="post" action="/logout">
- 		   <button type="submit" id="logout">
+ 		   <button id="logout">
      		   <i class="bi bi-door-closed-fill" style="position: relative;"></i>
      	   </button>
-	      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-	   </form>
      </div>
     </div>
 </header>
@@ -388,7 +385,11 @@
             console.log("[[[[헤더]]]] response.userInfo:: ",response.userInfo);
             var info = response.userInfo;
             $('.profile-area .name').text(info.name + info.position_content);
-            $('.profile-area .profile-img').css('background','url(\'/photo/'+info.profile+'\') no-repeat top center/cover');
+            if(info.profile != null){
+	            $('.profile-area .profile-img').css('background','url(\'/photo/'+info.profile+'\') no-repeat top center/cover');
+            }else{
+	            $('.profile-area .profile-img').css('background','url(/resources/img/common/user_default.png) no-repeat top center/cover');
+            }
         },
         error: function(xhr, status, error) {
             console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
@@ -709,5 +710,22 @@
 	    }
 	}
 
+	document.getElementById('logout').addEventListener('click', function() {
+        var csrfParameterName = '${_csrf.parameterName}';
+        var csrfToken = '${_csrf.token}';
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/logout';
+
+        var hiddenCsrfInput = document.createElement('input');
+        hiddenCsrfInput.type = 'hidden';
+        hiddenCsrfInput.name = csrfParameterName;
+        hiddenCsrfInput.value = csrfToken;
+
+        form.appendChild(hiddenCsrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    });
 		
 </script>

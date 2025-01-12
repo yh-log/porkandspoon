@@ -378,6 +378,7 @@ header #logout i {
 	padding: 5px 0;
 	color: var(--bs-heading-color);
     font-weight: 600;
+    cursor: pointer;
 }
 
 .page-content .tit-area {
