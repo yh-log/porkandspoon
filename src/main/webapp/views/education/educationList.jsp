@@ -124,7 +124,7 @@
 			<div class="page-content">
 				<section id="menu">
 					<h4 class="menu-title">교육</h4>
-					<div><a href="/ad/educationWrite" class="btn btn-primary full-size">등록</a></div>
+					<div><a href="/mo/educationWrite" class="btn btn-primary full-size">등록</a></div>
 				</section>
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
@@ -256,7 +256,7 @@
 			no = view.no;
 			console.log('부서,넘버 : ',id,no);
 			content += '<tr>';
-			content += '<td onclick="eduHistory(\'' + id + '\',' + no + ')">'+view.text+'</td>';
+			content += '<td onclick="eduHistory(\'' + id + '\',' + no + ')" style="cursor: pointer;">'+view.text+'</td>';
 			if(view.category == 'duty'){
 				content += '<td>의무 교육</td>';
 			}else if(view.category == 'job'){
@@ -272,7 +272,7 @@
 			
 			var dateOnly = view.create_date.split('T')[0];
 	        content += '<td>' + dateOnly + '</td>';
-	        content +='<td><a href="/ad/educationUpdate/'+view.no+'" class="btn btn-sm btn-outline-primary">수정</a></td>';
+	        content +='<td><a href="/mo/educationUpdate/'+view.no+'" class="btn btn-sm btn-outline-primary">수정</a></td>';
 	        content += '</tr>';
 		}
 		$('#list').html(content);

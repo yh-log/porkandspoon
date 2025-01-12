@@ -273,8 +273,15 @@
 		SELECT * FROM item WHERE no = #{no}
 	</select>
 	
+	<!-- 물품 예약 리스트 조회 -->
 	<select id="articleList" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM item_schedule e
+		SELECT
+			idx,
+	        subject,
+	        start_date,
+	        end_date,
+	        'A' AS `type` 
+	        FROM item_schedule
 	</select>
 	
 	<select id="selection" resultType="kr.co.porkandspoon.dto.CalenderDTO">
@@ -287,6 +294,7 @@
         							VALUES(#{no},#{username},#{start_date},#{end_date},#{subject},#{content})
 	</insert>
 	
+	<!-- 물품 중복 방지 -->
 	<select id="isDuplicate" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM item_schedule 
@@ -312,7 +320,7 @@
 		WHERE idx=#{idx}
     </select>
     
-    <!-- 캘린더 일정 수정 -->
+    <!-- 물품캘린더 일정 수정 -->
     <update id="itemUpdate" parameterType="map">
 	    UPDATE item_schedule SET 
 	        start_date = #{calenderDto.start_date},
@@ -337,17 +345,24 @@
 		SELECT * FROM room WHERE no = #{no}
 	</select>
 	
+	<!-- 회의실 예약 리스트 조회 -->
 	<select id="roomList" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM room_schedule
+		SELECT 
+			idx,
+	        subject,
+	        start_date,
+	        end_date,
+	        'R' AS `type`
+		FROM room_schedule
 	</select>
 	
-	<!-- 중복방지 -->
+	<!-- 회의실 중복방지 -->
 	<select id="roomDuplicate" resultType="int">
 	    SELECT COUNT(*) 
 	    FROM room_schedule 
 	    WHERE no = #{no} AND ((start_date &lt;= #{start_date} AND end_date &gt;= #{end_date}))
 	</select>
-	
+		
 	<!-- 회의실 예약자 등록 -->
 	<insert id="roomReservationWrite" 
 				useGeneratedKeys="true"
@@ -383,18 +398,7 @@
 		JOIN user u ON s.username = u.username
 		WHERE s.idx=#{idx}
     </select>
-    
-    <!-- 참석자 목록 조회 -->
-    <!-- 
-    <select id="attendeesList" parameterType="int" resultType="kr.co.porkandspoon.dto.UserDTO">
-        SELECT 
-            a.username,
-            ua.name
-        FROM attendees a
-        JOIN user ua ON a.username = ua.username
-        WHERE a.idx = #{idx}
-    </select>  -->
-    
+       
     <!-- 사용자 정보를 가져오는 select 문 -->
     <select id="attendeesList" resultMap="UserMap">
         SELECT 

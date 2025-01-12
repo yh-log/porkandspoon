@@ -138,6 +138,14 @@ public class ResevationService {
 	// 회의실 예약 작성 메서드
     @Transactional
     public boolean roomReservationWrite(CalenderDTO calenderDto) {
+    	
+        // 중복 예약 확인
+	    boolean isDuplicate = roomDuplicate(calenderDto.getNo(),calenderDto.getStart_date(),calenderDto.getEnd_date());
+	    if(isDuplicate) {
+	        logger.info("중복 예약 시도 발생: Room {}, Start {}, End {}",calenderDto.getNo(), calenderDto.getStart_date(), calenderDto.getEnd_date());
+	        return false;  // 중복 예약 존재 시 예약 실패 처리
+	    }
+    	
         List<String> attendees = calenderDto.getAttendees();
         if(attendees == null || attendees.isEmpty()) {
             return false;
@@ -168,8 +176,13 @@ public class ResevationService {
             alarmService.saveAlarm(noticedto);
 
         }
-
+        	    	
         return true;
+	}
+
+	private boolean roomDuplicate(int no, String start_date, String end_date) {
+		int count = resDao.roomDuplicate(no, start_date, end_date);
+	    return count > 0;
 	}
 
 	public Map<String, Object> roomReservationDetail(int idx) {
@@ -231,8 +244,10 @@ public class ResevationService {
 	        throw e; // 트랜잭션 롤백을 위해 예외 재발생
 	    }
 	}
-
+	
+	@Transactional
 	public int roomDelete(String idx) {
+		resDao.deleteAllAttendees(idx);
 		return resDao.roomDelete(idx);
 	}
 

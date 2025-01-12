@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.CalenderService;
 import kr.co.porkandspoon.util.CommonUtil;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
@@ -59,13 +60,15 @@ public class CalenderController {
             filters.add("C");
             filters.add("P");
             filters.add("T");
+            filters.add("A");
+            filters.add("R");
         }
 
         // 필터가 비어있거나 null인 경우 모든 타입 포함
         if (filters == null || filters.isEmpty()) {
             filters = Arrays.asList("");
         }
-
+        logger.info("null 일때 필터항목 : "+filters);
         // 필터링된 일정 조회
         List<CalenderDTO> schedules = calenderService.calenderList(filters, loginId, dept);
 
@@ -92,15 +95,20 @@ public class CalenderController {
 	
 	// 일정 조회 ajax
     @GetMapping(value="/calenderDetail/{idx}")
-    public Map<String, Object> calenderDetail(@PathVariable int idx){
-        logger.info("일정 상세 조회 실행, IDX: " + idx);
-        CalenderDTO schedule = calenderService.calenderDetail(idx);
+    public Map<String, Object> calenderDetail(@PathVariable int idx,@RequestParam String filter){
+        logger.info("일정 상세 조회 실행, IDX: " + idx+filter);
+        CalenderDTO schedule = calenderService.calenderDetail(idx,filter);
         System.out.println(CommonUtil.toString(schedule));
-        //schedule.setStart_date(CommonUtil.formatDateTime(schedule.getStart_date(), "yyyy-mm-dd HH:mm:ss"));
-        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<UserDTO> attendees = null;
+        if("R".equals(filter)) {
+        	attendees = calenderService.attendeesList(idx);
+        }
+        
+        Map<String, Object> resultMap = new HashMap<String, Object>();       
         if(schedule != null) {
             resultMap.put("success", true);
             resultMap.put("schedule", schedule);
+            resultMap.put("attendees", attendees);
         } else {
             resultMap.put("success", false);
             resultMap.put("message", "일정을 찾을 수 없습니다.");

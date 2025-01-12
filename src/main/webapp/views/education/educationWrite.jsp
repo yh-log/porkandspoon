@@ -367,7 +367,7 @@
 	
 	function httpSuccess(response) {
 		console.log('성공',response);
-		location.href="/ad/education"
+		location.href="/mo/education"
 	}
 	
 	function secondBtn1Act() {
@@ -377,7 +377,7 @@
 	}
 	
 	function back(){
-		location.href="/ad/education"
+		location.href="/mo/education"
     }
 	
 	
