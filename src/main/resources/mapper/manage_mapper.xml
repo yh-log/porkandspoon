@@ -333,12 +333,12 @@
             LEFT JOIN `user` u ON r.creater = u.username
             LEFT JOIN direct_store ds ON r.id = ds.id
             LEFT JOIN department d ON d.id = ds.parent
-            WHERE 1=1
+            WHERE 1=1 AND r.use_yn = 'Y'
+            <if test="username != null and username.trim() != ''">
+                AND ds.owner = #{username}
+            </if>
             <if test="keyword != null and keyword.trim() != ''">
                 <choose>
-                    <when test="option == 'dept'">
-                        <![CDATA[ AND (ds.name LIKE CONCAT('%', #{keyword}, '%') OR d.text LIKE CONCAT('%', #{keyword}, '%')) ]]>
-                    </when>
                     <when test="option == 'name'">
                         <![CDATA[ AND u.name LIKE CONCAT('%', #{keyword}, '%') ]]>
                     </when>
@@ -354,12 +354,12 @@
         FROM rest r LEFT JOIN `user` u ON r.creater = u.username
             LEFT JOIN direct_store ds ON r.id = ds.id
             LEFT JOIN department d ON d.id = ds.parent
-        WHERE 1=1
+        WHERE 1=1 AND r.use_yn = 'Y'
+        <if test="username != null and username.trim() != ''">
+            AND ds.owner = #{username}
+        </if>
         <if test="keyword != null and keyword.trim() != ''">
             <choose>
-                <when test="option == 'dept'">
-                    <![CDATA[ AND (ds.name LIKE CONCAT('%', #{keyword}, '%') OR d.text LIKE CONCAT('%', #{keyword}, '%')) ]]>
-                </when>
                 <when test="option == 'name'">
                     <![CDATA[ AND u.name LIKE CONCAT('%', #{keyword}, '%') ]]>
                 </when>

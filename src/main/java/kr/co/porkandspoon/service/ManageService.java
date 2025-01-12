@@ -269,8 +269,9 @@ Logger logger = LoggerFactory.getLogger(getClass());
 
 		// 공지사항 등록
 		int restBoardIdx = restBoardWrite(restDTO, "W");
-		logger.info("공지사항 idx => " + restBoardIdx);
-		restDTO.setBoard_idx(restBoardIdx);
+		logger.info("공지사항 로우 => " + restBoardIdx);
+		logger.info("공지사항 idx === >  " + restDTO.getBoard_idx());
+		//restDTO.setBoard_idx(restBoardIdx);
 		if(restBoardIdx == 0){
 			restDTO.setStatus(500);
 			restDTO.setMessage("휴점 공지 등록에 실패했습니다.");
@@ -443,7 +444,7 @@ Logger logger = LoggerFactory.getLogger(getClass());
 		logger.info("rest DTO 6 => " + CommonUtil.toString(restDTO));
 
 		restDTO.setStatus(200);
-		restDTO.setMessage("휴점이 등록되었습니다.");
+		restDTO.setMessage("휴점이 수정되었습니다.");
 
 		return restDTO;
 
@@ -506,18 +507,18 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	 * author yh.kim, (25.01.04)
 	 * 휴점 리스트 조회
 	 */
-	public List<RestDTO> restList(int page, int cnt, String option, String keyword) {
+	public List<RestDTO> restList(PagingDTO pagingDTO) {
 
-		int limit = cnt; // 10
-		int offset = (page -1) * cnt;
+//		int limit = cnt; // 10
+//		int offset = (page -1) * cnt;
+//
+//		Map<String, Object> listMap = new HashMap<>();
+//		listMap.put("limit", limit);
+//		listMap.put("offset", offset);
+//		listMap.put("option", option);
+//		listMap.put("keyword", keyword);
 
-		Map<String, Object> listMap = new HashMap<>();
-		listMap.put("limit", limit);
-		listMap.put("offset", offset);
-		listMap.put("option", option);
-		listMap.put("keyword", keyword);
-
-		List<RestDTO> restDTOList = manageDAO.restList(listMap);
+		List<RestDTO> restDTOList = manageDAO.restList(pagingDTO);
 
 		return restDTOList;
 	}

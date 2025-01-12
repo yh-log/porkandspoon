@@ -75,10 +75,10 @@
          <section id="menu">
             <h4 class="menu-title">나의 정보</h4>
             <ul>
-            	<li id="firstMenu"><a href="#">나의 정보</a></li>
-				<li id="secondMenu1" class="active" ><a href="#">출장</a></li>
-				<li id="secondMenu2"><a href="#">서명 관리</a></li>
-				<li id="secondMenu3"><a href="#">구매기록</a></li>
+				<li id="firstMenu"><a href="/myPageView">나의 정보</a></li>
+				<li id="secondMenu" class="active" ><a href="/trip/listView">출장</a></li>
+				<li id="secondMendu"><a href="/myPageSign">서명 관리</a></li>
+				<li id="secondMenud"><a href="/myPageBuy">구매기록</a></li>
             </ul>
          </section>
          <section class="cont">
@@ -213,5 +213,28 @@
 			layerPopup(response.message, '확인', false, removeAlert, removeAlert);
 		}
 	}
+
+
+	// 시작일과 종료일 요소 가져오기
+	const startDateInput = document.querySelector('input[name="start_date"]');
+	const endDateInput = document.querySelector('input[name="end_date"]');
+
+	// 유효성 검사 함수
+	function validateDateRange() {
+		// 두 값이 모두 있을 때만 비교
+		if (startDateInput.value && endDateInput.value) {
+			const startDate = new Date(startDateInput.value);
+			const endDate = new Date(endDateInput.value);
+
+			if (endDate < startDate) {
+				layerPopup('시작일 이후로 입력해주세요.', '확인', false, removeAlert, removeAlert);
+				endDateInput.value = ""; // 종료일 초기화
+			}
+		}
+	}
+
+	// 시작일, 종료일 둘 다 바뀔 때마다 검사
+	startDateInput.addEventListener("change", validateDateRange);
+	endDateInput.addEventListener("change", validateDateRange);
 </script>
 </html>

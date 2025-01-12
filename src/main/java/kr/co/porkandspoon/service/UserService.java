@@ -77,11 +77,12 @@ public class UserService {
 	public boolean chackAuthCode(UserDTO dto) {
 		
 		int resultRow = userDao.chackAuthCode(dto);
+		logger.info("인증 번호 찾기 로우 => " + resultRow);
 	
 		if(resultRow < 0) {
 			return false;
 		}
-		
+
 		dto.setUsername(userDao.findUsername(dto));
 		
 		return true;
@@ -156,10 +157,20 @@ public class UserService {
 		// 권한 생성 메서드 (권한 A 로 시작하면 admin 권한 B로 시작하면 manager 권한 B에 직급이 6이면 user 권한)
 		String role = authorityCreate(dto);
 		dto.setRole(role);
-		
+
+		if(dto.getStoreId() != null && dto.getStoreId().isEmpty()) {
+			// 부서 정보에 직영점 id 입력
+			dto.setParent(dto.getStoreId());
+		}
+
 		int row = userDao.userWrite(dto);
 		
 		logger.info("직원 등록 row => " + row);
+
+		if(row > 0 && dto.getStoreId() != null && dto.getStoreId().isEmpty()){
+			int storeUpdateRow = userDao.userStoreUpdate(dto);
+			logger.info("직영점 owner 업데이트 => " + storeUpdateRow);
+		}
 		
 		if(row == 0) {
 			dto.setStatus(500);
@@ -468,6 +479,8 @@ public class UserService {
 		if(dto.getUse_yn().equals("N")) {
 			int storeRow = userDao.storeUseUpdate(dto);
 			logger.info("직영점 비활성 => " + storeRow);
+
+
 		}
 		
 		
@@ -602,6 +615,15 @@ public class UserService {
 		int storeRow = userDao.storeWrite(dto);
 		
 		logger.info("브랜드 수정 로우 => " + storeRow);
+
+		// 직원 테이블 update
+		UserDTO userDTO = new UserDTO();
+		userDTO.setUsername(dto.getUser_name());
+		userDTO.setParent(dto.getId());
+		String person_num = generateCompanyNumber(userDTO);
+		userDTO.setPerson_num(person_num);
+		int userUpdateRow = userDao.userDeptUpdate(userDTO);
+		logger.info("직원 부서 업데이트 로우 => " + userUpdateRow);
 		
 		List<FileDTO> imgs = dto.getImgs();
 		if(imgs.size() > 0 || imgs != null) {
@@ -668,6 +690,17 @@ public class UserService {
 				int contentImgRow = userDao.userFileWriet(img);
 				logger.info("이미지 업로드 => ", contentImgRow);
 			}
+		}
+		// 직영점 비활성화
+		if(dto.getUse_yn().equals("N")){
+
+			// 직영점 비활성화
+			int storeUpdateRow = userDao.storeUseYnUpdate(dto);
+			logger.info("직영점 비활성화 로우 => " + storeUpdateRow);
+
+			// 직원 테이블 업데이트
+			int userUpdateRow = userDao.storeUserUserUpdate(dto);
+			logger.info("비활성 시 직원 업데이트 로우 => " + userUpdateRow);
 		}
 
 		dto.setStatus(200);
@@ -918,4 +951,40 @@ public class UserService {
 	}
 
 
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 직원 등록 시 직영점 조회
+	 */
+	public List<DeptDTO> storeIdList(String parent) {
+
+		List<DeptDTO> deptDTO = userDao.storeIdList(parent);
+		DeptDTO dto = new DeptDTO();
+
+		if(deptDTO.size() < 1) {
+			dto.setStatus(502);
+			dto.setMessage("선택가능한 직영점이 없습니다.");
+
+			deptDTO.add(dto);
+			return deptDTO;
+		}
+
+		dto.setStatus(202);
+		dto.setMessage("직영점 리스트를 불러왔습니다.");
+
+		deptDTO.add(dto);
+
+		return deptDTO;
+	}
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 퇴사 직원 조회 및 처리
+	 * 매일 00:03 실행
+	 */
+	public void resignationProcessing() {
+
+		int resignationRow = userDao.resignationProcessing();
+		logger.info("퇴사 처리 로우 => " + resignationRow);
+
+	}
 }

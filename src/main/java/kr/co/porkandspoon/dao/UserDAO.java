@@ -288,4 +288,35 @@ public interface UserDAO{
 	 * 직영점 직원 부서 변경 (비활성화 시)
 	 */
 	int storeUserUpdate(DeptDTO dto);
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 직원 등록 시 직영점 조회
+	 */
+    List<DeptDTO> storeIdList(String parent);
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 직원 등록 시 직영점 정보 업데이트
+	 */
+	int userStoreUpdate(UserDTO dto);
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 퇴사 직원 조회 및 처리
+	 * 매일 00:03 실행
+	 */
+	int resignationProcessing();
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 직영점 비활성화 시 직원 업데이트
+	 */
+	int storeUserUserUpdate(DeptDTO dto);
+
+	/**
+	 * author yh.kim, (25.01.11)
+	 * 직영점 비활성화 시 owner 업데이트
+	 */
+	int storeUseYnUpdate(DeptDTO dto);
 }
