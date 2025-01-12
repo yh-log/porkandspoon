@@ -306,10 +306,10 @@
 				<section id="menu">
 					<h4 class="menu-title">문서함</h4>
 					<ul>
-						<li class="active"><a href="#" onclick="setForm('brand','open',this)">브랜드 등록</a></li>
-						<li><a href="#" onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
-						<li><a href="#" onclick="setForm('direct','open',this)">직영점 등록</a></li>
-						<li><a href="#" onclick="setForm('direct','close',this)">직영점 폐점</a></li>
+						<li class="active"><a onclick="setForm('brand','open',this)">브랜드 등록</a></li>
+						<li><a onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
+						<li><a onclick="setForm('direct','open',this)">직영점 등록</a></li>
+						<li><a onclick="setForm('direct','close',this)">직영점 폐점</a></li>
 					</ul>
 				</section>
 				<section class="cont">

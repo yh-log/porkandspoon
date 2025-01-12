@@ -131,7 +131,12 @@
 
 			<div class="page-content draftList">
 				<section id="menu">
-					<h4 class="menu-title">나의문서함</h4>
+					<c:if test="${listType != 'dept'}">
+						<h4 class="menu-title">나의문서함</h4>
+					</c:if>
+					<c:if test="${listType == 'dept'}">
+						<h4 class="menu-title">부서문서함</h4>
+					</c:if>
 					<ul>
 						<li <c:if test="${listType == 'my'}">class="active"</c:if>><a href="/approval/listView/my">기안문서함</a></li>
 						<li <c:if test="${listType == 'tobe'}">class="active"</c:if>><a href="/approval/listView/tobe">결재할 문서</a></li>
@@ -139,6 +144,7 @@
 						<li <c:if test="${listType == 'sv'}">class="active"</c:if>><a href="/approval/listView/sv">임시저장 문서</a></li>
 						<li><a href="/approval/listView/line">나의 결재라인</a></li>
 					</ul>
+					<div class="btn btn-primary full-size" onclick="location.href='/approval/write'">결재작성</div>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12">
@@ -149,7 +155,7 @@
 									<c:when test="${listType == 'tobe'}">결재할 문서</c:when>
 									<c:when test="${listType == 'did'}">결재한 문서</c:when>
 									<c:when test="${listType == 'sv'}">임시저장 문서</c:when>
-									<c:when test="${listType == 'line'}">나의 결재라인</c:when>
+									<c:when test="${listType == 'dept'}">부서문서함</c:when>
 								</c:choose>
 						
 							</h5>
