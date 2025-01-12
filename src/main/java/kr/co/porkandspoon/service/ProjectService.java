@@ -29,9 +29,9 @@ public class ProjectService {
 		return projectDAO.setProject(params);
 	}
 
-	public List<ProjectDTO> getProject(String loginId) {
+	public List<ProjectDTO> getProject(String loginId, boolean includeCompleted, boolean includeInProgress, boolean isOpen, String searchKeyword) {
 		
-		return projectDAO.getProject(loginId);
+		return projectDAO.getProject(loginId,includeCompleted,includeInProgress,isOpen,searchKeyword);
 	}
 
 	public List<ProjectDTO> getKanBanInfo(String project_idx) {

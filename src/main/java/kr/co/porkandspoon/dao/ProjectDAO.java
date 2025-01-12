@@ -15,7 +15,7 @@ public interface ProjectDAO {
 
 	int setProject(Map<String, String> params);
 
-	List<ProjectDTO> getProject(String loginId);
+	List<ProjectDTO> getProject(String loginId, boolean includeCompleted, boolean includeInProgress, boolean isOpen, String searchKeyword);
 
 	List<ProjectDTO> getKanBanInfo(String project_idx);
 

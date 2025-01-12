@@ -31,6 +31,11 @@
 #home,#schedule{
 		width: 200px;
 	}
+	
+	.card-content{
+		display: felx;
+	
+	}
 
 	#searchLayout{
 	    display: flex;
@@ -120,6 +125,7 @@
 	}
 	#bar{
 		margin-top: 10px;
+		
 	}
 	card-content{
 	margin-bottom: 15px;
@@ -168,43 +174,48 @@
 		        	<div class="card-content">
 					<div class="card-body">
 						<ul class="list-unstyled mb-0">
-							<li class="d-inline-block me-2 mb-1">
-								<div class="form-check">
-									<div class="checkbox">
-										<input type="checkbox" id="checkbox1"
-											class="form-check-input" checked> <label
-											for="checkbox1">진행중인 프로젝트</label>
-									</div>
-								</div>
-							</li>
-							<li class="d-inline-block me-2 mb-1">
-								<div class="form-check">
-									<div class="checkbox">
-										<input type="checkbox" class="form-check-input" checked
-											id="checkbox2"> <label for="checkbox2">완료된 프로젝트</label>
-									</div>
-								</div>
-							</li>
-						</ul>
+					    <li class="d-inline-block me-2 mb-1">
+					        <div class="form-check">
+					            <div class="checkbox">
+					                <input type="checkbox" id="checkbox1" class="form-check-input"
+					                    <c:if test="${param.includeInProgress == null || param.includeInProgress == 'true'}">checked</c:if>>
+					                <label for="checkbox1">진행중</label>
+					            </div>
+					        </div>
+					    </li>
+					    <li class="d-inline-block me-2 mb-1">
+					        <div class="form-check">
+					            <div class="checkbox">
+					                <input type="checkbox" id="checkbox2" class="form-check-input"
+					                    <c:if test="${param.includeCompleted == null || param.includeCompleted == 'true'}">checked</c:if>>
+					                <label for="checkbox2">완료</label>
+					            </div>
+					        </div>
+					    </li>
+					</ul>
 			        </div>
 					</div>
-			       <div class="card-body">
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="is_open" value="Y" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-								공개 </label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="is_open" value="N" id="flexRadioDefault2" >
-							<label class="form-check-label" for="flexRadioDefault2">
-								비공개 </label>
-						</div>
-					</div>	
+					 <div class="card-body">
+					    <!-- 공개 라디오 버튼 -->
+					    <div class="form-check">
+					        <input class="form-check-input" type="radio" name="is_open" value="Y" id="flexRadioDefault1"
+					            <c:if test="${param.is_open == null || param.is_open == 'true'}">checked</c:if>>
+					        <label class="form-check-label" for="flexRadioDefault1">공개</label>
+					    </div>
+					
+					    <!-- 비공개 라디오 버튼 -->
+					    <div class="form-check">
+					        <input class="form-check-input" type="radio" name="is_open" value="N" id="flexRadioDefault2"
+					            <c:if test="${param.is_open == 'false'}">checked</c:if>>
+					        <label class="form-check-label" for="flexRadioDefault2">비공개</label>
+					    </div>
+					</div>
 						<ul id="title">
 							<li class="active">제목</li>
 						</ul>
-						<div id="searchLayout"  >
-							<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
-						</div>
+						<div id="searchLayout">
+					    <input   type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" value="${param.searchKeyword}" />
+					</div>
 			    </div>
 				</section>
 				<section class="cont">
@@ -279,8 +290,55 @@
 
 
 <script>
-	
-	
+$(document).ready(function () {
+    $("#searchKeyword").on("keypress", function (event) {
+        if (event.keyCode === 13) {
+            applyFilter();
+        }
+    });
+
+    // 체크박스 변경 이벤트
+    $("input[type='checkbox']").on("change", function () {
+        const includeCompleted = $("#checkbox2").is(":checked");
+        const includeInProgress = $("#checkbox1").is(":checked");
+
+        if (!includeCompleted && !includeInProgress) {
+            alert("진행중 또는 완료를 하나 이상 선택해야 합니다.");
+            $("#checkbox1").prop("checked", true);
+            $("#checkbox2").prop("checked", true);
+            return;
+        }
+
+        applyFilter();
+    });
+
+    // 라디오 버튼 변경 이벤트
+    $("input[name='is_open']").on("change", function () {
+        applyFilter();
+    });
+
+    // 필터 적용 함수
+    function applyFilter() {
+        const includeCompleted = $("#checkbox2").is(":checked");
+        const includeInProgress = $("#checkbox1").is(":checked");
+
+        // boolean으로 변환
+        const isOpen = $("input[name='is_open']:checked").val() === 'Y';
+
+        const searchKeyword = $("#searchKeyword").val();
+
+        const queryParams = new URLSearchParams({
+            includeCompleted: includeCompleted,
+            includeInProgress: includeInProgress,
+            is_open: isOpen, // boolean 값 전달
+            search: searchKeyword
+        });
+
+        window.location.href = "/project/List?" + queryParams.toString();
+    }
+});
+
+
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
 	});

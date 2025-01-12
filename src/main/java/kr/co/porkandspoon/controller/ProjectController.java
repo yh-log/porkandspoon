@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -82,15 +83,27 @@ public class ProjectController {
 		return new ModelAndView("redirect:/project/List");
 	}
 	
-	@GetMapping(value="/project/List")
-	public ModelAndView projectListView(@AuthenticationPrincipal UserDetails userDetails) {
-		String loginId = userDetails.getUsername();
-		List<ProjectDTO> list = projectService.getProject(loginId);
-		ModelAndView mav = new ModelAndView("/project/projectList");
-		
-		mav.addObject("list",list);
-		mav.addObject("loginId",loginId);
-		return mav;
+	@GetMapping(value = "/project/List")
+	public ModelAndView projectListView(
+	    @AuthenticationPrincipal UserDetails userDetails,
+	    @RequestParam(value = "includeCompleted", defaultValue = "true") boolean includeCompleted,
+	    @RequestParam(value = "includeInProgress", defaultValue = "true") boolean includeInProgress,
+	    @RequestParam(value = "is_open", defaultValue = "true") boolean isOpen,
+	    @RequestParam(value = "search", required = false) String searchKeyword) {
+
+	    String loginId = userDetails.getUsername();
+	    logger.info("isOpen "+isOpen);
+	    // 필터 조건에 따른 프로젝트 목록 가져오기
+	    List<ProjectDTO> list = projectService.getProject(loginId, includeCompleted, includeInProgress, isOpen, searchKeyword);
+
+	    ModelAndView mav = new ModelAndView("/project/projectList");
+	    mav.addObject("list", list);
+	    mav.addObject("loginId", loginId);
+	    mav.addObject("includeCompleted", includeCompleted);
+	    mav.addObject("includeInProgress", includeInProgress);
+	    mav.addObject("is_open", isOpen); // is_open 값 전달
+	    mav.addObject("searchKeyword", searchKeyword); // 검색어 전달
+	    return mav;
 	}
 	
 	@GetMapping(value="/project/KanBan/{project_idx}")

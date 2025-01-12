@@ -48,18 +48,54 @@
 		insert into project_people(project_idx,username)values(#{project_idx},#{loginId})
 	</insert>
 
-	<select id="getProject" resultType="kr.co.porkandspoon.dto.ProjectDTO">
-  		SELECT p.*, COUNT(pp.username) AS count FROM project p
-			LEFT JOIN project_people pp ON p.project_idx = pp.project_idx
-			WHERE p.username = #{loginId}
-			    OR p.is_open = 'Y' 
-			    OR p.project_idx IN (
-			        SELECT project_idx 
-			        FROM project_people 
-			        WHERE username = #{loginId})
-			GROUP BY 
-			    p.project_idx;
-	</select>
+<select id="getProject" resultType="kr.co.porkandspoon.dto.ProjectDTO">
+    SELECT 
+        p.*, 
+        COUNT(pp.username) AS count 
+    FROM 
+        project p
+    LEFT JOIN 
+        project_people pp ON p.project_idx = pp.project_idx
+    <where>
+        <!-- 로그인한 사용자가 소유자 -->
+        (p.username = #{loginId}
+        
+        <!-- 공개 프로젝트 필터 -->
+        <if test="isOpen">
+            OR p.is_open = 'Y'
+        </if>
+        
+        <!-- 비공개 프로젝트 필터 -->
+        <if test="!isOpen">
+            OR (
+                p.is_open = 'N'
+                AND pp.username = #{loginId}
+            )
+        </if>)
+        
+        <!-- 진행 상태 필터 -->
+        <if test="includeCompleted and !includeInProgress">
+            AND p.percent = 100
+        </if>
+        <if test="!includeCompleted and includeInProgress">
+            AND p.percent &lt; 100
+        </if>
+        
+        <!-- 제목 검색 필터 -->
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+    </where>
+    GROUP BY 
+        p.project_idx
+</select>
+
+
+
+
+
+
+
 	
 	<select id="getProjectInfo" resultType="kr.co.porkandspoon.dto.ProjectDTO">
 		SELECT p.*,COUNT(pp.username) as count  FROM project p

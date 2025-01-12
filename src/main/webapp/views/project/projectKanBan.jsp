@@ -268,6 +268,7 @@
 }
 #home,#schedule{
 		width: 200px;
+		margin-left: -15px;
 	}
 </style>
 	
