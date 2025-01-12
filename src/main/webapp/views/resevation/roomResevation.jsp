@@ -20,7 +20,7 @@
 	<link href='/resources/css/calender/timemain.css' rel='stylesheet' />
 	<!-- 부트스트랩 -->
 	<link rel="shortcut icon"
-		href="resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+		href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 	<link rel="shortcut icon"
 		href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
 		type="image/png">
@@ -37,6 +37,8 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+	<!-- jQuery DateTimePicker CSS (CDN) -->
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"/>
 		
 <style>
      #calendarBox{
@@ -199,13 +201,17 @@
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 <!-- 부트스트랩 -->
-<script src="resources/assets/static/js/components/dark.js"></script>
-<script src="resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-<script src="resources/assets/compiled/js/app.js"></script>
+<script src="/resources/assets/static/js/components/dark.js"></script>
+<script src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+<script src="/resources/assets/compiled/js/app.js"></script>
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/calenderJH.js'></script>
 
 <script src='/resources/js/charjstree.js'></script>
+<!-- jQuery DateTimePicker JS (CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+<!-- 한국어 로케일 파일 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/i18n/jquery.datetimepicker.ko.js"></script>
 
 <script>
 
@@ -344,7 +350,8 @@
 	        	 userDept = response.dept.text;
 	        	               	 
 			     // 새로운 row 데이터 생성
-			     const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'];
+			     const newRow = [userName, userDept, userPosition, 
+			    	 '<button class="btn btn-primary remove-employee" data-id="' + response.username + '" onclick="removeEmployee()" >삭제</button>'];
 	
 			     // 기존 rows에 추가
 			     initialData.rows.push(newRow);
@@ -363,42 +370,32 @@
 	     addSelectedIdToRows(selectedId);
 	 });
 	 
-	/* $(document).on('click', '#chartModalBox #orgBody .btn', function() {
-	    var idx = $(this).closest('tr').index();
-	    console.log(idx);
-
-	    $(this).closest('tr').remove();
-	    initialData.rows.splice(idx, 1);
-	    exampleData.rows.splice(idx, 1);
-	    selectedEmployees.splice(idx, 1);
-	    console.log("selectedEmployees 수정 : ",selectedEmployees);
-		   	   
-	}); */
+	function removeEmployee() {		
+		$(document).on('click', '.remove-employee', function() {
+		    var employeeId = $(this).data('id');
+		    console.log('삭제할 직원 ID:', employeeId);
 	
-	$(document).on('click', '.remove-employee', function() {
-	    var employeeId = $(this).data('id');
-	    console.log('삭제할 직원 ID:', employeeId);
-
-	    // 1. selectedEmployees 배열에서 해당 직원 제거
-	    selectedEmployees = selectedEmployees.filter(function(id) {
-	         return id !== employeeId;
-	    });
-
-	    // 2. exampleData.rows에서 해당 직원의 행 제거
-	    exampleData.rows = exampleData.rows.filter(function(row) {
-	       // row[3]에는 "삭제" 버튼 HTML이 포함되어 있음.
-	       // 이 HTML 내에 data-id 속성으로 employeeId가 포함되어 있는지 검사
-	       return row[3].indexOf('data-id="' + employeeId + '"') === -1;
-	    });
-
-	    // 3. 테이블 UI 갱신
-	    updateTableData('customTable', exampleData);
-
-	    // 4. 선택된 조직도 노드 해제 (필요한 경우)
-	    $('#jstree').jstree('deselect_node', employeeId);
-
-	    console.log("업데이트된 selectedEmployees:", selectedEmployees);
-	});
+		    // 1. selectedEmployees 배열에서 해당 직원 제거
+		    selectedEmployees = selectedEmployees.filter(function(id) {
+		         return id !== employeeId;
+		    });
+	
+		    // 2. exampleData.rows에서 해당 직원의 행 제거
+		    exampleData.rows = exampleData.rows.filter(function(row) {
+		       // row[3]에는 "삭제" 버튼 HTML이 포함되어 있음.
+		       // 이 HTML 내에 data-id 속성으로 employeeId가 포함되어 있는지 검사
+		       return row[3].indexOf('data-id="' + employeeId + '"') === -1;
+		    });
+	
+		    // 3. 테이블 UI 갱신
+		    updateTableData('customTable', exampleData);
+	
+		    // 4. 선택된 조직도 노드 해제 (필요한 경우)
+		    $('#jstree').jstree('deselect_node', employeeId);
+	
+		    console.log("업데이트된 selectedEmployees:", selectedEmployees);
+		});
+	}
 
 	 	
 	function addBtnFn() {
@@ -424,7 +421,7 @@
                         response.name, 
                         deptText, 
                         response.position_content, 
-                        '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'
+                        '<button class="btn btn-primary remove-employee" data-id="' + response.username + '" onclick="removeEmployee()" >삭제</button>'
                     ];
                     exampleData.rows.push(newRow);
                     updateTableData('customTable', exampleData);
@@ -450,10 +447,11 @@
 		    var subject = $('#calendar_subject_input').val();
 		    var content = $('#calendar_content_input').val();
 		    
-		 			    
-		    /* var attendees = selectedEmployees.map(function(emp){
-		        return emp.username;
-		    }); */
+		    if(!start_date || !end_date || !subject || !content || !no){
+		    	layerPopup("항목을 입력해주세요", "확인", false, removeAlert, removeAlert);
+		    	return false;
+		    }
+
 		    console.log('선택된놈 attendees',selectedEmployees);
 		    
 		    var data = {
@@ -488,7 +486,13 @@
 		            xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
 		        },
 		        success: function(response) {
-		            httpSuccess(response); // 성공 콜백
+		        	if(response.success){
+		        		httpSuccess(response); // 성공 콜백
+		        		 // 모달 닫기 및 초기화
+		                initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+		        	}else{
+		        		layerPopup("이미 예약된 날짜 입니다.", "확인", false, removeAlert, removeAlert);
+		        	}
 		        },
 		        error: function(e) {
 		            console.log(e); // 에러 로그 출력
@@ -503,16 +507,16 @@
 		}
 		
 		// 예약 상세보기
-		function scheduleDetail(idx) {
-		    $.ajax({
-		    	
+		function scheduleDetail(info) {
+			var idx = info.event.id;
+			$.ajax({	    	
 		        type: 'GET',
 		        url: '/roomReservationDetail/'+idx, // 컨트롤러의 상세 조회
 		        dataType: 'JSON',
 		        success: function(response) {
 		            if (response.success) {
 		                var schedule = response.schedule;
-		                var attendees = response.attendees
+		                var attendees = response.attendees;
 		                console.log('상세보기 파람스 주입 : ',schedule.idx);
 		                console.log('상세보기 참석자 주입 : ',attendees);
 		                var params = {
@@ -546,6 +550,23 @@
 	    function setModalData(type, data) {
 	        console.log('셋모달데이타 실행 : ',data);
 	        //fetchCategoryItems();
+	         // 한국어로 로케일 설정
+	        $.datetimepicker.setLocale('ko');
+	        // 데이트타임피커 라이브러리
+		    $('#calendar_start_date_input, #calendar_end_date_input').datetimepicker({
+		        format: 'Y-m-d H:00', // 분은 고정(00)되어 표시
+		        step: 60,             // 분 간격을 60분으로 설정하여 분 선택 불가
+		        datepicker: true,
+		        timepicker: true,
+		        minDate: new Date()
+		    });
+		    $('#calendar_start_date_edit, #calendar_end_date_edit').datetimepicker({
+		        format: 'Y-m-d H:00', // 분은 고정(00)되어 표시
+		        step: 60,             // 분 간격을 60분으로 설정하여 분 선택 불가
+		        datepicker: true,
+		        timepicker: true,
+		        minDate: new Date()
+		    });
 	        if (type === 'Input') {
 	            // 일정 추가 모드: 입력 필드 초기화
 	            fetchCategoryItems();
@@ -631,7 +652,7 @@
 	                                response.name, 
 	                                deptText, 
 	                                response.position_content, 
-	                                '<button class="btn btn-primary remove-employee" data-id="' + response.username + '">삭제</button>'
+	                                '<button class="btn btn-primary remove-employee" data-id="' + response.username + '" onclick="removeEmployee()">삭제</button>'
 	                            ];
 	                            exampleData.rows.push(newRow);
 	                            updateTableData('customTable', exampleData);
@@ -704,6 +725,11 @@
 		    
 		    var attendees = selectedEmployees; // 올바르게 사용
 		    console.log('수정자',attendees);
+		    
+		    if(!start_date || !end_date || !subject || !content || !no){
+		    	layerPopup("항목을 입력해주세요", "확인", false, removeAlert, removeAlert);
+		    	return false;
+		    }
 		          	      	       		
 	       	// 서버로 전송할 데이터 객체 생성 (id는 URL의 일부로 사용)
 	       	var params = {
@@ -757,8 +783,15 @@
 	    function handleDeleteSchedule() {
 	    	var idx = $('#event_id').val();
 	    	console.log('삭제할때 받아와?',idx);
+	    	layerPopup("정말 삭제 하시겠습니까?", "확인", "취소", function(){roomDeleteA(idx)}, removeAlert);
 	    	httpAjax('DELETE', '/roomDelete/'+idx);
-		}	 
+		}
+	    
+	    function roomDeleteA(idx) {
+	    	console.log('삭제 진행시켜',idx);
+	    	httpAjax('DELETE', '/roomDelete/'+idx);
+	    	removeAlert();
+		}
 	 
 	 
 	

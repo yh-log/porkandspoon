@@ -35,13 +35,13 @@ public class EducationController {
 	@Autowired AlarmService alarmService;
 	
 	// 등록 리스트 뷰
-	@GetMapping(value="/ma/education")
+	@GetMapping(value="/mo/education")
 	public ModelAndView calenderView() {
 		return new ModelAndView("/education/educationList");
 	}
 	
 	// 교육 등록 뷰
-	@GetMapping(value="/ma/educationWrite")
+	@GetMapping(value="/mo/educationWrite")
 	public ModelAndView calenderWriteView(@AuthenticationPrincipal CustomUserDetails user) {
 		
 		String userName = user.getName();
@@ -85,7 +85,7 @@ public class EducationController {
 	}
 	
 	// 교육 수정 이동
-	@GetMapping(value="/ma/educationUpdate/{no}")
+	@GetMapping(value="/mo/educationUpdate/{no}")
 	public ModelAndView educationUpdateView(@AuthenticationPrincipal CustomUserDetails user,@PathVariable int no) {
 		
 		String userName = user.getName();

@@ -111,6 +111,9 @@ document.addEventListener('click', function(event){
         else if(event.target.id === 'loadChartModal'){
             loadChartModal('chartInputModal')
         }
+        else if(event.target.id === 'cancelModal'){
+            removeEmployee();
+        }
     }
 });
 
@@ -138,6 +141,8 @@ var typeColorMap = {
     'C': { background: '#D7F5FC', text: '#000000' }, // 
     'P': { background: '#FFF2D6', text: '#000000' }, // 
     'T': { background: '#EDC0FF', text: '#000000' }, // 
+    'A': { background: '#E8FADF', text: '#000000' }, // 
+    'R': { background: '#CBCCFF', text: '#000000' }, // 
 };
 
 

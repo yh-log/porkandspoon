@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.CalenderDAO;
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 
 @Service
 public class CalenderService {
@@ -24,6 +25,7 @@ public class CalenderService {
         params.put("filters", filters);
         params.put("loginId", loginId);
         params.put("dept", dept);
+        logger.info("서비스일때 필터항목 : "+filters);
         return calenderDao.calenderList(params);
     }
 	
@@ -33,9 +35,21 @@ public class CalenderService {
 	}
 	
 	// 일정 상세보기
-	public CalenderDTO calenderDetail(int idx) {
+	public CalenderDTO calenderDetail(int idx, String filter) {
 		
-		return calenderDao.calenderDetail(idx);
+		Map<String,Object> params = new HashMap<String, Object>();
+		params.put("idx", idx);
+		params.put("filter", filter);
+		logger.info("파람 : "+params);
+		
+		if("A".equals(filter)) {
+			return calenderDao.calenderDetailA(params);
+		}else if("R".equals(filter)){			
+			return calenderDao.calenderDetailR(params);
+		}else {
+			return calenderDao.calenderDetail(params);
+		}		
+		
 	}
 	// 일정 수정
 	public boolean calenderUpdate(String idx, CalenderDTO calenderDto) {
@@ -50,6 +64,10 @@ public class CalenderService {
 	public String dept(String loginId) {
 		return calenderDao.dept(loginId);
 		
+	}
+
+	public List<UserDTO> attendeesList(int idx) {
+		return calenderDao.attendeesList(idx);
 	}
 	
 
