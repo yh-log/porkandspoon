@@ -5,7 +5,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>식단표</title>
+<title>구내식당</title>
+
+<!-- 부트스트랩 -->
+<link rel="shortcut icon"
+	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
+
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -188,6 +194,10 @@ border-bottom: none;
 		height: 280px;
 		resize: none;
 	}
+#closeModal{
+	cursor: pointer;
+}	
+	
 </style>
 </head>
 <body>
@@ -197,10 +207,10 @@ border-bottom: none;
       <jsp:include page="../header.jsp" />
       <div class="page-content">
          <section id="menu">
-            <h4 class="menu-title">구내식당</h4>
+            <h4 class="menu-title">식단표</h4>
             <ul>
-               <li><a href="/ad/mealTicket">식권구매</a></li>
-               <li class="active"><a href="/ad/mealMenu">식단표</a></li>
+               <li><a href="/mealTicket">식권구매</a></li>
+               <li class="active"><a href="/mealMenu">식단표</a></li>
                <li><a href="/ad/mealMenu/Write">식단등록</a></li>
                <li><a href="/ad/mealTicket/Write">식권등록</a></li>
                <li><a href="/ad/meal/List">상품리스트</a></li>
@@ -228,7 +238,7 @@ border-bottom: none;
 			    <div class="modal-content">
 			        <div class="modal-header">
 			            <h3>식단 수정</h3>
-			            <button type="button" id="closeModal" class="modal-close">X</button>
+			            <span class="modal-close" id="closeModal" >&times;</span>
 			        </div>
 			        <form action="/ad/mealMenu/Update" method="post">
 			            <input type="hidden" name="_method" value="put">
@@ -293,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var calendar;
 
     function loadEvents(is_time) {
-        var url = '/ad/mealMenu/' + is_time;
+        var url = '/mealMenu/' + is_time;
         $.ajax({
             url: url,
             method: 'GET',

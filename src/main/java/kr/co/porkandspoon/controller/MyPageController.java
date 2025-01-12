@@ -139,12 +139,12 @@ public class MyPageController {
 	
 	
 	
-	@GetMapping(value="/ad/myPageSign")
+	@GetMapping(value="/myPageSign")
 	public ModelAndView myPageSignView() {
 		return new ModelAndView("/myPage/myPageSign");
 	}
 	
-	@PostMapping("/ad/myPageSign/save")
+	@PostMapping("/myPageSign/save")
 	@ResponseBody
 	public ResponseEntity<String> saveSignature(
 	        @RequestParam("file") MultipartFile file,
@@ -174,7 +174,7 @@ public class MyPageController {
     /**
      * 저장된 서명 불러오기
      */
-	@GetMapping("/ad/myPageSign/getImage")
+	@GetMapping("/myPageSign/getImage")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> getSignatureImage(@AuthenticationPrincipal UserDetails userDetails) {
 	    String pk_idx = userDetails.getUsername();
@@ -203,7 +203,7 @@ public class MyPageController {
 
 		
 	
-	@GetMapping("/ad/myPageSign/getBase64")
+	@GetMapping("/myPageSign/getBase64")
 	@ResponseBody
 	public ResponseEntity<Map<String, String>> getSignatureBase64(@AuthenticationPrincipal UserDetails userDetails) {
 	    String pk_idx = userDetails.getUsername();
@@ -229,7 +229,7 @@ public class MyPageController {
     /**
      * 저장된 서명 삭제
      */
-	@DeleteMapping("/ad/myPageSign/delete")
+	@DeleteMapping("/myPageSign/delete")
 	@ResponseBody
 	public ResponseEntity<String> deleteSignature(
 	    @AuthenticationPrincipal UserDetails userDetails,
@@ -277,12 +277,12 @@ public class MyPageController {
 	    }
 	}
 	
-	@GetMapping(value="/ad/myPageBuy")
+	@GetMapping(value="/myPageBuy")
 	public ModelAndView myPageBuyListView() {
 		return new ModelAndView("/myPage/myPageBuyList");
 	}
 	
-	@GetMapping(value = "/ad/myPageBuy/List")
+	@GetMapping(value = "/myPageBuy/List")
 	@ResponseBody
 	public Map<String, Object> getBuyListView(
 	        @AuthenticationPrincipal UserDetails userDetails, 

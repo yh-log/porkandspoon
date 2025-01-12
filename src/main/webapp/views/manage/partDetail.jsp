@@ -120,16 +120,12 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home" onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchedule'">스케줄 관리</button>
-					</div>
-					
+					<h4 class="menu-title">아르바이트 관리</h4>
 					<ul>
-						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
+						<li ><a href="/us/spotManage">매장관리 홈</a></li>
+						<li ><a href="/us/partSchedule">스케줄관리</a></li>
+						<li class="active"><a href="/us/part">아르바이트 관리</a></li>
 						<li><a href="/us/rest/listView">휴점신청</a></li>
-						
 					</ul>
 				</section>
 				<section class="cont">
@@ -224,14 +220,9 @@
                      	</table>
 		                 
 							<div id="btn-gap">							
-								<button type="button" class="btn btn-primary" onclick="location.href='/ad/part/Update/${info.part_idx}'">수정</button>
+								<button type="button" class="btn btn-primary" onclick="location.href='/us/part/Update/${info.part_idx}'">수정</button>
 								<button class="btn btn-outline-primary" 
-							    onclick="
-							    <c:choose>
-							        <c:when test='${info.is_quit == "Y"}'>location.href = '/ad/part/Quit'</c:when>
-							        <c:otherwise>location.href = '/ad/part'</c:otherwise>
-							    </c:choose>
-							">
+							    onclick="location.href = '/us/part'">
 							    취소
 							</button>
 							</div>

@@ -121,6 +121,26 @@
 	#bar{
 		margin-top: 10px;
 	}
+	card-content{
+	margin-bottom: 15px;
+}
+.card-body{
+	margin-bottom: 15px;
+}
+#searchLayout{
+	display: flex;
+}
+#title{
+	margin-left: -30px;
+	
+}
+#flexRadioDefault2{
+		margin-left: 5px;
+	}	
+#project_name{
+	cursor: pointer;
+}
+	
 	
 </style>
 </head>
@@ -144,6 +164,48 @@
 						<li class="active"><a href="/project/List">프로젝트 리스트</a></li>
 						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
+					<div class="filter-container">
+		        	<div class="card-content">
+					<div class="card-body">
+						<ul class="list-unstyled mb-0">
+							<li class="d-inline-block me-2 mb-1">
+								<div class="form-check">
+									<div class="checkbox">
+										<input type="checkbox" id="checkbox1"
+											class="form-check-input" checked> <label
+											for="checkbox1">진행중인 프로젝트</label>
+									</div>
+								</div>
+							</li>
+							<li class="d-inline-block me-2 mb-1">
+								<div class="form-check">
+									<div class="checkbox">
+										<input type="checkbox" class="form-check-input" checked
+											id="checkbox2"> <label for="checkbox2">완료된 프로젝트</label>
+									</div>
+								</div>
+							</li>
+						</ul>
+			        </div>
+					</div>
+			       <div class="card-body">
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="is_open" value="Y" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
+								공개 </label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="is_open" value="N" id="flexRadioDefault2" >
+							<label class="form-check-label" for="flexRadioDefault2">
+								비공개 </label>
+						</div>
+					</div>	
+						<ul id="title">
+							<li class="active">제목</li>
+						</ul>
+						<div id="searchLayout"  >
+							<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
+						</div>
+			    </div>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
@@ -156,13 +218,13 @@
 					                  
                   <div class="row list-row">
 				    <c:forEach var="project" items="${list}">
-				        <div class="list-form" onclick="location.href='/project/KanBan/${project.project_idx}'">
+				        <div class="list-form">
 				            <div>
-				                <h4>${project.name}</h4>
+				                <h4 id="project_name" onclick="location.href='/project/KanBan/${project.project_idx}'" >${project.name}</h4>
 				                <p id="first">참여인원: ${project.count} 명</p>
 				                <p>일정: ${project.start_date} ~ ${project.end_date}</p>
 				                <p>진행률</p>
-				                <div id="bar" style="width: 230%; background-color: #fff; border: 1px solid var(--bs-primary);">
+				                <div id="bar" style="width: 250%; background-color: #fff; border: 1px solid var(--bs-primary);">
 				                    <c:choose>
 									    <c:when test="${project.percent > 0}">
 									        <div style="width: ${project.percent}%; background-color: var(--bs-primary); color: white; text-align: center;">

@@ -86,12 +86,6 @@
     border-radius: 5px; /* 선택된 버튼 스타일 */
 }
 
-
-	
-	
-	
-	
-
 </style>
 </head>
 
@@ -109,16 +103,15 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-	
+					<h4 class="menu-title">아르바이트 관리</h4>
 					<ul>
-						<li ><a href="/ad/spotManage">매장관리 홈</a></li>
-						<li ><a href="/ad/partSchedule">스케줄관리</a></li>
-						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
+						<li ><a href="/us/spotManage">매장관리 홈</a></li>
+						<li ><a href="/us/partSchedule">스케줄관리</a></li>
+						<li class="active"><a href="/us/part">아르바이트 관리</a></li>
 						<li><a href="/us/rest/listView">휴점신청</a></li>
 					</ul>
 					<div class="buttons">							
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/part/Write'">등록하기</button>
+						<button class="btn btn-primary" id="schedule" onclick="location.href='/us/part/Write'">등록하기</button>
 					</div>
 				</section>
 				<section class="cont">
@@ -209,7 +202,7 @@
 <script>
 var show = 1;
 var count = 10; // 한 페이지당 항목 수
-var url = '/ad/part/List'; // 서버 요청 URL
+var url = '/us/part/List'; // 서버 요청 URL
 var paginationInitialized = false;
 var currentFilter = "all"; // 초기 필터는 "전체"
 
@@ -299,7 +292,7 @@ function renderList(list) {
     } else {
         for (var view of list) {
             content += '<tr>';
-            content += '<td><a href="/ad/part/Detail/'+view.part_idx + '" style="text-decoration: none; color: #000000; cursor: pointer;">' + view.name + '</a></td>';
+            content += '<td><a href="/us/part/Detail/'+view.part_idx + '" style="text-decoration: none; color: #000000; cursor: pointer;">' + view.name + '</a></td>';
             content += '<td>' + view.birth + '</td>';
             content += '<td>' + view.spotName + '</td>';
             content += '<td>' + view.join_date + '</td>';
