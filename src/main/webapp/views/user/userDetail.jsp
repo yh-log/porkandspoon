@@ -8,15 +8,11 @@
 <title>직원 등록</title>
 
 <!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
-<link rel="shortcut icon"
-	href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAiCAYAAADRcLDBAAAEs2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6ZXhpZj0iaHR0cDovL25zLmFkb2JlLmNvbS9leGlmLzEuMC8iCiAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIKICAgIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIKICAgIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgZXhpZjpQaXhlbFhEaW1lbnNpb249IjMzIgogICBleGlmOlBpeGVsWURpbWVuc2lvbj0iMzQiCiAgIGV4aWY6Q29sb3JTcGFjZT0iMSIKICAgdGlmZjpJbWFnZVdpZHRoPSIzMyIKICAgdGlmZjpJbWFnZUxlbmd0aD0iMzQiCiAgIHRpZmY6UmVzb2x1dGlvblVuaXQ9IjIiCiAgIHRpZmY6WFJlc29sdXRpb249Ijk2LjAiCiAgIHRpZmY6WVJlc29sdXRpb249Ijk2LjAiCiAgIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiCiAgIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIKICAgeG1wOk1vZGlmeURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMjItMDMtMzFUMTA6NTA6MjMrMDI6MDAiPgogICA8eG1wTU06SGlzdG9yeT4KICAgIDxyZGY6U2VxPgogICAgIDxyZGY6bGkKICAgICAgc3RFdnQ6YWN0aW9uPSJwcm9kdWNlZCIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWZmaW5pdHkgRGVzaWduZXIgMS4xMC4xIgogICAgICBzdEV2dDp3aGVuPSIyMDIyLTAzLTMxVDEwOjUwOjIzKzAyOjAwIi8+CiAgICA8L3JkZjpTZXE+CiAgIDwveG1wTU06SGlzdG9yeT4KICA8L3JkZjpEZXNjcmlwdGlvbj4KIDwvcmRmOlJERj4KPC94OnhtcG1ldGE+Cjw/eHBhY2tldCBlbmQ9InIiPz5V57uAAAABgmlDQ1BzUkdCIElFQzYxOTY2LTIuMQAAKJF1kc8rRFEUxz9maORHo1hYKC9hISNGTWwsRn4VFmOUX5uZZ36oeTOv954kW2WrKLHxa8FfwFZZK0WkZClrYoOe87ypmWTO7dzzud97z+nec8ETzaiaWd4NWtYyIiNhZWZ2TvE946WZSjqoj6mmPjE1HKWkfdxR5sSbgFOr9Ll/rXoxYapQVik8oOqGJTwqPL5i6Q5vCzeo6dii8KlwpyEXFL519LjLLw6nXP5y2IhGBsFTJ6ykijhexGra0ITl5bRqmWU1fx/nJTWJ7PSUxBbxJkwijBBGYYwhBgnRQ7/MIQIE6ZIVJfK7f/MnyUmuKrPOKgZLpEhj0SnqslRPSEyKnpCRYdXp/9++msneoFu9JgwVT7b91ga+LfjetO3PQ9v+PgLvI1xkC/m5A+h7F32zoLXug38dzi4LWnwHzjeg8UGPGbFfySvuSSbh9QRqZ6H+Gqrm3Z7l9zm+h+iafNUV7O5Bu5z3L/wAdthn7QIme0YAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAJTSURBVFiF7Zi9axRBGIefEw2IdxFBRQsLWUTBaywSK4ubdSGVIY1Y6HZql8ZKCGIqwX/AYLmCgVQKfiDn7jZeEQMWfsSAHAiKqPiB5mIgELWYOW5vzc3O7niHhT/YZvY37/swM/vOzJbIqVq9uQ04CYwCI8AhYAlYAB4Dc7HnrOSJWcoJcBS4ARzQ2F4BZ2LPmTeNuykHwEWgkQGAet9QfiMZjUSt3hwD7psGTWgs9pwH1hC1enMYeA7sKwDxBqjGnvNdZzKZjqmCAKh+U1kmEwi3IEBbIsugnY5avTkEtIAtFhBrQCX2nLVehqyRqFoCAAwBh3WGLAhbgCRIYYinwLolwLqKUwwi9pxV4KUlxKKKUwxC6ZElRCPLYAJxGfhSEOCz6m8HEXvOB2CyIMSk6m8HoXQTmMkJcA2YNTHm3congOvATo3tE3A29pxbpnFzQSiQPcB55IFmFNgFfEQeahaAGZMpsIJIAZWAHcDX2HN+2cT6r39GxmvC9aPNwH5gO1BOPFuBVWAZue0vA9+A12EgjPadnhCuH1WAE8ivYAQ4ohKaagV4gvxi5oG7YSA2vApsCOH60WngKrA3R9IsvQUuhIGY00K4flQG7gHH/mLytB4C42EgfrQb0mV7us8AAMeBS8mGNMR4nwHamtBB7B4QRNdaS0M8GxDEog7iyoAguvJ0QYSBuAOcAt71Kfl7wA8DcTvZ2KtOlJEr+ByyQtqqhTyHTIeB+ONeqi3brh+VgIN0fohUgWGggizZFTplu12yW8iy/YLOGWMpDMTPXnl+Az9vj2HERYqPAAAAAElFTkSuQmCC"
-	type="image/png">
+<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
 <!-- select -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
+<link rel="stylesheet" href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -63,6 +59,11 @@
 		width: 170px;
 		height: 230px;
 	}
+
+	.userInfoText{
+		font-weight: 600;
+		margin-right: 15px;
+	}
 </style>
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -85,8 +86,8 @@
 				<section id="menu">
 					<h4 class="menu-title">직원 정보</h4>
 					<ul>
-						<li class="active" id="firstMenu"><a href="#">직원 리스트</a></li>
-						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
+						<li class="active" id="firstMenu"><a href="/ad/user/listView">직원 리스트</a></li>
+						<li id="secondMenu"><a href="/ad/user/listView">퇴사자 리스트</a></li>
 					</ul>
 					<div class="btn btn-primary full-size" onclick="location.href='/ad/user/writeView'"><i class="bi bi-plus-lg"></i> 직원 등록</div>
 				</section>
@@ -172,17 +173,17 @@
 									    <td colspan="2">
 									    	<input type="hidden" name="type" value="education" />
 									        <div class="inline-layout">
-									            기간 <span id="education-start_date-value"></span> ~ <span id="education-end_date-value"></span>
+												<span class="userInfoText">기간</span> <span id="education-start_date-value"></span>  <span id="education-end_date-value"></span>
 									        </div>
 									    </td>
 									    <td colspan="2">
 									        <div class="inline-layout">
-									            학교명 <span id="education-subject-value"></span>
+												<span class="userInfoText">학교명</span> <span id="education-subject-value"></span>
 									        </div>
 									    </td>
 									    <td>
 									        <div class="inline-layout">
-									            상태 <span id="education-content-value"></span>
+												<span class="userInfoText">상태</span> <span id="education-content-value"></span>
 									        </div>
 									    </td>
 								</tr>
@@ -191,17 +192,17 @@
 									<td colspan="2">
 										<input type="hidden" name="type" value="career" />
 										<div class="inline-layout">
-											기간 <span id="career-start_date-value"></span> ~ <span id="career-end_date-value"></span>
+											<span class="userInfoText">기간</span> <span id="career-start_date-value"></span>  <span id="career-end_date-value"></span>
 										</div>
 									</td>
 									<td colspan="2">
 										<div class="inline-layout">
-											회사명 <span id="career-subject-value"></span>
+											<span class="userInfoText">회사명</span> <span id="career-subject-value"></span>
 										</div>
 									</td>
 									<td>
 										<div class="inline-layout">
-											직급 <span id="career-content-value"></span>
+											<span class="userInfoText">직급</span> <span id="career-content-value"></span>
 										</div>
 									</td>
 								</tr>
@@ -210,17 +211,17 @@
 									<td  colspan="2">
 										<input type="hidden" name="type" value="qualification" />
 										<div class="inline-layout">
-											취득일 <span id="qualification-start_date-value"></span>
+											<span class="userInfoText">취득일</span> <span id="qualification-start_date-value"></span>
 										</div>
 									</td>
 									<td colspan="2">
 										<div class="inline-layout">
-											자격증 <span id="qualification-subject-value"></span>
+											<span class="userInfoText">자격증</span> <span id="qualification-subject-value"></span>
 										</div>
 									</td>
 									<td>
 										<div class="inline-layout">
-											기관 <span id="qualification-content-value"></span>
+											<span class="userInfoText">기관</span> <span id="qualification-content-value"></span>
 										</div>
 									</td>
 								</tr>
@@ -241,23 +242,16 @@
 	</div>
 </body>
 
-
-
-
-
-
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 
 
 <!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<script src="/resources/js/jquery.twbsPagination.js" type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script>
 <!-- <script src='/resources/js/userInfo.js'></script> -->
@@ -333,7 +327,7 @@ function httpSuccess(response){
                 // 데이터 매핑
                 if (item.start_date) {
                     const startDateElement = row.querySelector('span[id$="start_date-value"]');
-                    if (startDateElement) startDateElement.textContent = item.start_date;
+                    if (startDateElement) startDateElement.textContent = item.start_date + ' ~ ';
                 }
                 if (item.end_date) {
                     const endDateElement = row.querySelector('span[id$="end_date-value"]');
@@ -361,7 +355,7 @@ function httpSuccess(response){
                                 contentElement.textContent = '중퇴';
                                 break;
                             default:
-                                contentElement.textContent = '알 수 없음'; // 예외 처리
+                                contentElement.textContent = item.content; // 예외 처리
                         }
                     }
                 }

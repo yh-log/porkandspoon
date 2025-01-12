@@ -98,6 +98,39 @@
 
     	    deptSelect.appendChild(option);
     	});
+
+		 // 1. 매장 정보만 따로 담기 (마지막 요소 제외)
+		 const storeList = response.slice(0, -1);
+
+		// 2. 마지막 요소는 status, message 등의 정보를 담고 있다고 가정
+		 const result = response[response.length - 1];
+
+		 if (result.status === 202) {
+			 console.log('직영점 정보!!', storeList);
+			 console.log('직영점임');
+
+			 // storeSelect 요소 표시
+			 const storeValue = document.getElementById('storeSelect');
+			 storeValue.style.display = 'block';
+
+			 // storeList가 존재하면 옵션 추가
+			 if (storeList.length > 0) {
+				 storeList.forEach(store => {
+					 let option = document.createElement('option');
+					 option.value = store.id;
+					 option.textContent = store.name;
+					 storeValue.appendChild(option);
+				 });
+			 }
+		 }
+
+		 if (result.status === 502){
+			 layerPopup("선택 가능한 직영점이 없습니다.", '확인', false, removeAlert, removeAlert);
+
+			 const positionSelect = document.getElementById('positionSelect'); // select 요소 가져오기
+			 const directOwnerOption = positionSelect.querySelector('option[value="po7"]');
+			 directOwnerOption.style.display = 'none';
+		 }
     	
     } 
     

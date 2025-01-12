@@ -75,9 +75,11 @@
 		        deptCode.classList.remove('is-invalid');
 		        
 		        textEaditorWrite('/ad/dept/write');
-
 	        }
             
+		}else{
+			removeAlert();
+			layerPopup('필수값을 입력해주세요.', '확인', false, removeAlert, removeAlert);
 		}
 	}
 	

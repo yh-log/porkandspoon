@@ -54,6 +54,7 @@
 	    align-items: end;
 	    gap: 20px;
 	    margin-bottom: 10px;
+		font-weight: 500;
 	}
 </style>
 
