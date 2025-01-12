@@ -17,7 +17,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.co.porkandspoon.dao.UserDAO;
 import kr.co.porkandspoon.dto.MenuDTO;
+import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.service.ApprovalService;
+import kr.co.porkandspoon.service.MailService;
 import kr.co.porkandspoon.service.MainService;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
 
@@ -28,12 +32,28 @@ public class MainController {
 	
 	
 	@Autowired MainService mainService;
+	@Autowired MailService mailService;
+	@Autowired ApprovalService approvalService;
+	@Autowired UserDAO userDao;
 	@Value("${upload.path}") String paths;
 	
 
 	@GetMapping(value="/main")
-	public ModelAndView mainView(@AuthenticationPrincipal UserDetails userDetails, HttpSession session) {
-		return new ModelAndView("/main");
+	public ModelAndView mainView(HttpSession session) {
+		ModelAndView mav = new ModelAndView("/main");
+		CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String loginId = userDetails.getUsername();
+		// 미확인 메일
+		int unreadMail = mailService.unreadMailCount(loginId);
+		// 결재할 문서
+		int haveToApprove = approvalService.haveToApproveCount(loginId);
+		// 프로필이미지
+		UserDTO userInfo = userDao.userDetail(loginId);
+		mav.addObject("name", userDetails.getName()); 
+		mav.addObject("userInfo", userInfo); 
+		mav.addObject("unreadMail", unreadMail);
+		mav.addObject("haveToApprove", haveToApprove);
+		return mav;
 	}
 	
 	@GetMapping(value="/sidebar")
@@ -46,6 +66,17 @@ public class MainController {
 		result.put("userRole",userDetails.getAuthorities()); // 권한
 		return result;
 	}
+
+	@GetMapping(value="/header")
+	public Map<String, Object> getUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		String loginId = userDetails.getUsername();
+		// 유저정보
+		result.put("userInfo",userDao.userDetail(loginId)); 
+		return result;
+	}
+	
+	
 	
 	// check!!권한 체크 서버로 부터 가져와서 if문으로 처리하기
 //	@GetMapping(value="/checkAuthority")

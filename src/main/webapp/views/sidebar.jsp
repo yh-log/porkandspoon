@@ -2,11 +2,11 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div id="sidebar">
-	<div class="sidebar-wrapper active">
+	<div class="sidebar-wrapper scrollbar-custom active">
 		<div class="sidebar-header position-relative">
 			<div class="d-flex justify-content-between align-items-center">
 				<div class="logo">
-					<a href="index.html"><img src="/resources/img/logo.jpg"
+					<a href="/main"><img src="/resources/img/logo.jpg"
 						alt="Logo" srcset=""></a>
 				</div>
 			</div>
@@ -178,7 +178,6 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-	console.log('dddddaaa');
 	var authority = "";
 	$.ajax({
 		type:'GET',
@@ -186,20 +185,17 @@
 		data:{},
 		datatype:'JSON',
 		success:function(data){
-			console.log(data.menuList);
-			console.log("data.userRole.authority ::: ",data.userRole[0].authority.split('_')[1]);
+			//console.log(data.menuList);
+			//console.log("data.userRole.authority ::: ",data.userRole[0].authority.split('_')[1]);
 			authority = data.userRole[0].authority.split('_')[1];
 			drawMenu(data.menuList);
-            
 		},
 		error:function(e){
-			console.log(e);v
+			console.log(e);
 		}
 	});
 		
-	
 		
-	console.log("권한!!!!!",'${userRole}');
 	function drawMenu(menuList){
 		var content ='';
 		for (var menu of menuList) {

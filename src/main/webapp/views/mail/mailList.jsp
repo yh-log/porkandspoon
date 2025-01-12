@@ -122,7 +122,9 @@
 	padding: 0;
 }
 
-.mailList .list-area.recv {
+.mailList .list-area.recv,
+.mailList .list-area.bk,
+.mailList .list-area.del {
 	color: #656C74;
 }
 .mailList .list-area .mail-item {
@@ -138,6 +140,9 @@
 .mailList .list-area .mail-item .left > *{
 	margin-right: 24px;
 }
+.mailList .list-area .mail-item .send-date {
+	width: 117px;
+}
 .mailList .list-area .mail-item .name {
 	display: inline-block;
 	width: 70px;
@@ -151,7 +156,11 @@
 .mailList .list-area .mail-item .title {
 	cursor: pointer;
 }
-.mailList .list-area .mail-item #bookmark {
+.mailList .list-area .mail-item .title .mail-type{
+	color: #abadb0;
+	margin-right: 6px;
+}
+.mailList .list-area .mail-item #listBookmark {
 	cursor: pointer;
 }
 .mailList .btn-refresh{
@@ -233,27 +242,26 @@
 								<c:choose>
 									<c:when test="${listType eq 'recv'}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
-										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, btn1Act)">삭제</buttton>
-										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark('N')">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'bk'}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
-										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요해제</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">중요</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark('Y')">중요해제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sd'}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
 										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 재전송하시겠습니까?', '재전송', '취소', resend, removeAlert)">다시보내기</buttton>
-										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark('N')">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'sv'}">
-										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, btn1Act)">삭제</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">전송</buttton>
-										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark()">중요</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="toggleBookmark('N')">중요</buttton>
 									</c:when>
 									<c:when test="${listType eq 'del'}">
-										<buttton class="btn btn-outline-primary btn-sm">영구삭제</buttton>
-										<buttton class="btn btn-outline-primary btn-sm">삭제취소</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 영구삭제하시겠습니까?', '삭제', '취소', completeDelete, removeAlert)">영구삭제</buttton>
+										<buttton class="btn btn-outline-primary btn-sm" onclick="restoreFromTrash()">삭제취소</buttton>
 									</c:when>
 						
 								</c:choose>
@@ -281,6 +289,7 @@
 <script src="/resources/assets/compiled/js/app.js"></script>
 
 <script src='/resources/js/common.js'></script>
+<script src='/resources/js/mailUtils.js'></script>
 
 <!-- 페이지네이션 -->
 <script src="/resources/js/jquery.twbsPagination.js"
@@ -288,9 +297,8 @@
 
 <script>
 var listType = '${listType}';
-if(listType == 'recv'){
-	$('.list-area').addClass('recv');
-}
+$('.list-area').addClass(listType);
+
 console.log("listType : ",listType);
 var show = 1;
 var paginationInitialized = false;
@@ -364,6 +372,7 @@ function drawList(list) {
 	// 총 메일 수
 	$('.tit-area .mail-count').text(totalCount);
 	var content ='';
+	var mailType ='';
 	if(totalCount == 0){
 		content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
 		$('.list tbody').html(content);
@@ -376,7 +385,7 @@ function drawList(list) {
 			approvalDate = '-';
 		} */
 		
-		if(listType == 'recv' && view.is_read == 'N'){
+		if((listType == 'recv' && view.is_read == 'N') || (listType == 'bk' && view.is_read == 'N' && view.mail_type == 'received')){
 			content +='<div class="mail-item no-read" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
 		}else{
 			content +='<div class="mail-item" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
@@ -384,54 +393,31 @@ function drawList(list) {
 		content +='<div class="left">';
 		content +='<input type="checkbox" class="form-check-input" id="checkbox2">';
 		if(view.is_bookmark == 'N'){
-			content +='<i id="bookmark" class="bi bi-star" data-bookmark="N"></i>';
+			content +='<i id="listBookmark" class="bi bi-star" data-bookmark="N"></i>';
 		}else{
-			content +='<i id="bookmark" class="bi bi-star-fill" data-bookmark="Y"></i>';
+			content +='<i id="listBookmark" class="bi bi-star-fill" data-bookmark="Y"></i>';
 		}
 		content +='<span class="name">'+view.name+'</span>';
-		content +='<span class="title" onclick="location.href=\'/mail/detail/'+view.idx+'\'">'+view.title;
+		if(listType == 'bk' && view.mail_type == 'received'){
+			mailType = '[받은메일]';
+		}else if(listType == 'bk' && view.mail_type == 'sent'){
+			mailType = '[보낸메일]';
+		}
+		
+		content +='<span class="title" onclick="location.href=\'/mail/detail/'+view.idx+'\'"><span class="mail-type">'+mailType+'</span>'+view.title;
+		
 		if(view.fileYn != null){
 			content +='<i class="bi bi-paperclip"></i>';
 		}	
 		content +='</span>';
 		content +='</div>';
-		content +='<span>'+view.send_date_str+'</span>';
+		content +='<span class="send-date">'+view.send_date_str+'</span>';
 		content +='</div>';
 		
 	  }
      $('.list-area').html(content);
      console.log("content :::",content);
 }
-
-/* $(document).on('click','.list td.delete',function(){
-	var draftIdx = $(this).data('draftidx');
-	layerPopup('해당 기안문을 삭제하시겠습니까?', '삭제', '취소', deleteAct, btn1Act);
-	
-	// 기안문 삭제
-	function deleteAct() {
-		console.log("draftIdx값좀 받아와라 : "+draftIdx);
-		$.ajax({
-	        type : 'PUT',
-	        url : '/approval/changeStatusToDelete/'+draftIdx,
-	        data : {},
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	 if(response.success){
-	     		 	removeAlert(); 
-	      			layerPopup('삭제 완료되었습니다.', '확인', false, btn1Act, btn1Act);
-	     		 }else{
-	     		 	removeAlert(); 
-	      			layerPopup('삭제 실패하였습니다.', '재시도', '취소', deleteAct, btn1Act);
-	     		 }
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	}
-}); */
 
 	// 검색이벤트
 	$('#searchBtn').on('click', function() {
@@ -452,151 +438,7 @@ function drawList(list) {
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
 	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 	
-	function btn1Act() {
-		location.reload();
-		removeAlert(); 
-	}
-	
 
-	
-	// 다중 읽음 처리
-	function changeToRead() {
-		var checkedEls = $('.list-area .form-check-input:checked');
-		var checkedIdx = [];
-		for (var checkedEl of checkedEls) {
-			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
-		}
-		console.log("checkedEls : ", checkedEls);
-		console.log("checkedIdx : ", checkedIdx);
-		
-		$.ajax({
-        	type : 'PUT',
-	        url : '/mail/changeToRead',
-	        data: JSON.stringify({ 
-	        	'idxList': checkedIdx 
-        	}), 
-	        contentType: 'application/json', 
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	location.reload();
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	}
-	
-	
-	// 다중 삭제 처리(휴지통)
-	function moveToTrash() {
-		removeAlert();
-		var checkedEls = $('.list-area .form-check-input:checked');
-		var checkedIdx = [];
-		for (var checkedEl of checkedEls) {
-			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
-		}
-		console.log("checkedEls : ", checkedEls);
-		console.log("checkedIdx : ", checkedIdx);
-		
-		$.ajax({
-        	type : 'PUT',
-	        url : '/mail/moveToTrash',
-	        data: JSON.stringify({
-	        	'idxList': checkedIdx 
-        	}), 
-	        contentType: 'application/json',
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	location.reload();
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	}
-	
-	// 다중 북마크 토글
-	function toggleBookmark(){
-		var checkedEls = $('.list-area .form-check-input:checked');
-		var checkedList = [];
-		for (var checkedEl of checkedEls) {
-			console.log('book마크태그',$(checkedEl).siblings('#bookmark'));
-			console.log('book마크여부',$(checkedEl).siblings('#bookmark').data('bookmark'));
-			var mailInfo = {};
-			mailInfo.idx = $(checkedEl).parents('.mail-item').data('idx');
-			mailInfo.is_bookmark = $(checkedEl).siblings('#bookmark').data('bookmark');
-			checkedList.push(mailInfo);
-		}
-		toggleBookmarkAjax(checkedList);
-	}
-	
-	function toggleBookmarkAjax(checkedList){
-		$.ajax({
-        	type : 'PUT',
-	        url : '/mail/toggleBookmark',
-	        data: JSON.stringify({
-	        	'checkedList': checkedList 
-        	}), 
-	        contentType: 'application/json',
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	location.reload();
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	}
-	
-	// 개별 북마크 토글
-	$(document).on('click', '#bookmark', function() {
-		var checkedList = [
-			{idx : $(this).parents('.mail-item').data('idx'),
-			is_bookmark : $(this).data('bookmark')}
-		];
-		toggleBookmarkAjax(checkedList);
-    });
-	
-	// 다시보내기 (재전송)
-	function resend() {
-		var checkedEls = $('.list-area .form-check-input:checked');
-		var checkedIdx = [];
-		for (var checkedEl of checkedEls) {
-			checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
-		}
-		console.log("checkedEls : ", checkedEls);
-		console.log("checkedIdx : ", checkedIdx);
-		
-		$.ajax({
-        	type : 'POST',
-	        url : '/mail/resend',
-	        data: JSON.stringify({ 
-	        	'idxList': checkedIdx 
-        	}), 
-	        contentType: 'application/json', 
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	location.reload();
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	}
-	
-	
-	// 삭제 팝업 (취소버튼)
-	function btn1Act(){
-		removeAlert();
-	}
 
 
 </script>

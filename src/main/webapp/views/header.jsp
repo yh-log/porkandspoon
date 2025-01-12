@@ -285,13 +285,13 @@
     </a>
    <!--  <i class="bi bi-search"></i> -->
     <div class="input-area">
-     <input type="text" name="schMenu" placeholder="메뉴 검색"/>
+     	<!-- <input type="text" name="schMenu" placeholder="메뉴 검색"/> -->
     </div>
     <div class="user-area">
     
-     <div class="profile-area">
+     <div class="profile-area" onclick="location.href='/myPageView'">
      	<div class="profile-img"></div>
-     	<span>백종원 상무</span>
+     	<span class="name"></span>
      </div>
      <div class="utils">
      	<a id="alarm">
@@ -304,6 +304,13 @@
      			<span class="num"></span>
      		</i>
      	</a>
+     	
+   	   <form method="post" action="/logout">
+ 		   <button type="submit" id="logout">
+     		   <i class="bi bi-door-closed-fill" style="position: relative;"></i>
+     	   </button>
+	      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+	   </form>
      </div>
     </div>
 </header>
@@ -371,6 +378,24 @@
 
 <script src="/resources/js/common.js"></script>
 <script>
+	/* 사용자 정보 */
+	$.ajax({
+        type: 'GET',
+        url: '/header',
+        data: {},
+        dataType: 'JSON',
+        success: function(response) {
+            console.log("[[[[헤더]]]] response.userInfo:: ",response.userInfo);
+            var info = response.userInfo;
+            $('.profile-area .name').text(info.name + info.position_content);
+            $('.profile-area .profile-img').css('background','url(\'/photo/'+info.profile+'\') no-repeat top center/cover');
+        },
+        error: function(xhr, status, error) {
+            console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
+        }
+    });
+
+	/* 알림 */
 	var loggedInUser = '${loggedInUser}';
 	$(document).ready(function() {
 		updateAlarmCount();

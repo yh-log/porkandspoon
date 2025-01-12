@@ -58,7 +58,7 @@ public interface ApprovalDAO {
 
 	String isDraftSender(String draft_idx, String loginId);
 
-	String approverStatus(String draft_idx, String loginId);
+	ApprovalDTO approverStatus(String draft_idx, String loginId);
 
 	String isCooperDept(String draft_idx, String userDept);
 
@@ -100,5 +100,10 @@ public interface ApprovalDAO {
 	int deleteBookmark(String lineIdx, String loginId);
 
 	int changeSenderStatus(String draft_idx, String loginId);
+
+	int haveToApproveCount(String loginId);
+
+	ApprovalDTO userApprovalInfo(ApprovalDTO approvalDTO);
+
 
 }

@@ -234,6 +234,12 @@
 	width: 100%;
 }
 
+.mailList .fc-gray {
+	color: var(--bs-secondary);
+	font-size: 19px;
+	margin-left: 10px;
+}
+
     .ui-autocomplete { position: absolute; max-height: 200px; margin: 0; padding: 0; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; z-index: 1; list-style: none; overflow-y: auto; } 
     .ui-autocomplete li { padding: 10px; cursor: pointer; font-size: 16px; color: #000; } 
     .ui-autocomplete li strong { color: #0077cc; } 
@@ -258,20 +264,25 @@
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li><a href="/mail/listView/recv">받은메일함</a></li>
+						<li><a href="/mail/listView/sd">보낸메일함</a></li>
+						<li><a href="/mail/listView/sv">임시보관함</a></li>
+						<li><a href="/mail/listView/bk">중요메일함</a></li>
+						<li><a href="/mail/listView/del">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">메일쓰기</div>
+					<div class="btn btn-primary full-size" onclick="location.href='/mail/write'">새로작성</div>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
 							<div class="left">
-								<h5>메일쓰기 <button>임시보관 메일</button><span class="mail-count">21</span></h5>
+								<h5>메일쓰기 
+									<button class="fc-gray" onclick="location.href='/mail/listView/sv'">
+										임시보관 메일
+										<span class="mail-count">${savedMailCount}</span>
+									</button>
+								</h5>
 							</div>
 						</div>
 						<div class="util-area">
@@ -377,8 +388,10 @@
 		$receiverInput.val('${mailInfo.sender}');
 		$receiverInput.attr("readonly", true);
 	}
+	// 임시저장메일 수정일 경우
 	if(${status eq 'update'}){
 		console.log('receivers:: ','${mailInfo.username}');
+		$('input[name="idx"]').val('${mailInfo.idx}');
 		// 주어진 문자열
 		let receivers = '${mailInfo.username}';
 
@@ -447,7 +460,7 @@
 		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
 	    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 	
-		var formData = new FormData($('form')[0]); // formData
+		var formData = new FormData($('form#mailWriteForm')[0]); // formData
 		var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
 		console.log("content!!@@##",content);
 		formData.append('content', content);

@@ -91,6 +91,7 @@
 	}
 	.draftWrite table.appr_line {
 		width: 410px;
+		cursor: pointer;
 	}
 	.draftWrite table.appr_line th{
 		width: 44px;
@@ -169,6 +170,9 @@
 	}
 	
 	/* 조직도 모달 */
+	#chartModalBox {
+    	height: 550px;
+    }
 	#chartModalBox .chart-td.active {
 		border-bottom: 2px solid #333;
 	}
@@ -229,7 +233,7 @@
 
 	/* 닫기(x) 버튼 */
 	.modal-close {
-	    font-size: 20px;
+	    font-size: 30px;
 	    cursor: pointer;
 	}
 	
@@ -350,7 +354,7 @@
 										</tr>
 									</table>
 									
-									<table class="appr_line">
+									<table class="appr_line" onclick="loadChartModal('chartInputModal')">
 										<tr class="position">
 											<th rowspan="3">결재</th>
 											<td>${userDTO.position_content}</td>

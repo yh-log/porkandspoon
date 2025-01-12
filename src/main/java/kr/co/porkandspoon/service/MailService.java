@@ -126,12 +126,13 @@ public class MailService {
     }
     
 private void saveFile(MultipartFile[] attachedFiles, String mailIdx) {
+	logger.info("attachedFiles : ",attachedFiles);
 	if(attachedFiles != null) {
 		for(MultipartFile file : attachedFiles) {
 			try {
 				
 				logger.info("mailIdx 3 @@@ : "+mailIdx);
-			//	if(!file.isEmpty()) {
+				if(!file.isEmpty()) {
 					String ori_filename = file.getOriginalFilename();
 					logger.info("file 비어있나? : "+file.isEmpty()); // true
 					logger.info("ori_filename : "+ ori_filename); 
@@ -167,7 +168,7 @@ private void saveFile(MultipartFile[] attachedFiles, String mailIdx) {
 			        //Files.exists(filePath);
 					
 					
-				//}
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -275,9 +276,9 @@ public String getReceivedMailBookmark(String idx, String loginId) {
 	return mailDAO.getReceivedMailBookmark(idx,loginId);
 }
 
-public boolean chageAllToRead(Map<String, String> params) {
-	return mailDAO.chageAllToRead(params) > 0 ? true : false ;
-}
+//public boolean chageAllToRead(Map<String, String> params) {
+//	return mailDAO.chageAllToRead(params) > 0 ? true : false ;
+//}
 
 public int savedMailCount(String loginId) {
 	return mailDAO.savedMailCount(loginId);
@@ -308,6 +309,39 @@ public int copyMailReceiverRow(String newIdx, String idx) {
  * public MailDTO deliverMail(String idx, String loginId) { return
  * mailDAO.deliverMail(idx,loginId); }
  */
+
+//안읽은 메일수
+public int unreadMailCount(String loginId) {
+	return mailDAO.unreadMailCount(loginId);
+}
+
+public boolean receivedCompleteDelete(String idx, String loginId) {
+	return mailDAO.receivedCompleteDelete(idx,loginId) > 0 ? true : false;
+}
+
+public boolean sentCompleteDelete(String idx, String loginId) {
+	return mailDAO.sentCompleteDelete(idx,loginId) > 0 ? true : false;
+}
+
+public boolean receivedRestoreFromTrash(String idx, String loginId) {
+	return mailDAO.receivedRestoreFromTrash(idx,loginId) > 0 ? true : false;
+}
+
+public boolean sentRestoreFromTrash(String idx, String loginId) {
+	return mailDAO.sentRestoreFromTrash(idx,loginId) > 0 ? true : false;
+}
+
+public String getReceivedMailUseFromDate(String idx, String loginId) {
+	return mailDAO.getReceivedMailUseFromDate(idx,loginId);
+}
+
+public String getSentMailUseFromDate(String idx, String loginId) {
+	return mailDAO.getSentMailUseFromDate(idx,loginId);
+}
+
+public boolean changeToUnread(String idx, String loginId) {
+	return mailDAO.changeToUnread(idx,loginId);
+}
 
 
 
