@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.Validate;
 
 import kr.co.porkandspoon.dto.ProjectDTO;
 import kr.co.porkandspoon.dto.UserDTO;
@@ -51,8 +52,9 @@ public class ProjectController {
 		String loginId = userDetails.getUsername();
 		logger.info(loginId);
 		params.put("username", loginId);
-	
 		projectService.setProject(params);
+		String project_idx =CommonUtil.toString(params.get("project_idx"));
+		projectService.setProjectPeoloe(project_idx,loginId);
 		return new ModelAndView("redirect:/project/List");
 	}
 	
@@ -63,9 +65,21 @@ public class ProjectController {
 	}
 	
 	
-	@GetMapping(value="/project/Update")
-	public ModelAndView projectUpdateView() {
-		return new ModelAndView("/project/projectUpdate");
+	@GetMapping(value="/project/Update/{project_idx}")
+	public ModelAndView projectUpdateView(@PathVariable String project_idx) {
+		ProjectDTO dto = projectService.getProjectInfo(project_idx);
+		ModelAndView mav = new ModelAndView("/project/projectUpdate");
+		mav.addObject("info",dto);
+		return mav;
+	}
+	
+	@PostMapping(value = "/project/Update")
+	public ModelAndView eiditProject(@AuthenticationPrincipal UserDetails userDetails,
+			@RequestParam Map<String, String> params) {
+		String loginId = userDetails.getUsername();
+		projectService.eiditProject(params);
+		
+		return new ModelAndView("redirect:/project/List");
 	}
 	
 	@GetMapping(value="/project/List")
@@ -80,10 +94,12 @@ public class ProjectController {
 	}
 	
 	@GetMapping(value="/project/KanBan/{project_idx}")
-	public ModelAndView projectKanBanView(@PathVariable int project_idx) {
+	public ModelAndView projectKanBanView(@PathVariable String project_idx) {
 		logger.info("프젝idx"+project_idx);
 	    List<ProjectDTO> list = projectService.getKanBanInfo(project_idx);
 		ProjectDTO dto = projectService.getProjectInfo(project_idx);
+		
+		
 		ModelAndView mav = new ModelAndView("/project/projectKanBan");
 		
 		 if (list == null) {
@@ -108,11 +124,15 @@ public class ProjectController {
 	    String loginId = userDetails.getUsername();
 	    params.put("creater", loginId);
 	    projectService.setTask(params);
+	    String project_idx = params.get("project_idx");
 	    String kanban_idx =CommonUtil.toString(params.get("kanban_idx"));
-	   
+	    String percent = projectService.getPercent(project_idx);
+		projectService.editPercent(percent,project_idx);
+		
 	    // JSON 형식으로 응답 반환
 	    Map<String, Object> response = new HashMap<>();
 	    response.put("kanban_idx", kanban_idx);
+	    response.put("percent", percent);
 	    response.put("message", "작업 저장 성공");
 
 	    return response;
@@ -126,16 +146,19 @@ public class ProjectController {
 		 String loginId = userDetails.getUsername();
 		 String project_idx = params.get("project_idx");
 		 logger.info("프젝 idx"+project_idx);
-		 String percent = projectService.getPercent(project_idx);
 		 params.put("updater", loginId);
-		 params.put("percent", percent);
 		 int row =projectService.editStatus(params);
+		 
+		 String percent = projectService.getPercent(project_idx);
+		 projectService.editPercent(percent,project_idx);
 		 Map<String, Object> response = new HashMap<String, Object>();
 		 response.put("row", row);
-		 
+		 response.put("percent", percent);
 		 
 		 
 		return response;
 	}
+	
+	
 	
 }

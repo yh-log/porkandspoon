@@ -275,7 +275,7 @@ border-bottom: none;
 			        </c:forEach>
 			        </tbody>
 			      </table>
-			      <h6 id="partlist"><a href="/ad/part">아르바이트 리스트 더보러가기</a></h6>
+			      <h6 id="partlist"><a href="/us/part">아르바이트 리스트 더보러가기</a></h6>
 			    </div>
 			  </div>
 			  
@@ -394,6 +394,7 @@ border-bottom: none;
 		const day = String(today.getDate()).padStart(2, '0'); // 일 추출 및 두 자리로 변환
 		const todayString = year + '-' + month + '-' + day; // 문자열 더하기로 날짜 형식 생성
 		$('#Create_Date').val(todayString); // 등록일 필드에 설정
+		
 	}
 
 

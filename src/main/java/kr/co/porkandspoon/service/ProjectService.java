@@ -34,7 +34,7 @@ public class ProjectService {
 		return projectDAO.getProject(loginId);
 	}
 
-	public List<ProjectDTO> getKanBanInfo(int project_idx) {
+	public List<ProjectDTO> getKanBanInfo(String project_idx) {
 		
 		return projectDAO.getKanBanInfo(project_idx);
 	}
@@ -45,12 +45,12 @@ public class ProjectService {
 
 	public int  editStatus(Map<String, String> params) {
 		
-		projectDAO.editPercent(params);
+		
 		return projectDAO.editStatus(params);
 		
 	}
 
-	public ProjectDTO getProjectInfo(int project_idx) {
+	public ProjectDTO getProjectInfo(String project_idx) {
 
 		return projectDAO.getProjectInfo(project_idx);
 	}
@@ -58,6 +58,22 @@ public class ProjectService {
 	public String getPercent(String loginId) {
 		
 		return projectDAO.getPercent(loginId);
+		
+	}
+
+	public void editPercent(String percent, String project_idx) {
+		projectDAO.editPercent(percent,project_idx);
+	
+		
+	}
+
+	public void setProjectPeoloe(String project_idx, String loginId) {
+		projectDAO.setProjectPeoloe(project_idx,loginId);
+		
+	}
+
+	public void eiditProject(Map<String, String> params) {
+		projectDAO.eiditProject(params);
 		
 	}
 

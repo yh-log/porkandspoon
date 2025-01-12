@@ -42,7 +42,7 @@ public class ManageController {
     private UserDAO userDAO;
 
 	// 매장관리홈 직영점주 사용하는 기능
-	@GetMapping(value="/ad/spotManage")
+	@GetMapping(value="/us/spotManage")
 	public ModelAndView spotManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String owner = userDetails.getUsername();
 		List<ManageDTO> list = manageService.getPartList5(owner);
@@ -97,16 +97,14 @@ public class ManageController {
 	}
 
 	
-	
-	
 	//아르바이트 리스트 페이지 뷰 이동
-	@GetMapping(value="/ad/part")
+	@GetMapping(value="/us/part")
 	public ModelAndView partListView() {
 		return new ModelAndView("/manage/partList");
 	}
 	
 	//아르바이트 리스트 정보 조회
-	@GetMapping(value="/ad/part/List")
+	@GetMapping(value="/us/part/List")
 	public Map<String, Object> getPartList(@AuthenticationPrincipal UserDetails userDetails,
 			String pg,  String count, String opt, String keyword,String is_quit) {
 		String owner = userDetails.getUsername();
@@ -140,18 +138,16 @@ public class ManageController {
 	
 	
 	//아르바이트 등록
-	@GetMapping(value="/ad/part/Write")
+	@GetMapping(value="/us/part/Write")
 	public ModelAndView partWriteView(@AuthenticationPrincipal UserDetails userDetails) {
 		String owner = userDetails.getUsername();
 		ManageDTO mto = manageService.getSpotName(owner);
-		
-		
 		ModelAndView mav = new ModelAndView("/manage/partWrite");
 		mav.addObject("mto",mto);
 		return mav;
 	}
 	
-	@PostMapping(value = "/ad/part/Write")
+	@PostMapping(value = "/us/part/Write")
 	public ModelAndView setPartWrite(
 		@AuthenticationPrincipal UserDetails userDetails,
 	    @RequestParam Map<String, String> params,
@@ -173,7 +169,7 @@ public class ManageController {
 	}
 	
 	//아르바이트 상세페이지
-	@GetMapping(value="/ad/part/Detail/{part_idx}")
+	@GetMapping(value="/us/part/Detail/{part_idx}")
 	public ModelAndView partDetail(@PathVariable int part_idx,@AuthenticationPrincipal UserDetails userDetails) {
 		String owner = userDetails.getUsername();
 		ManageDTO dto =  manageService.partDetail(part_idx);
@@ -187,7 +183,7 @@ public class ManageController {
 	}
 	
 	//아르바이트 수정 뷰이동
-	@GetMapping(value="/ad/part/Update/{part_idx}")
+	@GetMapping(value="/us/part/Update/{part_idx}")
 	public ModelAndView partUpdateView(@PathVariable int part_idx,@AuthenticationPrincipal UserDetails userDetails) {
 		String owner = userDetails.getUsername();
 		ManageDTO dto =  manageService.partDetail(part_idx);
@@ -201,7 +197,7 @@ public class ManageController {
 	}
 	
 	//아르바이트 업데이트 기능 
-	@PostMapping(value = "/ad/part/Update")
+	@PostMapping(value = "/us/part/Update")
 	public ModelAndView editPart(
 	    @AuthenticationPrincipal UserDetails userDetails,
 	    @RequestParam Map<String, String> params,
@@ -219,18 +215,18 @@ public class ManageController {
 
 	    manageService.editPart(params, workDates, startTimes, endTimes);
 
-	    return new ModelAndView("redirect:/ad/part/Detail/" + part_idx);
+	    return new ModelAndView("redirect:/us/part/Detail/" + part_idx);
 	}
 
 	
 	// 아르바이트 스케줄 뷰 이동
-	@GetMapping(value = "/ad/partSchedule")
+	@GetMapping(value = "/us/partSchedule")
 	public ModelAndView partScheduleView() {
 		return new ModelAndView("/manage/partSchedule");
 	}
 	
 	// 아르바이트 스케줄 리스트 정보
-	@GetMapping(value = "/ad/getPartTime")
+	@GetMapping(value = "/us/getPartTime")
 	public List<ManageDTO> getPartTime(@AuthenticationPrincipal UserDetails userDetails) {
 	    String owner = userDetails.getUsername();
 	    List<ManageDTO> list = manageService.getPartTime(owner);
@@ -240,7 +236,7 @@ public class ManageController {
 	}
 
 	// 모달창 직원 선택 정보 가져오기
-	@GetMapping(value = "/ad/getPartNames")
+	@GetMapping(value = "/us/getPartNames")
 	@ResponseBody
 	public List<ManageDTO> getPartNames(@AuthenticationPrincipal UserDetails userDetails
 			) {
@@ -251,7 +247,7 @@ public class ManageController {
 	}
 	
 	//아르바이트 스케줄 삭제 
-	@DeleteMapping(value = "ad/PartHistory/Delete")
+	@DeleteMapping(value = "us/PartHistory/Delete")
 	public void OneDelPartHistory(@RequestBody Map<String,String> params) {
 
 		manageService.OneDelPartHistory(params);
@@ -259,14 +255,14 @@ public class ManageController {
 	}
 	
 	
-	@PostMapping(value = "ad/PartHistory/Write")
+	@PostMapping(value = "us/PartHistory/Write")
 	public void setPartHistory(@RequestBody Map<String, Object> params) {
 		logger.info("받은 데이터: {}", params);
 		manageService.setPartHistory(params);
 		
 	}
 	
-	@PutMapping(value = "ad/PartHistory/Update")
+	@PutMapping(value = "us/PartHistory/Update")
 	public void editPartHistory(@RequestBody Map<String, String> params) {
 		logger.info("받은 데이터: {}", params);
 		

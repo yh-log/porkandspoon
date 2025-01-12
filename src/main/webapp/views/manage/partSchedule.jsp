@@ -183,12 +183,12 @@ border-bottom: none;
       <jsp:include page="../header.jsp" />
       <div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
+					<h4 class="menu-title">스케줄 관리</h4>
 	
 					<ul>
-						<li><a href="/ad/spotManage">매장관리 홈</a></li>	
-						<li class="active"><a href="/ad/partSchedule">스케줄 관리</a></li>	
-						<li ><a href="/ad/part">아르바이트 관리</a></li>
+						<li><a href="/us/spotManage">매장관리 홈</a></li>	
+						<li class="active"><a href="/us/partSchedule">스케줄 관리</a></li>	
+						<li ><a href="/us/part">아르바이트 관리</a></li>
 						<li><a href="/us/rest/listView">휴점신청</a></li>
 					</ul>
 					<div class="buttons">						
@@ -280,11 +280,11 @@ border-bottom: none;
 					                        <td>
 					                        	<div class="card-body">
 													<div class="form-check">
-														<input class="form-check-input" type="radio" name="is_done"  value="N" id="isDoneYes" checked="checked"> 
+														<input class="form-check-input" type="radio" name="is_done"  value="Y" id="IsDoneYes" checked="checked"> 
 														<label class="form-check-label" for="flexRadioDefault1">완료 </label>
 													</div>
 													<div class="form-check">
-														<input class="form-check-input" type="radio" name="is_done"  value="Y"  id="isDoneNo" >
+														<input class="form-check-input" type="radio" name="is_done"  value="N"  id="IsDoneNo" >
 														<label class="form-check-label" for="flexRadioDefault2">미완료 </label>
 													</div>
 											 </div>	
@@ -345,11 +345,11 @@ border-bottom: none;
 					                        <td>
 					                            <div class="card-body">
 													<div class="form-check">
-														<input class="form-check-input" type="radio" name="is_done"  value="N" id="isDoneYes" checked="checked"> 
+														<input class="form-check-input" type="radio" name="is_done_register"  value="Y" id="registerIsDoneYes" > 
 														<label class="form-check-label" for="flexRadioDefault1">완료 </label>
 													</div>
 													<div class="form-check">
-														<input class="form-check-input" type="radio" name="is_done"  value="Y"  id="isDoneNo" >
+														<input class="form-check-input" type="radio" name="is_done_register"  value="N"  id="registerIsDoneNo" checked="checked">
 														<label class="form-check-label" for="flexRadioDefault2">미완료 </label>
 													</div>
 											 </div>	
@@ -425,7 +425,6 @@ $(document).ready(function () {
 
     calendar.render();
 
-    // 주급 계산 함수
     function calculateWeeklyPay(data) {
         console.log("주급 계산 함수 실행");
         console.log("사용할 데이터:", data);
@@ -450,7 +449,10 @@ $(document).ready(function () {
             const [startHour, startMinute] = item.start_time.split(':').map(Number);
             const [endHour, endMinute] = item.end_time.split(':').map(Number);
             const hoursWorked = (endHour + endMinute / 60) - (startHour + startMinute / 60);
-            const weeklyPay = hoursWorked * item.pay;
+            let weeklyPay = hoursWorked * item.pay;
+
+            // 100원 단위 반올림
+            weeklyPay = Math.round(weeklyPay / 100) * 100;
 
             if (!payMap[item.part_name]) {
                 payMap[item.part_name] = 0;
@@ -485,11 +487,12 @@ $(document).ready(function () {
         document.querySelector('#totalWeeklyPay').textContent = totalPay.toLocaleString() + '원';
     }
 
+
     let globalData = [];
 
     function loadEvents() {
         $.ajax({
-            url: '/ad/getPartTime',
+            url: '/us/getPartTime',
             method: 'GET',
             dataType: 'json',
             success: function (data) {
@@ -497,6 +500,7 @@ $(document).ready(function () {
                 const formattedData = data.map(item => {
                     const startDate = new Date(item.work_date + 'T' + item.start_time);
                     const endDate = new Date(item.work_date + 'T' + item.end_time);
+                 
 
                     return {
                         id: item.history_idx,
@@ -510,7 +514,7 @@ $(document).ready(function () {
                             part_idx: item.part_idx,
                             part_name: item.part_name,
                             pay: item.pay,
-                            is_done: item.is_done,
+                            is_done: item.is_done, // 서버에서 가져온 is_done 값
                             work_date: item.work_date
                         }
                     };
@@ -532,7 +536,7 @@ $(document).ready(function () {
   // 이름 데이터 로드 및 select 태그에 추가
 function loadPartNames(selectId, selectedValue = null) {
     $.ajax({
-        url: '/ad/getPartNames',
+        url: '/us/getPartNames',
         method: 'GET',
         dataType: 'json',
         success: function (data) {
@@ -619,8 +623,11 @@ function openRegisterModal() {
     $('#registerMenuStartTime').val('');
     $('#registerMenuEndTime').val('');
     $('#registerPay').val('');
-    $('#registerIsDoneNo').prop('checked', true);
+    // 라디오 버튼 초기화 (기본값: 미완료)
+    $('#registerIsDoneNo').prop('checked', true); // 미완료 선택
+    $('#registerIsDoneYes').prop('checked', false); // 완료 해제
 
+ 
     // 이름 데이터 로드
     loadPartNames('#registerMenuContent');
 
@@ -628,38 +635,46 @@ function openRegisterModal() {
 }
 
 function openEditModal(info) {
-	console.log(info);
-	 const eventData = {
-		        history_idx: info.event.extendedProps.history_idx,
-		        part_idx: info.event.extendedProps.part_idx,
-		        part_name: info.event.extendedProps.part_name,
-		        // 날짜 추출 (시간대 보정)
-		        work_date: formatDateForInput(info.event.start.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })),
-		        start_time: info.event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-		        end_time: info.event.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
-		        pay: info.event.extendedProps.pay,
-		        is_done: info.event.extendedProps.is_done
-		    };
+    console.log(info);
+    const eventData = {
+        history_idx: info.event.extendedProps.history_idx,
+        part_idx: info.event.extendedProps.part_idx,
+        part_name: info.event.extendedProps.part_name,
+        work_date: formatDateForInput(info.event.start.toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' })),
+        start_time: info.event.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+        end_time: info.event.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }),
+        pay: info.event.extendedProps.pay,
+        is_done: info.event.extendedProps.is_done // 여기서 N이나 Y 값 확인
+    };
 
     console.log('수정할 이벤트 데이터:', eventData);
 
+    // 필드 값 설정
     $('#menuDate').val(eventData.work_date);
     $('#menuStartTime').val(eventData.start_time);
     $('#menuEndTime').val(eventData.end_time);
     $('#pay').val(eventData.pay);
-    $('#editHistoryIdx').val(eventData.history_idx); // history_idx 설정
-    $('#editPartIdx').val(eventData.part_idx); // part_idx 설정
+    $('#editHistoryIdx').val(eventData.history_idx);
+    $('#editPartIdx').val(eventData.part_idx);
 
+    // 라디오 버튼 상태 설정
     if (eventData.is_done === 'Y') {
-        $('#isDoneYes').prop('checked', true);
+        $('#IsDoneYes').prop('checked', true); // 완료
+        $('#IsDoneNo').prop('checked', false); // 미완료
+    } else if (eventData.is_done === 'N') {
+        $('#IsDoneYes').prop('checked', false); // 완료
+        $('#IsDoneNo').prop('checked', true); // 미완료
     } else {
-        $('#isDoneNo').prop('checked', true);
+        console.error('Unexpected is_done value:', eventData.is_done); // 디버깅용
     }
 
+    // 이름 데이터 로드 및 설정
     loadPartNames('#menuContent', eventData.part_name);
 
+    // 모달 열기
     $('#editModalBox').fadeIn();
 }
+
 
 function formatDateForInput(dateString) {
     // 'YYYY.M.D' 형식을 'YYYY-MM-DD'로 변환
@@ -676,9 +691,9 @@ $('#deleteEditMenu').on('click', function () {
     const historyIdx = $('#editHistoryIdx').val(); // 삭제하려는 이벤트의 history_idx 값
     const partIdx = $('#editPartIdx').val(); // part_idx도 추가적으로 사용할 경우
 
-    if (confirm('정말로 삭제하시겠습니까?')) {
+   
         $.ajax({
-            url: '/ad/PartHistory/Delete', // 서버에서 처리할 DELETE 요청
+            url: '/us/PartHistory/Delete', // 서버에서 처리할 DELETE 요청
             method: 'DELETE',
             contentType: 'application/json',
             data: JSON.stringify({ history_idx: historyIdx, part_idx: partIdx }), // 필요 시 part_idx도 포함
@@ -694,7 +709,7 @@ $('#deleteEditMenu').on('click', function () {
                 console.error('삭제 실패:', err);
             }
         });
-    }
+    
 });
 
 
@@ -734,20 +749,21 @@ $('#deleteEditMenu').on('click', function () {
     $('#saveRegisterMenu').on('click', function () {
         const partIdx = $('#registerPartIdx').val(); // hidden 필드에서 가져온 값
         console.log('현재 registerPartIdx 값:', partIdx); // 값 확인 로그 추가
-
+        const isDoneValue = $('input[name="is_done"]:checked').val();
+        console.log('등록 요청 - 선택된 is_done 값:', isDoneValue); // 디버깅 로그
         const newEventData = {
             part_idx: partIdx,
             pay: $('#registerPay').val(),
             work_date: $('#registerMenuDate').val(),
             start_time: $('#registerMenuStartTime').val(),
             end_time: $('#registerMenuEndTime').val(),
-            is_done: $('input[name="is_done"]:checked').val(),
+            is_done: isDoneValue
         };
 
         console.log('등록된 데이터:', newEventData);
 
         $.ajax({
-            url: '/ad/PartHistory/Write',
+            url: '/us/PartHistory/Write',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(newEventData),
@@ -776,13 +792,13 @@ $('#deleteEditMenu').on('click', function () {
             work_date: $('#menuDate').val(),
             start_time: $('#menuStartTime').val(),
             end_time: $('#menuEndTime').val(),
-            is_done: $('input[name="is_done"]:checked').val() // is_done 값 가져오기
+            is_done: $('input[name="is_done"]:checked').val(), // is_done 값 가져오기
         };
 
         console.log('수정된 데이터:', updatedData);
 
         $.ajax({
-            url: '/ad/PartHistory/Update', // 수정 API URL
+            url: '/us/PartHistory/Update', // 수정 API URL
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(updatedData), // JSON 형식으로 데이터 전송

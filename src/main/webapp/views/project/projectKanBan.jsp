@@ -20,11 +20,12 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/choices.js/public/assets/styles/choices.css">
 
-
+<!-- 부트스트랩 -->
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
-<link rel="stylesheet" href="/resources/css/common.css">
+	<link rel="stylesheet" href="/resources/css/chartModal.css">
+	<link rel="stylesheet" href="/resources/css/common.css">
 
 
 <!-- jQuery -->
@@ -40,9 +41,7 @@
 	.card-body{
 		display: flex;	
 	}
-	#flexRadioDefault2{
-		margin-left: 20px;
-	}
+	
 	td div.inline-layout{
 		display: flex;
 	    align-items: center;
@@ -179,12 +178,7 @@
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
 
-.kanban-item h4 {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #444;
-}
+
 
 .kanban-item p {
   font-size: 14px;
@@ -228,6 +222,11 @@
   transition: background-color 0.3s ease;
 }
 
+.task-status{
+ width: 100px;
+ margin-left: 260px;
+}
+
 .task-card button.cancel {
   background-color: #ddd;
   color: #555;
@@ -255,8 +254,21 @@
 .add-task-btn:hover {
   background-color: #218838;
 }
-
-
+.card-content{
+	margin-bottom: 15px;
+}
+.card-body{
+	margin-bottom: 15px;
+}
+#searchLayout{
+	display: flex;
+}
+#title{
+	margin-left: -30px;
+}
+#home,#schedule{
+		width: 200px;
+	}
 </style>
 	
 
@@ -281,6 +293,9 @@
 						<li class="active"><a href="/project/List">프로젝트 리스트</a></li>
 						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
+					<div class="buttons">							
+						<button class="btn btn-primary" id="schedule" >인원 변경하기</button>
+					</div>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
@@ -290,7 +305,7 @@
 						    <h4>${info.name}</h4>
 						    <p>참여인원:${info.count}명</p>
 						    <p>일정: ${info.start_date} ~ ${info.end_date}</p>
-						    <p>진행률: ${info.percent}%</p>
+						    <div id="progress-text">진행률: ${info.percent}%</div>
 						    <div class="progress-bar">
 						      <div class="progress" style="width: ${info.percent}%;">${info.percent}%</div>
 						    </div>
@@ -383,34 +398,288 @@
 	
 </body>
 
+
+
 <!-- 조직도 노드 -->
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/charjstree.js'></script>
 
 <!-- 부트스트랩 -->
-<script src="/resources/assets/static/js/components/dark.js"></script>
-<script
-	src="/resources/assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 <script src="/resources/assets/compiled/js/app.js"></script>
-
-<!-- Need: Apexcharts(차트) -->
-<script src="/resources/assets/extensions/apexcharts/apexcharts.min.js"></script>
-<script src="/resources/assets/static/js/pages/dashboard.js"></script>
-
 <!-- select  -->
 <script
 	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
+<!-- summernote -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
 
 
 <script>
 
-document.querySelector('.kanban-board').addEventListener('change', function(event) {
-	  if (event.target.classList.contains('task-status')) {
-	    moveTask(event.target);
-	  }
-	});
+/* 조직도노드  */
+	//초기 데이터
+	const initialData = {
+   headers: ['이름', '부서', '직급', '삭제'],
+   rows: [
+       ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '<button class="btn btn-primary">삭제</button>'],
+   ]
+	};
+
+	var exampleData = JSON.parse(JSON.stringify(initialData));
+	console.log("이거뭐야?"+exampleData);
+	
+	// 선택된 ID를 rows에 추가하는 함수
+	var approvalLines = ['${userDTO.username}'];
+	console.log("approvalLines 배열:", approvalLines);
+	
+// 선택된 ID를 rows에 추가하는 함수
+function addSelectedIdToRows(selectedId) {
+    console.log("가져온 ID:", selectedId);
+    if(approvalLines.includes(selectedId)){
+   	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
+    	 return false;
+    }
+    approvalLines.push(selectedId);
+    console.log("approvalLines:", approvalLines);
+    $.ajax({
+        type: 'GET',
+        url: '/ad/project/getUserInfo/'+selectedId,
+        data: {},
+        dataType: "JSON",
+        success: function(response) {
+       	 console.log("유저이름: ",response.name);
+       	 console.log("유저정보: ",response.position_content);
+       	 console.log("유저정보: ",response.dept.text);
+       	 
+       	 var userName = response.name;
+       	 var userPosition = response.position_content;
+       	 var userDept = response.dept.text;
+       	 console.log(userPosition);
+            // 새로운 row 데이터 생성
+            const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
+
+            // 기존 rows에 추가
+            initialData.rows.push(newRow);
+            exampleData.rows.push(newRow);
+
+            // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+            updateTableData('customTable', exampleData);
+           
+
+            // 삭제 버튼 이벤트 연결
+            bindRemoveUserEvent();
+        	
+
+        },
+        error: function(e) {
+            console.log(e);
+        }
+    });
+}
+
+function setupModalEvents(modal) {
+	    var closeModal = modal.querySelector("#closeModal");
+	    var cancelButton = modal.querySelector("#cancelModal");
+	    var addButton = modal.querySelector("#addModal");
+
+	    // 확인 클릭 이벤트
+	    if (addButton) {
+	        addButton.addEventListener("click", function () {
+	            addBtnFn(approvalLines);
+	        });
+	    }
+	    
+	    // 닫기 버튼 클릭 이벤트
+	    if (closeModal) {
+	        closeModal.addEventListener("click", function () {
+	            modal.style.display = "none";
+	            resetTableData();
+	        });
+	    }
+
+	    // 취소 버튼 클릭 이벤트
+	    if (cancelButton) {
+	        cancelButton.addEventListener("click", function () {
+	            modal.style.display = "none";
+	            resetTableData();
+	        });
+	    }
+
+	   
+	}
+
+
+function chartPrint(response) {
+	    console.log(response, '받아온 데이터');
+
+	    // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
+	    response.sort(function (a, b) {
+	        if (a.menuDepth === b.menuDepth) {
+	            return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+	        }
+	        return a.menuDepth - b.menuDepth; // depth 기준 정렬
+	    });
+
+	    console.log("AJAX 응답 데이터 (정렬 후):", response);
+
+	    // jsTree 데이터 형식으로 변환
+	    const processedData = processJsTreeData(response);
+
+	    console.log("jsTree 변환 데이터:", processedData);
+
+	    $('#jstree').jstree('destroy').empty();
+	    // jsTree 초기화
+	    $('#jstree').jstree({
+	        'core': {
+	            'data': function (node, callback) {
+	                // 루트 노드 (#) 또는 특정 노드의 children 반환
+	                if (node.id === "#") {
+	                    callback(processedData.filter(item => item.parent === "#"));
+	                } else {
+	                    callback(processedData.filter(item => item.parent === node.id));
+	                }
+	            },
+	            'themes': {
+	                'dots': true,
+	                'icons': true
+	            }
+	        },
+	        "plugins": ["types", "search"],
+	        "types": {
+	            "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
+	            "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
+	        },
+	        "search": {
+	            "show_only_matches": true,
+	            "show_only_matches_children": true
+	        }
+	    }).on('loaded.jstree', function () {
+	        console.log("jsTree가 성공적으로 초기화되었습니다.");
+	        $("#jstree").jstree("open_all");
+
+	        // 검색 이벤트 처리
+	        let searchTimeout = null;
+	        $('.input-test').on('input', function () {
+	            const search = $(this).val();
+
+	            // 이전 타임아웃 제거
+	            if (searchTimeout) {
+	                clearTimeout(searchTimeout);
+	            }
+
+	            // 입력 후 300ms 후에 검색 실행
+	            searchTimeout = setTimeout(function () {
+	                $('#jstree').jstree('search', search);
+	            }, 300);
+	        });
+
+	    }).on('changed.jstree', function (e, data) {
+	        console.log("선택된 노드:", data.selected);
+	        if (data.selected.length > 0) {
+	        	
+	            const selectedId = data.selected[0]; // 선택된 노드의 ID
+	            console.log("선택된 노드 ID:", selectedId);
+
+	            // 설정된 콜백 함수 호출
+	            if (typeof selectIdCallback === "function") {
+	                selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+	            }
+	        } else {
+	            console.log("선택된 노드가 없습니다.");
+	        }
+	    }).on("load_node.jstree", function (e, data) {
+	        console.log("노드 로드 완료:", data.node);
+	    });
+	    
+}
+
+
+//조직도 노드 해당 사원 삭제
+$(document).on('click', '#chartModalBox #orgBody .btn', function() {
+    var idx = $(this).closest('tr').index();
+    console.log(idx);
+    if(idx != 0){
+	    $(this).closest('tr').remove();
+	    initialData.rows.splice(idx, 1);
+	    exampleData.rows.splice(idx, 1);
+	    approvalLines.splice(idx, 1);
+	    console.log("approvalLines 수정 : ",approvalLines);
+	   // 테이블에서 해당 행 삭제
+	   
+	   
+    }else{
+    	layerPopup( "본인은 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
+    }
+});
+
+
+
+
+
+
+getSelectId(function (selectedId) {
+ addSelectedIdToRows(selectedId);
+});
+
+function addBtnFn(approvalLines) {
+	    console.log("addBtnFn 호출됨. Approval Lines 데이터:", approvalLines);
+
+	    // selectedUserTable 테이블 업데이트
+	    const tbody = document.querySelector("#selectedUserTable tbody");
+	    tbody.innerHTML = ""; // 기존 내용을 초기화
+
+	    approvalLines.forEach((id) => {
+	        // approvalLines의 각 ID에 대해 initialData.rows에서 일치하는 데이터를 가져옴
+	        const row = exampleData.rows.find(r => r.includes(id));
+	        if (row) {
+	            const tr = document.createElement("tr");
+	            row.forEach((cellContent, index) => {
+	                if (index !== row.length - 1) { // 삭제 버튼을 제외하고 추가
+	                    const td = document.createElement("td");
+	                    td.innerHTML = cellContent;
+	                    tr.appendChild(td);
+	                }
+	            });
+	            tbody.appendChild(tr); // 생성된 행을 테이블에 추가
+	        } else {
+	            console.error(`ID(${id})에 해당하는 데이터를 찾을 수 없습니다.`);
+	        }
+	    });
+
+	    console.log("테이블 업데이트 완료. 업데이트된 테이블 데이터:", tbody.innerHTML);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+//Add event listener for the Add Task button
+document.querySelector('.add-task-btn').addEventListener('click', function () {
+    createTaskCard('todoList'); // ID 'todoList'를 가진 영역에 작업 카드를 추가
+});
+
+// 기존 Move Task 이벤트 리스너
+document.querySelector('.kanban-board').addEventListener('change', function (event) {
+    if (event.target.classList.contains('task-status')) {
+        moveTask(event.target);
+    }
+});
 
 	function createTaskCard(listId) {
 	  // 작업 리스트 가져오기
@@ -473,7 +742,7 @@ document.querySelector('.kanban-board').addEventListener('change', function(even
 	                project_idx: projectIdx,
 	                subject: title,
 	                content: content,
-	                is_class: "T", // 초기 상태는 "처리 전" (T)
+	                is_class: "T"// 초기 상태는 "처리 전" (T)
 	            }),
 	            success: function (response) {
 	                console.log(response);
@@ -494,7 +763,7 @@ document.querySelector('.kanban-board').addEventListener('change', function(even
 	                    });
 
 	                // 제목, 내용, kanbanIdx 추가
-	                const titleElem = $('<h4>').text(title);
+	               const titleElem = $('<h4>').text(title);
 	                const contentElem = $('<p>').text(content);
 	                const kanbanIdxElem = $('<p>').text(kanbanIdx).hide();
 
@@ -503,7 +772,11 @@ document.querySelector('.kanban-board').addEventListener('change', function(even
 	                    .append(titleElem)
 	                    .append(contentElem)
 	                    .append(kanbanIdxElem);
-
+					
+	                const percent = response.percent;
+	                updateProgressBar(percent); // 진행률 업데이트 함수 호출
+	                
+	                
 	                alert("작업이 저장되었습니다!");
 	            },
 	            error: function (xhr, status, error) {
@@ -559,18 +832,41 @@ document.querySelector('.kanban-board').addEventListener('change', function(even
 		        project_idx: projectIdx, // Kanban 카드 ID
 		        is_class: status // 변경된 상태값
 		      }),
-		      success: function () {
-		        console.log('상태가 업데이트되었습니다.');
-		      },
-		      error: function (xhr, status, error) {
-		        console.error('상태 업데이트 중 오류가 발생했습니다.', error);
-		        alert('상태 업데이트 중 오류가 발생했습니다.');
-		      }
-		    });
-		  } else {
-		    console.error('Target column not found for status:', status);
-		  }
-		}
+		      success: function (response) {
+	                console.log('상태가 업데이트되었습니다.', response);
+
+	                // 서버 응답에서 퍼센트 값을 가져와 UI 업데이트
+	                const percent = response.percent;
+	                updateProgressBar(percent); // 진행률 업데이트 함수 호출
+	            },
+	            error: function (xhr, status, error) {
+	                console.error('상태 업데이트 중 오류가 발생했습니다.', error);
+	                alert('상태 업데이트 중 오류가 발생했습니다.');
+	            }
+	        });
+	    } else {
+	        console.error('Target column not found for status:', status);
+	    }
+	}
+
+	function updateProgressBar(percent) {
+	    // 진행률 반올림
+	    const roundedPercent = Math.round(percent);
+
+	    const progressText = document.getElementById('progress-text');
+	    if (progressText) {
+	        progressText.textContent = '진행률: ' + roundedPercent + '%'; // 진행률 텍스트 변경
+	    }
+
+	    // 진행률 바 업데이트
+	    const progressBar = document.querySelector('.progress-bar .progress');
+	    if (progressBar) {
+	        progressBar.style.width = roundedPercent + '%'; // 문자열 연결로 너비 설정
+	        progressBar.textContent = roundedPercent + '%'; // 진행률 표시
+	    }
+	}
+
+
 
 	
 	$('.btnModal').on('click', function() {

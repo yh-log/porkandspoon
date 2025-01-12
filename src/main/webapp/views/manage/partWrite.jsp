@@ -120,10 +120,10 @@
 				<section id="menu">
 					<h4 class="menu-title">매장관리</h4>
 					<ul>
-						<li ><a href="/ad/spotManage">매장관리 홈</a></li>
-						<li ><a href="/ad/partSchedule">스케줄관리</a></li>
-						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
-						<li><a href="/ad/rest/List">휴점신청</a></li>
+						<li ><a href="/us/spotManage">매장관리 홈</a></li>
+						<li ><a href="/us/partSchedule">스케줄관리</a></li>
+						<li class="active"><a href="/us/part">아르바이트 관리</a></li>
+						<li><a href="/us/rest/listView">휴점신청</a></li>
 					</ul>
 					
 				</section>
@@ -137,7 +137,7 @@
 
 				         <div class="col-12 col-lg-12">
 				         
-				         <form action="/ad/part/Write" method="post">
+				         <form action="/us/part/Write" method="post">
 				          <input type="hidden" name="_csrf" value="${_csrf.token}" />
 		                     <table>
 		                        <tr>
@@ -184,7 +184,7 @@
 		                        <tr>
 		                           <th class="align-l">지점명 코드</th>
 		                          <td >${mto.spotName}</td>
-		                          <td ><input class="form-control sor-1 " name="id"  value="${mto.id}" type="text" placeholder="전화번호를 입력해주세요." required="required"/></td>
+		                          <td ><input class="form-control sor-1 " name="id"  value="${mto.id}" type="text" placeholder="전화번호를 입력해주세요." required="required" hidden=""/></td>
 		                        </tr>
 		                        <tr>
 		                           <th class="align-l">전화번호</th>

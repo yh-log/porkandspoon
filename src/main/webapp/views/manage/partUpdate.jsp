@@ -126,16 +126,12 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">매장관리</h4>
-					<div class="buttons">							
-						<button class="btn btn-outline-primary" id="home"  onclick="location.href='/ad/spotManage'">매장관리 홈</button>
-						<button class="btn btn-primary" id="schedule" onclick="location.href='/ad/partSchdule'">스케줄 관리</button>
-					</div>
-					
+					<h4 class="menu-title">아르바이트 관리</h4>		
 					<ul>
-						<li class="active"><a href="/ad/part">아르바이트 관리</a></li>
-						<li><a href="/us/rest/listView">휴점신청</a></li>
-						
+						<li><a href="/us/spotManage">매장관리 홈</a></li>	
+						<li ><a href="/us/partSchedule">스케줄 관리</a></li>	
+						<li class="active"><a href="/us/part">아르바이트 관리</a></li>
+						<li><a href="/us/rest/listView">휴점신청</a></li>						
 					</ul>
 				</section>
 				<section class="cont">
@@ -147,7 +143,7 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
-			         <form action="/ad/part/Update" method="post">
+			         <form action="/us/part/Update" method="post">
 			          <input type="hidden" name="_csrf" value="${_csrf.token}" />
                      <table>
                         <tr>

@@ -257,7 +257,7 @@
 			        	</c:forEach>
 			        </tbody>
 			      </table>
-			      <h6 id="partlist"><a href="/ad/dept/listView">직영점 리스트 더보러가기</a></h6>
+			      <h6 id="partlist"><a href="/ma/dept/listView">직영점 리스트 더보러가기</a></h6>
 			    </div>
 			  </div>
 			
