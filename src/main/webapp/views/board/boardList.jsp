@@ -194,6 +194,9 @@ $(document).ready(function () {
 	pageCall(firstPage);
 });
 
+function getSuccess(response) {
+	console.log(response);
+}
 
 // 검색 폼 제출 시 AJAX 호출
 $('#searchBtn').on('click', function(event) {
@@ -287,7 +290,7 @@ function pageCall(page = 1) {
 			content += '>' + item.subject;
 			
 			if (item.board_state === 'N') {
-			    content += ' <span style="color: gray;">(비공개)</span>';
+			    content += ' <span style="color: gray;">(' + item.deptname + ')</span>';
 			}
 		    // 작성자
 		    content += '<td>' + item.userNick + '</td>';
@@ -426,10 +429,10 @@ function pageCall(page = 1) {
                     null,
                     function () {
                         removeAlert();
+						location.reload();
                     },
                     function () {}
                 );
-			location.reload();
 		}
 
 		if (response.status === 'deleteboard') {

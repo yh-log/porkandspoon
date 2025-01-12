@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,7 +17,7 @@ public interface FoodieDAO {
 
 	int setReviewWrirte(FoodieDTO dto);
 
-	List<FoodieDTO> getFoodieList();
+	List<FoodieDTO> getFoodieList(Map<String, Object> params);
 
 	List<FoodieDTO> getReviewList(FoodieDTO fdto);
 

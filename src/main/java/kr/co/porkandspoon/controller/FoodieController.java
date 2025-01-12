@@ -51,8 +51,9 @@ public class FoodieController {
 	}
 	
 	@GetMapping(value="/foodie/list")
-	public List<FoodieDTO> getFoodieList() {
-		List<FoodieDTO> dto = foodieService.getFoodieList();
+	public List<FoodieDTO> getFoodieList(@RequestParam Map<String, Object> params) {
+		logger.info("params : {} ", params);
+		List<FoodieDTO> dto = foodieService.getFoodieList(params);
 		return dto;
 	}
 	

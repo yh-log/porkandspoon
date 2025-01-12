@@ -73,6 +73,8 @@ public interface BoardDAO {
 	int lbboardDelete(int board_idx);
 
 	List<BoardDTO> getTeamCode();
+
+	int userList();
     
     
     

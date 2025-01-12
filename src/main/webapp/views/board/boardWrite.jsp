@@ -39,7 +39,7 @@
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 	<link rel="stylesheet" href="/resources/css/common.css">
-	<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+	
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}"> 
@@ -115,7 +115,7 @@
 									<th class="table-text table-text-text" style="vertical-align: top;">파일첨부</th>
 									<td>
 										<div class="mb-3">
-											<input type="file" class="form-control form-style" multiple data-max-file-size="10MB" data-max-files="3" id="formFileMultiple" multiple="" name="filepond"/>
+										 	<input class="form-control" type="file" id="formFileMultiple" name="filepond" multiple="">
 										</div>
 									</td>
 								</tr>
@@ -168,9 +168,7 @@
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script>
-
 	$(document).ready(function () {
 		var username = $('#currentUser').text().trim();
 		$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
@@ -318,14 +316,6 @@
 	        departmentRow.style.display = 'none'; 
 	        departmentSelect.disabled = true;
 	    }
-	});
-	
-	const attachedFilesPond = FilePond.create(document.querySelector('input.form-style'), {
-	    allowMultiple: true,
-	    maxFiles: 3,
-	    allowImagePreview: false,
-	    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
-	    instantUpload: false
 	});
 </script>
 </html>
