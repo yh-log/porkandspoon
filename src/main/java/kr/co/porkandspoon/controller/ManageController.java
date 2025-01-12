@@ -54,7 +54,7 @@ public class ManageController {
 	}
 	
 	// 직영점 관리 해당 브랜드팀만 사용하는 기능
-	@GetMapping(value="/ma/directManage")
+	@GetMapping(value="/mo/directManage")
 	public ModelAndView directManageView(@AuthenticationPrincipal UserDetails userDetails) {
 		String id = userDetails.getUsername();
 		List<ManageDTO> list = manageService.getDirectList(id);
@@ -379,7 +379,7 @@ public class ManageController {
 	 * author yh.kim, (25.01.03)
 	 * 휴점 수정
 	 */
-	@PostMapping(value="/ma/rest/update")
+	@PostMapping(value="/us/rest/update")
 	public RestDTO restUpdate(@ModelAttribute RestDTO restDTO, @RequestParam("imgsJson") String imgsJson) {
 		logger.info(CommonUtil.toString(restDTO));
 		logger.info(CommonUtil.toString(imgsJson));
@@ -421,14 +421,13 @@ public class ManageController {
 	 * 휴점 리스트 조회
 	 */
 	@GetMapping(value="/us/rest/list")
-	public List<RestDTO> restList(
-			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "cnt", defaultValue = "10") int cnt,
-			@RequestParam(defaultValue = "", value = "option") String option,
-			@RequestParam(defaultValue = "", value="keyword") String keyword){
+	public List<RestDTO> restList(@ModelAttribute PagingDTO pagingDTO){
 
 
-		List<RestDTO> restDTOS = manageService.restList(page, cnt, option, keyword);
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		pagingDTO.setUsername(username);
+
+		List<RestDTO> restDTOS = manageService.restList(pagingDTO);
 
 		return restDTOS;
 	}

@@ -26,8 +26,8 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
-	<link rel="stylesheet" href="/resources/css/chartModal.css">
-	<link rel="stylesheet" href="/resources/css/common.css">
+<link rel="stylesheet" href="/resources/css/chartModal.css">
+<link rel="stylesheet" href="/resources/css/common.css">
 
 
 
@@ -152,7 +152,7 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="subMenuSubject">브랜드</h5>
+							<h5 id="subMenuSubject">브랜드 기안</h5>
 						</div>
 						<div class="cont-body"> 
 							<form>
@@ -247,8 +247,7 @@
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 <!-- select  -->
-<script
-	src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
 <script src="/resources/assets/static/js/pages/form-element-select.js"></script>
 <!-- summernote -->
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
@@ -336,7 +335,7 @@
 		});
 
 		if (isAlreadyAdded) {
-			alert("이미 추가된 사용자입니다!");
+			layerPopup('이미 추가된 직원입니다.', '확인', false, removeAlert, removeAlert);
 			return; // 중복된 경우 함수 종료
 		}
 

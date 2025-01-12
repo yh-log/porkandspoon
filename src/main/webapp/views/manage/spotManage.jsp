@@ -377,7 +377,7 @@ border-bottom: none;
 
 	// 매출 등록 모달 열기
 	$('.btn-primary').on('click', function () {
-		setTodayDate(); // 등록일 필드에 오늘 날짜 설정
+		//setTodayDate(); // 등록일 필드에 오늘 날짜 설정
 		$('#salesModalBox').fadeIn(); // 모달 열기
 	});
 
@@ -396,6 +396,19 @@ border-bottom: none;
 		$('#Create_Date').val(todayString); // 등록일 필드에 설정
 		
 	}
+
+	// function setTodayDateIfEmpty() {
+	// 	const currentVal = $('#Create_Date').val();
+	// 	if (!currentVal) {
+	// 		// 날짜 필드가 비어있을 때만 오늘 날짜로 설정
+	// 		const today = new Date();
+	// 		// 년, 월, 일 구해서 yyyy-MM-dd 포맷
+	// 		const year = today.getFullYear();
+	// 		const month = String(today.getMonth() + 1).padStart(2, '0');
+	// 		const day = String(today.getDate()).padStart(2, '0');
+	// 		$('#Create_Date').val(year + '-' + month + '-' + day);
+	// 	}
+	// }
 
 
 	let message = '매출을 등록하시겠습니까?';
@@ -416,9 +429,11 @@ border-bottom: none;
 			console.log(findSeales);
 			$('input[name="sales"]').val(response.sale);
 
+
 			message = '매출을 수정하시겠습니까?';
 			type = 'U';
 		}else{
+			setTodayDate();
 			message = '매출을 등록하시겠습니까?';
 			type = 'N';
 		}
@@ -458,6 +473,7 @@ border-bottom: none;
 		console.log(response);
 		if (response.status){
 			layerPopup(response.message, '확인', false, removeAlert, removeAlert);
+			$('#salesModalBox').hide();
 		}
 	}
 

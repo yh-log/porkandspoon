@@ -57,6 +57,7 @@
 	    align-items: end;
 	    gap: 20px;
 	    margin-bottom: 10px;
+		font-weight: 500;
 	}
 </style>
 
@@ -200,6 +201,7 @@ $('#searchBtn').on('click', function(event) {
     }
 
     pageCall(firstPage); // 저장된 currentUrl로 페이지 호출
+
 });
 
 // 페이지 호출 함수

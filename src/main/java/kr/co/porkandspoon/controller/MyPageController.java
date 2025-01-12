@@ -46,13 +46,16 @@ public class MyPageController {
 	@Autowired MyPageService myPageService;
 	
 	private static final String UPLOAD_DIR = "C:/upload/";
+
+
 	/**
 	 * author yh.kim (24.12.26)
 	 * 마이페이지 이동
 	 */
 	@GetMapping(value="/myPageView")
-	public ModelAndView myPageView(@AuthenticationPrincipal UserDetails userDetails) {
-		String username = userDetails.getUsername();
+	public ModelAndView myPageView() {
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/myPage/myPage");
 		mav.addObject("username", username);
@@ -96,7 +99,13 @@ public class MyPageController {
 	 */
 	@GetMapping(value="/myPage/update")
 	public ModelAndView myPageUpdateView() {
-		return new ModelAndView("/myPage/myPageUpdate");
+
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/myPage/myPageUpdate");
+		mav.addObject("username", username);
+
+		return mav;
 	}
 	
 	
