@@ -4,27 +4,65 @@
 >
 
 <mapper namespace="kr.co.porkandspoon.dao.CalenderDAO">
+	<!-- DeptDTO에 대한 ResultMap-->
+    <resultMap id="DeptMap" type="kr.co.porkandspoon.dto.DeptDTO">
+        <result property="text" column="text"/>
+        <result property="parent" column="parent"/>
+    </resultMap>
 
-	<!-- 캘린더 데이터 조회 -->
-	<!--
-	<select id="calenderList">
-		SELECT * FROM schedule WHERE (type = 'C' OR (type = 'P' AND username = #{loginId}) OR (type = 'T' AND id = #{dept}));
-	</select>
-	-->
+    <!-- UserDTO에 대한 ResultMap -->
+    <resultMap id="UserMap" type="kr.co.porkandspoon.dto.UserDTO">
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="position_content" column="position_content"/>
+        <!-- dept는 DeptMap을 참조 -->
+        <association property="dept" resultMap="DeptMap"/>
+    </resultMap>
+	
 	<!-- 캘린더 리스트 with 필터링 -->
     <select id="calenderList" parameterType="map" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-        SELECT * FROM schedule 
-        WHERE 
-            type IN 
-            <foreach item="filter" index="index" collection="filters" open="(" separator="," close=")">
-                #{filter}
-            </foreach>
-            AND 
-            (
-                (type = 'C') 
-                OR (type = 'P' AND username = #{loginId}) 
-                OR (type = 'T' AND id = #{dept})
-            )
+		<!-- C, P, T 필터에 해당하는 schedule 쿼리 -->	
+		SELECT
+			idx,
+			subject,
+			start_date,
+			end_date,
+			`type`
+		FROM schedule 
+		WHERE type IN 
+       	<foreach item="filter" index="index" collection="filters" open="(" separator="," close=")">
+       	 	#{filter} 
+       	 </foreach>
+      	AND ((type = 'C') OR (type = 'P' AND username = #{loginId}) OR (type = 'T' AND id = #{dept}))  	  	    
+	      UNION ALL
+	      SELECT 
+	        is3.idx,
+	        subject,
+	        start_date,
+	        end_date,
+	        'A' AS `type`
+	      FROM item_schedule is3 
+	      WHERE username = #{loginId}
+	      AND 'A' IN 
+	      <foreach item="f" index="index" collection="filters" open="(" separator="," close=")">
+	        #{f}
+	      </foreach>   
+	      UNION ALL
+	      SELECT 
+	        rs.idx,
+	        subject,
+	        start_date,
+	        end_date,
+	        'R' AS `type`
+	      FROM room_schedule rs
+	      LEFT JOIN attendees a2 
+	        ON rs.username = a2.username AND a2.username = #{loginId}
+	      WHERE rs.username = #{loginId}
+	      AND 'R' IN 
+	      <foreach item="f" index="index" collection="filters" open="(" separator="," close=")">
+	        #{f}
+	      </foreach>
+	      
     </select>
     
 	<!-- 로그인한 유저의 부서정보 -->
@@ -39,10 +77,64 @@
 	</insert>
 	
 	<!-- 캘린더 일정 상세보기 -->
-    <select id="calenderDetail" parameterType="int" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-    	SELECT s.* , u.name FROM schedule s join `user` u on s.username = u.username where s.idx = #{idx}
+    <select id="calenderDetail" parameterType="map" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT s.* , u.name FROM schedule s join `user` u on s.username = u.username where s.idx = #{idx}
     </select>
     
+    <!-- 캘린더 일정 상세보기 -->
+    <select id="calenderDetailA" parameterType="map" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT 
+			s.idx,
+			s.no,
+			s.username,
+			s.start_date,
+			s.end_date,
+			s.subject,
+			s.content,
+			s.create_date,
+			i.item_name,
+			i.selection,
+			u.name,
+			'A' AS `type` 
+		FROM item_schedule s JOIN item i ON s.no = i.no
+		JOIN user u ON s.username = u.username 
+		WHERE idx=#{idx}
+    </select> 
+    
+    <!-- 캘린더 일정 상세보기R -->
+    <select id="calenderDetailR" parameterType="map" resultType="kr.co.porkandspoon.dto.CalenderDTO">
+		SELECT 
+			s.idx,
+			s.no,
+			s.username,
+			s.start_date,
+			s.end_date,
+			s.subject,
+			s.content,
+			s.create_date,
+			i.room_name,
+			i.count,
+			u.name,
+			'R' AS `type`
+		FROM room_schedule s 
+		JOIN room i ON s.no = i.no
+		JOIN user u ON s.username = u.username
+		WHERE s.idx=#{idx}
+    </select>  
+    
+    <!-- 참석자,사용자 정보를 가져오는 select 문 -->
+    <select id="attendeesList" resultMap="UserMap">
+        SELECT 
+            u.username, u.name, c.content AS position_content	, u.parent, d.text
+        FROM 
+            attendees a
+        JOIN user u on a.username = u.username     
+        JOIN department d ON u.parent = d.id
+		JOIN code c ON u.position = c.name
+        WHERE a.idx = #{idx}
+    </select>
+     
+    	
     <!-- 캘린더 일정 수정 -->
     <update id="calenderUpdate" parameterType="map">
 	    UPDATE schedule SET 

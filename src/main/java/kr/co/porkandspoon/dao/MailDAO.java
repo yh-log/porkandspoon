@@ -60,7 +60,7 @@ public interface MailDAO {
 
 	String getReceivedMailBookmark(String idx, String loginId);
 
-	int chageAllToRead(Map<String, String> params);
+	//int chageAllToRead(Map<String, String> params);
 
 	int setDeleveryExistingImage(String mailIdx, String fileId, String originalIdx);
 
@@ -68,7 +68,7 @@ public interface MailDAO {
 
 	int moveReceivedToTrash(String idx, String loginId);
 
-	int moveSentToTrash(Map<String, List<String>> params, String loginId);
+	//int moveSentToTrash(Map<String, List<String>> params, String loginId);
 
 	int moveSentToTrash(String idx, String loginId);
 
@@ -80,7 +80,22 @@ public interface MailDAO {
 
 	int copyMailReceiverRow(String newIdx, String idx);
 
-	
+	int unreadMailCount(String loginId);
+
+	int receivedCompleteDelete(String idx, String loginId);
+
+	int sentCompleteDelete(String idx, String loginId);
+
+	int receivedRestoreFromTrash(String idx, String loginId);
+
+	int sentRestoreFromTrash(String idx, String loginId);
+
+	String getReceivedMailUseFromDate(String idx, String loginId);
+
+	String getSentMailUseFromDate(String idx, String loginId);
+
+	boolean changeToUnread(String idx, String loginId);
+
 
 	
 

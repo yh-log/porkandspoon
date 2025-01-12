@@ -90,7 +90,7 @@ public class MailController {
 
 	@Transactional
 	@PostMapping(value="/mail/write/{status}")
-	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart(value="attachedFiles", required = false) MultipartFile[] attachedFiles, @RequestParam("existingFileIds") List<String> existingFileIds, String originalIdx, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
+	public Map<String, Object> MailWrite(@PathVariable String status, @AuthenticationPrincipal UserDetails userDetails, @RequestPart(value="attachedFiles", required = false) MultipartFile[] attachedFiles, @RequestParam(value="existingFileIds", required = false) List<String> existingFileIds, String originalIdx, @RequestParam("imgsJson") String imgsJson, @ModelAttribute MailDTO mailDTO, @RequestParam HashSet<String> username ) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		
 		mailDTO.setSender(userDetails.getUsername());
@@ -188,9 +188,13 @@ public class MailController {
 			mav.addObject("isSender", isSender);
 			mav.addObject("isReceiver", isReceiver);
 			if(isReceiver) {
+				//즐겨찾기
 				mav.addObject("is_bookmark", mailService.getReceivedMailBookmark(idx, loginId));
+				//삭제(휴지통)일자
+				mav.addObject("use_from_date", mailService.getReceivedMailUseFromDate(idx, loginId));
 			}else if (isSender) {
 				mav.addObject("is_bookmark", mailService.getSentMailBookmark(idx, loginId));
+				mav.addObject("use_from_date", mailService.getSentMailUseFromDate(idx, loginId));
 			}
 		}else {
 			try {
@@ -208,7 +212,6 @@ public class MailController {
 			idxList.add(idx);
 			mailService.changeToRead(idxList, loginId);
 		}
-		
 			return mav;
 	}
 	
@@ -271,6 +274,18 @@ public class MailController {
 		return result;
 	}
 	
+	//개별 안읽음 처리 기능
+	@PutMapping(value = "/mail/changeToUnread")
+	public Map<String, Object> changeToUnread(String idx, @AuthenticationPrincipal UserDetails userDetails) {    
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
+		String loginId = userDetails.getUsername();
+		logger.info("idx::: "+idx);
+		success = mailService.changeToUnread(idx,loginId);
+		result.put("success", success);
+		return result;
+	}
+	
 	//다중 삭제 처리 기능
 	@Transactional
 	@PutMapping(value = "/mail/moveToTrash")
@@ -307,6 +322,78 @@ public class MailController {
 		result.put("success", success);
 		return result;
 	}
+	
+	//다중 영구삭제 기능
+	@PutMapping(value = "/mail/completeDelete")
+	public Map<String, Object> completeDelete(@RequestBody Map<String, List<String>> params, @AuthenticationPrincipal UserDetails userDetails) {    
+		Map<String, Object> result = new HashMap<String, Object>();
+		boolean success = false;
+		String loginId = userDetails.getUsername();
+		List<String> idxList = params.get("idxList");
+		logger.info("idxList count :"+idxList.size());
+		for (String idx : idxList) {
+			List<MailDTO> senderReceivers = mailService.getSenderReceivers(idx);
+			boolean isSender = senderReceivers.get(0).getSender().equals(loginId) ?  true : false;
+			boolean isReceiver = false;
+			for (MailDTO senderReceiver : senderReceivers) {
+				logger.info("Receiver : {} == loginId : {} ", senderReceiver.getUsername(), loginId);
+				if(senderReceiver.getUsername() == null) {
+					break;
+				}
+				if(senderReceiver.getUsername().equals(loginId)) {
+					isReceiver = true;
+					break;
+				}
+			}
+			logger.info("isSender ? : " + isSender);
+			logger.info("isReceiver ? : " + isReceiver);
+			
+			if(isReceiver) {
+				success = mailService.receivedCompleteDelete(idx,loginId);
+			}
+			if(isSender) {
+				success = mailService.sentCompleteDelete(idx,loginId);
+			}
+		}
+		result.put("success", success);
+		return result;
+	}
+	
+	//다중 삭제 취소 기능
+		@PutMapping(value = "/mail/restoreFromTrash")
+		public Map<String, Object> restoreFromTrash(@RequestBody Map<String, List<String>> params, @AuthenticationPrincipal UserDetails userDetails) {    
+			Map<String, Object> result = new HashMap<String, Object>();
+			boolean success = false;
+			String loginId = userDetails.getUsername();
+			List<String> idxList = params.get("idxList");
+			logger.info("idxList count :"+idxList.size());
+			for (String idx : idxList) {
+				List<MailDTO> senderReceivers = mailService.getSenderReceivers(idx);
+				boolean isSender = senderReceivers.get(0).getSender().equals(loginId) ?  true : false;
+				boolean isReceiver = false;
+				for (MailDTO senderReceiver : senderReceivers) {
+					logger.info("Receiver : {} == loginId : {} ", senderReceiver.getUsername(), loginId);
+					if(senderReceiver.getUsername() == null) {
+						break;
+					}
+					if(senderReceiver.getUsername().equals(loginId)) {
+						isReceiver = true;
+						break;
+					}
+				}
+				logger.info("isSender ? : " + isSender);
+				logger.info("isReceiver ? : " + isReceiver);
+				
+				if(isReceiver) {
+					success = mailService.receivedRestoreFromTrash(idx,loginId);
+				}
+				if(isSender) {
+					success = mailService.sentRestoreFromTrash(idx,loginId);
+				}
+			}
+			result.put("success", success);
+			return result;
+		}
 	
 	//다중 북마크 토글 기능
 	@Transactional
@@ -383,6 +470,9 @@ public class MailController {
 	    	mav = new ModelAndView("/mail/mailUpdate");
 	    	mav.addObject("mailInfo", mailInfo);
 	    	mav.addObject("status", status);
+	    	//임시보관 메일 수
+			int savedMailCount = mailService.savedMailCount(loginId);
+			mav.addObject("savedMailCount", savedMailCount);
 	    }else {
 	    	try {
 				// 메시지를 URL 인코딩

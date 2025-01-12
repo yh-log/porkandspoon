@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.CalenderDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 @Mapper
 public interface CalenderDAO {
 
@@ -13,7 +14,7 @@ public interface CalenderDAO {
 
 	int calenderWrite(CalenderDTO calederDto);
 
-	CalenderDTO calenderDetail(int idx);
+	CalenderDTO calenderDetail(Map<String, Object> params);
 
 	int calenderUpdate(String idx, CalenderDTO calenderDto);
 
@@ -22,6 +23,12 @@ public interface CalenderDAO {
 	String dept(String loginId);
 
 	List<CalenderDTO> calenderList(Map<String, Object> params);
+
+	CalenderDTO calenderDetailA(Map<String, Object> params);
+
+	CalenderDTO calenderDetailR(Map<String, Object> params);
+
+	List<UserDTO> attendeesList(int idx);
 
 
 }

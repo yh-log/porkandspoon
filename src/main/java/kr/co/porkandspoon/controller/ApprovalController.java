@@ -85,7 +85,7 @@ public class ApprovalController {
 	
 	// 기안문 저장
 	@PostMapping(value="/draftWrite/{status}") 
-	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status, String[] new_filename) {
+	public Map<String, Object> draftWrite(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart(value="attachedFiles", required = false) MultipartFile[] attachedFiles, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String status, String[] new_filename) {
 //		해당부서에 속한사람만 직영점등록이 가능하도록하는 로직
 //		if(approvalDTO.getTarget_type().equals("df002")) {
 //			
@@ -95,9 +95,9 @@ public class ApprovalController {
 	//	logger.info("Files: " + Arrays.toString(files));
 		//logger.info("OriginalFilename : " + logo.getOriginalFilename());
 		logger.info("@@@***approvalDTO.getCOntent!!! : "+ approvalDTO.getContent());
-		logger.info("new filename 받아와지나?!!!!! : "+ new_filename);
-		logger.info("appr_user : "+ appr_user);
-		logger.info("appr_user : "+ appr_user[0]);
+		//logger.info("new filename 받아와지나?!!!!! : "+ new_filename);
+		//logger.info("appr_user : "+ appr_user);
+		//logger.info("appr_user : "+ appr_user[0]);
 		
 		Map<String, Object> result = new HashMap<String, Object>();
 		
@@ -214,20 +214,22 @@ public class ApprovalController {
 		// 기안자여부
 		boolean isDraftSender = approvalService.isDraftSender(draft_idx,loginId);
 		// 본인의 결재상태
-		String approverStatus = approvalService.approverStatus(draft_idx,loginId);
-		//logger.info("approverStatus !!!!!!!!!: "+ approverStatus);
+		ApprovalDTO userApproverInfo = approvalService.approverStatus(draft_idx,loginId);
+		String approverStatus = userApproverInfo.getStatus();
+		String approverOrder = userApproverInfo.getOrder_num();
+		logger.info("%%%approverStatus !!!!!!!!!: "+ approverStatus);
 		// 이전 결재자들의 결재상태 (내 순서인지 체크)
 		List<String> otherApproversStatus = approvalService.otherApproversStatus(draft_idx,loginId);
-		logger.info("otherApproversStatus !!!!!!! : "+otherApproversStatus);
+		logger.info("%%%otherApproversStatus !!!!!!! : "+otherApproversStatus);
 		boolean approverTurn = true;
 		for (String status : otherApproversStatus) {
-			logger.info("status: !!!! : "+status);
+			logger.info("%%%status: !!!! : "+status);
 			if(!status.equals("ap004")) {
 				approverTurn = false;
 				break;
 			}
 		}
-		logger.info("approverTurn: !!!! : "+approverTurn);
+		logger.info("%%%approverTurn: !!!! : "+approverTurn);
 		// 협력부서여부
 		boolean isCooperDept = approvalService.isCooperDept(draft_idx,userDept);
 		// 기안부서여부
@@ -239,6 +241,7 @@ public class ApprovalController {
 		
 		mav.addObject("isDraftSender", isDraftSender);
 		mav.addObject("approverStatus", approverStatus);
+		mav.addObject("approverOrder", approverOrder);
 		mav.addObject("approverTurn", approverTurn);
 		
 		String message = "";
@@ -286,6 +289,7 @@ public class ApprovalController {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
+        logger.info("%%%DraftInfo.status!!!!!: "+DraftInfo.getStatus());
 		mav.addObject("DraftInfo", DraftInfo);
 		mav.addObject("ApprLine", ApprLine);
 		mav.addObject("jsonApprLine", jsonApprLine);
@@ -505,6 +509,7 @@ public class ApprovalController {
 	}
 
 	// 기안문 승인
+	@Transactional
 	@PostMapping(value="/approval/ApprovalDraft") 
 	public Map<String, Object> approvalDraft(@ModelAttribute ApprovalDTO approvalDTO, @AuthenticationPrincipal UserDetails userDetails) {
 		boolean success = false;
@@ -512,9 +517,22 @@ public class ApprovalController {
 		approvalDTO.setUsername(userDetails.getUsername());
 		// 결재라인 테이블 결재자 상태코드 변경
 		int approvalRow = approvalService.ApprovalDraft(approvalDTO);
+		String draftIdx = approvalDTO.getDraft_idx();
+		// check!!! 결재자 결재 순서, 총 결재자 수 비교해서 마지막 결재자인 경우 테이블 상태코드 변경해야함
+		ApprovalDTO approvalInfo = approvalService.userApprovalInfo(approvalDTO);
+		//결재자 결재 순서
+		String orderNum = approvalInfo.getOrder_num();
+		//총 결재자 수
+		int totalCount = approvalInfo.getApproval_line_count();
 		// 기안문 테이블 상태코드 변경(결재완료)
-		int statusRow = approvalService.changeStatusToApproved(approvalDTO.getDraft_idx());
-		if(approvalRow > 0 && statusRow > 0) {
+		logger.info("orderNum"+orderNum);
+		logger.info("totalCount"+totalCount);
+		if(Integer.parseInt(orderNum) == (totalCount-1)) {
+			logger.info("totalCount==totalCount");
+			approvalService.changeStatusToApproved(approvalDTO.getDraft_idx());
+		}
+		
+		if(approvalRow > 0) {
 			success = true;
 		}
 		
@@ -523,7 +541,7 @@ public class ApprovalController {
 		noticedto.setFrom_idx(approvalDTO.getDraft_idx());
 		noticedto.setUsername(approvalDTO.getUsername());
 		noticedto.setCode_name("ml007");
-		alarmService.saveAlarm(noticedto);
+		//alarmService.saveAlarm(noticedto);
 		
 		// 기안자에게 승인 요청 알림
 		NoticeDTO noticedto2 = new NoticeDTO();

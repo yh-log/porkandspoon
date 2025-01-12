@@ -166,6 +166,20 @@
 			username = #{loginId}
 	</select> -->
 	
+	<select id="getReceivedMailUseFromDate" resultType="String">
+		SELECT use_from_date 
+		FROM mail_receive 
+		WHERE idx = #{idx} 
+		AND username = #{loginId}
+	</select>
+
+	<select id="getSentMailUseFromDate" resultType="String">
+		SELECT use_from_date 
+		FROM mail
+		WHERE idx = #{idx} 
+		AND sender = #{loginId}
+	</select>
+	
 	<delete id="deleteBookmark" parameterType="map">
 		DELETE 
 			FROM mail_bookmark
@@ -375,9 +389,10 @@
 		        ELSE 'received'
 		    END 
 		    AS mail_type
-		    ,COALESCE(mr.username, m.sender) 
+		    ,COALESCE(m.sender,mr.username) 
 		    AS username
 		    ,u.name
+		    ,mr.is_read
 		    ,(SELECT MIN(idx) 
 		    	FROM file 
 	    		WHERE pk_idx = m.idx 
@@ -387,23 +402,25 @@
 		FROM mail m
 		LEFT JOIN (
 		    SELECT 
-		    	mr_inner.idx
-		    	,MIN(mr_inner.username
-	    	) AS username
+		    	*
 		    FROM mail_receive mr_inner
-		    GROUP BY mr_inner.idx
+		    WHERE mr_inner.username = #{loginId}
 		) mr 
 			ON m.idx = mr.idx
 		LEFT JOIN user u 
-			ON u.username = COALESCE(mr.username, m.sender)
-		LEFT JOIN mail_receive mr2 
-		    ON m.idx = mr2.idx 
-		    AND mr2.username = #{loginId}
+			ON u.username = COALESCE(m.sender,mr.username) 
 		WHERE (
-		    (m.sender = #{loginId} AND m.is_bookmark = 'Y')  
-		    OR (mr2.username = #{loginId} AND mr2.is_bookmark = 'Y')
-	    ) AND (mr2.use_yn = 'Y' or m.use_yn = 'Y')  
-	    AND (m.use_from_date IS NULL OR mr2.use_from_date IS NULL)
+		    (m.sender = #{loginId} AND m.is_bookmark = 'Y') 
+		    OR (m.sender != #{loginId} AND mr.is_bookmark = 'Y')
+		)
+		AND (
+		    (m.sender = #{loginId} AND m.use_yn = 'Y') 
+		    OR (m.sender != #{loginId} AND mr.use_yn = 'Y')
+		)
+		AND (
+		    (m.sender = #{loginId} AND m.use_from_date IS NULL) 
+		    OR (m.sender != #{loginId} AND mr.use_from_date IS NULL)
+		)
 		<if test="search != null and !search.equals('') and option == 'subject'"> 
 		AND m.title LIKE CONCAT('%',#{search},'%')		
 		</if>
@@ -479,8 +496,20 @@
 			AND 
 			username = #{loginId}
 	</update>
+
+	<update id="changeToUnread">
+		UPDATE 
+			mail_receive
+		SET 
+			is_read = 'N'
+			,read_date = null
+		WHERE
+			idx = #{idx}
+			AND 
+			username = #{loginId}
+	</update>
 	
-	<update id="moveReceivedToTrash" parameterType="map">
+	<update id="moveReceivedToTrash">
 		UPDATE 
 			mail_receive 
 		SET 
@@ -491,7 +520,7 @@
 			username = #{loginId}
 	</update>
 	
-	<update id="moveSentToTrash" parameterType="map">
+	<update id="moveSentToTrash">
 		UPDATE 
 			mail
 		SET 
@@ -501,6 +530,51 @@
 		AND 
 			sender = #{loginId}
 	</update>
+
+	<update id="receivedRestoreFromTrash">
+		UPDATE 
+			mail_receive 
+		SET 
+			use_from_date = null
+		WHERE 
+			idx = #{idx}
+		AND 
+			username = #{loginId}
+	</update>
+	
+	<update id="sentRestoreFromTrash">
+		UPDATE 
+			mail
+		SET 
+			use_from_date = null
+		WHERE 
+			idx = #{idx}
+		AND 
+			sender = #{loginId}
+	</update>
+	
+	<update id="receivedCompleteDelete">
+		UPDATE 
+			mail_receive 
+		SET 
+			use_yn = 'N'
+		WHERE 
+			idx = #{idx}
+		AND 
+			username = #{loginId}
+	</update>
+
+	<update id="sentCompleteDelete">
+		UPDATE 
+			mail
+		SET 
+			use_yn = 'N'
+		WHERE 
+			idx = #{idx}
+		AND 
+			sender = #{loginId}
+	</update>
+	
 	
 	<insert id="setDeleveryExistingImage" parameterType="String">
 		INSERT INTO 
@@ -548,5 +622,13 @@
 		WHERE idx = #{idx}
 	</insert>
 	
+	<select id="unreadMailCount" resultType="int">
+		SELECT count(idx) 
+		FROM mail_receive 
+		WHERE username = #{loginId} 
+		AND is_read = 'N' 
+		AND use_yn ='Y' 
+		AND use_from_date IS NULL
+	</select>
 	
 </mapper>

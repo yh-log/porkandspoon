@@ -122,6 +122,9 @@
     padding: 20px 40px;
     border-bottom: 1px solid #ddd;
 }
+.mailDetail .util-area .btn.read {
+	display: none;
+}
 
 .mailDetail .util-area .left > * {
     margin: 0 10px 0 0;
@@ -272,13 +275,13 @@ div.attach_file span.btn_area span.btn_wrap {
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li><a href="/mail/listView/recv">받은메일함</a></li>
+						<li><a href="/mail/listView/sd">보낸메일함</a></li>
+						<li><a href="/mail/listView/sv">임시보관함</a></li>
+						<li><a href="/mail/listView/bk">중요메일함</a></li>
+						<li><a href="/mail/listView/del">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">메일쓰기</div>
+					<div class="btn btn-primary full-size" onclick="location.href='/mail/write'">메일쓰기</div>
 				</section>
 				<section class="cont">
 
@@ -292,17 +295,24 @@ div.attach_file span.btn_area span.btn_wrap {
 							<div class="left">
 								<c:if test="${mailInfo.send_status == 'sv'}">
 									<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/prepareMail/update/${mailInfo.idx}`">수정</buttton>
-									<buttton class="btn btn-outline-primary btn-sm"  onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
 								</c:if>
 								<c:if test="${mailInfo.send_status != 'sv'}">
 									<c:if test="${isReceiver eq true}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/prepareMail/reply/${mailInfo.idx}`">답장</buttton>
 									</c:if>
 									<buttton class="btn btn-outline-primary btn-sm" onclick="window.location.href=`/mail/prepareMail/delivery/${mailInfo.idx}`">전달</buttton>
-									<buttton class="btn btn-outline-primary btn-sm">삭제</buttton>
 									<c:if test="${isReceiver eq true}">
-										<buttton class="btn btn-outline-primary btn-sm">안읽음</buttton>
+										<buttton class="btn btn-outline-primary btn-sm unread" onclick="changeToUnread(${mailInfo.idx})">안읽음</buttton>
+										<buttton class="btn btn-outline-primary btn-sm read" onclick="changeToRead()">읽음</buttton>
 									</c:if>
+								</c:if>
+								<!-- 삭제(휴지통)메일이 아닌경우 -->
+								<c:if test="${use_from_date == null}">
+									<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 삭제하시겠습니까?', '삭제', '취소', moveToTrash, removeAlert)">삭제</buttton>
+								</c:if>
+									<!-- 삭제(휴지통)메일인 경우 -->
+					 			<c:if test="${use_from_date != null}">
+									<buttton class="btn btn-outline-primary btn-sm" onclick="layerPopup('해당 메일을 복구하시겠습니까?', '복구', '취소', restoreFromTrash, removeAlert)">삭제취소</buttton>
 								</c:if>
 							</div>
 						</div>
@@ -387,6 +397,7 @@ div.attach_file span.btn_area span.btn_wrap {
 
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/textEaditor.js'></script>
+<script src='/resources/js/mailUtils.js'></script>
 
 <script>
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -399,8 +410,6 @@ div.attach_file span.btn_area span.btn_wrap {
 	  	var encodedReceiver = receiver.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 		receiverCont += '<span class="tag">'+encodedReceiver+'</span>';
 	}
-	//console.log("receivers",receivers);
-	//console.log("receiverCont",receiverCont);
 	$('.receivers .tag-area').append(receiverCont);
 	
 	// 파일
@@ -454,76 +463,38 @@ div.attach_file span.btn_area span.btn_wrap {
 			{idx : '${mailInfo.idx}',
 			is_bookmark : isBookmark}
 		];
-		$.ajax({
-        	type : 'PUT',
-	        url : '/mail/toggleBookmark',
-	        data: JSON.stringify({
-	        	'checkedList': checkedList 
-        	}), 
-	        contentType: 'application/json',
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	$('#bookmark').toggleClass('bi-star-fill bi-star');
-	    		isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	});
+		toggleBookmarkAjax(checkedList, function(){	
+			$('#bookmark').toggleClass('bi-star-fill bi-star');
+			isBookmark = isBookmark == 'Y' ? 'N' : 'Y';
+		});
 
-	
-	// 전달
-	/* function delivery() {
-		console.log('전달');
-		$.ajax({
-	        type : 'POST',
-	        url : `/mail/delivery/${mailInfo.idx}`,
-	        data : {},
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	            //window.location.href = '/mail/write';
-	            //console.log(response);
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
-	} */
+	}); 
+
 	
 	// 삭제(휴지통)
 	function moveToTrash() {
 		removeAlert();
-		//var checkedEls = $('.list-area .form-check-input:checked');
 		var checkedIdx = ['${mailInfo.idx}'];
-		//for (var checkedEl of checkedEls) {
-		//	checkedIdx.push($(checkedEl).parents('.mail-item').data('idx'));
-		//}
-		//console.log("checkedEls : ", checkedEls);
-		//console.log("checkedIdx : ", checkedIdx);
-		
-		$.ajax({
-        	type : 'PUT',
-	        url : '/mail/moveToTrash',
-	        data: JSON.stringify({
-	        	'idxList': checkedIdx 
-        	}), 
-	        contentType: 'application/json',
-	        dataType : 'JSON',
-	        beforeSend: function(xhr) {
-	            xhr.setRequestHeader(csrfHeader, csrfToken);
-	        },
-	        success : function(response){
-	        	window.history.back();
-	        },error: function(e){
-	            console.log(e);
-	        }
-	    });
+		moveToTrashAjax(checkedIdx, function(){window.history.back();});
+	}
+
+	// 삭제취소
+	function restoreFromTrash() {
+		removeAlert();
+		var checkedIdx = ['${mailInfo.idx}'];
+		restoreFromTrashAjax(checkedIdx,function(){
+			layerPopup('메일이 복구되었습니다.', '확인', false, removeAlert, removeAlert);
+		});
 	}
 	
+	// 읽음처리
+	function changeToRead(){
+		var checkedIdx = ['${mailInfo.idx}'];
+		changeToReadAjax(checkedIdx,function(){
+			$('.util-area .btn.read').css('display','none');
+			$('.util-area .btn.unread').css('display','inline-block');
+		});
+	}
 	
 </script>
 

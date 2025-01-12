@@ -64,10 +64,10 @@
 				<section id="menu">
 					<h4 class="menu-title">나의 정보</h4>
 					<ul>
-						<li id="firstMenu"><a href="#">나의 정보</a></li>
-						<li id="secondMenu" class="active" ><a href="#">출장</a></li>
-						<li id="secondMendu"><a href="#">서명 관리</a></li>
-						<li id="secondMenud"><a href="#">구매기록</a></li>
+						<li id="firstMenu"><a href="/myPageView">나의 정보</a></li>
+						<li id="secondMenu" class="active" ><a href="/trip/listView">출장</a></li>
+						<li id="secondMendu"><a href="/myPageSign">서명 관리</a></li>
+						<li id="secondMenud"><a href="/myPageBuy">구매기록</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
@@ -179,7 +179,7 @@
 				if (response && response.length > 0) {
 					getSuccess(response); // 검색 결과를 테이블에 렌더링
 				} else {
-					$('#tripList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+					$('#tripList').html('<tr><td colspan="6">검색 결과가 없습니다.</td></tr>');
 				}
 
 				// 페이지네이션 초기화
@@ -225,8 +225,8 @@
 			let start_date = item.start_date.slice(0, -3);
 			let end_date = item.end_date.slice(0, -3);
 
-			content += '<td>' + start_date[0] + '</td>';
-			content += '<td>' + end_date[0] + '</td>';
+			content += '<td>' + start_date + '</td>';
+			content += '<td>' + end_date + '</td>';
 
 			let create_date = item.create_date.split(" ");
 

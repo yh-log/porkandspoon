@@ -91,6 +91,7 @@
 	}
 	.draftWrite table.appr_line {
 		width: 410px;
+		cursor: pointer;
 	}
 	.draftWrite table.appr_line th{
 		width: 44px;
@@ -169,6 +170,9 @@
 	}
 	
 	/* 조직도 모달 */
+	#chartModalBox {
+    	height: 550px;
+    }
 	#chartModalBox .chart-td.active {
 		border-bottom: 2px solid #333;
 	}
@@ -229,7 +233,7 @@
 
 	/* 닫기(x) 버튼 */
 	.modal-close {
-	    font-size: 20px;
+	    font-size: 30px;
 	    cursor: pointer;
 	}
 	
@@ -302,10 +306,10 @@
 				<section id="menu">
 					<h4 class="menu-title">문서함</h4>
 					<ul>
-						<li class="active"><a href="#" onclick="setForm('brand','open',this)">브랜드 등록</a></li>
-						<li><a href="#" onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
-						<li><a href="#" onclick="setForm('direct','open',this)">직영점 등록</a></li>
-						<li><a href="#" onclick="setForm('direct','close',this)">직영점 폐점</a></li>
+						<li class="active"><a onclick="setForm('brand','open',this)">브랜드 등록</a></li>
+						<li><a onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
+						<li><a onclick="setForm('direct','open',this)">직영점 등록</a></li>
+						<li><a onclick="setForm('direct','close',this)">직영점 폐점</a></li>
 					</ul>
 				</section>
 				<section class="cont">
@@ -350,7 +354,7 @@
 										</tr>
 									</table>
 									
-									<table class="appr_line">
+									<table class="appr_line" onclick="loadChartModal('chartInputModal')">
 										<tr class="position">
 											<th rowspan="3">결재</th>
 											<td>${userDTO.position_content}</td>

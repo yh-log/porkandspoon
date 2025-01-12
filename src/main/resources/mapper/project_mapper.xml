@@ -36,8 +36,16 @@
             u.username = #{userId}
     </select>
 	
-	<insert id="setProject" parameterType="Map">
+	<insert 
+		useGeneratedKeys="true"
+	     keyColumn="project_idx"
+	     keyProperty="project_idx"
+		id="setProject" parameterType="Map">
 		INSERT INTO project(username,name,start_date,end_date,is_open)VALUES(#{username},#{name},#{start_date},#{end_date},#{is_open})
+	</insert>
+
+	<insert id="setProjectPeoloe" parameterType="String">
+		insert into project_people(project_idx,username)values(#{project_idx},#{loginId})
 	</insert>
 
 	<select id="getProject" resultType="kr.co.porkandspoon.dto.ProjectDTO">
@@ -81,15 +89,6 @@
 	    WHERE kanban_idx = #{kanban_idx}
 	</update>
 	
-	<update id="editPercent" parameterType="Map">
-		UPDATE project
-		SET
-			percent = #{percent}
-			WHERE project_idx = #{project_idx}
-	
-	</update>
-	
-	
 	<select id="getPercent" resultType="String">
 		SELECT 
 		    ROUND((COUNT(CASE WHEN is_class = 'D' THEN 1 END) * 100.0) / COUNT(*), 1) AS percentage
@@ -98,5 +97,23 @@
 		WHERE 
     		project_idx =#{project_idx};
 	</select>
+	
+	<update id="editPercent" parameterType="Map">
+		UPDATE project
+		SET
+			percent = #{percent}
+			WHERE project_idx = #{project_idx}
+	</update>
+	
+	<update id="eiditProject" parameterType="Map">
+		UPDATE project
+		    SET 
+		        name = #{name},
+		        start_date = #{start_date},
+		        end_date = #{end_date},
+		        is_open = #{is_open},
+		        updater = #{loginId}
+	    WHERE project_idx = #{project_idx}
+	</update>
 
 </mapper>

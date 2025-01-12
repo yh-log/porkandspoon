@@ -123,20 +123,23 @@
 						<div class="row">
 
 			         <div class="col-12 col-lg-12">
+			         <form action="/project/Update" method="post">
+			           <input type="hidden" name="_csrf" value="${_csrf.token}" />
                      <table>
                         <tr>
                            <th class="align-l">프로젝트 명</th>
                            	<td>
-                           		<input class="form-control sor-1 "   type="text" placeholder="프로젝트 명을 입력해주세요." required="required"/>
+                           		<input class="form-control sor-1 "   type="text" value="${info.name}" placeholder="프로젝트 명을 입력해주세요." required="required"/>
+                           		<input class="form-control sor-1 "   type="text" value="${info.project_idx}" placeholder="프로젝트 명을 입력해주세요." required="required" hidden=""/>
                            	</td>
                         </tr>
                         <tr>
                            <th class="align-l">일정</th>
                            <td >
 	                           <div id="searchLayout" class="col-7 col-lg-7">
-		                           	<input class="form-control sor-1 short"  id="start_date" type="date"  required="required"/>
+		                           	<input class="form-control sor-1 short"  id="start_date" type="date" value="${info.start_date}"  required="required"/>
 		                           	~
-		                           	<input class="form-control sor-1 short"  type="date"  required="required"/>
+		                           	<input class="form-control sor-1 short"  type="date" value="${info.end_date}" required="required"/>
 	                           </div>
                            </td>
                         </tr>
@@ -145,11 +148,13 @@
                            	<td>
                          		<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-										공개 </label>
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"
+									 ${info.is_open == 'Y' ? 'checked' : ''}> 
+									<label class="form-check-label" for="flexRadioDefault1">공개 </label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" >
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" 
+									 ${info.is_open == 'N' ? 'checked' : ''}>
 									<label class="form-check-label" for="flexRadioDefault2">
 										비공개 </label>
 								</div>
@@ -161,6 +166,7 @@
                            <td><textarea class="form-control art"></textarea></td>
                         </tr>
                      	</table>
+			         </form>
                   		</div>
 							<div id="btn-gap">							
 								<button class="btn btn-primary">등록</button>

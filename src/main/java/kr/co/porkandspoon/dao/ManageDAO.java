@@ -140,7 +140,7 @@ public interface ManageDAO {
 	 * author yh.kim, (25.01.04)
 	 * 휴점 리스트 조회
 	 */
-	List<RestDTO> restList(Map<String, Object> listMap);
+	List<RestDTO> restList(PagingDTO pagingDTO);
 
 	/**
 	 * author yh.kim (25.01.04)

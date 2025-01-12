@@ -257,7 +257,7 @@
 			        	</c:forEach>
 			        </tbody>
 			      </table>
-			      <h6 id="partlist"><a href="/ad/dept/listView">직영점 리스트 더보러가기</a></h6>
+			      <h6 id="partlist"><a href="/ma/dept/listView">직영점 리스트 더보러가기</a></h6>
 			    </div>
 			  </div>
 			
@@ -331,7 +331,7 @@
 
 	// 차트 데이터 가져오기
 	function chartDataImport(){
-		const id = '${info.parent}';
+		const id = '${info.id}';
 		const yearSelect = document.getElementById("monthChartDate");
 		const year = yearSelect.value;
 		console.log('직영점 차트 데이터 가져오기 실행', id);

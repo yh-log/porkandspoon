@@ -24,7 +24,7 @@ public class UserDTO extends ResponseDTO{
    private LocalDate create_date;   // 생성일
    private String updater;         // 수정자
    private LocalDate update_date;   // 수정일
-   private LocalDate leave_date;   // 퇴사일
+   private String leave_date;   // 퇴사일
    private String user_yn;         // 퇴사 여부
    
    //private String parent;            // 부서코드
@@ -63,6 +63,7 @@ public class UserDTO extends ResponseDTO{
    
    private String owner;
 
+   private String storeId;
 
 	public String getOwner() {
 		return owner;
@@ -303,11 +304,11 @@ public class UserDTO extends ResponseDTO{
 		this.update_date = update_date;
 	}
 	
-	public LocalDate getLeave_date() {
+	public String getLeave_date() {
 		return leave_date;
 	}
 	
-	public void setLeave_date(LocalDate leave_date) {
+	public void setLeave_date(String leave_date) {
 		this.leave_date = leave_date;
 	}
 	
@@ -391,8 +392,13 @@ public class UserDTO extends ResponseDTO{
 		this.parent = parent;
 	}
 
-	
+	public String getStoreId() {
+		return storeId;
+	}
 
+	public void setStoreId(String storeId) {
+		this.storeId = storeId;
+	}
 }
 
 

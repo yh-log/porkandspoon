@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class ProjectDTO extends ResponseDTO {
     
-	private int project_idx;
+	private String project_idx;
 	private String name;
 	private String username;
 	private String updater;
@@ -29,10 +29,10 @@ public class ProjectDTO extends ResponseDTO {
 	
 	
 	
-	public int getProject_idx() {
+	public String getProject_idx() {
 		return project_idx;
 	}
-	public void setProject_idx(int project_idx) {
+	public void setProject_idx(String project_idx) {
 		this.project_idx = project_idx;
 	}
 	public String getName() {

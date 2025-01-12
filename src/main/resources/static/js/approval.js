@@ -102,9 +102,10 @@ function textEaditorWrite(url, after){
 	var csrfToken = document.querySelector('meta[name="_csrf"]').content;
     var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-	var formData = new FormData($('form')[0]); // formData
+	var formData = new FormData($('form#formDraft')[0]); // formData
 	var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
 	console.log("content!!@@##",content);
+	console.log("formData!!@@##",formData);
 	formData.append('content', content);
 	
 	

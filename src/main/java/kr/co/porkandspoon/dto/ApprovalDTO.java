@@ -59,6 +59,9 @@ public class ApprovalDTO {
    private String approver_names;
    private String approver_positions;
    
+   //결재승인시
+   private int approval_line_count;
+   
    private FileDTO fileDTO;
 
    // 부서 이름
@@ -416,4 +419,12 @@ public class ApprovalDTO {
    public void setTotalpage(int totalpage) {
       this.totalpage = totalpage;
    }
+
+public int getApproval_line_count() {
+	return approval_line_count;
+}
+
+public void setApproval_line_count(int approval_line_count) {
+	this.approval_line_count = approval_line_count;
+}
 }

@@ -168,8 +168,10 @@
 										</td>
 										<th>부서<span class="required-value">*</span></th>
 										<td>
-											<select class="form-select selectStyle" name="parent" id="deptSelect">
+											<select class="form-select selectStyle" name="parent" id="deptSelect" onchange="deptChange()">
 											</select>
+											<!-- 직영점 리스트 -->
+											<select class="form-select selectStyle" name="storeId" id="storeSelect" style="display: none;"></select>
 										</td>
 									</tr>
 									<tr>
@@ -180,14 +182,14 @@
 										<th>직위/직책</th>
 										<td>
 											<div class="inline-layout">
-												<select class="form-select selectStyle" name="position">
+												<select class="form-select selectStyle" name="position" id="positionSelect" onchange="positionChange()">
 													<option value="po6">사원</option>
 													<option value="po5">주임</option>
 													<option value="po4">대리</option>
 													<option value="po3">과장</option>
 													<option value="po2">차장</option>
 													<option value="po1">부장</option>
-													<option value="po7">직영점주</option>
+													<option value="po7" style="display: none;">직영점주</option>
 												</select> / 
 												<select class="form-select selectStyle" name="title">
 													<option value="T">팀장</option>
@@ -376,6 +378,44 @@
 	    // 부서 조회
 	    getAjax('/ad/dept/list', 'JSON');
 	});
+
+	// 브랜드 팀 선택 시 직영점주 position 추가
+	function deptChange(){
+		const deptValue = deptSelect.value;
+		const brandValue = deptValue.charAt(0);
+		const positionSelect = document.getElementById('positionSelect'); // select 요소 가져오기
+		const directOwnerOption = positionSelect.querySelector('option[value="po7"]'); // 직영점주 옵션 찾기
+
+		if(brandValue === 'B'){
+
+			if (directOwnerOption) {
+				directOwnerOption.style.display = 'block'; // 숨겨진 옵션 보이게 설정
+			}
+		}else{
+
+			directOwnerOption.style.display = 'none';
+		}
+	}
+
+	// 브랜드 팀 선택 후 직영점 주 선택 시
+	function positionChange(){
+		const positionValue = document.getElementById('positionSelect');
+		const values = positionValue.value;
+		console.log(values);
+
+		if(values === 'po7'){
+			const deptValue = deptSelect.value;
+			console.log('받은 부서 id => ', deptValue);
+
+			const storeDTO = {'parent' : deptValue};
+
+			getAjax('/ad/storeList', 'JSON', storeDTO);
+		}else{
+			const storeValue = document.getElementById('storeSelect');
+			storeValue.style.display = 'none';
+		}
+
+	}
 
 
 

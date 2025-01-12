@@ -33,13 +33,9 @@
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 	
-
 	<!-- jQuery DateTimePicker CSS (CDN) -->
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"/>
 
-	
-
-	
 <style>
      #calendarBox{
         width: 80%;
@@ -217,7 +213,7 @@
 <!-- jQuery DateTimePicker JS (CDN) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
 <!-- 한국어 로케일 파일 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/i18n/jquery.datetimepicker.ko.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/i18n/jquery.datetimepicker.ko.js"></script>
 
 <script>
 
@@ -397,7 +393,7 @@
 	        		 // 모달 닫기 및 초기화
 	                initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
 	        	}else{
-	        		layerPopup("중복된 날짜 입니다.", "확인", false, removeAlert, removeAlert);
+	        		layerPopup("이미 예약된 날짜 입니다.", "확인", false, removeAlert, removeAlert);
 	        	}
 	            
 	        },
@@ -414,7 +410,8 @@
 	}
 	
 	// 예약 상세보기
-	function scheduleDetail(idx) {
+	function scheduleDetail(info) {
+		var idx = info.event.id;
 	    $.ajax({
 	        type: 'GET',
 	        url: '/resDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
@@ -459,13 +456,15 @@
 	        format: 'Y-m-d H:00', // 분은 고정(00)되어 표시
 	        step: 60,             // 분 간격을 60분으로 설정하여 분 선택 불가
 	        datepicker: true,
-	        timepicker: true
+	        timepicker: true,
+	        minDate: new Date()
 	    });
 	    $('#calendar_start_date_edit, #calendar_end_date_edit').datetimepicker({
 	        format: 'Y-m-d H:00', // 분은 고정(00)되어 표시
 	        step: 60,             // 분 간격을 60분으로 설정하여 분 선택 불가
 	        datepicker: true,
-	        timepicker: true
+	        timepicker: true,
+	        minDate: new Date()
 	    });
         if (type === 'Input') {
             // 일정 추가 모드: 입력 필드 초기화
@@ -622,10 +621,14 @@
     function handleDeleteSchedule() {
     	var idx = $('#event_id').val();
     	console.log('삭제할때 받아와?',idx);
-    	httpAjax('DELETE', '/itemDelete/'+idx);
+    	layerPopup("정말 삭제 하시겠습니까?", "확인", "취소", function(){itemDeleteA(idx)}, removeAlert);    	
 	}
-	
-	
+    
+    function itemDeleteA(idx) {
+    	console.log('삭제 진행시켜',idx);
+    	httpAjax('DELETE', '/itemDelete/'+idx);
+    	removeAlert();
+	}
 
     
 

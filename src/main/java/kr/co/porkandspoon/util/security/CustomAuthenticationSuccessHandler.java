@@ -33,20 +33,37 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 										Authentication authentication) throws IOException, ServletException {
+
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		String username = userDetails.getUsername();
 		String rawPassword = request.getParameter("password"); // 사용자가 입력한 비밀번호
 		String encryptedPassword = userDetails.getPassword(); // DB에 저장된 암호화된 비밀번호
 
+		logger.info("rawPassword : '{}'", rawPassword);
+		logger.info("matches(1111, DB) : {}", passwordEncoder.matches("1111", encryptedPassword));
+
 		// 비밀번호가 "1111"인지 확인
-		if (passwordEncoder.matches("1111", encryptedPassword)) {
+//		if (rawPassword.equals("1111") && passwordEncoder.matches("1111", encryptedPassword)) {
+//			// 실패 횟수 초기화
+//			customUserDetailService.resetFailedAttempts(username);
+//
+//			// 로그 출력
+//			logger.info("User '{}' entered default password (1111). Redirecting to change password page.", username);
+//			logger.info("비밀번호 맞는지, " + passwordEncoder.matches("1111", encryptedPassword));
+//
+//			// 비밀번호 변경 페이지로 리다이렉트
+//			response.sendRedirect("/changePassword/" + username);
+//			return;
+//		}
+
+		// 이미 "기본 비밀번호인지"는 userDetails에 담겨 있음
+		if (userDetails.isDefaultPassword()) {
 			// 실패 횟수 초기화
 			customUserDetailService.resetFailedAttempts(username);
 
-			// 로그 출력
-			logger.info("User '{}' entered default password (1111). Redirecting to change password page.", username);
+			logger.info("User '{}' logged in with default password (1111). Redirecting to change password page.", username);
 
-			// 비밀번호 변경 페이지로 리다이렉트
+			// 비번 변경 페이지로 이동
 			response.sendRedirect("/changePassword/" + username);
 			return;
 		}
@@ -60,6 +77,5 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		// 기본 성공 페이지로 이동
 		response.sendRedirect("/main");
 	}
-	
 
 }

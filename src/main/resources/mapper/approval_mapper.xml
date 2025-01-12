@@ -150,6 +150,17 @@ content = VALUES(content); -->
 	    WHERE draft_idx = #{draftIdx}
 	</select>
 	
+	<select id="userApprovalInfo" parameterType="kr.co.porkandspoon.dto.ApprovalDTO" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+		SELECT order_num,
+		  	(SELECT count(draft_idx) 
+		  	FROM approval_line al2 
+		  	WHERE draft_idx = #{draft_idx}
+		  	) AS approval_line_count 
+	   FROM approval_line al 
+	   WHERE draft_idx = #{draft_idx} 
+	   AND username = #{username}
+	</select>
+	
 	<!-- <insert id="saveApprovalLine">
 		INSERT INTO 
 			approval_line (draft_idx, username, order_num, status, approval_date) 
@@ -334,8 +345,8 @@ content = VALUES(content); -->
 		    WHERE draft_idx = #{draft_idx}
 		    AND username = #{loginId}
 	</select>
-	<select id="approverStatus" parameterType="String" resultType="String">
-	    SELECT status
+	<select id="approverStatus" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
+	    SELECT status, order_num 
 		    FROM approval_line 
 		    WHERE draft_idx = #{draft_idx}
 		    AND username = #{loginId}
@@ -547,5 +558,23 @@ content = VALUES(content); -->
 			AND 
 			line_idx = #{lineIdx}
 	</delete>
+	
+	<select id="haveToApproveCount" resultType="int">
+		SELECT 
+			COUNT(draft_idx)
+		FROM 
+			approval_line al
+		WHERE 
+			username = #{loginId}
+		AND status IN ('ap001','ap002') 
+		AND (
+			SELECT 
+				status 
+			FROM 
+				approval_line 
+			WHERE draft_idx = al.draft_idx 
+			AND order_num = al.order_num-1
+			) = 'ap004'
+	</select>
 	
 </mapper>

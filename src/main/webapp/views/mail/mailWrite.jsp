@@ -263,13 +263,12 @@
 				<section id="menu">
 					<h4 class="menu-title">사내메일</h4>
 					<ul>
-						<li class="active"><a href="#">받은메일함</a></li>
-						<li><a href="#">보낸메일함</a></li>
-						<li><a href="#">임시보관함</a></li>
-						<li><a href="#">중요메일함</a></li>
-						<li><a href="#">휴지통</a></li>
+						<li><a href="/mail/listView/recv">받은메일함</a></li>
+						<li><a href="/mail/listView/sd">보낸메일함</a></li>
+						<li><a href="/mail/listView/sv">임시보관함</a></li>
+						<li><a href="/mail/listView/bk">중요메일함</a></li>
+						<li><a href="/mail/listView/del">휴지통</a></li>
 					</ul>
-					<div class="btn btn-primary full-size">메일쓰기</div>
 				</section>
 				<section class="cont">
 
@@ -306,7 +305,7 @@
 	    									</div>
 											<!-- <input type="text" id="autocomplete" class="autocomplete-input"> -->
 										</div>
-										<button class="btn btn-outline-primary btn-sm">조직도</button>
+										<!-- <button class="btn btn-outline-primary btn-sm">조직도</button> -->
 									</div>
 								</div>
 								<div class="line">
@@ -388,9 +387,10 @@
 		var csrfToken = document.querySelector('meta[name="_csrf"]').content;
 	    var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 	
-		var formData = new FormData($('form')[0]); // formData
+		var formData = new FormData($('form#mailWriteForm')[0]); // formData
 		var content = $('#summernote').summernote('code'); // summernote로 작성된 코드
 		console.log("content!!@@##",content);
+		console.log("formData!!@@##",formData);
 		formData.append('content', content);
 	    
 	    //첨부 파일 추가
@@ -421,7 +421,7 @@
 	 
 	 	 fileAjax('POST', url, formData);
 	     console.log("textEaditorWrite 실행완료");
-	     console.log("textEaditorWrite after : "+after);
+	     //console.log("textEaditorWrite after : "+after);
 	}
 	
 </script>

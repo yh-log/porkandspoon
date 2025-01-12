@@ -370,7 +370,7 @@ public class ApprovalService {
 			return approvalDAO.isDraftSender(draft_idx,loginId) != null ? true : false;
 		}
 		// 열람권한체크
-		public String approverStatus(String draft_idx, String loginId) {
+		public ApprovalDTO approverStatus(String draft_idx, String loginId) {
 			return approvalDAO.approverStatus(draft_idx,loginId);
 		}
 		// 열람권한체크
@@ -454,9 +454,18 @@ public class ApprovalService {
 			return approvalDAO.getLineBookmark(params);
 		}
 
+		//북마크 삭제
 		public boolean deleteBookmark(String lineIdx, String loginId) {
 			return approvalDAO.deleteBookmark(lineIdx, loginId) > 0 ? true : false;
 		}
 
+		//결재할 기안문 수
+		public int haveToApproveCount(String loginId) {
+			return approvalDAO.haveToApproveCount(loginId);
+		}
 
+		public ApprovalDTO userApprovalInfo(ApprovalDTO approvalDTO) {
+			return approvalDAO.userApprovalInfo(approvalDTO);
+		}
+		
 }

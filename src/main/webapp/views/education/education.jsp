@@ -152,9 +152,9 @@
 				<section id="menu">
 					<h4 class="menu-title">교육 수강 리스트</h4>
 					<ul>
-						<li id="firstMenu" class="active"  ><a href="#">전체 보기</a></li>
-						<li id="secondMenu" ><a href="#">수강 할 목록</a></li>
-						<li id="thirdMenu"><a href="#">수강 한 목록</a></li>
+						<li id="firstMenu" class="active" onclick="">전체 보기</li>
+						<li id="secondMenu" onclick="">수강 할 목록</li>
+						<li id="thirdMenu" onclick="">수강 한 목록</li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
@@ -219,11 +219,13 @@
 <script src='/resources/js/menu.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
+
 	var show = 1;
 	var paginationInitialized = false;
 	var totalCount = 0;
     var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
     var totalPage = 0;
+    
     
 	pageCall(show);
 	
@@ -305,7 +307,7 @@
 			var dateOnly = view.create_date.split('T')[0];
 			if (view.education_date) {
 				content +='<td style="color: green;">수강완료</td>';
-				content +='<td onclick="loadModal(\'history\',\'Info\','+no+')">발급</td>';
+				content +='<td style="cursor: pointer;" onclick="loadModal(\'history\',\'Info\','+no+')">발급</td>';
 			}else{
 				content +='<td style="color: red;">미수강</td>';
 				content +='<td>미발급</td>';
