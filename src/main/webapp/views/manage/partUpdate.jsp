@@ -107,7 +107,9 @@
 	#searchLayout{
 	margin-left: 180px;
 	}
-	
+	.required-value {
+    color: var(--bs-danger);
+}	
 	
 </style>
 </head>
@@ -147,16 +149,16 @@
 			          <input type="hidden" name="_csrf" value="${_csrf.token}" />
                      <table>
                         <tr>
-                           <th class="align-l">이름</th>
+                           <th class="align-l">이름<span class="required-value">*</span></th>
                            <td ><input class="form-control sor-1 "  name="name" type="text" placeholder="이름을 입력해주세요." value="${info.name}" required="required"/></td>
                            <td ><input class="form-control sor-1 "  name="part_idx" type="text" placeholder="이름을 입력해주세요." value="${info.part_idx}"  hidden="" required="required"/></td>
                         </tr>
                         <tr>
-                           <th class="align-l">생년월일</th>
+                           <th class="align-l">생년월일<span class="required-value">*</span></th>
                            <td ><input class="form-control sor-1 short"  name="birth" type="date" value="${info.birth}"  required="required"/></td>
                         </tr>
                          <tr>
-                           <th class="align-l">입사일</th>
+                           <th class="align-l">입사일<span class="required-value">*</span></th>
                            <td ><input class="form-control sor-1 short"  name="join_date" type="date" value="${info.join_date}" required="required"/></td>
                         </tr>
                         
@@ -198,11 +200,11 @@
                           <td ><input class="form-control sor-1 " name="id"  type="text" placeholder="전화번호를 입력해주세요." value="${mto.id}" required="required" hidden=""/></td>
                         </tr>
                         <tr>
-                           <th class="align-l">전화번호</th>
+                           <th class="align-l">전화번호<span class="required-value">*</span></th>
                           <td ><input class="form-control sor-1 " name="phone"  type="text" placeholder="전화번호를 입력해주세요." value="${info.phone}" required="required"/></td>
                         </tr>
                         <tr>
-                           <th class="align-l">시급</th>
+                           <th class="align-l">시급<span class="required-value">*</span></th>
                           <td ><input class="form-control sor-1 " name="pay"  type="text" placeholder="시급를 입력해주세요." value="${info.pay}" required="required"/></td>
                         </tr>
                         <tr>
@@ -215,7 +217,7 @@
 							</td>
                         </tr>
                      <tr>
-					    <th class="align-l">근무 요일</th>
+					    <th class="align-l">근무 요일<span class="required-value">*</span></th>
 					    <td>
 					        <div id="workDayContainer">
 					            <c:forEach var="schedule" items="${list}" varStatus="status">

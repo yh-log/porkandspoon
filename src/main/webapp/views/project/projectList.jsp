@@ -23,13 +23,20 @@
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-
+<!-- 부트스트랩 -->
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
 #home,#schedule{
 		width: 200px;
+	}
+	
+	.card-content{
+		display: felx;
+	
 	}
 
 	#searchLayout{
@@ -91,42 +98,100 @@
 	#start_date{
 		margin-left: 800px;
 	}
-	.list-form{
-		border: 1px solid #E4E6E8;
-		border-radius: 6px;
-		padding: 10px;
-		width: 49%;
-    	margin-top: 20px;
-    	display: flex;
-    	justify-content: space-between;
-    	height: 250px;
-	}
-	.list-row{
-		display: flex;
-		justify-content: space-between;
-    	flex-wrap: wrap;
-	}
-	.update{
-		display: flex;
-    	flex-direction: column;
-    	justify-content: space-between;
-    	align-items: flex-end;
-	}
+#project_name {
+    display: block; /* 블록 요소로 설정 */
+    width: 100%; /* 부모 요소의 너비에 맞춤 */
+    max-width: 300px; /* 제목의 최대 너비 */
+    white-space: nowrap; /* 텍스트를 한 줄로 유지 */
+    overflow: hidden; /* 넘치는 텍스트를 숨김 */
+    text-overflow: ellipsis; /* 말줄임표 추가 */
+    cursor: pointer; /* 클릭 가능하게 설정 */
+}
+.list-form {
+    border: 1px solid #E4E6E8;
+    border-radius: 6px;
+    padding: 10px;
+    width: 49%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 250px;
+    box-sizing: border-box;
+    position: relative; /* 위치 조정 가능 */
+}
+
+#bar {
+    margin-top: 10px;
+    height: 20px; /* 진행 바의 높이 */
+    width: 90%; /* 진행 바의 너비 */
+    background-color: #fff;
+    border: 1px solid var(--bs-primary);
+    position: relative;
+}
+
+.update {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    align-items: center; /* 세로 정렬 */
+    gap: 10px; /* 수정 버튼과 쓰레기통 간격 */
+    position: absolute; /* 절대 위치 지정 */
+    bottom: 10px; /* 컨테이너 하단에서의 간격 */
+    right: 10px; /* 컨테이너 오른쪽에서의 간격 */
+}
+
+.icon-trash {
+    font-size: 20px; /* 아이콘 크기 */
+    line-height: 1; /* 수직 정렬 */
+    cursor: pointer;
+    color: #555; /* 아이콘 색상 */
+    transform: translate(55px, 10px);
+}
+
+.btn-outline-primary {
+    font-size: 14px; /* 수정 버튼 글꼴 크기 */
+    padding: 5px 10px; /* 버튼 여백 */
+    border-radius: 4px; /* 둥근 모서리 */
+}
+
+#bar div {
+    height: 100%; /* 진행 바 높이를 부모와 동일하게 설정 */
+    background-color: var(--bs-primary);
+    color: white;
+    text-align: center;
+    line-height: 20px; /* 텍스트 세로 정렬 */
+    white-space: nowrap; /* 내부 텍스트 한 줄로 유지 */
+    overflow: hidden; /* 넘치는 텍스트 숨김 */
+    text-overflow: ellipsis; /* 텍스트 말줄임표 */
+}
+
+
+.list-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body {
+    display: flex;
+    align-items: flex-start;
+}
+	
 	p{
 		margin-bottom: 0px;
 	}
 	#first{
 		margin-top: 88px;
 	}
-	#bar{
-		margin-top: 10px;
-	}
-	card-content{
-	margin-bottom: 15px;
-}
-.card-body{
-	margin-bottom: 15px;
-}
+	
+
+
 #searchLayout{
 	display: flex;
 }
@@ -137,10 +202,11 @@
 #flexRadioDefault2{
 		margin-left: 5px;
 	}	
-#project_name{
-	cursor: pointer;
+
+.texts{
+transform:translate(3px, -25px);
+margin-bottom: 5px;
 }
-	
 	
 </style>
 </head>
@@ -168,43 +234,48 @@
 		        	<div class="card-content">
 					<div class="card-body">
 						<ul class="list-unstyled mb-0">
-							<li class="d-inline-block me-2 mb-1">
-								<div class="form-check">
-									<div class="checkbox">
-										<input type="checkbox" id="checkbox1"
-											class="form-check-input" checked> <label
-											for="checkbox1">진행중인 프로젝트</label>
-									</div>
-								</div>
-							</li>
-							<li class="d-inline-block me-2 mb-1">
-								<div class="form-check">
-									<div class="checkbox">
-										<input type="checkbox" class="form-check-input" checked
-											id="checkbox2"> <label for="checkbox2">완료된 프로젝트</label>
-									</div>
-								</div>
-							</li>
-						</ul>
+					    <li class="d-inline-block me-2 mb-1">
+					        <div class="form-check">
+					            <div class="checkbox">
+					                <input type="checkbox" id="checkbox1" class="form-check-input"
+					                    <c:if test="${param.includeInProgress == null || param.includeInProgress == 'true'}">checked</c:if>>
+					                <label for="checkbox1">진행중</label>
+					            </div>
+					        </div>
+					    </li>
+					    <li class="d-inline-block me-2 mb-1">
+					        <div class="form-check">
+					            <div class="checkbox">
+					                <input type="checkbox" id="checkbox2" class="form-check-input"
+					                    <c:if test="${param.includeCompleted == null || param.includeCompleted == 'true'}">checked</c:if>>
+					                <label for="checkbox2">완료</label>
+					            </div>
+					        </div>
+					    </li>
+					</ul>
 			        </div>
 					</div>
-			       <div class="card-body">
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="is_open" value="Y" id="flexRadioDefault1" checked="checked"> <label class="form-check-label" for="flexRadioDefault1">
-								공개 </label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="is_open" value="N" id="flexRadioDefault2" >
-							<label class="form-check-label" for="flexRadioDefault2">
-								비공개 </label>
-						</div>
-					</div>	
+					 <div class="card-body">
+					    <!-- 공개 라디오 버튼 -->
+					    <div class="form-check">
+					        <input class="form-check-input" type="radio" name="is_open" value="Y" id="flexRadioDefault1"
+					            <c:if test="${param.is_open == null || param.is_open == 'true'}">checked</c:if>>
+					        <label class="form-check-label" for="flexRadioDefault1">공개</label>
+					    </div>
+					
+					    <!-- 비공개 라디오 버튼 -->
+					    <div class="form-check">
+					        <input class="form-check-input" type="radio" name="is_open" value="N" id="flexRadioDefault2"
+					            <c:if test="${param.is_open == 'false'}">checked</c:if>>
+					        <label class="form-check-label" for="flexRadioDefault2">비공개</label>
+					    </div>
+					</div>
 						<ul id="title">
 							<li class="active">제목</li>
 						</ul>
-						<div id="searchLayout"  >
-							<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
-						</div>
+						<div id="searchLayout">
+					    <input   type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" value="${param.searchKeyword}" />
+					</div>
 			    </div>
 				</section>
 				<section class="cont">
@@ -219,35 +290,48 @@
                   <div class="row list-row">
 				    <c:forEach var="project" items="${list}">
 				        <div class="list-form">
-				            <div>
-				                <h4 id="project_name" onclick="location.href='/project/KanBan/${project.project_idx}'" >${project.name}</h4>
+				                <!-- 프로젝트 이름 -->
+				            <div class="content-text">
+				                <h4 id="project_name" title="${project.name}" onclick="location.href='/project/KanBan/${project.project_idx}'">
+								    ${project.name}
+								</h4>
+								<div class="texts">
 				                <p id="first">참여인원: ${project.count} 명</p>
 				                <p>일정: ${project.start_date} ~ ${project.end_date}</p>
+				                <c:if test="${not empty project.update_start_date and not empty project.update_end_date}">
+								    <p>수정된 일정: ${project.update_start_date} ~ ${project.update_end_date}</p>
+								</c:if>
 				                <p>진행률</p>
-				                <div id="bar" style="width: 250%; background-color: #fff; border: 1px solid var(--bs-primary);">
-				                    <c:choose>
-									    <c:when test="${project.percent > 0}">
-									        <div style="width: ${project.percent}%; background-color: var(--bs-primary); color: white; text-align: center;">
-									            ${project.percent}%
-									        </div>
-									    </c:when>
-									    <c:otherwise>
-									        <div style="width: 10px; background-color: var(--bs-secondary); color: gray; text-align: center;">
-									            0%
-									        </div>
-									    </c:otherwise>
-									</c:choose>
-				                </div>
+								<div id="bar">
+								    <c:choose>
+								        <c:when test="${project.percent > 0}">
+								            <div style="width: ${project.percent}%;">
+								                ${project.percent}%
+								            </div>
+								        </c:when>
+								        <c:otherwise>
+								            <div style="width: 10%; background-color: var(--bs-secondary); color: gray;">
+								                0%
+								            </div>
+								        </c:otherwise>
+								    </c:choose>
+								</div>
+				            </div>
 				            </div>
 				            <div class="update">
-				               <c:if test="${project.username == loginId}">
-				                <div><i class="bi bi-trash"></i></div>
-								    <button onclick="location.href='/project/Update/${project.project_idx}'" class="btn btn-sm btn-outline-primary" style="transform: translate(5px, 15px);">수정</button>
-								</c:if>
+				                <c:if test="${project.username == loginId}">
+				                     <!-- 쓰레기통 아이콘 -->
+				        			<i class="bi bi-trash icon-trash" title="삭제" onclick="deleteProject(${project.project_idx})"></i>
+				                    <button onclick="location.href='/project/Update/${project.project_idx}'" class="btn btn-sm btn-outline-primary" style="transform: translate(10px, -180px);">
+				                        수정
+				                    </button>
+				                </c:if>
 				            </div>
+				            
 				        </div>
 				    </c:forEach>
 				</div>
+
                </div>
           
          </section>   
@@ -279,8 +363,146 @@
 
 
 <script>
-	
-	
+
+$(document).ready(function () {
+    let currentPage = 1;
+    let isFetching = false; // 중복 요청 방지 플래그
+
+    // 무한스크롤 이벤트
+    $(window).on("scroll", function () {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+            if (!isFetching) {
+                isFetching = true;
+                loadMoreProjects(); // 다음 페이지 데이터 로드
+            }
+        }
+    });
+
+    // 추가 데이터 로드 함수
+    function loadMoreProjects() {
+        currentPage++;
+        $("#loadingSpinner").show();
+
+        $.ajax({
+            url: "/project/List/More",
+            type: "GET",
+            data: {
+                page: currentPage,
+                includeCompleted: $("#checkbox2").is(":checked"),
+                includeInProgress: $("#checkbox1").is(":checked"),
+                is_open: $("input[name='is_open']:checked").val() === 'Y',
+                search: $("#searchKeyword").val()
+            },
+            success: function (data) {
+                $("#loadingSpinner").hide();
+                if (data.trim() === "") {
+                    // 더 이상 로드할 데이터가 없을 때
+                    $(window).off("scroll");
+                } else {
+                    $("#projectList").append(data); // 새로운 프로젝트 추가
+                    isFetching = false;
+                }
+            },
+            error: function () {
+                $("#loadingSpinner").hide();
+                alert("데이터를 가져오는 중 문제가 발생했습니다.");
+            },
+        });
+    }
+});
+
+
+
+function deleteProject(projectIdx) {
+    console.log("가지고 왔니" + projectIdx);
+
+    // CSRF 토큰 및 헤더 가져오기
+    const csrfToken = $("meta[name='_csrf']").attr("content");
+    const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+    // 레이어 팝업 호출
+    layerPopup(
+        "정말로 이 프로젝트를 삭제하시겠습니까?", // 팝업 내용
+        "삭제", // 확인 버튼 텍스트
+        "취소", // 취소 버튼 텍스트
+        function () {
+            // 확인 버튼 클릭 시 실행할 함수
+            $.ajax({
+                url: "/project/Delete", // 프로젝트 삭제를 처리하는 서버 URL
+                type: "DELETE", // HTTP 메서드
+                data: JSON.stringify({ project_idx: projectIdx }), // 전송할 데이터 (JSON 형식)
+                contentType: "application/json; charset=UTF-8", // 전송 데이터의 타입
+                beforeSend: function (xhr) {
+                    // CSRF 헤더 추가
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                success: function (response) {
+                    // 서버로부터 성공 응답을 받았을 때
+                    
+                    location.reload(); // 페이지 새로고침
+                },
+                error: function (xhr, status, error) {
+                    // 서버로부터 에러 응답을 받았을 때
+                    alert("프로젝트 삭제 중 문제가 발생했습니다. 다시 시도해주세요.");
+                    console.error("Error:", error);
+                },
+            });
+        },
+       btn2Act
+    );
+}
+
+
+
+$(document).ready(function () {
+    $("#searchKeyword").on("keypress", function (event) {
+        if (event.keyCode === 13) {
+            applyFilter();
+        }
+    });
+
+    // 체크박스 변경 이벤트
+    $("input[type='checkbox']").on("change", function () {
+        const includeCompleted = $("#checkbox2").is(":checked");
+        const includeInProgress = $("#checkbox1").is(":checked");
+
+        if (!includeCompleted && !includeInProgress) {
+            alert("진행중 또는 완료를 하나 이상 선택해야 합니다.");
+            $("#checkbox1").prop("checked", true);
+            $("#checkbox2").prop("checked", true);
+            return;
+        }
+
+        applyFilter();
+    });
+
+    // 라디오 버튼 변경 이벤트
+    $("input[name='is_open']").on("change", function () {
+        applyFilter();
+    });
+
+    // 필터 적용 함수
+    function applyFilter() {
+        const includeCompleted = $("#checkbox2").is(":checked");
+        const includeInProgress = $("#checkbox1").is(":checked");
+
+        // boolean으로 변환
+        const isOpen = $("input[name='is_open']:checked").val() === 'Y';
+
+        const searchKeyword = $("#searchKeyword").val();
+
+        const queryParams = new URLSearchParams({
+            includeCompleted: includeCompleted,
+            includeInProgress: includeInProgress,
+            is_open: isOpen, // boolean 값 전달
+            search: searchKeyword
+        });
+
+        window.location.href = "/project/List?" + queryParams.toString();
+    }
+});
+
+
 	$('.btnModal').on('click', function() {
 		$('#modal').show();
 	});

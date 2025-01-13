@@ -25,19 +25,20 @@
 <link rel="stylesheet"
 	href="/resources/assets/extensions/toastify-js/src/toastify.css">
 
-<!-- rating.js(별점) -->
-<link rel="stylesheet"
-	href="/resources/assets/extensions/rater-js/lib/style.css">
+
 
 <link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 <link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 <link rel="stylesheet" href="/resources/css/common.css">
-
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
+
+
 	.tit-area{
 		display: flex; 
 	}
@@ -86,6 +87,7 @@
 	    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 	    width: 200px; /* 고정된 너비 */
 	}
+	
 	
 	.ticket-item img {
 	    max-width: 100%; /* 이미지 크기 조정 */

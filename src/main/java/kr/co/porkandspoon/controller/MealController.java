@@ -29,6 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MealDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.MealService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -178,7 +179,7 @@ public class MealController {
 	//ad/meal/TickerWrite
 	public ModelAndView mealTicketView(@AuthenticationPrincipal UserDetails userDetails) {
 		List<MealDTO> list = mealService.getmealTicket();
-
+		
 		 for (MealDTO dto : list) {
 		        int rawCost = Integer.parseInt(dto.getCost());
 		        String cost = CommonUtil.addCommaToNumber(rawCost, "#,###");
@@ -193,11 +194,13 @@ public class MealController {
 	        dto.setFiledto(fileDTO);
 	    } 
 	    String username =userDetails.getUsername();
+	    String role = mealService.getUserInfo(username);
 	    
 	    int count = mealService.getTicketCount(username);
 	    
 	    // 리스트를 JSP로 전달
 	    ModelAndView mav = new ModelAndView("/meal/mealTicket");
+	    mav.addObject("role",role);
 	    mav.addObject("list", list);
 	    mav.addObject("count",count);
 	    return mav;
@@ -311,16 +314,18 @@ public class MealController {
 
 	//식단표 뷰이동
 	@GetMapping(value = "/mealMenu")
-	public ModelAndView mealMenuView() {
+	public ModelAndView mealMenuView(@AuthenticationPrincipal UserDetails userDetails) {
 	    String defaultIsTime = "B"; // 기본값: 아침
+	    String username = userDetails.getUsername();
 	    logger.info("Default is_time: {}", defaultIsTime);
-
+	    String role = mealService.getUserInfo(username);
 	    // 기본 데이터를 로드
 	    List<MealDTO> defaultMealList = mealService.getMealMenu(defaultIsTime);
 	    logger.info("Default Meal List: {}", defaultMealList);
 
 	    // ModelAndView로 데이터 전달
 	    ModelAndView mav = new ModelAndView("/meal/mealMenu");
+	    mav.addObject("role",role);
 	    mav.addObject("mealList", defaultMealList); // 기본 데이터 전달
 	    mav.addObject("defaultIsTime", defaultIsTime); // 기본 is_time 전달
 	    return mav;

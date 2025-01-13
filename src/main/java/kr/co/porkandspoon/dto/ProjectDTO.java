@@ -2,9 +2,12 @@ package kr.co.porkandspoon.dto;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ProjectDTO extends ResponseDTO {
     
+	private List<String> approvalLines;
+	
 	private String project_idx;
 	private String name;
 	private String username;
@@ -137,6 +140,11 @@ public class ProjectDTO extends ResponseDTO {
 	public void setCreater(String creater) {
 		this.creater = creater;
 	}
-	
+	public List<String> getApprovalLines() {
+		return approvalLines;
+	}
+	public void setApprovalLines(List<String> approvalLines) {
+		this.approvalLines = approvalLines;
+	}
 	
 }

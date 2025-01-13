@@ -287,7 +287,7 @@
                            </td>
                         </tr>
                         <tr>
-                           <th class="align-l">공개설정</th>
+                           <th class="align-l">공개설정 <span class="required-value">*</span></th>
                            	<td>
                          		<div class="card-body">
 								<div class="form-check">
@@ -304,7 +304,7 @@
                         </tr>
                      	</table>
 							<div id="btn-gap">							
-								<button type="button" class="btn btn-primary btn-popup">등록</button>
+								<button type="button" class="btn btn-primary btn-popup" >등록</button>
 								<button class="btn btn-outline-primary">취소</button>
 							</div>
 			         </form>
@@ -374,7 +374,7 @@
      console.log("approvalLines:", approvalLines);
      $.ajax({
          type: 'GET',
-         url: '/ad/project/getUserInfo/'+selectedId,
+         url: '/project/getUserInfo/'+selectedId,
          data: {},
          dataType: "JSON",
          success: function(response) {

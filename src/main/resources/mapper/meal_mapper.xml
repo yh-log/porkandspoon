@@ -3,7 +3,14 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
 >
 
+
+
 <mapper namespace="kr.co.porkandspoon.dao.MealDAO">
+	 
+	 <select id="getUserInfo" parameterType="String" resultType="String">
+	  	SELECT role from user where username = #{useranme} 
+	 </select>
+	 
 	 <select id="getMealMenu" parameterType="String" resultType="kr.co.porkandspoon.dto.MealDTO">
         SELECT menu_idx, is_time, content, start_date, end_date
         FROM meal_menu

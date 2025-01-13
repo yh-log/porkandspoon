@@ -15,7 +15,7 @@ public interface ProjectDAO {
 
 	int setProject(Map<String, String> params);
 
-	List<ProjectDTO> getProject(String loginId);
+	List<ProjectDTO> getProject(String loginId, boolean includeCompleted, boolean includeInProgress, boolean isOpen, String searchKeyword);
 
 	List<ProjectDTO> getKanBanInfo(String project_idx);
 
@@ -31,7 +31,18 @@ public interface ProjectDAO {
 
 	void setProjectPeoloe(String project_idx, String loginId);
 
-	void eiditProject(Map<String, String> params);
+	void editProject(Map<String, String> params);
+
+	void saveApprovalLine(String project_idx, String username);
+
+	void deletePeople(String project_idx);
+
+	List<UserDTO> getUsersInfo(String loginId, String project_idx);
+
+	void delProject(String project_idx);
+
+	List<ProjectDTO> getProjectScroll(String loginId, boolean includeCompleted, boolean includeInProgress,
+			boolean isOpen, String searchKeyword, int offset, int pageSize);
 
 	
 
