@@ -121,6 +121,34 @@
 									<td>
 										<div class="mb-3">
 										 	<input class="form-control" type="file" id="formFileMultiple" name="filepond" multiple="">
+										 	<br>
+											<c:if test="${not empty fileInfo}">
+											    <c:forEach var="file" items="${fileInfo}">
+											        <div style="text-align: left;" id="file_${file.new_filename}">
+											            <span>
+											                <c:choose>
+											                    <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+											                        <img src="/photo/${file.new_filename}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="이미지">
+											                    </c:when>
+											                    <c:when test="${file.new_filename.endsWith('.pdf')}">
+											                        <i class="bi bi-file-earmark-pdf" style="font-size: 24px; color: red;"></i>
+											                    </c:when>
+											                    <c:otherwise>
+											                        <i class="bi bi-file-earmark" style="font-size: 24px;"></i>
+											                    </c:otherwise>
+											                </c:choose>
+											                ${file.ori_filename}
+											            </span>
+											            
+											            <!-- ✅ 삭제 버튼 추가 -->
+											            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeFile('${file.new_filename}')">
+											                삭제
+											            </button>
+											            <input type="hidden" name="existingFiles" value="${file.new_filename}">
+											            <br>
+											        </div>
+											    </c:forEach>
+											</c:if>
 										</div>
 									</td>
 								</tr>
@@ -147,9 +175,7 @@
 								    <th class="table-text table-text-text">부서</th>
 								    <td class="table-text">
 								        <select class="form-select" name="department" id="basicSelect" style="width: 200px;" ${boardInfo.board_state == 'Y' ? 'disabled' : ''}>
-								            <option value="AH0101" ${boardInfo.department == 'AH0101' ? 'selected' : ''}>인사팀</option>
-								            <option value="AA0104" ${boardInfo.department == 'AA0104' ? 'selected' : ''}>총무팀</option>
-								            <option value="AG0102" ${boardInfo.department == 'AG0102' ? 'selected' : ''}>법무팀</option>
+								        
 								        </select>
 								    </td>
 								</tr>
@@ -163,6 +189,9 @@
 					    		</div>
 					    		<div class="col-sm-5"></div>
 		               </div>
+		                <c:forEach var="department" items="${boardInfo.department}">
+						    <input type="hidden" class="savedDepartment" value="${department}">
+						</c:forEach>
                      </form>
             	</div>
             </div>
@@ -179,6 +208,43 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	
 <script>
+	
+	$(document).ready(function () {
+		getAjax('/getTeamCode', 'JSON');
+	});
+	function getSuccess(response) {
+	    var selectElement = $('#basicSelect');
+	    selectElement.empty(); // 기존 옵션 초기화
+
+	    // ✅ hidden input에서 모든 부서 값을 가져와 배열로 변환
+	    var savedDepartments = [];
+	    $('.savedDepartment').each(function () {
+	        savedDepartments.push($(this).val());
+	    });
+
+	    // ✅ 부서 리스트 렌더링 및 기존 선택된 부서와 비교
+	    response.forEach(function(item) {
+	        var isSelected = savedDepartments.includes(item.id) ? 'selected' : '';
+	        selectElement.append('<option value="' + item.id + '" ' + isSelected + '>' + item.text + '</option>');
+	    });
+	}
+	
+	function removeFile(fileName) {
+	    // 해당 파일 요소 삭제
+	    var fileElement = document.getElementById('file_' + fileName);
+	    if (fileElement) {
+	        fileElement.remove(); // DOM에서 제거
+	    }
+	
+	    // 해당 파일의 hidden input 제거
+	    $('input[name="existingFiles"]').each(function () {
+	        if ($(this).val() === fileName) {
+	            $(this).remove();
+	        }
+	    });
+	
+	    console.log('파일 제거됨:', fileName);
+	}
 
 	$('.btn-write').on('click', function () {
 	    layerPopup(

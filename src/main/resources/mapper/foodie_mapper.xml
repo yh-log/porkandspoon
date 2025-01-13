@@ -44,6 +44,11 @@
 	    LEFT JOIN 
 	        food_review fr 
 	        ON fm.store_idx = fr.store_idx
+        <where>
+	        <if test="filter != null and filter != ''">
+	            AND fm.store_category = #{filter}
+	        </if>
+	    </where>
 	    GROUP BY 
 	        fm.store_idx
 	</select>
