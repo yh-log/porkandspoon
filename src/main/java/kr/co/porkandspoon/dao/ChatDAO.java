@@ -70,4 +70,10 @@ public interface ChatDAO {
      * 채팅방 나가기
      */
     int chatRoomDelete(ChatDTO chatDTO);
+
+    /**
+     * author yh.kim, (25.01.12)
+     * 채팅방 이름 변경
+     */
+    int chatRoomNameChange(ChatDTO chatDTO);
 }

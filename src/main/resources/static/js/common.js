@@ -37,7 +37,7 @@ window.getAjax = function(url, type, data = null) { // data 매개변수 추가,
 
 function httpAjax(type, url, params){
 
-   var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    var csrfToken = document.querySelector('meta[name="_csrf"]').content;
     var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
     $.ajax({
