@@ -236,4 +236,25 @@ public class ChatService {
         logger.info("비활성화 로우 => " + deleteRow);
 
     }
+
+    /**
+     * author yh.kim, (25.01.12)
+     * 채팅방 이름 변경
+     */
+    public ChatDTO chatRoomNameChange(ChatDTO chatDTO) {
+
+        int chatNameChangeRow = chatDAO.chatRoomNameChange(chatDTO);
+        logger.info("채팅방 이름 수정 로우 => " + chatNameChangeRow);
+
+        if(chatNameChangeRow == 0){
+            chatDTO.setStatus(500);
+            chatDTO.setMessage("채팅방 이름 변경에 실패했습니다.");
+            return chatDTO;
+        }
+
+        chatDTO.setStatus(200);
+        chatDTO.setMessage("채팅방 이름이 수정되었습니다.");
+
+        return chatDTO;
+    }
 }

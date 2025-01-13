@@ -1,5 +1,6 @@
 package kr.co.porkandspoon.controller;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -70,6 +71,12 @@ public class BoardController {
 		return new ModelAndView("/board/boardList");
 	}
 	
+	@GetMapping(value="/userList")
+	public int userList() {
+		int dto = boardService.userList();
+		return dto;
+	}
+	
 	// 글쓰기 페이지 이동
 	@GetMapping(value="/boardwrite/View")
 	public ModelAndView boardwriteView() {
@@ -124,35 +131,49 @@ public class BoardController {
 	
 	// 공지사항 상세보기
 	@GetMapping(value="/boarddetail/View/{board_idx}")
-	public ModelAndView boardDetail(@PathVariable String board_idx) {
-		BoardDTO boarddto = new BoardDTO();
+	public ModelAndView boardDetail(@PathVariable String board_idx, Principal principal) {
 		ModelAndView mav = new ModelAndView();
-		List<BoardReviewDTO> reviewdto = boardService.getReview(board_idx);
-		for(BoardReviewDTO dto : reviewdto) {
-			if(dto.getReview_date() != null) {
-				LocalDateTime time = dto.getReview_date();
-				String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
-				dto.setRereview_date(create_date);
-			}
-		}
-		List<FileDTO> file = boardService.getBoardFile(board_idx);
-		FileDTO photo = boardService.getBoardphoto(board_idx);
-		boarddto = boardService.boardDetail(board_idx);
-		
-		String username = boarddto.getUsername();
-		if(boarddto != null) {
-			int boardidx = Integer.parseInt(board_idx);
-			// 조회수 + 1 메서드
-			boardService.boardUpCount(boardidx);
-			boardService.boardListCheck(boardidx, username);
-			
-		}
-		mav.addObject("reviewInfo", reviewdto);
-		mav.addObject("photoInfo", photo);
-		mav.addObject("fileInfo", file);
-		mav.addObject("boardInfo", boarddto);
-		mav.setViewName("/board/boardDetail");
-		return mav;
+		 String name = principal.getName();
+		    logger.info("로그인한 사용자: {}", name);
+	    try {
+	        int boardidx = Integer.parseInt(board_idx);
+	        boardService.boardListCheck(boardidx, name);
+
+	        boardService.boardUpCount(boardidx);
+	        
+	        BoardDTO boarddto = boardService.boardDetail(board_idx);
+	        
+	        if (boarddto != null) {
+	            boarddto.getUsername();
+
+	            
+	            List<BoardReviewDTO> reviewdto = boardService.getReview(board_idx);
+	            for (BoardReviewDTO dto : reviewdto) {
+	                if (dto.getReview_date() != null) {
+	                    LocalDateTime time = dto.getReview_date();
+	                    String create_date = CommonUtil.formatDateTime(time, "yyyy-MM-dd");
+	                    dto.setRereview_date(create_date);
+	                }
+	            }
+
+	            List<FileDTO> file = boardService.getBoardFile(board_idx);
+	            FileDTO photo = boardService.getBoardphoto(board_idx);
+	            
+	            mav.addObject("reviewInfo", reviewdto);
+	            mav.addObject("photoInfo", photo);
+	            mav.addObject("fileInfo", file);
+	            mav.addObject("boardInfo", boarddto);
+	            mav.setViewName("/board/boardDetail");
+	        } else {
+	            mav.setViewName("error/404");
+	            mav.addObject("message", "존재하지 않는 게시글입니다.");
+	        }
+	    } catch (NumberFormatException e) {
+	        mav.setViewName("error/400");
+	        mav.addObject("message", "잘못된 게시글 번호입니다.");
+	    }
+
+	    return mav;
 	}
 	
 	// 글쓰기에 이름 가져오기

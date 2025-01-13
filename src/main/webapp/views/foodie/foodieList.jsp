@@ -110,20 +110,60 @@
 	}
 	
 	.custom-infowindow {
-    padding: 10px;
-    border-radius: 10px;
-    background: var(--bs-primary);
-    color: white;
-    font-weight: bold;
-    border: 2px solid #007BFF;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
+	    padding: 10px;
+	    border-radius: 10px;
+	    background: var(--bs-primary);
+	    color: white;
+	    font-weight: bold;
+	    border: 2px solid #007BFF;
+	    text-align: center;
+	    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+	}
 
-.custom-infowindow:hover {
-    background: #0056b3;
-    border-color: #0056b3;
-}
+	.foodie-filter-div {
+	    position: absolute;
+	    top: 27%;
+	    left: 41%;
+	    transform: translate(-50%, -50%);
+	    z-index: 500;
+	    display: flex;
+	    justify-content: center;
+	    align-items: center;
+	    gap: 10px;
+	    }
+	
+	.custom-infowindow:hover {
+	    background: #0056b3;
+	    border-color: #0056b3;
+	}
+	
+	.radio-filter {
+	    display: none;
+	}
+	
+	.radio-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border: 2px solid #435ebe;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        background-color: white;
+        color: #007BFF;
+        text-align: center;
+        margin: 5px;
+        transition: all 0.3s;
+    }
+    
+    .radio-group input[type="radio"]:checked + .radio-btn {
+        background-color: #435ebe;
+        color: white;
+        border-color: #435ebe;
+    }
+
+    .radio-btn:hover {
+        background-color: #e7f1ff;
+    }
 </style>
 <body>
 	<!-- 부트스트랩 -->
@@ -290,8 +330,24 @@
 						</div>
 						
 						
-						
-						
+							<div class="foodie-filter-div">
+								<div class="radio-group">
+							        <input class="radio-filter" type="radio" id="option1" name="options" value="" checked="checked">
+							        <label for="option1" class="radio-btn">전체</label>
+							    </div>
+								<div class="radio-group">
+							        <input class="radio-filter" type="radio" id="option2" name="options" value="점심">
+							        <label for="option2" class="radio-btn">점심</label>
+							    </div>
+							    <div class="radio-group">
+							        <input class="radio-filter" type="radio" id="option3" name="options" value="저녁">
+							        <label for="option3" class="radio-btn">저녁</label>
+							    </div>
+							    <div class="radio-group">
+							        <input class="radio-filter" type="radio" id="option4" name="options" value="회식">
+							        <label for="option4" class="radio-btn">회식</label>
+							    </div>
+							</div>
 						
 						
 						
@@ -474,12 +530,19 @@
 	
 	
 	$(document).ready(function () {
-	    var url = '/foodie/list'; // 서버에서 여러 매장의 정보를 가져오는 URL
-	
-	    // getAjax 함수 호출 (여러 매장의 데이터를 받아올 때 'JSON' 형식으로 받음)
-	    getAjax(url, 'JSON');
+	    var url = '/foodie/list';
+		
+	    getAjax(url, 'JSON', '');
+	    
+	    $('.radio-filter').on('change', function () {
+	        var selectedValue = $(this).val(); 
+	        console.log("선택된 필터: " + selectedValue);
+			var data = {filter: selectedValue };
+	        getAjax(url, 'JSON', data);
+	    });
+	    
 	    $(document).on('reloadStoreList', function () {
-	        getAjax(url, 'JSON');
+	        getAjax(url, 'JSON', data);
 	    });
 	});
 	

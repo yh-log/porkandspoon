@@ -29,12 +29,12 @@
 	#profile-seachBox {
 		display: flex; /* 가로 정렬 */
 		align-items: center; /* 세로 중앙 정렬 */
-		gap: 30px; /* 요소 간 간격 */
+		gap: 10px; /* 요소 간 간격 */
 	}
 	
 	#userProfile {
-		width: 60px;
-		height: 60px;
+		width: 50px;
+		height: 50px;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
@@ -167,7 +167,7 @@
 	#userChatList {
 		max-height: 250px;
 		overflow-y: auto;
-		height: 250px;
+		height: 350px;
 	}
 
 	/* 스크롤바 스타일 */
@@ -347,6 +347,17 @@
 		visibility: visible;
 	}
 
+	#charRoomNameBox{
+		display: flex;
+		gap: 20px;
+	}
+
+	#customNameInput{
+		width: 300px;
+		height: 30px;
+		margin-top: 18px;
+	}
+
 </style>
 
 </head>
@@ -384,18 +395,23 @@
 
 						</div>
 					</div>
-						<p class="chatSubject">Chat Participants</p>
-						<div> <!-- 채팅방 리스트 참여인원 -->
+<%--						<p class="chatSubject">Chat Participants</p>--%>
+<%--						<div> <!-- 채팅방 리스트 참여인원 -->--%>
 
-						</div>
+<%--						</div>--%>
 					</div>
 				</section>
 				<section class="cont">
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5 id="chatRoomName"></h5>
-							<div id="chatOutIcon">
+							<div id="charRoomNameBox">
+								<h5 id="chatRoomName"></h5>
+								<input name="custom_name" class="form-control" style="display: none;" id="customNameInput"/>
+								<span id="chatUpdateBtn" style="display: none;" onclick="chatRoomNameChange()"><i class="bi bi-pencil"></i></span>
+								<button class="btn btn-sm btn-outline-primary" type="button" style="display: none;" id="charRoomNameUpdate">변경</button>
+							</div>
+							<div id="chatOutIcon" style="display: none;">
 								<i class="bi bi-box-arrow-right"></i>
 							</div>
 						</div>
@@ -583,7 +599,7 @@
 					content += '</div>';
 				}else{
 					content += '<div class="receiverMessageBox">';
-					content += '<div class="receiverName">' + item.sender + '</div>';
+					content += '<div class="receiverName">' + item.senderName + '</div>';
 					content += '<div class="receiverContent">' + item.content + '</div>';
 					content += '<div class="sendMessageDate">' + item.formatDate + '</div>';
 					content += '</div>';
@@ -644,9 +660,20 @@
 	$(document).on('click', '#addModal', function () {
 		console.log("등록 버튼 클릭됨!");
 
+
+
 		// 원하는 동작 수행
-		const roomName = $('input[name="chatRoomName"]').val();
 		const username = $('input[name="username"]').val();
+
+		const roomName = $('input[name="chatRoomName"]').val().trim();
+
+		// 1. 채팅방 이름이 비었는지 검사
+		if (!roomName) {
+			// 안내 메시지 띄우고 함수 종료
+			// alert("채팅방 이름을 입력하세요.");
+			layerPopup("채팅방 이름을 입력하세요.", "확인", false, removeAlert, removeAlert);
+			return;
+		}
 
 		console.log(roomName, '룸 네임은 ');
 
@@ -665,11 +692,12 @@
 
 				// room 객체에서 roomId와 name을 알림에 표시
 				if (room && room.roomId) {
-					alert('채팅방 생성됨: ' + room.name + ' (ID: ' + room.roomId + ')');
+					//alert('채팅방 생성됨: ' + room.name + ' (ID: ' + room.roomId + ')');
 					//$('#chatRoomIdInput').val(room.roomId);
+					layerPopup('채팅방이 생성되었습니다.', '확인', false, removeAlert, removeAlert);
 					userJoinRoom(room.roomId);
 				} else {
-					alert("채팅방 생성 성공했지만 roomId를 찾을 수 없습니다.");
+					//alert("채팅방 생성 성공했지만 roomId를 찾을 수 없습니다.");
 				}
 			},
 			error: function (xhr) {
@@ -756,6 +784,8 @@
 		// 채팅 UI 토글
 		$('#noChatDiv').hide(); // "채팅이 없습니다" 메시지 숨기기
 		$('#chatingDivBox').show(); // 채팅 UI 보이기
+		$('#chatOutIcon').show();
+		$('#chatUpdateBtn').show();
 
 		// 현재 열려 있는 채팅방 ID 갱신
 		currentRoomId = roomId;
@@ -902,6 +932,59 @@
 	if ($('#loading').length === 0) {
 		$('#chatMessageDivBox').prepend('<div id="loading" style="height: 1px;"></div>');
 	}
+
+
+	function chatRoomNameChange() {
+
+		console.log('채팅방 이름 변경 클릭');
+		$('#chatRoomName').hide();
+		$('#customNameInput').show();
+		$('#chatUpdateBtn').hide();
+		$('#charRoomNameUpdate').show();
+
+	}
+
+	$('#charRoomNameUpdate').on('click', function(){
+		console.log('채팅방 이름 변경 클릭');
+
+		const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+		const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+
+		const username = $('input[name="username"]').val();
+		const custom_name = $('input[name="custom_name"]').val();
+		const chatDTO = {'roomId': currentRoomId , 'username' : username, 'custom_name' : custom_name};
+
+		$.ajax({
+			type: 'PUT',
+			url: '/chat/roomNameChange',
+			data: chatDTO,
+			dataType: 'JSON',
+			beforeSend: function(xhr) {
+				xhr.setRequestHeader(csrfHeader, csrfToken);
+			},
+			success: function (response){
+				console.log('성공', response);
+				if(response.status === 200){
+					// 성공 후 리스트 재로드 필요
+					layerPopup(response.message, '확인', false, removeAlert, removeAlert);
+					participationChatList(`${userDTO.username}`);
+					$('#chatRoomName').show();
+					$('#customNameInput').hide();
+					$('#chatUpdateBtn').show();
+					$('#charRoomNameUpdate').hide();
+
+				}else{
+					layerPopup(response.message, '확인', false, removeAlert, removeAlert);
+				}
+			},error: function (e){
+				console.log('이름 변경 중 에러 => ', e);
+			}
+
+		});
+
+
+	})
 
 </script>
 

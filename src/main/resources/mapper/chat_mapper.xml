@@ -83,19 +83,22 @@
     <!-- author yh.kim, (25.01.06)
         채팅 메시지 조회 -->
     <select id="chatRoomMessage" parameterType="map" resultType="kr.co.porkandspoon.dto.ChatDTO">
-        SELECT
-            cm.*,
-            COALESCE(cru.custom_name, cr.name) AS custom_name
-        FROM chat_message cm
+        SELECT cm.*,
+               COALESCE(cru.custom_name, cr.name) AS custom_name,
+               u.name as senderName
+        FROM chat_room cr
                  JOIN chat_room_user cru
-                      ON cm.roomId = cru.roomId
-                 JOIN chat_room cr
-                      ON cm.roomId = cr.roomId
-        WHERE cm.roomId = #{chatRoomId}
-          AND cru.username = #{username}
+                      on cr.roomId = cru.roomId
+                 JOIN user u
+                      on cru.username = u.username
+                 left join chat_message cm
+                           on cru.roomId = cm.roomId
+                               and cm.sender = u.username
+        where cr.roomId = #{chatRoomId}
           AND cm.send_date > cru.join_date
         ORDER BY cm.send_date DESC
-        LIMIT #{offset}, #{limit}
+            LIMIT #{offset}, #{limit}
+
     </select>
 
     <!-- author yh.kim, (25.01.06)
@@ -133,6 +136,13 @@
         채팅방 나가기 -->
     <update id="chatRoomDelete" parameterType="kr.co.porkandspoon.dto.ChatDTO">
         UPDATE chat_room_user SET use_yn = 'N' WHERE roomId = #{roomId} AND username = #{username}
+    </update>
+
+
+    <!-- author yh.kim, (25.01.12)
+        채팅방 이름 변경 -->
+    <update id="chatRoomNameChange" parameterType="kr.co.porkandspoon.dto.ChatDTO">
+        UPDATE chat_room_user SET custom_name = #{custom_name} WHERE roomId = #{roomId} AND username = #{username}
     </update>
 
 </mapper>

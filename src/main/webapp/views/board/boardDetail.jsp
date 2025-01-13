@@ -217,10 +217,8 @@
 										                </c:when>
 										            </c:choose>
 										        </div>
+										        <hr style="color: white;">
 										    </c:forEach>
-										</c:if>
-										<c:if test="${empty fileInfo}">
-										    <p>첨부된 파일이 없습니다.</p>
 										</c:if>
 									</div>
 							    </td>

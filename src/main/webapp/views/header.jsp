@@ -31,10 +31,10 @@
 	    .catch(error => console.error('알림 조회 실패:', error));
 	}
 	
-	/* function displayAlarmMessage(alarm) {
+	function displayAlarmMessage(alarm) {
 		var alarmMessage = document.getElementById('alarmMessage');
 		alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
-	
+		updateAlarmCount();
 		// 메시지 표시
 		alarmMessage.style.display = 'flex';
 	    setTimeout(function () {
@@ -51,7 +51,7 @@
 
 
 	// 5초마다 알림 확인
-	setInterval(checkNewAlarms, 3000); */
+	setInterval(checkNewAlarms, 3000);
 </script> 
 <style>
 	#alarmPopup {
@@ -305,12 +305,9 @@
      		</i>
      	</a>
      	
-   	   <form method="post" action="/logout">
- 		   <button type="submit" id="logout">
+ 		   <button id="logout">
      		   <i class="bi bi-door-closed-fill" style="position: relative;"></i>
      	   </button>
-	      <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-	   </form>
      </div>
     </div>
 </header>
@@ -388,7 +385,11 @@
             console.log("[[[[헤더]]]] response.userInfo:: ",response.userInfo);
             var info = response.userInfo;
             $('.profile-area .name').text(info.name + info.position_content);
-            $('.profile-area .profile-img').css('background','url(\'/photo/'+info.profile+'\') no-repeat top center/cover');
+            if(info.profile != null){
+	            $('.profile-area .profile-img').css('background','url(\'/photo/'+info.profile+'\') no-repeat top center/cover');
+            }else{
+	            $('.profile-area .profile-img').css('background','url(/resources/img/common/user_default.png) no-repeat top center/cover');
+            }
         },
         error: function(xhr, status, error) {
             console.error("알림 데이터를 가져오는 데 실패했습니다:", error);
@@ -709,5 +710,22 @@
 	    }
 	}
 
+	document.getElementById('logout').addEventListener('click', function() {
+        var csrfParameterName = '${_csrf.parameterName}';
+        var csrfToken = '${_csrf.token}';
+
+        var form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/logout';
+
+        var hiddenCsrfInput = document.createElement('input');
+        hiddenCsrfInput.type = 'hidden';
+        hiddenCsrfInput.name = csrfParameterName;
+        hiddenCsrfInput.value = csrfToken;
+
+        form.appendChild(hiddenCsrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    });
 		
 </script>
