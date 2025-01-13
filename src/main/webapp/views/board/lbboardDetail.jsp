@@ -189,10 +189,10 @@
 										        <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #d1d1d1; width: auto; margin-bottom: 5px;">
 										            <span>
 										                <c:choose>
-										                    <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                    <c:when test="${file.ori_filename.endsWith('.jpg') || file.ori_filename.endsWith('.png')}">
 										                        <img src="/photo/${file.new_filename}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="이미지">
 										                    </c:when>
-										                    <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                    <c:when test="${file.ori_filename.endsWith('.pdf')}">
 										                        <i class="bi bi-file-earmark-pdf" style="font-size: 24px; color: red;"></i>
 										                    </c:when>
 										                    <c:otherwise>
@@ -202,17 +202,17 @@
 										                ${file.ori_filename}
 										            </span>
 										            <br>
-										            <a href="/photo/${file.new_filename}" class="btn btn-primary" download>
+										            <a href="/photo/${file.ori_filename}" class="btn btn-primary" download>
 										                다운로드
 										            </a>
 										            <c:choose>
-										                <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
-										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.new_filename}')">
+										                <c:when test="${file.ori_filename.endsWith('.jpg') || file.ori_filename.endsWith('.png')}">
+										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.ori_filename}')">
 										                        미리보기
 										                    </button>
 										                </c:when>
-										                <c:when test="${file.new_filename.endsWith('.pdf')}">
-										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.new_filename}')">
+										                <c:when test="${file.ori_filename.endsWith('.pdf')}">
+										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.ori_filename}')">
 										                        미리보기
 										                    </button>
 										                </c:when>

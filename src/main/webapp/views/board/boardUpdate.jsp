@@ -258,6 +258,35 @@
 	
 	function reviewupdateY() {
         removeAlert(); // 팝업 닫기
+        var subject = document.querySelector('input[name="subject"]').value.trim();
+        var postContent = document.querySelector('textarea[name="postContnent"]').value.trim();
+        
+        if(!subject) {
+        	layerPopup(
+		            '제목을 입력해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+        }
+        
+        if(!postContent) {
+        	layerPopup(
+		            '내용을 입력해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+        }
+        
         url = '/board/update';
         textEaditorWrite(url);
     }

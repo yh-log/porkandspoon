@@ -58,6 +58,7 @@
 	        fr.*,
 	        u.name AS name,
 	        fm.store_name AS store_name, 
+	        fm.store_category,
 	        ROUND(AVG(fr.review_star) OVER(PARTITION BY fr.store_idx), 1) AS total_review_star
 	    FROM 
 	        food_review fr
@@ -69,7 +70,6 @@
 	        ON fr.store_idx = fm.store_idx  
 	    WHERE 
 	        fr.store_idx = #{store_idx}
-	        AND fr.use_yn = 'Y'  
 	    ORDER BY 
 	        fr.review_idx DESC
 	</select>
