@@ -780,6 +780,7 @@ var approvalLines = ['${userDTO.username}'];
 	        /* 조직도 버튼 클릭 시 조직도 버튼 show 나의 결재선 hide */
 	    	if($(this).hasClass('chart-btn')){
 	    		$('#chartModalBox .tbody-style').show();
+	    		$('#chartModalBox .bookmark').hide();
 	    		/* 조직도 전체 열기 */
 	    		/* $("#jstree").jstree("open_all");
 	    		
@@ -803,6 +804,7 @@ var approvalLines = ['${userDTO.username}'];
 		    	/* 나의 결재선 버튼 클릭 시 나의 결재선 show 조직도 버튼 hide */
 		    	//$('.chart-mybtn').on('click', function() {
 		    		$('#chartModalBox .tbody-style').hide();
+		    		$('#chartModalBox .bookmark').show();
 		    		
 		    		$.ajax({
 		    			type:'GET',

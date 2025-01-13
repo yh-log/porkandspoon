@@ -427,7 +427,12 @@ public class ApprovalService {
 
 		@Transactional
 		public boolean setApprLineBookmark(Map<String, Object> params) {
-			int bookmarkIdx = approvalDAO.getMaxBookmarkIdx();
+			String bookmarkIdx = "";
+			if(params.get("line_idx") != null && !params.get("line_idx").equals("")) {
+				bookmarkIdx = (String) params.get("line_idx");
+			}else {
+				bookmarkIdx = approvalDAO.getMaxBookmarkIdx();
+			}
 			params.put("bookmarkIdx", bookmarkIdx);
 			logger.info("!!!!bookmarkIdx : "+bookmarkIdx);
 			

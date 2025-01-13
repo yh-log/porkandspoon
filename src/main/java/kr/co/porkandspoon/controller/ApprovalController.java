@@ -466,8 +466,11 @@ public class ApprovalController {
 	}
 
 	@GetMapping(value="/approval/listView/line")
-	public ModelAndView approvalLineListView() {
+	public ModelAndView approvalLineListView(@AuthenticationPrincipal UserDetails userDetails) {
 		ModelAndView mav = new ModelAndView("/approval/approvalLineList");  
+		String loginId = userDetails.getUsername();
+		UserDTO userDTO = approvalService.getUserInfo(loginId);
+		mav.addObject("userDTO", userDTO);
 		return mav;
 	}
 
@@ -518,37 +521,41 @@ public class ApprovalController {
 		// 결재라인 테이블 결재자 상태코드 변경
 		int approvalRow = approvalService.ApprovalDraft(approvalDTO);
 		String draftIdx = approvalDTO.getDraft_idx();
-		// check!!! 결재자 결재 순서, 총 결재자 수 비교해서 마지막 결재자인 경우 테이블 상태코드 변경해야함
+		
+		// 마지막 결재자인 경우 기안문테이블 상태코드 변경(결재완료)
 		ApprovalDTO approvalInfo = approvalService.userApprovalInfo(approvalDTO);
 		//결재자 결재 순서
 		String orderNum = approvalInfo.getOrder_num();
 		//총 결재자 수
 		int totalCount = approvalInfo.getApproval_line_count();
-		// 기안문 테이블 상태코드 변경(결재완료)
 		logger.info("orderNum"+orderNum);
 		logger.info("totalCount"+totalCount);
 		if(Integer.parseInt(orderNum) == (totalCount-1)) {
+			// 마지막 결재자인 경우
 			logger.info("totalCount==totalCount");
 			approvalService.changeStatusToApproved(approvalDTO.getDraft_idx());
+		}else {
+			// 마지막 결재자가 아닌경우
+			// 다음 사람에게 요청 알림
+			NoticeDTO noticedto = new NoticeDTO();
+			noticedto.setFrom_idx(approvalDTO.getDraft_idx());
+			noticedto.setUsername(approvalDTO.getUsername());
+			noticedto.setCode_name("ml007");
+			alarmService.saveAlarm(noticedto);
+			
+			// 기안자에게 승인 요청 알림
+			NoticeDTO noticedto2 = new NoticeDTO();
+			noticedto2.setFrom_idx(approvalDTO.getDraft_idx());
+			noticedto2.setUsername(approvalDTO.getUsername());
+			noticedto2.setCode_name("ml008");
+		    alarmService.saveAlarm(noticedto2);
 		}
 		
 		if(approvalRow > 0) {
 			success = true;
 		}
 		
-		// 다음 사람에게 요청 알림
-		NoticeDTO noticedto = new NoticeDTO();
-		noticedto.setFrom_idx(approvalDTO.getDraft_idx());
-		noticedto.setUsername(approvalDTO.getUsername());
-		noticedto.setCode_name("ml007");
-		//alarmService.saveAlarm(noticedto);
 		
-		// 기안자에게 승인 요청 알림
-		NoticeDTO noticedto2 = new NoticeDTO();
-		noticedto2.setFrom_idx(approvalDTO.getDraft_idx());
-		noticedto2.setUsername(approvalDTO.getUsername());
-		noticedto2.setCode_name("ml008");
-	    alarmService.saveAlarm(noticedto2);
 	    
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put("success",success);
@@ -639,6 +646,8 @@ public class ApprovalController {
 //        }
         params.put("approvalLines", approvalLines);
         //params.put("approvalLines", approvalLinesJson);
+        logger.info("approvalLinesJson::? "+approvalLinesJson);
+        logger.info("approvalLines::? "+approvalLines);
 
         String loginId = userDetails.getUsername();
         params.put("loginId", loginId);

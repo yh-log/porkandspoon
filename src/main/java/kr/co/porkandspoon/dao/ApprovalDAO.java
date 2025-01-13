@@ -93,7 +93,7 @@ public interface ApprovalDAO {
 
 	int setApprLineBookmark(Map<String, Object> params);
 
-	int getMaxBookmarkIdx();
+	String getMaxBookmarkIdx();
 
 	List<ApprovalDTO> getLineBookmark(Map<String, Object> params);
 

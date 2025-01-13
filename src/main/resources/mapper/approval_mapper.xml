@@ -495,7 +495,7 @@ content = VALUES(content); -->
 			OFFSET #{offset}			
 	</select>
 	
-    <select id="getMaxBookmarkIdx" resultType="int">
+    <select id="getMaxBookmarkIdx" resultType="String">
         SELECT IFNULL(MAX(line_idx), 0) + 1
         FROM approval_bookmark
         FOR UPDATE
@@ -510,7 +510,11 @@ content = VALUES(content); -->
 		                '${index}', #{lineItem}
 		            </foreach>
 		         )
-		    )
+		    ) ON DUPLICATE KEY UPDATE
+			username = VALUES(username),
+			line_name = VALUES(line_name),
+			order_user = VALUES(order_user)
+	        
 	</insert>
 	
 	<select id="getLineBookmark" parameterType="map" resultType="kr.co.porkandspoon.dto.ApprovalDTO" >

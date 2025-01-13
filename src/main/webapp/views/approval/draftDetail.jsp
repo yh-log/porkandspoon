@@ -517,6 +517,7 @@
 												<p>${ApprLine[2].user_name}</p>
 											</td>
 											<td>
+												<input type="hidden" name="appr_user" value="${ApprLine[3].username}"/>
 												<div class="sign-area">
 													<c:if test="${ApprLine[3].status == 'ap004'}">
 														<img class="sign" src="/photo/${ApprLine[3].sign}" alt="서명"/>
