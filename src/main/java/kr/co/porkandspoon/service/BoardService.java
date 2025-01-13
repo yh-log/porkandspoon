@@ -334,6 +334,10 @@ public class BoardService {
 		return boardDAO.getTeamCode();
 	}
 
+	public int userList() {
+		return boardDAO.userList();
+	}
+
 
 
 	

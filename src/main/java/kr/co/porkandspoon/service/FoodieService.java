@@ -1,6 +1,7 @@
 package kr.co.porkandspoon.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +31,8 @@ public class FoodieService {
 
 
 
-	public List<FoodieDTO> getFoodieList() {
-		return foodieDAO.getFoodieList();
+	public List<FoodieDTO> getFoodieList(Map<String, Object> params) {
+		return foodieDAO.getFoodieList(params);
 	}
 
 

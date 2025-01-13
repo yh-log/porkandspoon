@@ -31,10 +31,10 @@
 	    .catch(error => console.error('알림 조회 실패:', error));
 	}
 	
-	/* function displayAlarmMessage(alarm) {
+	function displayAlarmMessage(alarm) {
 		var alarmMessage = document.getElementById('alarmMessage');
 		alarmMessage.innerHTML = '<i class="bi bi-circle-fill alarm-icon-style"></i>' + alarm.subject;
-	
+		updateAlarmCount();
 		// 메시지 표시
 		alarmMessage.style.display = 'flex';
 	    setTimeout(function () {
@@ -51,7 +51,7 @@
 
 
 	// 5초마다 알림 확인
-	setInterval(checkNewAlarms, 3000); */
+	setInterval(checkNewAlarms, 3000);
 </script> 
 <style>
 	#alarmPopup {
