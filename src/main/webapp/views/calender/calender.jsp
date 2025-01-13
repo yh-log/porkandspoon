@@ -605,7 +605,6 @@
     	var idx = $('#event_id').val();
     	console.log('삭제할때 받아와?',idx);
     	layerPopup("정말 삭제 하시겠습니까?", "확인", "취소", function() {deleteSchedule(idx)}, secondBtn1Act);
-    	httpAjax('DELETE', '/calenderDelete/'+idx);
 	}
     
     function deleteSchedule(idx) {

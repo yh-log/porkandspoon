@@ -34,4 +34,8 @@ public interface EducationDAO {
 
 	EducationDTO completion(int no, String username);
 
+	List<EducationDTO> eEducationListY(Map<String, Object> params);
+
+	List<EducationDTO> eEducationListN(Map<String, Object> params);
+
 }

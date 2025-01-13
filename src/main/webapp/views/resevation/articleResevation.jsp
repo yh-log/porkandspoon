@@ -133,6 +133,12 @@
 		margin-top: 20px;
     	margin-left: 70px;
 	}
+	#amendSchedule{
+		display: none;
+	}
+	#deleteSchedule{
+		display: none;
+	}
 	
 </style>
 </head>
@@ -466,6 +472,10 @@
 	        timepicker: true,
 	        minDate: new Date()
 	    });
+	    if(data.username == '${pageContext.request.userPrincipal.name}'){
+        	document.getElementById('amendSchedule').style.display = 'block';
+        	document.getElementById('deleteSchedule').style.display = 'block';
+        }
         if (type === 'Input') {
             // 일정 추가 모드: 입력 필드 초기화
             console.log("일정 추가 모드: 데이터 없음");

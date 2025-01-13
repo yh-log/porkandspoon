@@ -75,6 +75,8 @@ public interface ResevationDAO {
 
 	int roomDuplicate(int no, String start_date, String end_date);
 
+	int total(String loginId);
+
 	
 
 

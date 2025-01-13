@@ -141,6 +141,12 @@
 		overflow-y: auto;
 		height: 300px; 
 	}
+	#amendSchedule{
+		display: none;
+	}
+	#deleteSchedule{
+		display: none;
+	}
 	
 </style>
 </head>
@@ -567,6 +573,10 @@
 		        timepicker: true,
 		        minDate: new Date()
 		    });
+		    if(data.username == '${pageContext.request.userPrincipal.name}'){
+	        	document.getElementById('amendSchedule').style.display = 'block';
+	        	document.getElementById('deleteSchedule').style.display = 'block';
+	        }
 	        if (type === 'Input') {
 	            // 일정 추가 모드: 입력 필드 초기화
 	            fetchCategoryItems();

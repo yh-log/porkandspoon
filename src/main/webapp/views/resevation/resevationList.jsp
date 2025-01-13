@@ -124,41 +124,41 @@
 	}
 	/* 이 밑으로 라디오 변형 */
 	/* 라디오 버튼 그룹 정렬 */
-.radio-button-group {
-    display: flex;
-    gap: 10px;
-}
-
-/* 실제 라디오 버튼 숨기기 */
-.radio-button-group input[type="radio"] {
-    display: none;
-}
-
-/* 라벨을 버튼처럼 스타일링 */
-.radio-label {
-    display: inline-block;
-    padding: 10px 20px;
-    border: 2px solid #007BFF;
-    border-radius: 5px;
-    background-color: #FFFFFF;
-    color: #007BFF;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    user-select: none;
-    font-size: 16px;
-}
-
-/* 마우스를 올렸을 때 스타일 */
-.radio-label:hover {
-    background-color: #e6f0ff;
-}
-
-/* 선택된 라디오 버튼의 라벨 스타일 변경 */
-.radio-button-group input[type="radio"]:checked + .btn.btn-sm.btn-outline-primary {
-    background-color: var(--bs-btn-hover-bg);
-    color: var(--bs-btn-hover-color);
-    border-color: var(--bs-btn-hover-border-color);
-}
+	.radio-button-group {
+	    display: flex;
+	    gap: 10px;
+	}
+	
+	/* 실제 라디오 버튼 숨기기 */
+	.radio-button-group input[type="radio"] {
+	    display: none;
+	}
+	
+	/* 라벨을 버튼처럼 스타일링 */
+	.radio-label {
+	    display: inline-block;
+	    padding: 10px 20px;
+	    border: 2px solid #007BFF;
+	    border-radius: 5px;
+	    background-color: #FFFFFF;
+	    color: #007BFF;
+	    cursor: pointer;
+	    transition: background-color 0.3s, color 0.3s;
+	    user-select: none;
+	    font-size: 16px;
+	}
+	
+	/* 마우스를 올렸을 때 스타일 */
+	.radio-label:hover {
+	    background-color: #e6f0ff;
+	}
+	
+	/* 선택된 라디오 버튼의 라벨 스타일 변경 */
+	.radio-button-group input[type="radio"]:checked + .btn.btn-sm.btn-outline-primary {
+	    background-color: var(--bs-btn-hover-bg);
+	    color: var(--bs-btn-hover-color);
+	    border-color: var(--bs-btn-hover-border-color);
+	}
 </style>
 </head>
 <body>
@@ -173,9 +173,9 @@
          <section id="menu">
             <h4 class="menu-title">자원 관리</h4>
             <ul>
-            	<li class="active" data-category="all" style="cursor: pointer;">전체보기</li>
-      			<li data-category="room" style="cursor: pointer;">회의실 리스트</li>
-      			<li data-category="article" style="cursor: pointer;">물품 리스트</li>
+            	<li class="active" data-category="all" style="cursor: pointer;"><a>전체보기</a></li>
+      			<li data-category="room" style="cursor: pointer;"><a>회의실 리스트</a></li>
+      			<li data-category="article" style="cursor: pointer;"><a>물품 리스트</a></li>
             </ul>
          </section>
          <section class="cont">

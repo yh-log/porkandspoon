@@ -152,9 +152,9 @@
 				<section id="menu">
 					<h4 class="menu-title">교육 수강 리스트</h4>
 					<ul>
-						<li id="firstMenu" class="active" onclick="">전체 보기</li>
-						<li id="secondMenu" onclick="">수강 할 목록</li>
-						<li id="thirdMenu" onclick="">수강 한 목록</li>
+						<li id="firstMenu" style="cursor: pointer;" class="active"><a>전체 보기</a></li>
+						<li id="secondMenu" style="cursor: pointer;"><a>수강 할 목록</a></li>
+						<li id="thirdMenu" style="cursor: pointer;"><a>수강 한 목록</a></li>
 					</ul>
 				</section>
 				<!-- 콘텐츠 영역 -->
@@ -225,6 +225,27 @@
 	var totalCount = 0;
     var pageSize = 15;  // 한 페이지당 게시글 수  //check!!! cnt를 얘로??
     var totalPage = 0;
+    var filterType = 'all';
+    
+    $(document).ready(function() {
+        $('#firstMenu').on('click', function() {
+          filterType = 'all';
+          paginationInitialized = false;  // 페이지네이션 초기화 필요 시 재설정
+          pageCall(1);
+        });
+		
+        $('#secondMenu').on('click', function() {
+          filterType = 'Y';
+          paginationInitialized = false;
+          pageCall(1);
+        });
+		
+        $('#thirdMenu').on('click', function() {
+          filterType = 'N';
+          paginationInitialized = false;
+          pageCall(1);
+        });
+     });
     
     
 	pageCall(show);
@@ -237,6 +258,7 @@
 			data:{
 				'page':page,
 				'cnt':15,
+				'filter': filterType
 			},
 			datatype:'JSON',
 			success:function(data){
@@ -275,11 +297,11 @@
 	var id;
 	var no;
 	function drawList(list) {
-		
+		console.log('가져온 리스트',list);
 		var content ='';
 		var createDate = '';
-		if(totalCount == 0){
-			content +='<tr><td colspan="8">조회된 데이터가 없습니다.</td></tr>';
+		if(list == 0){
+			content +='<tr><td colspan="7">수강한 교육이 없습니다.</td></tr>';
 			$('#list').html(content);
 			return false;
 		}

@@ -109,8 +109,8 @@ public class EducationController {
 		return result;
 	}
 	
-	// 교육 디테일 이동
-	@GetMapping(value="/us/educationDetail/{no}")
+	// 매니저 교육 디테일 이동
+	@GetMapping(value="/mo/educationDetail/{no}")
 	public ModelAndView educationDetailView(@AuthenticationPrincipal CustomUserDetails user,@PathVariable int no) {
 			
 		String userName = user.getName();
@@ -129,6 +129,26 @@ public class EducationController {
 		return mav;
 	}
 	
+	// 유저 교육 디테일 이동
+	@GetMapping(value="/us/educationDetail/{no}")
+	public ModelAndView educationDetailViewUser(@AuthenticationPrincipal CustomUserDetails user,@PathVariable int no) {
+			
+		String userName = user.getName();
+		logger.info("로그인한 유저 이름 : "+userName);
+			
+		List<DeptDTO> dept = eduService.dept();
+		EducationDTO dto = eduService.detail(no);
+		ModelAndView mav = new ModelAndView("/education/educationDetail");
+		mav.addObject("info", dto);
+		mav.addObject("dept", dept);
+		
+		// YouTube 동영상 ID 추출
+        String videoId  = urlId(dto.getUrl());
+        mav.addObject("videoId",videoId );
+			
+		return mav;
+	}
+
 	// 영상 url id 추출
 	private String urlId(String url) {
 		if (url == null || url.isEmpty()) {

@@ -433,6 +433,12 @@
 	<delete id="roomDelete">
 	    DELETE FROM room_schedule WHERE idx = #{idx}
 	</delete>
+	
+	<select id="total">
+		SELECT
+		(SELECT COUNT(*) FROM item_schedule WHERE username = #{loginId}) + (SELECT COUNT(*) FROM room_schedule WHERE username = #{loginId})
+		AS total
+	</select>
 			
 	
 </mapper>

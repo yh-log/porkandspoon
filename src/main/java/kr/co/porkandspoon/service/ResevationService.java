@@ -10,12 +10,14 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import kr.co.porkandspoon.dao.ResevationDAO;
 import kr.co.porkandspoon.dto.CalenderDTO;
 import kr.co.porkandspoon.dto.NoticeDTO;
 import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @Service
 public class ResevationService {
@@ -179,7 +181,7 @@ public class ResevationService {
         	    	
         return true;
 	}
-
+    
 	private boolean roomDuplicate(int no, String start_date, String end_date) {
 		int count = resDao.roomDuplicate(no, start_date, end_date);
 	    return count > 0;
@@ -249,6 +251,12 @@ public class ResevationService {
 	public int roomDelete(String idx) {
 		resDao.deleteAllAttendees(idx);
 		return resDao.roomDelete(idx);
+	}
+	
+	// 로그인한 유저의 총 예약수
+	public int resTotal(@AuthenticationPrincipal CustomUserDetails user) {		
+		String loginId = user.getUsername();	
+		return resDao.total(loginId);
 	}
 
 

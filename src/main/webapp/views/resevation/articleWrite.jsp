@@ -171,9 +171,7 @@
 	         <section id="menu">
 	            <h4 class="menu-title">자원 관리</h4>
 	            <ul>
-	               <li class="active">전체보기</li>
-	               <li>회의실 리스트</li>
-	               <li>물품 리스트</li>
+	               <li class="active" data-category="all" style="cursor: pointer;"><a>자원관리</a></li>
 	            </ul>
 	         </section>
 	         <section class="cont">
