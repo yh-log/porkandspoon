@@ -32,6 +32,7 @@ public class EducationService {
         int cnt_ = Integer.parseInt((String)params.get("cnt"));
         int limit = cnt_;
         int offset = (page_ - 1) * cnt_;
+        
         params.put("limit", limit);
         params.put("offset", offset);
        
@@ -76,8 +77,15 @@ public class EducationService {
         int offset = (page_ - 1) * cnt_;
         params.put("limit", limit);
         params.put("offset", offset);
-       
-        return eduDao.eEducationList(params);
+        logger.info("필터 종류 : "+params.get("filter"));
+        if (params.get("filter").equals("Y")) {      	
+        	return eduDao.eEducationListN(params);
+		}else if(params.get("filter").equals("N")) {
+			return eduDao.eEducationListY(params);
+		}else {
+			return eduDao.eEducationList(params);
+		}
+      
 	}
 
 	public EducationDTO completion(int no, String username) {

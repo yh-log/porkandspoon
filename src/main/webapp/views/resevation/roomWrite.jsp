@@ -192,7 +192,7 @@
 	                  <table class="align-l">
 	                  	<tr>
 	                  		<th>등록자</th>
-	                  		<td class="align-l">${info}</td>
+	                  		<td class="align-l">${info.name}</td>
 	                  	</tr>
 	                  	<tr>
 	                  		<th>회의실 명</th>

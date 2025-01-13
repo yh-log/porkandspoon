@@ -101,9 +101,53 @@
 		    COUNT(*) OVER() AS total_count
 		FROM education e
 		JOIN department d ON e.id = d.id
-		LEFT JOIN education_history eh 
-		    ON e.no = eh.no 
-		    AND eh.username = #{username}
+		LEFT JOIN education_history eh ON e.no = eh.no AND eh.username = #{username}
+		ORDER BY e.no DESC
+        LIMIT #{limit} 
+        OFFSET #{offset}
+	</select>
+	
+	<select id="eEducationListY" parameterType="map" resultType="kr.co.porkandspoon.dto.EducationDTO">
+		SELECT 
+		    e.no,
+		    e.category,
+		    e.subject,
+		    e.content,
+		    e.url,
+		    e.username,
+		    e.create_date,
+		    e.id,
+		    e.total_time ,
+		    d.text,
+		 	eh.education_date,
+		    COUNT(*) OVER() AS total_count
+		FROM education e
+		JOIN department d ON e.id = d.id
+		LEFT JOIN education_history eh ON e.no = eh.no AND eh.username = #{username}
+		WHERE eh.education_date IS NOT NULL
+		ORDER BY e.no DESC
+        LIMIT #{limit} 
+        OFFSET #{offset}
+	</select>
+	
+	<select id="eEducationListN" parameterType="map" resultType="kr.co.porkandspoon.dto.EducationDTO">
+		SELECT 
+		    e.no,
+		    e.category,
+		    e.subject,
+		    e.content,
+		    e.url,
+		    e.username,
+		    e.create_date,
+		    e.id,
+		    e.total_time ,
+		    d.text,
+		 	eh.education_date,
+		    COUNT(*) OVER() AS total_count
+		FROM education e
+		JOIN department d ON e.id = d.id
+		LEFT JOIN education_history eh ON e.no = eh.no AND eh.username = #{username}
+		WHERE eh.education_date IS NULL
 		ORDER BY e.no DESC
         LIMIT #{limit} 
         OFFSET #{offset}

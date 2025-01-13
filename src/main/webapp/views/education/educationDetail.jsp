@@ -203,10 +203,17 @@
 	      <div class="page-content">
 	         <section id="menu">
 				<h4 class="menu-title">교육 등록 리스트</h4>
-				<ul>
-					<li id="firstMenu" class="active"><a href="#">교육 등록</a></li>
-					<li id="secondMenu"><a href="#">수강 기록</a></li>
-				</ul>
+				<sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
+					<ul>
+						<li id="firstMenu"><a href="/mo/educationWrite">교육 등록</a></li>
+						<li id="secondMenu"><a href="/mo/education">수강 기록</a></li>
+					</ul>			    	
+			    </sec:authorize>
+			    <sec:authorize access="hasRole('USER')">
+					<ul>
+						<li id="firstMenu"><a href="/us/education">교육 수강 리스트</a></li>					
+					</ul>			    	
+			    </sec:authorize>
 			</section>
 	         <section class="cont">
 	            <div class="col-12 col-lg-12">

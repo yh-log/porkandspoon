@@ -205,8 +205,8 @@
          <section id="menu">
 			<h4 class="menu-title">교육 등록 리스트</h4>
 			<ul>
-				<li id="firstMenu" class="active"><a href="#">교육 등록</a></li>
-				<li id="secondMenu"><a href="#">수강 기록</a></li>
+				<li id="firstMenu"><a href="/mo/educationWrite">교육 등록</a></li>
+				<li id="secondMenu"><a href="/mo/education">수강 기록</a></li>
 			</ul>
 		</section>
          <section class="cont">

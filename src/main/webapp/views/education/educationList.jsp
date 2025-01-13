@@ -124,7 +124,7 @@
 			<div class="page-content">
 				<section id="menu">
 					<h4 class="menu-title">교육</h4>
-					<div><a href="/mo/educationWrite" class="btn btn-primary full-size">등록</a></div>
+					<div><a href="/mo/educationWrite" class="btn btn-primary full-size" style="color: #fff;">등록</a></div>
 				</section>
 				<!-- 콘텐츠 영역 -->
 				<section class="cont">
@@ -267,7 +267,7 @@
 				content += '<td>운영 교육</td>';
 			}
 			
-			content += '<td><a href="/us/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
+			content += '<td><a href="/mo/educationDetail/'+view.no+'">'+view.subject+'</a></td>';
 			content += '<td>'+view.total_time+'</td>';
 			
 			var dateOnly = view.create_date.split('T')[0];
