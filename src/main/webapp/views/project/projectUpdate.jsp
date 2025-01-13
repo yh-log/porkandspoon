@@ -31,6 +31,9 @@
 		width: 200px;
 	}
 
+.required-value {
+    color: var(--bs-danger);
+}
 	#searchLayout{
 	    display: flex;
 	    align-items: center; /* 세로 중앙 정렬 */
@@ -110,14 +113,14 @@
 				<section id="menu">
 					<h4 class="menu-title">프로젝트</h4>
 					<ul>
-						<li class="active"><a href="/ad/project/List">프로젝트 리스트</a></li>
-						<li><a href="/ad/project/Write">프로젝트 등록</a></li>
+						<li class="active"><a href="/project/List">프로젝트 리스트</a></li>
+						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
 				</section>
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>프로젝트 등록</h5>
+							<h5>프로젝트 수정</h5>
 						</div>
 						<div class="cont-body">
 						<div class="row">
@@ -127,51 +130,47 @@
 			           <input type="hidden" name="_csrf" value="${_csrf.token}" />
                      <table>
                         <tr>
-                           <th class="align-l">프로젝트 명</th>
+                           <th class="align-l">프로젝트 명<span class="required-value">*</span></th>
                            	<td>
-                           		<input class="form-control sor-1 "   type="text" value="${info.name}" placeholder="프로젝트 명을 입력해주세요." required="required"/>
-                           		<input class="form-control sor-1 "   type="text" value="${info.project_idx}" placeholder="프로젝트 명을 입력해주세요." required="required" hidden=""/>
+                           		<input class="form-control sor-1 "   type="text" name="name" value="${info.name}" placeholder="프로젝트 명을 입력해주세요." required="required"/>
+                           		<input class="form-control sor-1 "   type="text" name="project_idx" value="${info.project_idx}" placeholder="프로젝트 명을 입력해주세요." required="required" hidden=""/>
                            	</td>
                         </tr>
                         <tr>
-                           <th class="align-l">일정</th>
+                           <th class="align-l">일정<span class="required-value">*</span></th>
                            <td >
 	                           <div id="searchLayout" class="col-7 col-lg-7">
-		                           	<input class="form-control sor-1 short"  id="start_date" type="date" value="${info.start_date}"  required="required"/>
+		                           	<input class="form-control sor-1 short" name="update_start_date" id="start_date" type="date" value="${info.start_date}"  required="required"/>
 		                           	~
-		                           	<input class="form-control sor-1 short"  type="date" value="${info.end_date}" required="required"/>
+		                           	<input class="form-control sor-1 short" name="update_end_date" type="date" value="${info.end_date}" required="required"/>
 	                           </div>
                            </td>
                         </tr>
                         <tr>
-                           <th class="align-l">공개설정</th>
+                           <th class="align-l">공개설정<span class="required-value">*</span></th>
                            	<td>
                          		<div class="card-body">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" checked="checked"
-									 ${info.is_open == 'Y' ? 'checked' : ''}> 
+									<input class="form-check-input" type="radio" name="is_open"  id="flexRadioDefault1" checked="checked"
+									 ${info.is_open == 'Y' ? 'checked' : ''} value="Y"> 
 									<label class="form-check-label" for="flexRadioDefault1">공개 </label>
 								</div>
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" 
-									 ${info.is_open == 'N' ? 'checked' : ''}>
+									<input class="form-check-input" type="radio" name="is_open" id="flexRadioDefault2" 
+									 ${info.is_open == 'N' ? 'checked' : ''} value="N">
 									<label class="form-check-label" for="flexRadioDefault2">
 										비공개 </label>
 								</div>
 								</div>	
                            	</td>
                         </tr>
-                        <tr>
-                           <th class="align-l">인원 추가</th>
-                           <td><textarea class="form-control art"></textarea></td>
-                        </tr>
                      	</table>
-			         </form>
-                  		</div>
 							<div id="btn-gap">							
-								<button class="btn btn-primary">등록</button>
+								<button type="button" class="btn btn-primary btn-popup">수정</button>
 								<button class="btn btn-outline-primary">취소</button>
 							</div>
+			         </form>
+                  		</div>
 							</div>
 						</div> 
 				</section>
@@ -228,54 +227,71 @@
 <script>
 	
 	
-	$('.btnModal').on('click', function() {
-		$('#modal').show();
-	});
+$('.btn-popup').on(
+		'click',
+		function() {
+			layerPopup('프로젝트를 수정하시겠습니까?', '확인', '취소', btn1Act,
+					btn2Act);
+		});
 
-	$('#modal .close').on('click', function() {
-		$('#modal').hide();
-	});
-	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+/* 알림 팝업 */
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("결제방법", "결제하기", "취소", secondBtn1Act, secondBtn2Act);
-	}
+	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+	removeAlert(); // 기존팝업닫기
+	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
 	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		layerPopup("QR", "결제하기", "취소", thirdBtn1Act, thirdBtn2Act);
-	}
+	// 필수 항목 검사
+    const requiredFields = document.querySelectorAll('.required-value');
+    let allFieldsFilled = true;
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
+    requiredFields.forEach(field => {
+        const input = field.closest('tr').querySelector('input, select');
+        if (input && !input.value.trim()) {
+            allFieldsFilled = false;
+        	removeAlert(); // 기존팝업닫기
+        }
+    });
+
+    if (!allFieldsFilled) {
+        // 필수 항목이 비어 있을 경우 팝업 표시
+        layerPopup("필수 항목을 입력해주세요!", "확인", false, removeAlert, removeAlert);
+
+
+        removeAlert(); // 기존팝업닫기
+    }
+
+    // 모든 필수 항목이 입력된 경우 진행
+    layerPopup("수정이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+}
+
+function btn2Act() {
+	// 2번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
 	
-	function thirdBtn1Act(){
-		console.log('세번째 팝업 1번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
+	removeAlert(); // 팝업닫기
+}
+
+function secondBtn1Act() {
+	// 두번째팝업 1번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 1번 버튼 동작');
 	
-	function thirdBtn2Act(){
-		console.log('세번째 팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
+	 document.querySelector('form').submit();
+	
+	removeAlert(); // 팝업닫기
+	
+}
+
+function secondBtn2Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+	
+}
+
+
 
 
 </script>

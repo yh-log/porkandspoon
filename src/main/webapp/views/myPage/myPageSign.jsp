@@ -238,18 +238,81 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => console.error("서명 이미지 불러오기 오류:", error));
 
-    // 직인 등록 버튼 클릭 시
-   writeButton.addEventListener("click", async function () {
-    if (currentCodeName === "SG001") {
-        // 새로운 직인 등록 -> 기존 사인 이미지 삭제
-        await uploadImage("SG002");
-        deleteExistingImage("SG001");
-    } else {
-        // 새로운 직인 등록
-        uploadImage("SG002");
-    }
-});
+ // 직인 등록 버튼 클릭 시
+    writeButton.addEventListener("click", async function () {
+        if (currentCodeName === "SG001") {
+            // 사인이 있을 경우, 삭제 확인 팝업 호출
+            handleRegisterSeal();
+        } else {
+            // 직인 등록(사인이 없을 때)
+            uploadImage("SG002");
+        }
+    });
 
+    async function handleRegisterSeal() {
+        // 팝업 호출
+        layerPopup(
+            "사인이미지가 삭제됩니다. 그래도 진행하시겠습니까?", // 팝업 내용
+            "진행", // 확인 버튼 텍스트
+            "취소", // 취소 버튼 텍스트
+            async function () {
+                try {
+                    // 1. 사인 삭제 요청
+                    const deleteResponse = await fetch(`/myPageSign/delete?code_name=SG001`, {
+                        method: "DELETE",
+                        headers: { [csrfHeader]: csrfToken },
+                    });
+
+                    if (!deleteResponse.ok) {
+                        throw new Error("사인이미지 삭제 실패");
+                    }
+                    console.log("사인 이미지 삭제 성공");
+
+                    // 2. 직인 업로드
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = "image/*";
+
+                    fileInput.onchange = async function (event) {
+                        const file = event.target.files[0];
+                        if (!file) return;
+
+                        const formData = new FormData();
+                        formData.append("file", file);
+                        formData.append("code_name", "SG002"); // 직인 코드
+
+                        try {
+                            const saveResponse = await fetch("/myPageSign/save", {
+                                method: "POST",
+                                body: formData,
+                                headers: { [csrfHeader]: csrfToken },
+                            });
+
+                            if (!saveResponse.ok) {
+                                throw new Error("직인 등록 실패");
+                            }
+                            console.log("직인 등록 성공");
+
+                            // 새로고침
+                            location.reload();
+                        } catch (error) {
+                            console.error("직인 등록 중 오류:", error);
+                        }
+                    };
+
+                    fileInput.click(); // 파일 선택 창 열기
+                } catch (error) {
+                    console.error("사인 삭제 중 오류:", error);
+                }
+                btn2Act
+            },
+            function () {
+                console.log("직인 등록 취소");
+                removeAlert(); // 팝업 닫기
+            }
+        );
+    }
+    
 
     // 사인 등록 버튼 클릭 시
     registerButton.addEventListener("click", async function () {
@@ -403,12 +466,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
 
- // 저장 버튼 클릭 시
-   saveButton.addEventListener("click", async function () {
-    if (signaturePad.isEmpty()) {
-        alert("사인이 비어 있습니다.");
-        return;
-    }
+    saveButton.addEventListener("click", async function () {
+        if (signaturePad.isEmpty()) {
+            // 팝업을 띄워서 확인 메시지 표시
+            layerPopup(
+                "사인이 비어 있습니다.",  // 팝업 내용
+                "확인",                  // 확인 버튼 텍스트
+                false,                    // 취소 버튼 텍스트 (필요 없으면 null)
+                function () {
+                    // 확인 버튼 클릭 시 실행할 내용 (여기선 아무 동작 안 함)
+                    console.log("팝업 확인 클릭됨");
+                    removeAlert();
+                }
+            );
+            return;
+        }
 
     // 사인 데이터를 캔버스에서 가져오기
     const dataURL = signaturePad.toDataURL("image/png");
@@ -492,29 +564,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // 삭제 버튼 클릭 시
     deleteButton.addEventListener("click", deleteExistingImage);
 
-    // 이미지 삭제
-  function deleteExistingImage() {
+   
+  // 이미지 삭제
+function deleteExistingImage() {
     var codeNameToDelete = currentCodeName; // 현재 이미지의 code_name (SG001 또는 SG002)
-	console.log(codeNameToDelete);
-    if (!confirm("이미지를 삭제하시겠습니까?")) return;
 
-    fetch(`/myPageSign/delete?code_name=`+codeNameToDelete, { // codeName 동적 처리
-        method: "DELETE",
-        headers: { [csrfHeader]: csrfToken },
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("삭제 실패");
-            }
-            return response.text();
+    // LayerPopup 호출
+    layerPopup("이미지를 삭제하시겠습니까?", "삭제", "취소", function () {
+        // 확인 버튼 클릭 시 실행할 코드
+        fetch(`/myPageSign/delete?code_name=` + codeNameToDelete, { // codeName 동적 처리
+            method: "DELETE",
+            headers: { [csrfHeader]: csrfToken },
         })
-        .then(result => {
-            alert(result);
-            location.reload(); // 삭제 후 새로고침
-        })
-        .catch(error => console.error("이미지 삭제 오류:", error));
+            .then(response => {
+                if (response.ok) {
+                    // 삭제 성공
+                    location.reload(); // 삭제 후 새로고침
+                } else {
+                    // 삭제 실패 (처리하지 않음)
+                    console.error("삭제 실패: 상태 코드", response.status);
+                }
+            })
+            .catch(error => {
+                // 오류 로그만 출력하고 메시지는 표시하지 않음
+                console.error("이미지 삭제 오류:", error);
+            });
+    }, btn2Act);
 }
-
     // 이미지 업로드
     function uploadImage(codeName) {
         const fileInput = document.createElement("input");
@@ -558,7 +634,21 @@ document.addEventListener("DOMContentLoaded", function () {
     
     
 });
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
 
+	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+	removeAlert(); // 기존팝업닫기
+	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+	layerPopup("두번째", "체크", false, secondBtn1Act, secondBtn2Act);
+}
+
+function btn2Act() {
+	// 2번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
 
 
 </script>

@@ -77,7 +77,9 @@
 	.short{
 		width: 300px;
 	}
-	
+	.required-value {
+    color: var(--bs-danger);
+}
 </style>
 </head>
 
@@ -116,15 +118,15 @@
 		                     <input type="hidden" name="_csrf" value="${_csrf.token}" />
 			                     <table>
 			                        <tr>
-			                           <th class="align-l">상품명</th>
+			                           <th class="align-l">상품명<span class="required-value">*</span></th>
 			                           <td ><input class="form-control sor-1 "  name="name" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
 			                        </tr>
 			                        <tr>
-			                           <th class="align-l">상품가격</th>
+			                           <th class="align-l">상품가격<span class="required-value">*</span></th>
 			                           <td ><input class="form-control sor-1 "  name="cost" type="text" placeholder="상품가격을 입력해주세요." required="required"/></td>
 			                        </tr>
 			                        <tr>
-			                           <th class="align-l">상품수량</th>
+			                           <th class="align-l">상품수량<span class="required-value">*</span></th>
 			                          <td ><input class="form-control sor-1 "  name="count" type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
 			                        </tr>
 			                        <tr>

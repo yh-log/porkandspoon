@@ -90,10 +90,31 @@
         p.project_idx
 </select>
 
+<insert id="saveApprovalLine" parameterType="String">
+	INSERT INTO project_people(project_idx,username)VALUES(#{project_idx},#{username})
+</insert>
+
+<delete id="deletePeople" parameterType="String">
+	delete from project_people where project_idx = #{project_idx}
+</delete>
 
 
-
-
+	<select id="getUsersInfo" resultMap="UserMap">
+    SELECT 
+       u.username, u.name, c.content AS position_content	, u.parent, d.text
+    FROM 
+        user u
+    JOIN 
+        department d ON u.parent = d.id
+    JOIN 
+        code c ON u.position = c.name
+    JOIN 
+        project_people pp ON u.username = pp.username
+    WHERE 
+        pp.project_idx = #{project_idx}
+        AND u.username != #{loginId};
+</select>
+	
 
 
 	
@@ -140,16 +161,59 @@
 			percent = #{percent}
 			WHERE project_idx = #{project_idx}
 	</update>
+
+	<select id="getProjectScroll" resultType="kr.co.porkandspoon.dto.ProjectDTO">
+    SELECT 
+        p.*, 
+        COUNT(pp.username) AS count 
+    FROM 
+        project p
+    LEFT JOIN 
+        project_people pp ON p.project_idx = pp.project_idx
+    <where>
+        (p.username = #{loginId}
+        <if test="isOpen">
+            OR p.is_open = 'Y'
+        </if>
+        <if test="!isOpen">
+            OR (
+                p.is_open = 'N'
+                AND pp.username = #{loginId}
+            )
+        </if>)
+        <if test="includeCompleted and !includeInProgress">
+            AND p.percent = 100
+        </if>
+        <if test="!includeCompleted and includeInProgress">
+            AND p.percent &lt; 100
+        </if>
+        <if test="searchKeyword != null and searchKeyword != ''">
+            AND p.name LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+    </where>
+    GROUP BY 
+        p.project_idx
+    ORDER BY 
+        p.project_idx DESC
+    LIMIT #{pageSize} OFFSET #{offset}
+</select>
 	
-	<update id="eiditProject" parameterType="Map">
+
+
+	
+	<update id="editProject" parameterType="Map">
 		UPDATE project
 		    SET 
 		        name = #{name},
-		        start_date = #{start_date},
-		        end_date = #{end_date},
+		        update_start_date = #{update_start_date},
+		        update_end_date = #{update_end_date},
 		        is_open = #{is_open},
-		        updater = #{loginId}
+		        updater = #{updater}
 	    WHERE project_idx = #{project_idx}
 	</update>
+	
+	<delete id="delProject">
+		delete from project where project_idx = #{project_idx}
+	</delete>
 
 </mapper>

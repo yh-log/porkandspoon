@@ -72,9 +72,35 @@ public class ProjectService {
 		
 	}
 
-	public void eiditProject(Map<String, String> params) {
-		projectDAO.eiditProject(params);
+	public void editProject(Map<String, String> params) {
+		projectDAO.editProject(params);
 		
+	}
+
+	public void saveApprovalLine(String project_idx, String username) {
+		projectDAO.saveApprovalLine(project_idx,username);
+		
+	}
+
+	public void deletePeople(String project_idx) {
+		projectDAO.deletePeople(project_idx);
+		
+	}
+
+	public List<UserDTO> getUsersInfo(String loginId, String project_idx) {
+		
+		return projectDAO.getUsersInfo(loginId,project_idx);
+	}
+
+	public void delProject(String project_idx) {
+		projectDAO.delProject(project_idx);
+		
+	}
+
+	public List<ProjectDTO> getProjectScroll(String loginId, boolean includeCompleted, boolean includeInProgress,
+			boolean isOpen, String searchKeyword, int offset, int pageSize) {
+		// TODO Auto-generated method stub
+		return projectDAO.getProjectScroll(loginId,includeCompleted,includeInProgress,isOpen,searchKeyword,offset,pageSize);
 	}
 
 	
