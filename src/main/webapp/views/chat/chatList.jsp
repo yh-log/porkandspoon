@@ -427,7 +427,7 @@
 									<!-- 수신된 메시지가 여기에 추가됩니다 -->
 								</div>
 								<div id="chat-input-box">
-									<textarea name="content" id="messageInput" class="form-control chatInputText" rows="2"></textarea>
+									<textarea name="content" id="messageInput" class="form-control chatInputText" rows="2" maxlength="100"></textarea>
 									<button class="btn btn-primary" id="sendMessageButton"><i class="bi bi-send"></i>&nbsp;전송</button>
 								</div>
 							</div>
@@ -587,6 +587,14 @@
 			$('#chatRoomName').text(chatName.custom_name);
 			console.log('방아온 정보= ',chatName.custom_name);
 
+			if(chatName.content == null){
+				$('#chatRoomName').text(chatName.custom_name);
+				response.forEach(function (item) {
+					content += '<div class="chatMessageBox">';
+
+					content += '</div>';
+				})
+			}
 
 			let content = '';
 			response.reverse();

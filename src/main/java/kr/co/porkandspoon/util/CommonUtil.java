@@ -197,7 +197,7 @@ public class CommonUtil {
          String new_filename =  UUID.randomUUID().toString() + type;
          
          try {
-            Path path = Paths.get("C:/upload/", new_filename);
+            Path path = Paths.get("/home/opc/webapps/photo/", new_filename);
             Files.write(path, file.getBytes());
             
             results.add(new FileDTO(ori_filename, new_filename, type));
@@ -269,8 +269,8 @@ public class CommonUtil {
        boolean allSuccess = false;
        
        for (String fileName : fileNames) {
-         File srcFile = new File("C:/uploadTemporary/" + fileName);
-         File destFile = new File("C:/upload/" + fileName);
+         File srcFile = new File("/home/opc/webapps/photoTem/" + fileName);
+         File destFile = new File("/home/opc/webapps/photo/" + fileName);
          
          if(srcFile.exists()) {
             try {

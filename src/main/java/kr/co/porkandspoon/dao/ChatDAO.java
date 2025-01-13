@@ -76,4 +76,10 @@ public interface ChatDAO {
      * 채팅방 이름 변경
      */
     int chatRoomNameChange(ChatDTO chatDTO);
+
+    /**
+     * author yh.kim, (25.01.12)
+     * 채팅 메시지가 없는 경우 채팅방 이름 반환
+     */
+    List<ChatDTO> chatRoomNameInfo(Map<String, Object> params);
 }
