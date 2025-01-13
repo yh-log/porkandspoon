@@ -57,7 +57,6 @@
 				<section id="menu">
 					<h4 class="menu-title">직원관리</h4>
 					<ul>
-						
 						<li class="active" id="firstMenu"><a href="/ad/user/listView">직원 리스트</a></li>
 						<li id="secondMenu"><a href="#">퇴사자 리스트</a></li>
 					</ul>

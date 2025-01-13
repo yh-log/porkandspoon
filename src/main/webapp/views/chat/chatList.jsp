@@ -599,7 +599,7 @@
 					content += '</div>';
 				}else{
 					content += '<div class="receiverMessageBox">';
-					content += '<div class="receiverName">' + item.sender + '</div>';
+					content += '<div class="receiverName">' + item.senderName + '</div>';
 					content += '<div class="receiverContent">' + item.content + '</div>';
 					content += '<div class="sendMessageDate">' + item.formatDate + '</div>';
 					content += '</div>';
@@ -660,9 +660,20 @@
 	$(document).on('click', '#addModal', function () {
 		console.log("등록 버튼 클릭됨!");
 
+
+
 		// 원하는 동작 수행
-		const roomName = $('input[name="chatRoomName"]').val();
 		const username = $('input[name="username"]').val();
+
+		const roomName = $('input[name="chatRoomName"]').val().trim();
+
+		// 1. 채팅방 이름이 비었는지 검사
+		if (!roomName) {
+			// 안내 메시지 띄우고 함수 종료
+			// alert("채팅방 이름을 입력하세요.");
+			layerPopup("채팅방 이름을 입력하세요.", "확인", false, removeAlert, removeAlert);
+			return;
+		}
 
 		console.log(roomName, '룸 네임은 ');
 
@@ -681,11 +692,12 @@
 
 				// room 객체에서 roomId와 name을 알림에 표시
 				if (room && room.roomId) {
-					alert('채팅방 생성됨: ' + room.name + ' (ID: ' + room.roomId + ')');
+					//alert('채팅방 생성됨: ' + room.name + ' (ID: ' + room.roomId + ')');
 					//$('#chatRoomIdInput').val(room.roomId);
+					layerPopup('채팅방이 생성되었습니다.', '확인', false, removeAlert, removeAlert);
 					userJoinRoom(room.roomId);
 				} else {
-					alert("채팅방 생성 성공했지만 roomId를 찾을 수 없습니다.");
+					//alert("채팅방 생성 성공했지만 roomId를 찾을 수 없습니다.");
 				}
 			},
 			error: function (xhr) {
