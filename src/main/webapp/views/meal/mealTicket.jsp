@@ -128,9 +128,13 @@
 					<ul>
 						<li class="active"><a href="/mealTicket">식권구매</a></li>
 						<li><a href="/mealMenu">식단표</a></li>
-						<li><a href="/ad/mealMenu/Write">식단등록</a></li>
-						<li><a href="/ad/mealTicket/Write">식권등록</a></li>
-						<li><a href="/ad/meal/List">상품리스트</a></li>
+						
+						<!-- 관리자 메뉴: role 값이 'admin' 또는 'superadmin'일 때만 표시 -->
+					    <c:if test="${role == 'admin' || role == 'superadmin'}">
+					        <li><a href="/ad/mealMenu/Write">식단등록</a></li>
+					        <li><a href="/ad/mealTicket/Write">식권등록</a></li>
+					        <li><a href="/ad/meal/List">상품리스트</a></li>
+					    </c:if>
 					</ul>
 				</section>
 				<section class="cont">

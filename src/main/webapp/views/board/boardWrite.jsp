@@ -39,7 +39,7 @@
 	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
 	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
 	<link rel="stylesheet" href="/resources/css/common.css">
-	<link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+	
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}"> 
@@ -93,7 +93,7 @@
                   <h5>글쓰기</h5>
                </div>
                <div class="cont-body">
-               <form id="writeData" enctype="multipart/form-data">
+               <form id="writeData">
 	               <p id="currentUser" style="display:none;"><sec:authentication property="principal.username"/></p>
 		                  <table>
 							<colgroup>
@@ -115,7 +115,7 @@
 									<th class="table-text table-text-text" style="vertical-align: top;">파일첨부</th>
 									<td>
 										<div class="mb-3">
-											<input type="file" class="filepond-multiple" multiple data-max-file-size="10MB" data-max-files="3" multiple="" name="filepond" id="formFileMultiple"/>
+										 	<input class="form-control" type="file" id="formFileMultiple" name="filepond" multiple="">
 										</div>
 									</td>
 								</tr>
@@ -168,19 +168,7 @@
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-<script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 <script>
-const attachedFilesPond = FilePond.create(document.querySelector('input.filepond-multiple'), {
-    allowMultiple: true,
-    maxFiles: 3,
-    allowImagePreview: false,
-    labelIdle: '파일을 드래그하거나 클릭하여 업로드하세요 (최대 3개)',
-    instantUpload: false
-});
-
-
-
 	$(document).ready(function () {
 		var username = $('#currentUser').text().trim();
 		$('#user-name-insert').append('<input type="hidden" name="username" value="' +username + '">');
@@ -224,8 +212,7 @@ const attachedFilesPond = FilePond.create(document.querySelector('input.filepond
         removeAlert(); // 팝업 닫기
         var subject = $('input[name="subject"]').val().trim(); 
         var content = $('textarea[name="contentss"]').val().trim(); 
-        var files = $('input[name="filepond"]')[0].files; 
-		console.log(files);
+
         if (!subject || !content) {
         	layerPopup(
     	            '제목과 내용 모두 입력해주세요.',
@@ -238,7 +225,6 @@ const attachedFilesPond = FilePond.create(document.querySelector('input.filepond
     	        );
     	        return;
         }
-        
         
         url = '/board/write';
         textEaditorWrite(url);

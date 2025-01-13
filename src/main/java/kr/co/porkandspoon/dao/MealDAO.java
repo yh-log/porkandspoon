@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MealDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 
 @Mapper
 public interface MealDAO {
@@ -44,6 +45,8 @@ public interface MealDAO {
 	int editmealFile(FileDTO dto);
 
 	List<MealDTO> getmealList();
+
+	String getUserInfo(String username);
 
 	
 

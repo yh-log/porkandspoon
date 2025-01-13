@@ -121,6 +121,34 @@
 									<td>
 										<div class="mb-3">
 										 	<input class="form-control" type="file" id="formFileMultiple" name="filepond" multiple="">
+										 	<br>
+											<c:if test="${not empty fileInfo}">
+											    <c:forEach var="file" items="${fileInfo}">
+											        <div style="text-align: left;" id="file_${file.new_filename}">
+											            <span>
+											                <c:choose>
+											                    <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+											                        <img src="/photo/${file.new_filename}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="이미지">
+											                    </c:when>
+											                    <c:when test="${file.new_filename.endsWith('.pdf')}">
+											                        <i class="bi bi-file-earmark-pdf" style="font-size: 24px; color: red;"></i>
+											                    </c:when>
+											                    <c:otherwise>
+											                        <i class="bi bi-file-earmark" style="font-size: 24px;"></i>
+											                    </c:otherwise>
+											                </c:choose>
+											                ${file.ori_filename}
+											            </span>
+											            
+											            <!-- ✅ 삭제 버튼 추가 -->
+											            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="removeFile('${file.new_filename}')">
+											                삭제
+											            </button>
+											            <input type="hidden" name="existingFiles" value="${file.new_filename}">
+											            <br>
+											        </div>
+											    </c:forEach>
+											</c:if>
 										</div>
 									</td>
 								</tr>
@@ -157,6 +185,23 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	
 <script>
+
+	function removeFile(fileName) {
+	    // 해당 파일 요소 삭제
+	    var fileElement = document.getElementById('file_' + fileName);
+	    if (fileElement) {
+	        fileElement.remove(); // DOM에서 제거
+	    }
+	
+	    // 해당 파일의 hidden input 제거
+	    $('input[name="existingFiles"]').each(function () {
+	        if ($(this).val() === fileName) {
+	            $(this).remove();
+	        }
+	    });
+	
+	    console.log('파일 제거됨:', fileName);
+	}
 
 	$('.btn-write').on('click', function () {
 	    layerPopup(

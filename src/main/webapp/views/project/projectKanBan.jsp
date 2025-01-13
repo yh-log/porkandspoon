@@ -31,6 +31,139 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
+/* 조직도 모달 */
+	#chartModalBox .chart-td.active {
+		border-bottom: 2px solid #333;
+	}
+	#chartModalBox .left thead {
+		margin-bottom: 10px;
+	}
+	#chartModalBox .bookmark {
+	    transform: translateY(10px);
+	}
+	#chartModalBox .bookmark tr {
+		border: none;
+	}
+	#chartModalBox .bookmark td {
+		padding: 8px 16px;
+	    text-align: left;
+   		font-weight: 500;
+   		cursor: pointer;
+	}
+	
+	
+	/* 모달 */
+	/* 기본 모달 스타일 */
+	.modal-dialog {
+    	position: static;
+    }
+	.modal {
+	    display: none;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5);
+	    z-index: 1100;
+	}
+	
+	/* 모달 내부 콘텐츠 */
+	.modal-content {
+	    position: absolute;
+	    top: 50%;
+	    left: 50%;
+	    transform: translate(-50%, -50%);
+	    background: #fff;
+	    padding: 20px;
+	    border-radius: 8px;
+	    width: 400px;
+	    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	}
+
+	/* 모달 헤더 */
+	.modal-header {
+	    display: flex;
+	    justify-content: end;
+	    align-items: center;
+	    border-bottom: 1px none #ddd;
+	    margin-bottom: 15px;
+	}
+
+	/* 닫기(x) 버튼 */
+	.modal-close {
+	    font-size: 20px;
+	    cursor: pointer;
+	}
+	
+	/* 모달 바디 */
+	.modal-body .form-group {
+	    margin-bottom: 15px;
+	}
+	
+	.form-label {
+	    display: block;
+	    font-size: 14px;
+	    margin-bottom: 5px;
+	}
+	
+	.form-input {
+	    width: 100%;
+	    padding: 8px;
+	    font-size: 14px;
+	    border: 1px solid #ddd;
+	    border-radius: 4px;
+	}
+	
+	/* 모달 푸터 */
+	.modal-footer {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	}
+	#modalBox .modal-close {
+    	font-size: 30px;
+    }
+	#modalBox h5 {
+		padding-bottom: 16px;
+	}
+	#modalBox .form-control {
+		display: inline-block;
+	}
+	#modalBox .input-row {
+	    display: flex;
+		margin: 6px 0;
+	}
+	#modalBox .item-tit {
+		width: 88px;
+	    flex-shrink: 0;
+		margin-top: 4px;
+	}
+	#modalBox input {
+		padding-left: 10px;
+	}
+ 	#modalBox .btn{ 
+	 	margin: 16px 5px 0;
+	}
+	 
+	 }
+	#selectedUserTable {
+    border-collapse: collapse; /* 테이블 테두리를 한 줄로 만듦 */
+    border: none; /* 테이블 전체 테두리 제거 */
+	}
+	
+	#selectedUserTable th,
+	#selectedUserTable td {
+	    border: none; /* 각 셀의 테두리 제거 */
+	}
+	
+	#selectedUserTable thead th {
+	    border-bottom: 2px solid #ddd; /* 필요하면 헤더에만 밑줄 추가 */
+	}
+
+	 
+	 
+
 	.tit-area{
 		display: flex; 
 	}
@@ -242,7 +375,7 @@
   font-size: 16px;
   font-weight: bold;
   color: white;
-  background-color: #28a745;
+  background-color: #525fb7;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -252,7 +385,7 @@
 }
 
 .add-task-btn:hover {
-  background-color: #218838;
+  background-color: #5b60ac;
 }
 .card-content{
 	margin-bottom: 15px;
@@ -268,7 +401,10 @@
 }
 #home,#schedule{
 		width: 200px;
+		margin-left: -15px;
 	}
+	
+	
 </style>
 	
 
@@ -294,7 +430,7 @@
 						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
 					<div class="buttons">							
-						<button class="btn btn-primary" id="schedule" >인원 변경하기</button>
+						<button class="btn btn-primary" id="schedule" onclick="loadChartModal('chartInputModal')">인원 변경하기</button>
 					</div>
 				</section>
 				<section class="cont">
@@ -425,188 +561,196 @@
 <script>
 
 /* 조직도노드  */
-	//초기 데이터
-	const initialData = {
-   headers: ['이름', '부서', '직급', '삭제'],
-   rows: [
-       ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '<button class="btn btn-primary">삭제</button>'],
-   ]
-	};
+//초기 데이터
+const initialData = {
+headers: ['이름', '부서', '직급', '삭제'],
+rows: [
+    // userDTO (로그인 사용자) 정보 추가
+    ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '<button class="btn btn-primary">삭제</button>'],
 
-	var exampleData = JSON.parse(JSON.stringify(initialData));
-	console.log("이거뭐야?"+exampleData);
-	
-	// 선택된 ID를 rows에 추가하는 함수
-	var approvalLines = ['${userDTO.username}'];
-	console.log("approvalLines 배열:", approvalLines);
-	
+    // 프로젝트에 속한 다른 사용자 정보 추가
+    <c:forEach var="user" items="${projectUsers}">
+        ['${user.name}', '${user.dept.text}', '${user.position_content}', '<button class="btn btn-primary">삭제</button>'],
+    </c:forEach>
+]
+};
+
+
+var exampleData = JSON.parse(JSON.stringify(initialData));
+console.log("이거뭐야?"+exampleData);
+
+// 선택된 ID를 rows에 추가하는 함수
+var approvalLines = ['${userDTO.username}'];
+console.log("approvalLines 배열:", approvalLines);
+
 // 선택된 ID를 rows에 추가하는 함수
 function addSelectedIdToRows(selectedId) {
-    console.log("가져온 ID:", selectedId);
-    if(approvalLines.includes(selectedId)){
-   	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
-    	 return false;
-    }
-    approvalLines.push(selectedId);
-    console.log("approvalLines:", approvalLines);
-    $.ajax({
-        type: 'GET',
-        url: '/ad/project/getUserInfo/'+selectedId,
-        data: {},
-        dataType: "JSON",
-        success: function(response) {
-       	 console.log("유저이름: ",response.name);
-       	 console.log("유저정보: ",response.position_content);
-       	 console.log("유저정보: ",response.dept.text);
-       	 
-       	 var userName = response.name;
-       	 var userPosition = response.position_content;
-       	 var userDept = response.dept.text;
-       	 console.log(userPosition);
-            // 새로운 row 데이터 생성
-            const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
+ console.log("가져온 ID:", selectedId);
+ if(approvalLines.includes(selectedId)){
+	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
+ 	 return false;
+ }
+ approvalLines.push(selectedId);
+ console.log("approvalLines:", approvalLines);
+ $.ajax({
+     type: 'GET',
+     url: '/project/getUserInfo/'+selectedId,
+     data: {},
+     dataType: "JSON",
+     success: function(response) {
+    	 console.log("유저이름: ",response.name);
+    	 console.log("유저정보: ",response.position_content);
+    	 console.log("유저정보: ",response.dept.text);
+    	 
+    	 var userName = response.name;
+    	 var userPosition = response.position_content;
+    	 var userDept = response.dept.text;
+    	 console.log(userPosition);
+         // 새로운 row 데이터 생성
+         const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
 
-            // 기존 rows에 추가
-            initialData.rows.push(newRow);
-            exampleData.rows.push(newRow);
+         // 기존 rows에 추가
+         initialData.rows.push(newRow);
+         exampleData.rows.push(newRow);
 
-            // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
-            updateTableData('customTable', exampleData);
-           
+         // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
+         updateTableData('customTable', exampleData);
+        
 
-            // 삭제 버튼 이벤트 연결
-            bindRemoveUserEvent();
-        	
+         // 삭제 버튼 이벤트 연결
+         bindRemoveUserEvent();
+     	
 
-        },
-        error: function(e) {
-            console.log(e);
-        }
-    });
+     },
+     error: function(e) {
+         console.log(e);
+     }
+ });
 }
 
 function setupModalEvents(modal) {
-	    var closeModal = modal.querySelector("#closeModal");
-	    var cancelButton = modal.querySelector("#cancelModal");
-	    var addButton = modal.querySelector("#addModal");
+    var closeModal = modal.querySelector("#closeModal");
+    var cancelButton = modal.querySelector("#cancelModal");
+    var addButton = modal.querySelector("#addModal");
 
-	    // 확인 클릭 이벤트
-	    if (addButton) {
-	        addButton.addEventListener("click", function () {
-	            addBtnFn(approvalLines);
-	        });
-	    }
-	    
-	    // 닫기 버튼 클릭 이벤트
-	    if (closeModal) {
-	        closeModal.addEventListener("click", function () {
-	            modal.style.display = "none";
-	            resetTableData();
-	        });
-	    }
+    
+    // 확인 클릭 이벤트
+    if (addButton) {
+        addButton.addEventListener("click", function () {
+            addBtnFn(approvalLines);
+        });
+    }
+    
+    // 닫기 버튼 클릭 이벤트
+    if (closeModal) {
+        closeModal.addEventListener("click", function () {
+            modal.style.display = "none";
+            resetTableData();
+        });
+    }
 
-	    // 취소 버튼 클릭 이벤트
-	    if (cancelButton) {
-	        cancelButton.addEventListener("click", function () {
-	            modal.style.display = "none";
-	            resetTableData();
-	        });
-	    }
+    // 취소 버튼 클릭 이벤트
+    if (cancelButton) {
+        cancelButton.addEventListener("click", function () {
+            modal.style.display = "none";
+            resetTableData();
+        });
+    }
 
-	   
-	}
+   
+}
 
 
 function chartPrint(response) {
-	    console.log(response, '받아온 데이터');
+    console.log(response, '받아온 데이터');
 
-	    // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
-	    response.sort(function (a, b) {
-	        if (a.menuDepth === b.menuDepth) {
-	            return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
-	        }
-	        return a.menuDepth - b.menuDepth; // depth 기준 정렬
-	    });
+    // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
+    response.sort(function (a, b) {
+        if (a.menuDepth === b.menuDepth) {
+            return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
+        }
+        return a.menuDepth - b.menuDepth; // depth 기준 정렬
+    });
 
-	    console.log("AJAX 응답 데이터 (정렬 후):", response);
+    console.log("AJAX 응답 데이터 (정렬 후):", response);
 
-	    // jsTree 데이터 형식으로 변환
-	    const processedData = processJsTreeData(response);
+    // jsTree 데이터 형식으로 변환
+    const processedData = processJsTreeData(response);
 
-	    console.log("jsTree 변환 데이터:", processedData);
+    console.log("jsTree 변환 데이터:", processedData);
 
-	    $('#jstree').jstree('destroy').empty();
-	    // jsTree 초기화
-	    $('#jstree').jstree({
-	        'core': {
-	            'data': function (node, callback) {
-	                // 루트 노드 (#) 또는 특정 노드의 children 반환
-	                if (node.id === "#") {
-	                    callback(processedData.filter(item => item.parent === "#"));
-	                } else {
-	                    callback(processedData.filter(item => item.parent === node.id));
-	                }
-	            },
-	            'themes': {
-	                'dots': true,
-	                'icons': true
-	            }
-	        },
-	        "plugins": ["types", "search"],
-	        "types": {
-	            "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
-	            "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
-	        },
-	        "search": {
-	            "show_only_matches": true,
-	            "show_only_matches_children": true
-	        }
-	    }).on('loaded.jstree', function () {
-	        console.log("jsTree가 성공적으로 초기화되었습니다.");
-	        $("#jstree").jstree("open_all");
+    $('#jstree').jstree('destroy').empty();
+    // jsTree 초기화
+    $('#jstree').jstree({
+        'core': {
+            'data': function (node, callback) {
+                // 루트 노드 (#) 또는 특정 노드의 children 반환
+                if (node.id === "#") {
+                    callback(processedData.filter(item => item.parent === "#"));
+                } else {
+                    callback(processedData.filter(item => item.parent === node.id));
+                }
+            },
+            'themes': {
+                'dots': true,
+                'icons': true
+            }
+        },
+        "plugins": ["types", "search"],
+        "types": {
+            "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
+            "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
+        },
+        "search": {
+            "show_only_matches": true,
+            "show_only_matches_children": true
+        }
+    }).on('loaded.jstree', function () {
+        console.log("jsTree가 성공적으로 초기화되었습니다.");
+        $("#jstree").jstree("open_all");
 
-	        // 검색 이벤트 처리
-	        let searchTimeout = null;
-	        $('.input-test').on('input', function () {
-	            const search = $(this).val();
+        // 검색 이벤트 처리
+        let searchTimeout = null;
+        $('.input-test').on('input', function () {
+            const search = $(this).val();
 
-	            // 이전 타임아웃 제거
-	            if (searchTimeout) {
-	                clearTimeout(searchTimeout);
-	            }
+            // 이전 타임아웃 제거
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
 
-	            // 입력 후 300ms 후에 검색 실행
-	            searchTimeout = setTimeout(function () {
-	                $('#jstree').jstree('search', search);
-	            }, 300);
-	        });
+            // 입력 후 300ms 후에 검색 실행
+            searchTimeout = setTimeout(function () {
+                $('#jstree').jstree('search', search);
+            }, 300);
+        });
 
-	    }).on('changed.jstree', function (e, data) {
-	        console.log("선택된 노드:", data.selected);
-	        if (data.selected.length > 0) {
-	        	
-	            const selectedId = data.selected[0]; // 선택된 노드의 ID
-	            console.log("선택된 노드 ID:", selectedId);
+    }).on('changed.jstree', function (e, data) {
+        console.log("선택된 노드:", data.selected);
+        if (data.selected.length > 0) {
+        	
+            const selectedId = data.selected[0]; // 선택된 노드의 ID
+            console.log("선택된 노드 ID:", selectedId);
 
-	            // 설정된 콜백 함수 호출
-	            if (typeof selectIdCallback === "function") {
-	                selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
-	            }
-	        } else {
-	            console.log("선택된 노드가 없습니다.");
-	        }
-	    }).on("load_node.jstree", function (e, data) {
-	        console.log("노드 로드 완료:", data.node);
-	    });
-	    
+            // 설정된 콜백 함수 호출
+            if (typeof selectIdCallback === "function") {
+                selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
+            }
+        } else {
+            console.log("선택된 노드가 없습니다.");
+        }
+    }).on("load_node.jstree", function (e, data) {
+        console.log("노드 로드 완료:", data.node);
+    });
+    
 }
 
 
 //조직도 노드 해당 사원 삭제
 $(document).on('click', '#chartModalBox #orgBody .btn', function() {
-    var idx = $(this).closest('tr').index();
-    console.log(idx);
-    if(idx != 0){
+ var idx = $(this).closest('tr').index();
+ console.log(idx);
+ if(idx != 0){
 	    $(this).closest('tr').remove();
 	    initialData.rows.splice(idx, 1);
 	    exampleData.rows.splice(idx, 1);
@@ -615,9 +759,9 @@ $(document).on('click', '#chartModalBox #orgBody .btn', function() {
 	   // 테이블에서 해당 행 삭제
 	   
 	   
-    }else{
-    	layerPopup( "본인은 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
-    }
+ }else{
+ 	layerPopup( "본인은 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
+ }
 });
 
 
@@ -626,45 +770,62 @@ $(document).on('click', '#chartModalBox #orgBody .btn', function() {
 
 
 getSelectId(function (selectedId) {
- addSelectedIdToRows(selectedId);
+addSelectedIdToRows(selectedId);
 });
 
 function addBtnFn(approvalLines) {
-	    console.log("addBtnFn 호출됨. Approval Lines 데이터:", approvalLines);
+    console.log("addBtnFn 호출");
+    console.log("등록할 인원 목록:", approvalLines);
 
-	    // selectedUserTable 테이블 업데이트
-	    const tbody = document.querySelector("#selectedUserTable tbody");
-	    tbody.innerHTML = ""; // 기존 내용을 초기화
+    // HTML에서 data-project-idx 값을 가져옴
+    const projectElement = document.querySelector('.kanban-item'); // 첫 번째 kanban-item 요소 선택
+    let projectIdx = null;
 
-	    approvalLines.forEach((id) => {
-	        // approvalLines의 각 ID에 대해 initialData.rows에서 일치하는 데이터를 가져옴
-	        const row = exampleData.rows.find(r => r.includes(id));
-	        if (row) {
-	            const tr = document.createElement("tr");
-	            row.forEach((cellContent, index) => {
-	                if (index !== row.length - 1) { // 삭제 버튼을 제외하고 추가
-	                    const td = document.createElement("td");
-	                    td.innerHTML = cellContent;
-	                    tr.appendChild(td);
-	                }
-	            });
-	            tbody.appendChild(tr); // 생성된 행을 테이블에 추가
-	        } else {
-	            console.error(`ID(${id})에 해당하는 데이터를 찾을 수 없습니다.`);
-	        }
-	    });
+    if (projectElement) {
+        projectIdx = projectElement.getAttribute('data-project-idx'); // data-project-idx 속성 값 가져오기
+    }
 
-	    console.log("테이블 업데이트 완료. 업데이트된 테이블 데이터:", tbody.innerHTML);
-	}
+    if (!projectIdx) {
+        console.error("프로젝트 ID를 가져올 수 없습니다.");
+        alert("프로젝트 ID를 가져올 수 없습니다.");
+        return; // project_idx가 없으면 요청 중단
+    }
 
+    console.log("가져온 project_idx:", projectIdx);
 
+    // CSRF 토큰 가져오기
+    const csrfToken = $('meta[name="_csrf"]').attr('content');
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 
+    if (approvalLines.length > 0) {
+        $.ajax({
+            url: '/project/registerApprovalLines', // 데이터를 저장할 엔드포인트
+            method: 'POST',
+            contentType: 'application/json',
+            headers: {
+                [csrfHeader]: csrfToken // CSRF 헤더 추가
+            },
+            data: JSON.stringify({
+                project_idx: projectIdx, // 가져온 project_idx 추가
+                approvalLines: approvalLines // 선택된 인원 ID 배열
+            }),
+            success: function (response) {
+                console.log("저장 성공:", response);
+                alert("인원이 성공적으로 등록되었습니다!");
 
-
-
-
-
-
+                // 저장 성공 후 테이블 및 approvalLines 초기화
+                approvalLines = [];
+                updateTableData('customTable', initialData); // 테이블 초기화 함수
+            },
+            error: function (xhr, status, error) {
+                console.error("저장 중 오류 발생:", error);
+                alert("등록 중 오류가 발생했습니다.");
+            }
+        });
+    } else {
+        alert("등록할 인원이 없습니다.");
+    }
+}
 
 
 

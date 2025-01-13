@@ -77,6 +77,7 @@ public class ChatController {
 	@MessageMapping("/chat/message/{chatRoomId}")
 	@SendTo("/sub/chat/{chatRoomId}") // 해당 채팅방에 메시지를 브로드캐스트
 	public ChatDTO sendMessageToRoom(@ModelAttribute ChatDTO message, @DestinationVariable String chatRoomId) {
+
 		logger.info("채팅방 메시지 발송: roomId => " + chatRoomId);
 		logger.info("발송 메시지: " + message.getContent());
 		logger.info("요청 직원 => " + message.getUsername());
@@ -213,6 +214,21 @@ public class ChatController {
 	@ResponseBody
 	public void chatRoomDelete(@ModelAttribute ChatDTO chatDTO) {
 		chatService.chatRoomDelete(chatDTO);
+	}
+
+	/**
+	 * author yh.kim, (25.01.12)
+	 * 채팅방 이름 변경
+	 */
+	@PutMapping(value = "/roomNameChange")
+	@ResponseBody
+	public ChatDTO chatRoomNameChange(@ModelAttribute ChatDTO chatDTO) {
+
+		logger.info(CommonUtil.toString(chatDTO));
+
+		chatDTO = chatService.chatRoomNameChange(chatDTO);
+
+		return chatDTO;
 	}
 
 }

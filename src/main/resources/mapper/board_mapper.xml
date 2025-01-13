@@ -47,6 +47,7 @@
 	    )
 	</insert>
 	
+	
 	<!-- 공지사항 게시글 수정 -->
 	<update id="setBoardUpdate" parameterType="kr.co.porkandspoon.dto.BoardDTO">
 		UPDATE free_board SET
@@ -108,75 +109,84 @@
 	<!-- 공지사항 게시판 리스트 및 검색 -->
 	<select id="boardList" parameterType="map" resultType="kr.co.porkandspoon.dto.BoardDTO">
     	SELECT 
-	        f.board_idx,
-	        f.username,
-	        u.name AS userNick,
-	        f.subject,
-	        f.content,
-	        f.count,
-	        f.create_date,
-	        f.board_state,
-	        f.use_yn,
-	        f.board_notice,
-	        CASE 
-	            WHEN d.id IS NOT NULL AND ds.id IS NOT NULL AND ds.parent = d2.id 
-	                THEN CONCAT(d.text, ', ', d2.text)
-	            WHEN d.id IS NOT NULL THEN d.text
-	            WHEN ds.id IS NOT NULL AND ds.parent = d2.id THEN d2.text
-	            ELSE NULL
-	        END AS text, 
-	        (SELECT CEIL(COUNT(*) / #{limit}) 
-	         FROM free_board f
-	         LEFT JOIN user u ON f.username = u.username
-	         LEFT JOIN department d ON u.parent = d.id
-	         LEFT JOIN direct_store ds ON u.parent = ds.id
-	         LEFT JOIN department d2 ON ds.parent = d2.id
-	         WHERE f.use_yn = 'Y' 
-	         <if test="keyword != null and keyword != ''">
-	             AND (
-	             <choose>
-	                 <when test="option == 'dept'">
-	                     (d.text LIKE CONCAT('%', #{keyword}, '%') 
-	                     OR (ds.id IS NOT NULL AND ds.parent = d2.id AND d2.text LIKE CONCAT('%', #{keyword}, '%')))
-	                 </when>
-	                 <when test="option == 'name'">
-	                     u.name LIKE CONCAT('%', #{keyword}, '%')
-	                 </when>
-	                 <when test="option == 'subject'">
-	                     f.subject LIKE CONCAT('%', #{keyword}, '%')
-	                 </when>
-	             </choose>
-	             )
-	         </if>
-	        ) AS totalpage
-	    FROM 
-	        free_board f
-	    LEFT JOIN user u ON f.username = u.username
-	    LEFT JOIN department d ON u.parent = d.id
-	    LEFT JOIN direct_store ds ON u.parent = ds.id
-	    LEFT JOIN department d2 ON ds.parent = d2.id
-	    WHERE 
-	        f.use_yn = 'Y' 
-	        <if test="keyword != null and keyword != ''">
-	            AND (
-	            <choose>
-	                <when test="option == 'dept'">
-	                    (d.text LIKE CONCAT('%', #{keyword}, '%') 
-	                    OR (ds.id IS NOT NULL AND ds.parent = d2.id AND d2.text LIKE CONCAT('%', #{keyword}, '%')))
-	                </when>
-	                <when test="option == 'name'">
-	                    u.name LIKE CONCAT('%', #{keyword}, '%')
-	                </when>
-	                <when test="option == 'subject'">
-	                    f.subject LIKE CONCAT('%', #{keyword}, '%')
-	                </when>
-	            </choose>
-	            )
-	        </if>
-	    ORDER BY 
-	        CASE WHEN f.board_notice = 'Y' THEN 1 ELSE 2 END, 
-	        f.board_idx DESC
-	    LIMIT #{offset}, #{limit}
+		    f.board_idx,
+		    f.username,
+		    u.name AS userNick,
+		    f.subject,
+		    f.content,
+		    f.count,
+		    f.create_date,
+		    f.board_state,
+		    f.use_yn,
+		    f.board_notice,
+		    f.department,
+		    CASE 
+		        WHEN f.department = d3.id THEN d3.text
+		        ELSE NULL
+		    END AS deptname,
+		    CASE 
+		        WHEN d.id IS NOT NULL AND ds.id IS NOT NULL AND ds.parent = d2.id 
+		            THEN CONCAT(d.text, ', ', d2.text)
+		        WHEN d.id IS NOT NULL THEN d.text
+		        WHEN ds.id IS NOT NULL AND ds.parent = d2.id THEN d2.text
+		        ELSE NULL
+		    END AS text, 
+		    (SELECT CEIL(COUNT(*) / #{limit}) 
+		     FROM free_board f
+		     LEFT JOIN user u ON f.username = u.username
+		     LEFT JOIN department d ON u.parent = d.id
+		     LEFT JOIN direct_store ds ON u.parent = ds.id
+		     LEFT JOIN department d2 ON ds.parent = d2.id
+		     LEFT JOIN department d3 ON f.department = d3.id
+		     WHERE f.use_yn = 'Y' 
+		     <if test="keyword != null and keyword != ''">
+		         AND (
+		         <choose>
+		             <when test="option == 'dept'">
+		                 (f.department = d3.id AND d3.text LIKE CONCAT('%', #{keyword}, '%')
+		                 OR (d.text LIKE CONCAT('%', #{keyword}, '%'))
+		                 OR (ds.id IS NOT NULL AND ds.parent = d2.id AND d2.text LIKE CONCAT('%', #{keyword}, '%')))
+		             </when>
+		             <when test="option == 'name'">
+		                 u.name LIKE CONCAT('%', #{keyword}, '%')
+		             </when>
+		             <when test="option == 'subject'">
+		                 f.subject LIKE CONCAT('%', #{keyword}, '%')
+		             </when>
+		         </choose>
+		         )
+		     </if>
+		    ) AS totalpage
+		FROM 
+		    free_board f
+		LEFT JOIN user u ON f.username = u.username
+		LEFT JOIN department d ON u.parent = d.id
+		LEFT JOIN direct_store ds ON u.parent = ds.id
+		LEFT JOIN department d2 ON ds.parent = d2.id
+		LEFT JOIN department d3 ON f.department = d3.id
+		WHERE 
+		    f.use_yn = 'Y' 
+		    <if test="keyword != null and keyword != ''">
+		        AND (
+		        <choose>
+		            <when test="option == 'dept'">
+		                (f.department = d3.id AND d3.text LIKE CONCAT('%', #{keyword}, '%')
+		                OR d.text LIKE CONCAT('%', #{keyword}, '%')
+		                OR (ds.id IS NOT NULL AND ds.parent = d2.id AND d2.text LIKE CONCAT('%', #{keyword}, '%')))
+		            </when>
+		            <when test="option == 'name'">
+		                u.name LIKE CONCAT('%', #{keyword}, '%')
+		            </when>
+		            <when test="option == 'subject'">
+		                f.subject LIKE CONCAT('%', #{keyword}, '%')
+		            </when>
+		        </choose>
+		        )
+		    </if>
+		ORDER BY 
+		    CASE WHEN f.board_notice = 'Y' THEN 1 ELSE 2 END, 
+		    f.board_idx DESC
+		LIMIT #{offset}, #{limit}
 	</select>
 	
 	
@@ -407,25 +417,37 @@
 	<!-- 읽음 리스트 사원 가져오기 -->
 	<select id="getCheckList" resultType="kr.co.porkandspoon.dto.BoardDTO">
     	SELECT 
-        c.board_idx,
-        c.username,
-        u.name AS newname, 
-        f.new_filename,  
-        d.text AS text 
-    	FROM 
-        checklist c
-    	LEFT JOIN 
-        file f
-        ON c.username = f.pk_idx
-        AND f.code_name = 'up100'
-    	LEFT JOIN 
-        user u
-        ON c.username = u.username
-    	LEFT JOIN 
-        department d
-        ON u.parent = d.id
-    	WHERE 
-        c.board_idx = #{board_idx};
+		    c.board_idx,
+		    c.username,
+		    u.name AS newname, 
+		    f.new_filename,  
+		    CASE 
+		        WHEN d.id IS NOT NULL AND ds.id IS NOT NULL AND ds.parent = d2.id 
+		            THEN CONCAT(d.text, ', ', d2.text)
+		        WHEN d.id IS NOT NULL THEN d.text
+		        WHEN ds.id IS NOT NULL AND ds.parent = d2.id THEN d2.text
+		        ELSE NULL
+		    END AS text
+		FROM 
+		    checklist c
+		LEFT JOIN 
+		    file f
+		    ON c.username = f.pk_idx
+		    AND f.code_name = 'up100'
+		LEFT JOIN 
+		    user u
+		    ON c.username = u.username
+		LEFT JOIN 
+		    department d
+		    ON u.parent = d.id
+		LEFT JOIN 
+		    direct_store ds
+		    ON u.parent = ds.id
+		LEFT JOIN 
+		    department d2
+		    ON ds.parent = d2.id
+		WHERE 
+		    c.board_idx = #{board_idx}
 	</select>
 	
 	<select id="getCheckDept" parameterType="map" resultType="int">

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import kr.co.porkandspoon.dao.MealDAO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MealDTO;
+import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.util.CommonUtil;
 
 @Service
@@ -147,6 +148,11 @@ public class MealService {
 	public List<MealDTO> getmealList() {
 		
 		return mealDAO.getmealList();
+	}
+
+	public String getUserInfo(String username) {
+		
+		return mealDAO.getUserInfo(username);
 	}
 
 	

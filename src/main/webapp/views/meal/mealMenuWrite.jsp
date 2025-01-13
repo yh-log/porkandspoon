@@ -31,6 +31,9 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
+.required-value {
+    color: var(--bs-danger);
+}
 	.tit-area{
 		display: flex; 
 	}
@@ -115,7 +118,7 @@
 						    
 						    <table>
 						        <tr>
-						            <th class="align-l">상태</th>
+						            <th class="align-l">상태 <span class="required-value">*</span></th>
 						            <td>
 						                <select class="form-select short" id="basicSelect" name="is_time">
 						                    <option value="B" selected="selected">아침</option>
@@ -126,7 +129,7 @@
 						        </tr>
 						        
 						        <tr>
-							    <th class="align-l datetime">일정</th>
+							    <th class="align-l datetime">일정 <span class="required-value">*</span></th>
 							    <td>
 							        <div class="datetime-group">
 							            <input id="start" class="form-control sor-1 short" type="datetime-local" name="start_date" />
@@ -137,7 +140,7 @@
 							</tr>
 						        
 						        <tr>
-						            <th class="align-l">내용</th>
+						            <th class="align-l">내용 <span class="required-value">*</span></th>
 						            <td>
 						                <textarea id="content" class="form-control art" name="content" placeholder="메뉴 입력시 , 를구분좌로 사용하여야 됩니다." required="required"></textarea>
 						            </td>
