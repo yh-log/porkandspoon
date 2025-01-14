@@ -35,7 +35,7 @@
 </head>
 <style>
 	.btn-write {
- 	    width: 200px;
+ 	    width: 163px;
 	    height: 40px;
 	    text-align: center;
 	    margin-top: 30px;
@@ -123,7 +123,7 @@
 	.foodie-filter-div {
 	    position: absolute;
 	    top: 27%;
-	    left: 41%;
+	    left: 37%;
 	    transform: translate(-50%, -50%);
 	    z-index: 500;
 	    display: flex;
