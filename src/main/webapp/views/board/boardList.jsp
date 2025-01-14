@@ -70,7 +70,7 @@
 	 
 	 /* 글쓰기 버튼 스타일 변경 */
 	 .btn-write {
- 	    width: 200px;
+ 	    width: 174px;
 	    height: 40px;
 	    text-align: center;
 	    margin-top: 30px;

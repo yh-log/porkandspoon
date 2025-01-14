@@ -84,6 +84,7 @@ public class AlarmService {
 			noticeDTO.setSubject(ndto.getSubject());
 		}
 		
+
 		// 교육 시청 알림 개별 로직
 		if(noticeDTO.getCode_name() == "ml005") {
 			List<NoticeDTO> dtoList = alarmDAO.getEdu(noticeDTO);
@@ -113,6 +114,7 @@ public class AlarmService {
 		    }
 		    return;
 		}
+
 		
 		if(noticeDTO.getCode_name().equals("ml010")) {
 			List<NoticeDTO> dto = alarmDAO.getChat(noticeDTO);
