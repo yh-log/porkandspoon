@@ -590,7 +590,7 @@
                     $('#modalBox .modal-content').html('');
 
                     // 캘린더 갱신
-                    loadCalender(section);
+                    applyFilter();
                 }
             },
             error: function(e){

@@ -258,19 +258,19 @@
 	</update>
 	
 	<select id="note" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM item WHERE selection = 'note'
+		SELECT * FROM item WHERE selection = 'note' AND use_yn = 'Y' AND is_item = 'Y'
 	</select>
 	
 	<select id="project" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM item WHERE selection = 'project'
+		SELECT * FROM item WHERE selection = 'project' AND use_yn = 'Y' AND is_item = 'Y'
 	</select>
 	
 	<select id="car" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM item WHERE selection = 'car'
+		SELECT * FROM item WHERE selection = 'car' AND use_yn = 'Y' AND is_item = 'Y'
 	</select>
 	
 	<select id="itemDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM item WHERE no = #{no}
+		SELECT * FROM item WHERE no = #{no} AND use_yn = 'Y' AND is_item = 'Y'
 	</select>
 	
 	<!-- 물품 예약 리스트 조회 -->
@@ -285,7 +285,7 @@
 	</select>
 	
 	<select id="selection" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM item WHERE selection = #{selection} AND is_item = 'Y'
+		SELECT * FROM item WHERE selection = #{selection} AND is_item = 'Y' AND use_yn = 'Y'
 	</select>
 	
 	<!-- 물품 예약 등록 -->
