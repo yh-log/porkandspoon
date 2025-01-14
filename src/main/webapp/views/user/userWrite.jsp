@@ -226,7 +226,7 @@
 													<!-- 기타일 경우 input 창으로 전환 -->
 													<option value="ect">기타</option>
 												</select>
-												
+												<input type="text" name="customEmail" id="customEmail" class="form-control" placeholder="직접 입력" style="display: none;" />
 											</div>
 										</td>
 										<th>사내번호</th>
@@ -416,6 +416,23 @@
 		}
 
 	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		var emailSelect = document.getElementById('emailAddr');
+		var customEmailInput = document.getElementById('customEmail');
+
+		emailSelect.addEventListener('change', function () {
+			if (emailSelect.value === 'ect') {
+				// 기타 옵션이 선택되었을 때 input 창 표시
+				customEmailInput.style.display = 'inline-block';
+				customEmailInput.setAttribute('data-required', 'true'); // 필수 입력 처리
+			} else {
+				// 다른 옵션 선택 시 input 창 숨김
+				customEmailInput.style.display = 'none';
+				customEmailInput.removeAttribute('data-required'); // 필수 입력 해제
+			}
+		});
+	});
 
 
 

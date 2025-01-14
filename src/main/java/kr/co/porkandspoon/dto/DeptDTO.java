@@ -38,6 +38,7 @@ public class DeptDTO extends ResponseDTO{
    private String owner;
    
    private String user_name;
+   private String username;
    
    private String is_close;
    
@@ -203,8 +204,12 @@ public String getMenuDepth() {
 public void setMenuDepth(String menuDepth) {
 	this.menuDepth = menuDepth;
 }
-   
-   
-   
-   
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }

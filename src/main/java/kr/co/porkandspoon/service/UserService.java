@@ -47,6 +47,8 @@ public class UserService {
 	
 		// 1. 기존 코드 있는지 체크 (select - count)
 		Integer codeCheck = userDao.randomCodeCheck(dto);
+
+		logger.info(codeCheck + " ====> 기존에 있는지 카운트!! ");
 		
 		
 		// 코드가 없을 경우 기존 레코드 업데이트
@@ -79,9 +81,13 @@ public class UserService {
 		int resultRow = userDao.chackAuthCode(dto);
 		logger.info("인증 번호 찾기 로우 => " + resultRow);
 	
-		if(resultRow < 0) {
+		if(resultRow == 0) {
 			return false;
 		}
+
+		// 인증번호가 맞으면 기존 인증번호 N으로 업데이트
+		int idx = dto.getIdx();
+		userDao.randomCodeUpdate(idx);
 
 		dto.setUsername(userDao.findUsername(dto));
 		
@@ -551,7 +557,7 @@ public class UserService {
 	private void deptInactiveUpdate(DeptDTO dto) {
 
 		// 부서 직원 변경
-		String[] usernameArr = dto.getUser_name().split(" ");
+		String[] usernameArr = dto.getUsername().split(",");
 		UserDTO userDTO = new UserDTO();
 		for (String username : usernameArr) {
 			userDTO.setUsername(username);
@@ -699,6 +705,14 @@ public class UserService {
 			logger.info("직영점 비활성화 로우 => " + storeUpdateRow);
 
 			// 직원 테이블 업데이트
+
+
+			UserDTO user = new UserDTO();
+
+			user.setParent(dto.getId());
+			String num = generateCompanyNumber(user);
+			user.setPerson_num(num);
+
 			int userUpdateRow = userDao.storeUserUserUpdate(dto);
 			logger.info("비활성 시 직원 업데이트 로우 => " + userUpdateRow);
 		}
@@ -814,7 +828,8 @@ public class UserService {
 	 * 직원 인사이동 
 	 */
 	public boolean setEmployeeTransfer(List<UserDTO> userDto) {
-		
+
+
 		int insertRow = userDao.setEmployeeTransfer(userDto);
 		logger.info("인사이동 로우 => " + insertRow);
 		
@@ -826,6 +841,14 @@ public class UserService {
 		logger.info(CommonUtil.toString(userDto));
 		// 직원 데이블 정보 변경
 		for (UserDTO user : userDto) {
+
+			// 사번 생성 메서드
+			user.setParent(user.getNew_department());
+			String num = generateCompanyNumber(user);
+			user.setPerson_num(num);
+
+			logger.info("생성된 사번 => " + user.getPerson_num());
+
 	        int result = userDao.updateEmployeeUser(user);
 			logger.info("직원 테이블 업데이트 => " + result);
 	        if (result < 1) {
