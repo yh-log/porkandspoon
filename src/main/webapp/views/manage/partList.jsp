@@ -11,6 +11,8 @@
 	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 <link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
+<meta name="_csrf" content="${_csrf.token}">
+<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <!-- select -->
 <link rel="stylesheet"
@@ -42,7 +44,8 @@
 	}
 	
 	#home,#schedule{
-		width: 200px;
+		width: 185px;
+		margin-left: -10px;
 	}
 	
 	h5 .count{
@@ -135,7 +138,7 @@
 										<option value="name">이름</option>
 									</select>
 									<input type="text" id="searchKeyword" name="search" class="form-control search" placeholder="검색내용을 입력하세요" width="80%"/>
-									<button class="btn btn-primary"><i class="bi bi-search"></i></button>
+									<button class="btn btn-primary"><i class="bi bi-search" ></i></button>
 								</div>
 							</div>
 							<div class="row">
@@ -296,13 +299,73 @@ function renderList(list) {
             content += '<td>' + view.birth + '</td>';
             content += '<td>' + view.spotName + '</td>';
             content += '<td>' + view.join_date + '</td>';
-            content += '<td><i class="bi bi-trash" ></i></td>';
+            content += '<td><i class="bi bi-trash" onclick="delPart(' + view.part_idx + ')"></i></td>';
+
             content += '</tr>';
         }
     }
     $('#list').html(content);
 }
 	
+function delPart(part_idx) {
+    const csrfToken = $('meta[name="_csrf"]').attr('content'); // CSRF 토큰 가져오기
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content'); // CSRF 헤더 가져오기
+
+    layerPopup(
+        "아르바이트생 정보를 삭제하겠습니까?", // 팝업 내용
+        "확인", // 확인 버튼 텍스트
+        "취소", // 취소 버튼 텍스트
+        function () { // 확인 버튼 클릭 시 실행할 콜백 함수
+            $.ajax({
+                type: 'DELETE', // 삭제 요청
+                url: '/us/part/Delete/' + part_idx, // 삭제 URL (idx 포함)
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 헤더 설정
+                },
+                success: function (response) {
+                	console.log("삭제성공!");
+                   
+                    btn1Act();
+                    pageCall(1); // 삭제 후 첫 페이지 호출
+                },
+                error: function (e) {
+                    console.error(e);
+                    alert('삭제 권한이 없거나, 오류가 발생했습니다.');
+                }
+            });
+        },
+        btn2Act // 취소 버튼 클릭 시 실행할 콜백 함수
+    );
+}
+
+
+function btn1Act() {
+	// 1번버튼 클릭시 수행할 내용
+	console.log('1번 버튼 동작');
+
+	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
+	removeAlert(); // 기존팝업닫기
+	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+	layerPopup("삭제 되었습니다.", "확인", false, secondBtn1Act, secondBtn2Act);
+}
+
+function btn2Act() {
+	// 2번버튼 클릭시 수행할 내용
+	console.log('2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
+
+function secondBtn1Act() {
+	// 두번째팝업 1번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 1번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
+
+function secondBtn2Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 2번 버튼 동작');
+	removeAlert(); // 팝업닫기
+}
 
 
 </script>

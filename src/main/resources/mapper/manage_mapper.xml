@@ -96,11 +96,15 @@
  </insert> 
    
    <select id="partDetail" resultType="kr.co.porkandspoon.dto.ManageDTO">
-   		select * from part where part_idx = #{part_idx}
+   		SELECT * FROM part WHERE part_idx = #{part_idx}
    </select>
    
+   <delete id="delPart" parameterType="String">
+   		DELETE FROM part WHERE part_idx = #{part_idx}
+   </delete>
+   
    <select id="scheduleDetail" resultType="kr.co.porkandspoon.dto.ManageDTO">
-   		select * from part_time where part_idx = #{part_idx}
+   		SELECT * FROM part_time WHERE part_idx = #{part_idx}
    </select>
    
    <update id="editPart" parameterType="Map">
