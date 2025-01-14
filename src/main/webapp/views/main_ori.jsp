@@ -936,7 +936,7 @@ tbody.fc-body >tr >td.fc-widget-content{
 	}
 
 	function httpSuccess(response){
-		applyFilter();    
+	    loadCalender(section);    
 	    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
 	    initializeModal(arr);
 	}
@@ -966,25 +966,17 @@ tbody.fc-body >tr >td.fc-widget-content{
 	}
 	
 	// 일정 상세보기
-	function scheduleDetail(info) {
-		var idx = info.event.id;
-		var filter = info.event.groupId;
-		console.log("클릭한 일정의 idx:", idx);
-		console.log("클릭한 일정의 타입:", filter);
+	function scheduleDetail(idx) {
+		var idx = idx.event.id;
+		console.log("idx : ",idx );
 	    $.ajax({
 	        type: 'GET',
 	        url: '/calenderDetail/'+idx, // 컨트롤러의 상세 조회 엔드포인트
-	      	data: {
-	      		idx: idx,
-	      		filter: filter
-	      	},
 	        dataType: 'JSON',
 	        success: function(response) {
 	            if (response.success) {
 	                var schedule = response.schedule;
-	                var attendees = response.attendees;
 	                console.log('상세보기 파람스 주입 : ',schedule.idx);
-	                console.log('상세보기 참석자 주입 : ',attendees);
 	                var params = {
 	                		idx: schedule.idx,
 	                		subject: schedule.subject,
@@ -992,120 +984,51 @@ tbody.fc-body >tr >td.fc-widget-content{
 	 	                    start_date: schedule.start_date,
 	 	                    end_date: schedule.end_date,
 	 	                    username: schedule.username,
-	 	                   	name: schedule.name,
-	 	                    type: schedule.type,
-	 	                   	no: schedule.no,
-	 	                  	count: schedule.count,
-	 	                  	item_name: schedule.item_name,
-	 	                  	selection: schedule.selection,
-	 	                    no: schedule.no,
-	 	                   	attendees: attendees,
-	 	                   	room_name: schedule.room_name
+	 	                    type: schedule.type
 	                };
-	                	              
+	
 	                // 모달 열기
-	                if(filter == 'A'){
-	                	loadModal("item", "Info", params);
-	                }else if(filter == 'R'){
-	                	loadModal("room", "Info", params);
-	                }else{
-		                loadModal("calender", "Info", params);	                	
-	                }
+	                loadModal("calender", "Info", params);
 	            } else {
 	                alert(response.message || "일정 정보를 가져오는 데 실패했습니다.");
 	            }
 	        },
 	        error: function(xhr, status, error) {
 	            console.error("일정 상세 조회 실패:", error);
+	            alert("서버와 통신 중 문제가 발생했습니다.");
 	        }
 	    });
 	}
 	   
-	// 데이터 주입 함수 수정
+ 	// 데이터 주입 함수 수정
     function setModalData(type, data) {
         console.log('셋모달데이타 : ',data);
         if (type === 'Input') {
             // 일정 추가 모드: 입력 필드 초기화
-            console.log("일정 추가 모드: 데이터 없음",data);
+            console.log("일정 추가 모드: 데이터 없음");
             document.getElementById("calendar_subject_input").value = '';
             document.getElementById("calendar_content_input").value = '';
             document.getElementById("calendar_start_date_input").value = '';
             document.getElementById("calendar_end_date_input").value = '';
-            document.getElementById("calendar_username_input").textContent = '${username}'; // 작성자 자동 입력
+            document.getElementById("calendar_username_input").textContent = '${pageContext.request.userPrincipal.name}'; // 작성자 자동 입력
         } else if (type === 'Info') {
             // 일정 상세 보기 모드: 데이터 주입
             console.log("일정 상세 보기 모드: 데이터 주입", data);
-   			                       
-           	if(data.type == 'C' || data.type == 'T' || data.type == 'P'){
-           		
-           		if(data.username == '${pageContext.request.userPrincipal.name}'){
-                	document.getElementById('amendSchedule').style.display = 'block';
-                	document.getElementById('deleteSchedule').style.display = 'block';
-                }
-           		
-	        	if(data.type == 'C'){
-	        		document.getElementById("detail").textContent = '공지 상세정보';
-	        	}else if(data.type == 'T'){
-	        		document.getElementById("detail").textContent = '팀 상세정보';
-	        	}else{
-	        		document.getElementById("detail").textContent = '일정 상세정보';
-	        	}
-	            
-	            document.getElementById("subject").textContent = data.subject;
-	            $("#content").html(data.content);
-	            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
-	            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
-	            document.getElementById("username").textContent = data.name;
-	            document.getElementById("event_id").value = data.idx;          		
-           	}else if(data.type == 'A'){
-	            // 물품
-           		document.getElementById("subject").textContent = data.subject;
-                document.getElementById("content").textContent = data.content;
-                document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
-                document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
-                document.getElementById("username").textContent = data.name;
-                if(data.selection == 'car'){
-               		document.getElementById("select").textContent = '차량';
-                }else if(data.selection == 'note'){
-                	document.getElementById("select").textContent = '노트북';
-                }else{
-                	document.getElementById("select").textContent = '빔 프로젝터';
-                }
-                document.getElementById("model").textContent = data.item_name;
-                document.getElementById("event_id").value = data.idx;
-                document.getElementById("event_no").value = data.no;                   		
-           	}else{
-	            //회의
-           		document.getElementById("subject").textContent = data.subject;
-	            document.getElementById("content").textContent = data.content;
-	            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
-	            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
-	            document.getElementById("username").textContent = data.name;
-	            document.getElementById("count").textContent = data.count+'명';
-	            document.getElementById("room_name").textContent = data.room_name;
-	            document.getElementById("event_id").value = data.idx;
-	            document.getElementById("event_no").value = data.no;
-	            
-	         	// 참석자 목록 표시
-	            var attendeesList = document.getElementById("people");
-	            attendeesList.innerHTML = ''; // 기존 내용 초기화
-	            var selectedEmployees = [];
-
-	            if(data.attendees && data.attendees.length > 0){
-	                data.attendees.forEach(function(attendee) {
-	                    var cont = '<p style="margin: 0;" data-id="' + attendee.username + '">'
-	                             + attendee.dept.text + ' ' 
-	                             + attendee.name + ' ' 
-	                             + attendee.position_content + '</p>';
-	                    attendeesList.insertAdjacentHTML('beforeend', cont);
-	                    selectedEmployees.push(attendee.username); // 참석자 ID 배열에 저장
-	                });
-	            } else {
-	                attendeesList.insertAdjacentHTML('beforeend', '<p>참석자가 없습니다.</p>');
-	            }          		
-           	}
+        	if(data.type == 'C'){
+        		document.getElementById("detail").textContent = '공지 상세정보';
+        	}else if(data.type == 'T'){
+        		document.getElementById("detail").textContent = '팀 상세정보';
+        	}else{
+        		document.getElementById("detail").textContent = '일정 상세정보';
+        	}
+            
+            document.getElementById("subject").textContent = data.subject;
+            document.getElementById("content").textContent = data.content;
+            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
+            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
+            document.getElementById("username").textContent = data.username;
+            document.getElementById("event_id").value = data.idx;
         } else if (type === 'Edit') {
-        	
             // 일정 수정 모드: 데이터 주입
             console.log("일정 수정 모드: 데이터 주입", data);       
             document.getElementById("edit_calendar_event_id").value = data.idx;
@@ -1114,7 +1037,7 @@ tbody.fc-body >tr >td.fc-widget-content{
             document.getElementById("calendar_start_date_edit").value = data.start_date;
             document.getElementById("calendar_end_date_edit").value = data.end_date;
             document.getElementById("calendar_type_edit").value = data.type
-            document.getElementById("edit_calendar_event_username").value = data.name;
+            document.getElementById("edit_calendar_event_username").value = data.username;
         }
     }
 
@@ -1207,15 +1130,8 @@ tbody.fc-body >tr >td.fc-widget-content{
     function handleDeleteSchedule() {
     	var idx = $('#event_id').val();
     	console.log('삭제할때 받아와?',idx);
-    	layerPopup("정말 삭제 하시겠습니까?", "확인", "취소", function() {deleteSchedule(idx)}, secondBtn1Act);
     	httpAjax('DELETE', '/calenderDelete/'+idx);
 	}
-    
-    function deleteSchedule(idx) {
-    	httpAjax('DELETE', '/calenderDelete/'+idx);
-    	removeAlert();
-	}
-    
     
 	function secondBtn1Act() {
 		// 두번째팝업 1번버튼 클릭시 수행할 내용

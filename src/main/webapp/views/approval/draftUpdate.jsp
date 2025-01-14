@@ -817,33 +817,19 @@ function updateDraft(){
  
  
  /* 조직도 */
- /* 조직도노드  */
+/* 조직도노드  */
  //초기 데이터
 const initialData = {
     headers: ['이름', '부서', '직급', '구분', '삭제'],
-    rows: [ 
-    	['${ApprLine[0].user_name}', '${ApprLine[0].dept_name}', '${ApprLine[0].position}', '기안', '<button class="btn btn-primary">삭제</button>'],
-   	],
+    rows: [
+        ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '기안', '<button class="btn btn-primary">삭제</button>'],
+    ],
     footer: '<button class="btn btn-outline-secondary btn-line-write" onclick="loadModal(\'ApprLine\',\'Bookmark\')">라인저장</button>'
 };
- 
-//서버에 넘길 결재자 id배열
-var approvalLines = [];
- 
-//초기데이터, approvalLines[]에 기존 결재라인 삽입
-var jsonApprLine = '${jsonApprLine}'; 
-var apprLine = JSON.parse(jsonApprLine);
-for(i=0;i<apprLine.length; i++){
-	if(i>0){
-		console.log("초기apprLine[i].user_name!!!!",apprLine[i].username);
-		//addSelectedIdToRows(apprLine[i].username);
-		var initApprover = [apprLine[i].user_name, apprLine[i].dept_name, apprLine[i].position, '결재', '<button class="btn btn-primary">삭제</button>']
-    	initialData.rows.push(initApprover);
-	}
-  	approvalLines.push(apprLine[i].username);
-}
- 
 var exampleData = JSON.parse(JSON.stringify(initialData));
+
+//서버에 넘길 결재자 id배열
+var approvalLines = ['${userDTO.username}'];
 
  // 선택된 ID를 rows에 추가하는 함수
  function addSelectedIdToRows(selectedId) {
@@ -888,8 +874,6 @@ var exampleData = JSON.parse(JSON.stringify(initialData));
  getSelectId(function (selectedId) {
      addSelectedIdToRows(selectedId);
  });
- 
-
  
  
  function chartPrint(response) {
@@ -985,6 +969,7 @@ var exampleData = JSON.parse(JSON.stringify(initialData));
 	        /* 조직도 버튼 클릭 시 조직도 버튼 show 나의 결재선 hide */
 	    	if($(this).hasClass('chart-btn')){
 	    		$('#chartModalBox .tbody-style').show();
+	    		$('#chartModalBox .bookmark').hide();
 	    		/* 조직도 전체 열기 */
 	    		/* $("#jstree").jstree("open_all");
 	    		
@@ -1008,6 +993,7 @@ var exampleData = JSON.parse(JSON.stringify(initialData));
 		    	/* 나의 결재선 버튼 클릭 시 나의 결재선 show 조직도 버튼 hide */
 		    	//$('.chart-mybtn').on('click', function() {
 		    		$('#chartModalBox .tbody-style').hide();
+		    		$('#chartModalBox .bookmark').show();
 		    		
 		    		$.ajax({
 		    			type:'GET',
@@ -1080,19 +1066,19 @@ var exampleData = JSON.parse(JSON.stringify(initialData));
 });
  	
  	
-// 조직도 노드 해당 사원 삭제
-$(document).on('click', '#chartModalBox #orgBody .btn', function() {
-    var idx = $(this).closest('tr').index();
-    if(idx != 0){
-	    $(this).closest('tr').remove();
-	    initialData.rows.splice(idx, 1);
-	    exampleData.rows.splice(idx, 1);
-	    approvalLines.splice(idx, 1);
-	    console.log("approvalLines 수정 : ",approvalLines);
-    }else{
-    	layerPopup( "기안자는 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
-    }
-});
+//조직도 노드 해당 사원 삭제
+ $(document).on('click', '#chartModalBox #orgBody .btn', function() {
+     var idx = $(this).closest('tr').index();
+     if(idx != 0){
+ 	    $(this).closest('tr').remove();
+ 	    initialData.rows.splice(idx, 1);
+ 	    exampleData.rows.splice(idx, 1);
+ 	    approvalLines.splice(idx, 1);
+ 	    console.log("approvalLines 수정 : ",approvalLines);
+     }else{
+     	layerPopup( "기안자는 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
+     }
+ });
 	
 	
  // 조직도노드 등록버튼 (결재라인 설정)
@@ -1102,13 +1088,13 @@ $(document).on('click', '#chartModalBox #orgBody .btn', function() {
  }); */
  
 function addBtnFn(){
-	var lineNodes = document.getElementById('orgBody').childNodes;
-	// 기안문 기존 결재라인 설정 초기화 
-	$('.appr_line tr.name > td > p').text('');
-	$('.appr_line tr.position > td').text('');
-	$('input[name="appr_user"]').val('');
-	// 기안문 결재라인 설정
-	for(var i = 0; i <= lineNodes.length ; i++){
+	 var lineNodes = document.getElementById('orgBody').childNodes;
+	 // 기안문 기존 결재라인 설정 초기화 
+	 $('.appr_line tr.name > td > p').text('');
+	 $('.appr_line tr.position > td').text('');
+	 $('input[name="appr_user"]').val('');
+	 // 기안문 결재라인 설정
+	 for(var i = 0; i <= lineNodes.length ; i++){
 		 userName = lineNodes[i].childNodes[0].innerText;
 		 userPosition = lineNodes[i].childNodes[2].innerText;
 		 document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText = userName;
@@ -1116,12 +1102,10 @@ function addBtnFn(){
 		 document.querySelectorAll('input[name="appr_user"]')[i].value = approvalLines[i];
 	 	 document.getElementById('chartModalBox').style.display = "none"; 
 	 	 //console.log("approvalLines",approvalLines[i]);
-	 	 
+
 	 	 //console.log("###appr_line tr.name ",document.querySelectorAll('.appr_line tr.name > td > p')[i].innerText );
-		 //console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
-		 //console.log("###appr_user ",document.querySelectorAll('input[name="appr_user"]'));
-		 //console.log("###appr_user.value ",document.querySelectorAll('input[name="appr_user"]')[i].value);
-		 //console.log("$$$$exampleData.rows ",exampleData.rows);
+	 	// console.log("###position ",document.querySelectorAll('.appr_line tr.position > td')[i].innerText );
+	 	 //console.log("###appr_user ",document.querySelectorAll('.input[name="appr_user"]'));
 	 }
 }
  
@@ -1132,6 +1116,39 @@ function addBtnFn(){
     	saveApprvalLine();
     }
 });
+ 
+ 
+
+var csrfToken = document.querySelector('meta[name="_csrf"]').content;
+var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+function saveApprvalLine() {
+	console.log("approvalLines",approvalLines);
+	var formData = new FormData($('#BookmarkFrom')[0]);
+	formData.append('approvalLines', JSON.stringify(approvalLines));
+	$.ajax({
+        type : 'POST',
+        url : '/approval/setApprLineBookmark',
+        data : formData,
+        processData: false, 
+        contentType: false,
+        dataType : 'JSON',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader(csrfHeader, csrfToken);
+        },
+        success : function(response){
+            console.log("성ㅇ공:", response.success);
+            if(response.success){
+            	document.getElementById('modalBox').style.display = "none";
+            	layerPopup( "결재라인 저장이 저장되었습니다.","확인",false,removeAlert,removeAlert);
+            }
+        },error : function(e){
+            console.log(e);
+        }
+    });
+	
+}
+
 
 </script>
 

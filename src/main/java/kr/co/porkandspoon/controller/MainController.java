@@ -23,6 +23,7 @@ import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.ApprovalService;
 import kr.co.porkandspoon.service.MailService;
 import kr.co.porkandspoon.service.MainService;
+import kr.co.porkandspoon.service.ResevationService;
 import kr.co.porkandspoon.util.security.CustomUserDetails;
 
 @RestController
@@ -35,6 +36,7 @@ public class MainController {
 	@Autowired MailService mailService;
 	@Autowired ApprovalService approvalService;
 	@Autowired UserDAO userDao;
+	@Autowired ResevationService reservationService;
 	@Value("${upload.path}") String paths;
 	
 
@@ -47,12 +49,15 @@ public class MainController {
 		int unreadMail = mailService.unreadMailCount(loginId);
 		// 결재할 문서
 		int haveToApprove = approvalService.haveToApproveCount(loginId);
+		// 예약 수
+		int reservationCount = reservationService.resTotal(userDetails);
 		// 프로필이미지
 		UserDTO userInfo = userDao.userDetail(loginId);
 		mav.addObject("name", userDetails.getName()); 
 		mav.addObject("userInfo", userInfo); 
 		mav.addObject("unreadMail", unreadMail);
 		mav.addObject("haveToApprove", haveToApprove);
+		mav.addObject("reservationCount", reservationCount);
 		return mav;
 	}
 	
