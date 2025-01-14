@@ -176,8 +176,12 @@ public class ChatService {
 
         List<ChatDTO> chatRoomList = chatDAO.chatRoomMessage(params);
 
-        if(chatRoomList == null){
-            return new ArrayList<>();
+        if(chatRoomList.isEmpty()){
+
+            // 채팅 메시지가 없는 경우 채팅방 이름만 반환
+            chatRoomList = chatDAO.chatRoomNameInfo(params);
+
+            return chatRoomList;
         }
 
         LocalDateTime now = LocalDateTime.now();

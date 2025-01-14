@@ -81,6 +81,9 @@ function codeSubmit() {
     }
     
     httpAjax('POST', '/sendMail', params);
+
+    // 인증번호 입력 input 초기화
+    $('input[name="certification"]').val('');
     
     $('#certificationChackBox').show();
     document.getElementById('findIdBtn').classList.remove('disabled');

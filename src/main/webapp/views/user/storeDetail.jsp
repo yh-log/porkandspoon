@@ -168,7 +168,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="location.href='/ad/store/update/${storeInfo.id}'">수정</button>
-									<button type="button" class="btn btn-outline-primary" id="listBtn" onclick="location.href='/ad/store/list'">목록</button>
+									<button type="button" class="btn btn-outline-primary" id="listBtn" onclick="location.href='/ma/store/list'">목록</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->

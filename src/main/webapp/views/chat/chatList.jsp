@@ -358,6 +358,11 @@
 		margin-top: 18px;
 	}
 
+	#noneChatMessageDiv{
+		color: grey;
+		margin-left: 500px;
+	}
+
 </style>
 
 </head>
@@ -427,7 +432,7 @@
 									<!-- 수신된 메시지가 여기에 추가됩니다 -->
 								</div>
 								<div id="chat-input-box">
-									<textarea name="content" id="messageInput" class="form-control chatInputText" rows="2"></textarea>
+									<textarea name="content" id="messageInput" class="form-control chatInputText" rows="2" maxlength="100"></textarea>
 									<button class="btn btn-primary" id="sendMessageButton"><i class="bi bi-send"></i>&nbsp;전송</button>
 								</div>
 							</div>
@@ -587,8 +592,18 @@
 			$('#chatRoomName').text(chatName.custom_name);
 			console.log('방아온 정보= ',chatName.custom_name);
 
-
 			let content = '';
+			if(chatName.content == null){
+				$('#chatRoomName').text(chatName.custom_name);
+				response.forEach(function (item) {
+					content += '<div class="chatMessageBox">';
+					content += '<div id="noneChatMessageDiv">새로운 채팅을 시작해보세요.</div>';
+					content += '</div>';
+				});
+				$('#chatMessageDivBox').prepend(content);
+				return;
+			}
+
 			response.reverse();
 			response.forEach(function (item){
 				content += '<div class="chatMessageBox">';
@@ -800,6 +815,8 @@
 			// 보낸 사람이 나인지 상대방인지 확인
 			const isSender = receivedMessage.username === '${userDTO.username}';
 
+
+
 			// 메시지 화면에 추가 (서버에서 저장 실행)
 			if (isSender) {
 				// 내가 보낸 메시지 (Send)
@@ -879,7 +896,7 @@
 	}
 
 	$('#chatOutIcon').on('click', function (){
-		const roomId = chatRoomOpenValue;
+		const roomId = currentRoomId;
 		const username = '${userDTO.username}';
 
 		let chatDTO = {'roomId' : roomId, 'username' : username};
@@ -894,6 +911,7 @@
 
 		// 채팅 내용 비우기
 		$('#chatMessageDivBox').empty();
+		participationChatList(username);
 
 	});
 

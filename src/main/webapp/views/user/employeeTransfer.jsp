@@ -225,8 +225,7 @@
 
 
 <!-- 페이지네이션 -->
-<script src="/resources/js/jquery.twbsPagination.js"
-	type="text/javascript"></script>
+<script src="/resources/js/jquery.twbsPagination.js" type="text/javascript"></script>
 	
 <script src='/resources/js/common.js'></script> 
 <script src='/resources/js/menu.js'></script>
@@ -460,6 +459,8 @@ function useLastClickedButton() {
 
 var modal = document.getElementById("chartModalBox");
 
+const selectedEmployeeIds = [];
+
 function modelTransferOpen(){
 	 modal.style.display = "block"; // 모달 열기
 
@@ -480,6 +481,8 @@ function modelTransferOpen(){
 
 		$('#orgBodyTransfer').empty();
 
+		selectedEmployeeIds.splice(0, selectedEmployeeIds.length);
+
 
 	});
 
@@ -495,6 +498,8 @@ function modelTransferOpen(){
 		document.getElementById('leave').classList.add('btn-outline-primary');
 
 		$('#orgBodyTransfer').empty();
+
+		selectedEmployeeIds.splice(0, selectedEmployeeIds.length);
 	});
 
 	$('#leave').on('click', function (){
@@ -510,17 +515,26 @@ function modelTransferOpen(){
 		document.getElementById('store').classList.add('btn-outline-primary');
 
 		$('#orgBodyTransfer').empty();
+
+		selectedEmployeeIds.splice(0, selectedEmployeeIds.length);
 	});
-
-
-
 
 	$('#employee').trigger('click');
 }
 
 
+
 // 선택된 ID를 rows에 추가하는 함수
 function addSelectedIdToRows(selectedId) {
+
+	// 중복 확인
+	if (selectedEmployeeIds.includes(selectedId)) {
+		layerPopup("이미 선택된 직원입니다.", "확인", false, removeAlert, removeAlert);
+		return; // 중복된 경우 함수 종료
+	}
+
+	// 중복이 아닌 경우 ID를 추가
+	selectedEmployeeIds.push(selectedId);
 
 	console.log(selectedId);
 	// 인사이동, 퇴사 처리
@@ -534,6 +548,12 @@ function addSelectedIdToRows(selectedId) {
 				console.log(response);
 
 				var userResult = response[0];
+
+				// `person_num`이 null인 경우 표시하지 않음
+				if (!userResult.person_num) {
+					console.warn("person_num이 null인 데이터는 추가되지 않습니다.");
+					return;
+				}
 
 				if(lastClickedButtonId === 'employee' && userResult.old_position === 'po7'){
 					layerPopup("직영점주는 선택 불가능합니다.", '확인', false, removeAlert, removeAlert);
@@ -620,6 +640,12 @@ function addSelectedIdToRows(selectedId) {
 
 				var userResult = response[0];
 				var deptResult = response[1];
+
+				// `person_num`이 null인 경우 표시하지 않음
+				if (!userResult.person_num) {
+					console.warn("person_num이 null인 데이터는 추가되지 않습니다.");
+					return;
+				}
 
 				if(userResult.old_department === '' ||  userResult.old_department === null){
 					layerPopup("직영점주만 선택 가능합니다.", '확인', false, removeAlert, removeAlert);
@@ -760,6 +786,9 @@ function hideAndClearModal() {
 
 	// 모달 숨기기
 	modal.style.display = "none";
+
+	selectedEmployeeIds.splice(0, selectedEmployeeIds.length);
+	console.log("모달이 닫혀서 선택된 직원 목록 초기화:", selectedEmployeeIds);
 
 	$('#orgBodyTransfer').empty();
 }
