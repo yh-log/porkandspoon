@@ -482,7 +482,7 @@ function btn1Act() {
 	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
 	removeAlert(); // 기존팝업닫기
 	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-	layerPopup("수정이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+	layerPopup("수정이 완료 되었습니다.", "확인", false, secondBtn1Act, secondBtn2Act);
 }
 
 function btn2Act() {

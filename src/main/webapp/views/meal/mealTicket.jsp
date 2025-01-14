@@ -188,7 +188,7 @@
 								<script>
 								    // 특수 문자를 이스케이프 처리하여 JavaScript에서 안전하게 사용
 								    var successMessage = "<%= successMessage.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n") %>";
-								    layerPopup(successMessage, "확인", "닫기");
+								    layerPopup(successMessage, "확인",false);
 								</script>
 								<%
 								    }
@@ -246,6 +246,9 @@
 
 $(document).ready(function () {
     // 구매 버튼 클릭 이벤트
+	  $(".btn").css("color", "white");
+
+
     $('.btn-pay-ready').on('click', function (e) {
         e.preventDefault(); // 기본 동작 방지
 

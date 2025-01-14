@@ -281,7 +281,7 @@ $('.btn-popup').on(
 		'click',
 		function() {
 			layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', secondBtn1Act,
-					secondBtn2Act);
+					thirdBtn2Act);
 		});
 
 
@@ -336,7 +336,7 @@ function secondBtn1Act() {
             if (response.menu_idx > 0) {
                 var mealIdx = response.menu_idx; // 메뉴 ID
                 console.log("중복된 메뉴 ID:", mealIdx);
-                removeAlert(); // 팝업닫기
+             
                 layerPopup("같은 날짜에 이미 등록한 메뉴가 있습니다. 이 메뉴로 덮어씌우시겠습니까?",  "확인","취소",  
                 		function () {
                 	console.log(mealIdx);
@@ -345,7 +345,9 @@ function secondBtn1Act() {
                 },thirdBtn2Act);
             } else {
                 console.log("중복 없음, 폼 제출 시작");
-                $("#mealForm").submit();
+                layerPopup("등록이 완료되었습니다.","확인",false,secondBtn2Act,secondBtn2Act);
+                
+                
             }
         },
         error: function (xhr, status, error) {
@@ -360,6 +362,8 @@ function secondBtn2Act() {
 	// 두번째팝업 2번버튼 클릭시 수행할 내용
 	console.log('두번째팝업 2번 버튼 동작');
 	removeAlert(); // 팝업닫기
+	$("#mealForm").submit();
+
 }
 
 
@@ -381,6 +385,8 @@ function thirdBtn1Act(mealIdx) {
     httpAjax('PUT', '/ad/mealMenu/Update', formData);
 	
     removeAlert(); // 팝업 닫기
+    layerPopup("등록이 완료되었습니다.","확인",false,thirdBtn2Act,secondBtn2Act);
+    
 }
 
 function thirdBtn2Act() {

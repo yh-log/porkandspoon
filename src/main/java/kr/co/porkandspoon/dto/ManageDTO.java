@@ -31,7 +31,7 @@ public class ManageDTO extends ResponseDTO {
 	private int part_idx;
 	private int history_idx;
 	private String is_done;
-	
+	private String use_yn;
 
 
     
@@ -320,6 +320,16 @@ public class ManageDTO extends ResponseDTO {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+
+	public String getUse_yn() {
+		return use_yn;
+	}
+
+
+	public void setUse_yn(String use_yn) {
+		this.use_yn = use_yn;
 	}
 }
 

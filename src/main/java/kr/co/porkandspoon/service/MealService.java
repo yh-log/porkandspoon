@@ -1,6 +1,8 @@
 package kr.co.porkandspoon.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -137,6 +139,13 @@ public class MealService {
 	}
 
 	public int setmealbuy(Map<String, Object> params) {
+		
+		LocalDateTime now = LocalDateTime.now();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    String formattedDate = now.format(formatter);
+	    params.put("create_date", formattedDate); // 날짜를 params에 추가
+
+		
 		return mealDAO.setmealbuy(params);
 	}
 
