@@ -187,7 +187,10 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	}
 
 
-
+	public int delPart(String part_idx) {
+			
+			return manageDAO.delPart(part_idx);
+		}
 	
 
 
@@ -718,4 +721,6 @@ Logger logger = LoggerFactory.getLogger(getClass());
 
 		return chartDTO;
 	}
+
+	
 }

@@ -95,7 +95,7 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">식단등록</h4>
+					<h4 class="menu-title">구내식당</h4>
 					<ul>
 						<li><a href="/mealTicket">식권구매</a></li>
 						<li><a href="/mealMenu">식단표</a></li>
@@ -180,15 +180,16 @@
 
 
 <script>
-// 초기값 설정 같은 날자 넣었을때 처리하는 방법 어캐할 건지 
+
+
 $(document).ready(function () {
     // 초기값 설정
     function setInitialValues() {
         const selectedValue = $('#basicSelect').val(); // 초기 상태 값 가져오기
         const now = new Date(); // 현재 날짜 가져오기
         const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-        const date = String(now.getDate()).padStart(2, '0');
+        const month = (now.getMonth() + 1).toString().padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const date = now.getDate().toString().padStart(2, '0');
 
         let startTime = '';
         let endTime = '';
@@ -209,6 +210,9 @@ $(document).ready(function () {
         $('#start').val(startTime);
         $('#end').val(endTime);
 
+        // 종료 날짜를 readonly로 설정
+        $('#end').prop('readonly', true);
+
         // 설정된 값 확인
         console.log('Initial Start Time:', $('#start').val());
         console.log('Initial End Time:', $('#end').val());
@@ -219,10 +223,66 @@ $(document).ready(function () {
 
     // 셀렉트 박스 변경 이벤트
     $('#basicSelect').change(function () {
-        setInitialValues();
+        const selectedStart = $('#start').val(); // 현재 시작 날짜 가져오기
+        if (selectedStart) {
+            updateTimeBasedOnDateAndMeal(selectedStart, $(this).val());
+        } else {
+            setInitialValues(); // 시작 날짜가 없으면 초기값 설정
+        }
     });
+
+    // 시작 날짜 변경 이벤트
+    $('#start').on('change', function () {
+        const selectedStart = $(this).val(); // 시작 날짜 가져오기
+        const selectedMeal = $('#basicSelect').val(); // 현재 선택된 상태 값 가져오기
+        updateTimeBasedOnDateAndMeal(selectedStart, selectedMeal);
+    });
+
+    // 날짜와 식단 상태에 따라 시간 업데이트 함수
+    function updateTimeBasedOnDateAndMeal(startDateValue, mealType) {
+        const startDate = new Date(startDateValue);
+        let endDate = new Date(startDateValue); // 종료 시간 초기값
+
+        // 상태에 따라 종료 시간 계산
+        if (mealType === 'B') { // 아침
+            startDate.setHours(7, 0);
+            endDate.setHours(8, 0);
+        } else if (mealType === 'L') { // 점심
+            startDate.setHours(12, 0);
+            endDate.setHours(13, 0);
+        } else if (mealType === 'D') { // 저녁
+            startDate.setHours(18, 0);
+            endDate.setHours(19, 0);
+        }
+
+        // 종료 날짜 설정
+        const formattedStartDate = startDate.getFullYear() + '-' +
+            (startDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+            startDate.getDate().toString().padStart(2, '0') + 'T' +
+            startDate.getHours().toString().padStart(2, '0') + ':' +
+            startDate.getMinutes().toString().padStart(2, '0');
+
+        const formattedEndDate = endDate.getFullYear() + '-' +
+            (endDate.getMonth() + 1).toString().padStart(2, '0') + '-' +
+            endDate.getDate().toString().padStart(2, '0') + 'T' +
+            endDate.getHours().toString().padStart(2, '0') + ':' +
+            endDate.getMinutes().toString().padStart(2, '0');
+
+        $('#start').val(formattedStartDate);
+        $('#end').val(formattedEndDate);
+
+        console.log('Updated Start Time:', $('#start').val());
+        console.log('Updated End Time:', $('#end').val());
+    }
 });
 
+
+$('.btn-popup').on(
+		'click',
+		function() {
+			layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', secondBtn1Act,
+					secondBtn2Act);
+		});
 
 
 /* 알림 팝업 */
@@ -245,13 +305,25 @@ function btn2Act() {
 
 
 function secondBtn1Act() {
+	removeAlert(); // 팝업닫기
     console.log("두번째팝업 1번 버튼 동작");
     var url = "/ad/mealMenu/Overlay";
     var start_date = $("#start").val();
     var end_date = $("#end").val();
+    var content = $("#content").val();
+    
+    
     console.log("start_date:", start_date);
     console.log("end_date:", end_date);
+    console.log("content:", content);
 
+    if (!start_date || !end_date || !content) {
+        layerPopup('모든 필수 항목을 입력해 주세요.', '확인', false, thirdBtn2Act, thirdBtn2Act);
+        return;
+    }
+    
+    
+    
     var data = { start: start_date, end: end_date };
 
     $.ajax({
@@ -318,12 +390,6 @@ function thirdBtn2Act() {
 }
 
 
-$('.btn-popup').on(
-		'click',
-		function() {
-			layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', secondBtn1Act,
-					secondBtn2Act);
-		});
 
 </script>
 

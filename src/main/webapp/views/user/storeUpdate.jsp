@@ -249,7 +249,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 수정하시겠습니까?','수정','취소', storeUpdate, removeAlert)">수정</button>
-									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/store/detail/${storeInfo.id}'">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ma/store/detail/${storeInfo.id}'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->

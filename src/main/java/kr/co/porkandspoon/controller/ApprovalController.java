@@ -195,7 +195,7 @@ public class ApprovalController {
 		}
 		
 		// 기안 유저 정보
-		mav.addObject("UserInfo", approvalService.getUserInfo(loginId));
+		mav.addObject("userDTO", approvalService.getUserInfo(loginId));
 		
 		// 상세페이지 리턴 여부
 		boolean returnValue = checkDraftPermission(draft_idx, response, mav, permission, message);
@@ -376,7 +376,7 @@ public class ApprovalController {
 		
 	@Transactional
 	@PostMapping(value="/draftUpdate/{reapproval}")
-	public Map<String, Object> draftUpdate(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart("attachedFiles") MultipartFile[] attachedFiles, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @RequestParam("deleteFiles") String deleteFilesJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String reapproval) {
+	public Map<String, Object> draftUpdate(@RequestPart("logoFile") MultipartFile[] logoFile, @RequestPart(value="attachedFiles",required=false) MultipartFile[] attachedFiles, String[] appr_user, @RequestParam("imgsJson") String imgsJson, @RequestParam("deleteFiles") String deleteFilesJson, @ModelAttribute ApprovalDTO approvalDTO, @PathVariable String reapproval) {
 		logger.info("연결!!!!!!");
 		//logger.info("deleteFiles : "+ deleteFiles);
 		//logger.info("appr_user[0] : "+ appr_user[0]);

@@ -380,7 +380,7 @@
 	
 	function httpSuccess(response) {
 		console.log('성공',response);
-		location.href="/us/educationDetail/${info.no}"
+		location.href="/mo/educationDetail/${info.no}"
 	}
 	
 	function secondBtn1Act() {
@@ -390,7 +390,7 @@
 	}
 	
 	function back(){
-		location.href="/us/educationDetail/${info.no}"
+		location.href="/mo/educationDetail/${info.no}"
     }
 	
 	

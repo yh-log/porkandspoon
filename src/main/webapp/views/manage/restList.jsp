@@ -87,7 +87,6 @@
 								<div class="col-5 col-lg-5"></div>
 								<div id="searchLayout" class="col-7 col-lg-7">
 									<select class="form-select selectStyle" id="searchOption">
-										<option value="name">이름</option>
 										<option value="subject">제목</option>
 									</select>
 									<input type="text" name="search" class="form-control" placeholder="검색내용을 입력하세요" width="80%"/>
@@ -187,7 +186,7 @@
 				if (response && response.length > 0) {
 					getSuccess(response); // 검색 결과를 테이블에 렌더링
 				} else {
-					$('#userList').html('<tr><td colspan="7">검색 결과가 없습니다.</td></tr>');
+					$('#restContent').html('<tr><td colspan="9">검색 결과가 없습니다.</td></tr>');
 				}
 
 				// 페이지네이션 초기화

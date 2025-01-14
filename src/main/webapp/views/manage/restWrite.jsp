@@ -6,16 +6,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>휴점 등록</title>
-<!-- 부트스트랩 -->
-<link rel="shortcut icon"
-	href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+	<!-- 부트스트랩 -->
+	<link rel="shortcut icon" href="/resources/assets/compiled/svg/favicon.svg" type="image/x-icon">
 	<link rel="shortcut icon" href="https://example.com/favicon.png" type="image/png">
 
-
-<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
-<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
-<link rel="stylesheet" href="/resources/css/common.css">
+	<link rel="stylesheet" href="/resources/assets/compiled/css/app.css">
+	<link rel="stylesheet" href="/resources/assets/compiled/css/app-dark.css">
+	<link rel="stylesheet" href="/resources/assets/compiled/css/iconly.css">
+	<link rel="stylesheet" href="/resources/css/common.css">
 
 	<meta name="_csrf" content="${_csrf.token}">
 	<meta name="_csrf_header" content="${_csrf.headerName}">
@@ -114,8 +115,10 @@
 												 <th class="table-text table-text-text" style="vertical-align: top;">휴점일정</th>
 												 <td colspan="3">
 													 <div class="inline-layout">
-														 <span class="dateFont">시작일</span><span class="required-value">*</span> <input class="form-control" type="date" id="start_date" name="start_date" data-required="true"/> <span class="dateFont"> ~ </span>
-														 <span class="dateFont">종료일</span><span class="required-value">*</span> <input class="form-control" type="date" id="end_date" name="end_date" data-required="true"/>
+														 <span class="dateFont">시작일</span><span class="required-value">*</span>
+														 <input class="form-control" type="date" name="start_date" data-required="true" /> <span class="dateFont"> ~ </span>
+														 <span class="dateFont">종료일</span><span class="required-value">*</span>
+														 <input class="form-control" type="date" name="end_date" data-required="true"/>
 													 </div>
 												 </td>
 											 </tr>
@@ -150,6 +153,12 @@
 <!-- 부트스트랩 -->
 <script src="/resources/assets/compiled/js/app.js"></script>
 
+<!-- select  -->
+<script
+		src="/resources/assets/extensions/choices.js/public/assets/scripts/choices.js"></script>
+<script src="/resources/assets/static/js/pages/form-element-select.js"></script>
+
+
 <script src='/resources/js/textEaditor.js'></script>
 <script src='/resources/js/common.js'></script>
 
@@ -160,7 +169,7 @@
 
 <script>
 
-	console.log(('input[name="hidden"]').val());
+
 
 	function validateForm(){
 		const requireFidlds = document.querySelectorAll('[data-required="true"]');
@@ -180,27 +189,45 @@
 
 
 
+	// 오늘 날짜를 'YYYY-MM-DD' 형식으로 반환하는 함수
+	function getTodayDate() {
+		const today = new Date();
+		const year = today.getFullYear();
+		const month = String(today.getMonth() + 1).padStart(2, '0');
+		const day = String(today.getDate()).padStart(2, '0');
+		return year + '-' + month + '-' + day;
+	}
+
 	// 시작일과 종료일 요소 가져오기
 	const startDateInput = document.querySelector('input[name="start_date"]');
 	const endDateInput = document.querySelector('input[name="end_date"]');
 
+	// 시작일과 종료일의 초기 min 값 설정
+	startDateInput.min = getTodayDate();
+	endDateInput.min = getTodayDate();
+
+	// 시작일 변경 시 종료일의 min 값 업데이트
+	startDateInput.addEventListener("change", function () {
+		if (startDateInput.value) {
+			endDateInput.min = startDateInput.value;
+			validateDateRange(); // 날짜 유효성 검사 호출
+		}
+	});
+
+	// 종료일 변경 시 유효성 검사
+	endDateInput.addEventListener("change", validateDateRange);
+
 	// 유효성 검사 함수
 	function validateDateRange() {
-		// 두 값이 모두 있을 때만 비교
-		if (startDateInput.value && endDateInput.value) {
-			const startDate = new Date(startDateInput.value);
-			const endDate = new Date(endDateInput.value);
+		const startDate = new Date(startDateInput.value);
+		const endDate = new Date(endDateInput.value);
 
-			if (endDate < startDate) {
-				layerPopup('시작일 이후로 입력해주세요.', '확인', false, removeAlert, removeAlert);
-				endDateInput.value = ""; // 종료일 초기화
-			}
+		// 종료일이 시작일보다 이전인 경우 초기화
+		if (endDate < startDate) {
+			layerPopup('종료일은 시작일 이후로 선택해야 합니다.', '확인', false, removeAlert, removeAlert);
+			endDateInput.value = ""; // 종료일 초기화
 		}
 	}
-
-	// 시작일, 종료일 둘 다 바뀔 때마다 검사
-	startDateInput.addEventListener("change", validateDateRange);
-	endDateInput.addEventListener("change", validateDateRange);
 
 	function restWrite(){
 
@@ -211,6 +238,8 @@
 			textEaditorWrite('/us/rest/write');
 
 		}else{
+			console.log('폼 다 안채워짐');
+			removeAlert();
 			layerPopup("필수값을 입력해주세요.", "확인", false, removeAlert, removeAlert);
 		}
 

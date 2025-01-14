@@ -177,7 +177,6 @@
             <div class="col-12 col-lg-12">
                <div class="tit-area" style="display: flex; justify-content: space-between; align-items: center;">
                   <h5>예약</h5>
-                  <div class="btn btn-primary" style="margin: 0;">예약하기</div>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -213,7 +212,7 @@
 <script src='/resources/js/common.js'></script>
 <script src='/resources/js/calenderJH.js'></script>
 
-<script src='/resources/js/charjstree.js'></script>
+<script src='/resources/js/charjstreeJH.js'></script>
 <!-- jQuery DateTimePicker JS (CDN) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
 <!-- 한국어 로케일 파일 -->
@@ -229,7 +228,7 @@
 		
 	    getAjax('/roomList','JSON');
 	    dataSetting('room', 'Input');
-	    
+	 
 	});
 
 	function detail(no) {
@@ -402,8 +401,7 @@
 		    console.log("업데이트된 selectedEmployees:", selectedEmployees);
 		});
 	}
-
-	 	
+		
 	function addBtnFn() {
         console.log('조직도 인원 저장');
         $('#selected_employees').empty();
@@ -510,6 +508,7 @@
 		    loadCalender(section);    
 		    var arr = ['calendarModal', 'calendar_content', 'calendar_start_date'];
 		    initializeModal(arr);
+		    location.reload();
 		}
 		
 		// 예약 상세보기
@@ -588,16 +587,15 @@
 	            document.getElementById("category_items_room").value = '';
 	            document.getElementById("selected_employees").textContent = '';
 	            document.getElementById("calendar_username_input").textContent = '${info.name}'; // 작성자 자동 입력
-	            
-	            
+	            	                   
 	        } else if (type === 'Info') {
 	            // 일정 상세 보기 모드: 데이터 주입
 	            console.log("일정 상세 보기 모드: 데이터 주입", data);
 	          
 	            document.getElementById("subject").textContent = data.subject;
 	            document.getElementById("content").textContent = data.content;
-	            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
-	            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
+	            document.getElementById("start_date").textContent = data.start_date
+	            document.getElementById("end_date").textContent = data.end_date
 	            document.getElementById("username").textContent = data.name;
 	            document.getElementById("count").textContent = data.count+'명';
 	            document.getElementById("room_name").textContent = data.room_name;
@@ -794,7 +792,6 @@
 	    	var idx = $('#event_id').val();
 	    	console.log('삭제할때 받아와?',idx);
 	    	layerPopup("정말 삭제 하시겠습니까?", "확인", "취소", function(){roomDeleteA(idx)}, removeAlert);
-	    	httpAjax('DELETE', '/roomDelete/'+idx);
 		}
 	    
 	    function roomDeleteA(idx) {
@@ -802,7 +799,9 @@
 	    	httpAjax('DELETE', '/roomDelete/'+idx);
 	    	removeAlert();
 		}
-	 
+	    	    
+	    
+
 	 
 	
  

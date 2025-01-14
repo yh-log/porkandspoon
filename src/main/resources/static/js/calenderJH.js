@@ -109,7 +109,7 @@ document.addEventListener('click', function(event){
         }
         // 조직도 모달 버튼 클릭
         else if(event.target.id === 'loadChartModal'){
-            loadChartModal('chartInputModal')
+            loadChartModal('chartInputModal');
         }
         else if(event.target.id === 'cancelModal'){
             removeEmployee();

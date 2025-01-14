@@ -194,6 +194,7 @@
 										<td colspan="4">
 											<div class="inline-layout">
 												<input type="text" name="deptUsername" class="form-control .disable" disabled="disabled" value="${deptInfo.user_name}"/>
+												<input type="hidden" name="username" value="${deptInfo.username}"/>
 												<button type="button" class="btn btn-primary" onclick="loadChartModal('chartInputModal')" ><i class="bi bi-diagram-3"></i></button>
 												<input type="hidden" name="user_name">
 											</div>
@@ -208,7 +209,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('브랜드를 수정하시겠습니까?','수정','취소', deptUpdate, removeAlert)">수정</button>
-									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/dept/detail/${deptInfo.id}'">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ma/dept/detail/${deptInfo.id}'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->

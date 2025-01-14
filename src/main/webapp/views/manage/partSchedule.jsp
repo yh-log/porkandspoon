@@ -59,7 +59,9 @@
 
 	
 #scheduleWrite{
-		width: 200px;
+	
+		width: 185px;
+		margin-left: -10px;
 	}
 	/* 이벤트 폭 고정 */
 	.fc-event {
@@ -297,8 +299,8 @@ border-bottom: none;
 					        </div>
 					        <div class="modal-footer">
 					            <button type="button" id="saveEditMenu" class="btn btn-primary">저장</button>
-					            <button type="button" id="deleteEditMenu" class="btn btn-danger">삭제</button>
-					            <button type="button" id="cancelEditModal" class="btn btn-secondary">취소</button>
+					            <button type="button" id="deleteEditMenu" class="btn btn-outline-primary">삭제</button>
+					            <button type="button" id="cancelEditModal" class="btn btn-outline-primary">취소</button>
 					        </div>
 					    </div>
 					</div>
@@ -359,8 +361,8 @@ border-bottom: none;
 					            </form>
 					        </div>
 					        <div class="modal-footer">
-					            <button type="button" id="saveRegisterMenu" class="btn btn-primary">저장</button>
-					            <button type="button" id="cancelRegisterModal" class="btn btn-secondary">취소</button>
+					            <button type="button" id="saveRegisterMenu" class="btn btn-primary">등록</button>
+					            <button type="button" id="cancelRegisterModal" class="btn btn-outline-primary">취소</button>
 					        </div>
 					    </div>
 					</div>
@@ -747,16 +749,32 @@ $('#deleteEditMenu').on('click', function () {
     });
 
     $('#saveRegisterMenu').on('click', function () {
-        const partIdx = $('#registerPartIdx').val(); // hidden 필드에서 가져온 값
-        console.log('현재 registerPartIdx 값:', partIdx); // 값 확인 로그 추가
-        const isDoneValue = $('input[name="is_done"]:checked').val();
-        console.log('등록 요청 - 선택된 is_done 값:', isDoneValue); // 디버깅 로그
+        const partIdx = $('#registerPartIdx').val();
+        const pay = $('#registerPay').val();
+        const workDate = $('#registerMenuDate').val();
+        const startTime = $('#registerMenuStartTime').val();
+        const endTime = $('#registerMenuEndTime').val();
+        const isDoneValue = $('input[name="is_done_register"]:checked').val();
+
+        
+        
+        // 값 검증
+        if (!partIdx || !pay || !workDate || !startTime || !endTime) {
+            layerPopup(
+                "필수항목을 입력해 주세요.", // 팝업 내용
+                "확인", // 확인 버튼 텍스트
+                false, // 취소 버튼 없음
+                removeAlert // 확인 버튼 클릭 시 팝업 닫기
+            );
+            return;
+        }
+
         const newEventData = {
             part_idx: partIdx,
-            pay: $('#registerPay').val(),
-            work_date: $('#registerMenuDate').val(),
-            start_time: $('#registerMenuStartTime').val(),
-            end_time: $('#registerMenuEndTime').val(),
+            pay: pay,
+            work_date: workDate,
+            start_time: startTime,
+            end_time: endTime,
             is_done: isDoneValue
         };
 
@@ -784,17 +802,29 @@ $('#deleteEditMenu').on('click', function () {
 
 
     // 수정 저장 버튼 클릭
-    $('#saveEditMenu').on('click', function () {
-        const updatedData = {
-            history_idx: $('#editHistoryIdx').val(), // 수정: history_idx 값 가져오기
-            part_idx: $('#editPartIdx').val(), // 수정: part_idx 값 가져오기
-            pay: $('#pay').val(),
-            work_date: $('#menuDate').val(),
-            start_time: $('#menuStartTime').val(),
-            end_time: $('#menuEndTime').val(),
-            is_done: $('input[name="is_done"]:checked').val(), // is_done 값 가져오기
-        };
+  $('#saveEditMenu').on('click', function () {
+    const updatedData = {
+        history_idx: $('#editHistoryIdx').val(),
+        part_idx: $('#editPartIdx').val(),
+        pay: $('#pay').val(),
+        work_date: $('#menuDate').val(),
+        start_time: $('#menuStartTime').val(),
+        end_time: $('#menuEndTime').val(),
+        is_done: $('input[name="is_done"]:checked').val(),
+    };
 
+    // 값 검증
+    if (!updatedData.part_idx || !updatedData.pay || !updatedData.work_date || !updatedData.start_time || !updatedData.end_time) {
+        layerPopup(
+            "모든 필드를 입력해 주세요.", // 팝업 내용
+            "확인", // 확인 버튼 텍스트
+            false, // 취소 버튼 없음
+            removeAlert // 확인 버튼 클릭 시 팝업 닫기
+        );
+        return;
+    }
+
+ 
         console.log('수정된 데이터:', updatedData);
 
         $.ajax({

@@ -125,7 +125,7 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">상품리스트</h4>
+					<h4 class="menu-title">구내식당</h4>
 					<ul>
 						<li><a href="/mealTicket">식권구매</a></li>
 						<li><a href="/mealMenu">식단표</a></li>
@@ -137,7 +137,7 @@
 				<section class="cont">
 					<div class="col-12 col-lg-12"></div> <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 					<div class="tit-area justify-end">
-					    <h5>식권구매</h5>
+					    <h5>상품리스트</h5>
 					</div>
 						<div class="cont-body">
 							<div class="row">
@@ -211,7 +211,10 @@
 
 
 <script>
-	
+$(document).ready(function() {
+    // 모든 버튼에 글씨 색상 강제 적용
+    $(".btn").css("color", "white");
+});
 	
 	$('.btnModal').on('click', function() {
 		$('#modal').show();

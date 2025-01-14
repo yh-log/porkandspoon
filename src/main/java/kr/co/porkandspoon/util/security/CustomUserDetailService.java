@@ -41,6 +41,13 @@ public class CustomUserDetailService implements UserDetailsService {
 		// DB 비번 로그 찍기
 		logger.info("[loadUserByUsername] DB password for user '{}': '{}'", username, empl.getPassword());
 
+
+		// `user_yn` 값 확인
+		if ("N".equalsIgnoreCase(empl.getUser_yn())) {
+			logger.warn("User '{}' is disabled (user_yn = N).", username);
+			throw new LockedException("Account is disabled.");
+		}
+
 		// 2) 1111과 매칭되는지 확인 (암호화된 비밀번호가 정말 1111 해시인지)
 		boolean is1111 = passwordEncoder.matches("1111", empl.getPassword());
 		logger.info("[loadUserByUsername] matches('1111', DB password) => {}", is1111);
