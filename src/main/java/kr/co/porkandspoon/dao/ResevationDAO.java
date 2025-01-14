@@ -71,7 +71,7 @@ public interface ResevationDAO {
 
 	int roomDelete(String idx);
 
-	int isDuplicate(int no, String start_date, String end_date);
+	int isDuplicate(int no, String start_date, String end_date, String idx);
 
 	int roomDuplicate(int no, String start_date, String end_date, String idx);
 

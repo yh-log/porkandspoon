@@ -276,7 +276,7 @@
 			           			<div class="btn btn-primary" onclick="location.href='/mo/education'">돌아가기</div>
 			           		</sec:authorize>
 			           		<sec:authorize access="hasAnyRole('USER')">
-			           			<div class="btn btn-primary" onclick="location.href='/us/eucation'">돌아가기</div>
+			           			<div class="btn btn-primary" onclick="location.href='/us/education'">돌아가기</div>
 			           		</sec:authorize>	           					           			                			                			             
 			                <sec:authorize access="hasAnyRole('MANAGER','ADMIN', 'SUPERADMIN')">
 			                	<div class="btn btn-outline-primary" onclick="eduDelete()">삭제</div>
@@ -355,7 +355,7 @@
     }
 
     function eduUpdate() {
-        location.href="/us/educationUpdate/${info.no}"
+        location.href="/mo/educationUpdate/${info.no}"
     }
  
 	function secondBtn1Act() {
