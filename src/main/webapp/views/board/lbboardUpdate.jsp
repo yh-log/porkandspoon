@@ -83,7 +83,7 @@
       <jsp:include page="../header.jsp" />
       <div class="page-content">
          <section id="menu">
-            <h4 class="menu-title">공지사항</h4>
+            <h4 class="menu-title">라이브러리</h4>
             <ul>
 				<li><a href="/lbboardlist/View">전체 게시글</a>
             </ul>

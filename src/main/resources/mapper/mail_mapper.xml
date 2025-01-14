@@ -430,53 +430,61 @@
 	</select>
 	
 	<select id="getDeleteList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
- 		SELECT 
- 			 m.idx
-		    ,m.title
-		    ,m.send_date
-	    	,m.sender
-	    	,CASE 
-		        WHEN mr.username = #{loginId} THEN 'received'
-		        ELSE 'sent'
-		    END AS mail_type
-		    ,CASE 
-		        WHEN mr.username = #{loginId} THEN mr.is_bookmark  
-		        ELSE m.is_bookmark 
-		    END AS is_bookmark
-		    ,CASE 
-		        WHEN mr.username = #{loginId}
-		        THEN m.sender  
-		        ELSE (
-		            SELECT 
-		            	GROUP_CONCAT(mr_inner.username 
-		            		ORDER BY mr_inner.username ASC LIMIT 1
-	            		)
-		            FROM mail_receive mr_inner
-		            WHERE mr_inner.idx = m.idx
-		        )  
-		    END AS username
-		    ,(SELECT MIN(idx) 
+ 		SELECT
+			m.idx
+			,m.title
+			,m.send_date
+			,m.sender
+			,CASE 
+			    WHEN mr.username = #{loginId} THEN 'received'
+			    ELSE 'sent'
+			END AS mail_type
+			,CASE 
+			    WHEN mr.username = #{loginId} THEN mr.is_bookmark  
+			    ELSE m.is_bookmark 
+			END AS is_bookmark
+			,CASE 
+			    WHEN mr.username = #{loginId}
+			    THEN m.sender  
+			    ELSE (
+			        SELECT 
+			        	GROUP_CONCAT(mr_inner.username 
+			        		ORDER BY mr_inner.username ASC LIMIT 1
+			    		)
+			        FROM mail_receive mr_inner
+			        WHERE mr_inner.idx = m.idx
+			    )  
+			END AS username
+			,(SELECT MIN(idx) 
 				FROM file 
 				WHERE pk_idx = m.idx 
 				AND code_name = 'ma001'
 			) AS fileYn
-		    ,CASE 
-		        WHEN mr.username = #{loginId} THEN (
+			,CASE 
+			    WHEN mr.username = #{loginId} THEN (
 					SELECT u.name from user u
 					where mr.username = u.username
-		        )
-		        ELSE (
+			    )
+			    ELSE (
 					SELECT u.name from user u
 					where m.sender = u.username
-		        )
-		    END AS name
+			    )
+			END AS name
+			,mr.is_read
 			,COUNT(*) OVER() AS total_count
-		FROM mail_receive mr 
-		JOIN mail m on mr.idx = m.idx
-		JOIN user u
-			ON m.sender = u.username 
-		WHERE mr.username = #{loginId} OR m.sender = #{loginId}
-		AND (m.use_from_date IS NOT NULL OR mr.use_from_date IS NOT NULL)
+			FROM mail_receive mr 
+			JOIN mail m ON mr.idx = m.idx
+			JOIN user u
+				ON m.sender = u.username 
+			WHERE (mr.username = #{loginId} OR m.sender = #{loginId})
+			AND (
+				(mr.username = #{loginId} AND mr.use_from_date IS NOT NULL)
+				OR (mr.username != #{loginId} AND m.use_from_date IS NOT NULL)
+			)
+			AND (
+				(mr.username = #{loginId} AND mr.use_yn = 'Y')
+				OR (mr.username != #{loginId} AND m.use_yn = 'Y')
+			)
 		<if test="search != null and !search.equals('') and option == 'subject'"> 
 		AND m.title LIKE CONCAT('%',#{search},'%')		
 		</if>
