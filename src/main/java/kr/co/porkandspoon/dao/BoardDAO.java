@@ -75,6 +75,8 @@ public interface BoardDAO {
 	List<BoardDTO> getTeamCode();
 
 	int userList();
+
+	int setDeleteFile(FileDTO fdto);
     
     
     
