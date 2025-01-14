@@ -232,7 +232,7 @@
 		                     
 							<div id="btn-gap">							
 								<button type="button" class="btn btn-primary btn-popup">등록</button>
-								<button class="btn btn-outline-primary">취소</button>
+								<button class="btn btn-outline-primary" onclick="location.href = '/us/part'">취소</button>
 							</div>
 				         </form>
 	                  		</div>
@@ -328,15 +328,36 @@ $('.btn-popup').on(
 		});
 
 /* 알림 팝업 */
+/* 알림 팝업 */
 function btn1Act() {
-	// 1번버튼 클릭시 수행할 내용
-	console.log('1번 버튼 동작');
+    removeAlert(); // 기존 팝업 닫기
 
-	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-	removeAlert(); // 기존팝업닫기
-	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-	layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+    // 입력 필드 값 가져오기
+    var name = $('input[name="name"]').val();
+    var birth = $('input[name="birth"]').val();
+    var join_date = $('input[name="join_date"]').val();
+    var phone = $('input[name="phone"]').val();
+    var pay = $('input[name="pay"]').val();
+
+    // 근무 요일 및 시간 값 검사
+    let isComplete = true;
+
+    $('select[name="work_date[]"], input[name="start_time[]"], input[name="end_time[]"]').each(function () {
+        if (!$(this).val()) {
+            isComplete = false;
+        }
+    });
+
+    // 필수 항목 체크
+    if (!name || !birth || !join_date || !phone || !pay || !isComplete) {
+        layerPopup("필수 항목을 모두 입력해주세요.", "확인", false, thirdBtn1Act, thirdBtn1Act);
+        return;
+    }
+
+    // 모든 값이 올바르게 입력된 경우
+    layerPopup("등록이 완료되었습니다.", "확인", false, secondBtn1Act, secondBtn1Act);
 }
+
 
 function btn2Act() {
 	// 2번버튼 클릭시 수행할 내용
@@ -360,7 +381,13 @@ function secondBtn2Act() {
 	removeAlert(); // 팝업닫기
 	
 }
+
+function thirdBtn1Act() {
+	// 두번째팝업 2번버튼 클릭시 수행할 내용
+	console.log('두번째팝업 3번 버튼 동작');
+	removeAlert(); // 팝업닫기
 	
+}
 
 	
 

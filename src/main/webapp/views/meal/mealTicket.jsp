@@ -124,7 +124,7 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">식권구매</h4>
+					<h4 class="menu-title">구내식당</h4>
 					<ul>
 						<li class="active"><a href="/mealTicket">식권구매</a></li>
 						<li><a href="/mealMenu">식단표</a></li>

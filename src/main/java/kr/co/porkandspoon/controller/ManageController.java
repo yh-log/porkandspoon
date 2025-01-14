@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import kr.co.porkandspoon.dto.*;
+
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,7 +167,7 @@ public class ManageController {
 		
 		
 	    manageService.setPartWrite(params, workDates, startTimes, endTimes);
-	    return new ModelAndView("/manage/partWrite");
+	    return new ModelAndView("redirect:/us/part");
 	}
 	
 	//아르바이트 상세페이지
@@ -217,7 +219,13 @@ public class ManageController {
 
 	    return new ModelAndView("redirect:/us/part/Detail/" + part_idx);
 	}
-
+	
+	
+	@DeleteMapping(value = "/us/part/Delete/{part_idx}")
+	public int delPart(@PathVariable String part_idx) {
+		
+		 return manageService.delPart(part_idx);
+	}
 	
 	// 아르바이트 스케줄 뷰 이동
 	@GetMapping(value = "/us/partSchedule")

@@ -207,7 +207,7 @@ border-bottom: none;
       <jsp:include page="../header.jsp" />
       <div class="page-content">
          <section id="menu">
-            <h4 class="menu-title">식단표</h4>
+            <h4 class="menu-title">구내식당</h4>
             <ul>
                <li><a href="/mealTicket">식권구매</a></li>
                <li class="active"><a href="/mealMenu">식단표</a></li>
@@ -281,7 +281,7 @@ border-bottom: none;
 			            </div>
 			            <div class="modal-footer">
 			                <button type="button" id="saveModal" class="btn btn-primary btn-popup">저장</button>
-			                <button type="button" id="cancelModal" class="btn btn-secondary">취소</button>
+			                <button type="button" id="cancelModal" class="btn btn-outline-primary">취소</button>
 			            </div>
 			        </form>
 			    </div>
@@ -353,10 +353,26 @@ document.addEventListener('DOMContentLoaded', function () {
         locale: 'ko',
         initialView: 'dayGridMonth',
         events: [],
+        editable: false, // 이벤트 이동 불가능
+        droppable: false, // 외부 요소 드롭 불가능
+        eventResizableFromStart: false, // 시작 위치에서 크기 조정 불가능
+        eventStartEditable: false, // 이벤트 시작 시간 변경 불가능
+        eventDurationEditable: false, // 이벤트 기간 변경 불가능
+        eventAllow: function (dropInfo, draggedEvent) {
+            return false; // 이벤트 이동 자체를 허용하지 않음
+        },
         dayHeaderContent: function (args) {
             return args.date.getDate() + '일';
         },
         eventClick: function (info) {
+        	
+        	const userRole = "${role}"; // JSP에서 사용자 역할(role)을 가져옵니다.
+
+            // admin 또는 superadmin만 수정 가능하도록 제한
+            if (userRole !== 'admin' && userRole !== 'superadmin') {
+                return; // 함수 실행 중단 (아무 동작도 하지 않음)
+            }
+        	
             var eventData = {
             		
                 title: info.event.title || '',
@@ -385,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// 모달 열기 함수
+
 // 모달 데이터 주입 함수
 function setModalData(data) {
     console.log("Setting modal data:", data); // 디버깅 로그
@@ -491,7 +507,8 @@ function secondBtn2Act() {
 	removeAlert(); // 팝업닫기
 	
 }
-
+document.getElementById('start').setAttribute('readonly', true);
+document.getElementById('end').setAttribute('readonly', true);
 
 </script>
 </html>

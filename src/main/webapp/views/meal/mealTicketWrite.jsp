@@ -97,7 +97,7 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">식권등록</h4>
+					<h4 class="menu-title">구내식당</h4>
 					<ul>
 						<li><a href="/mealTicket">식권구매</a></li>
 						<li><a href="/mealMenu">식단표</a></li>
@@ -109,7 +109,7 @@
 				<section class="cont">
 					 <!-- 여기 아래로 삭제!! div 영역 잘 확인하세요 (페이지 복사 o, 해당 페이지 수정 x) -->
 						<div class="tit-area">
-							<h5>식단등록</h5>
+							<h5>식권등록</h5>
 						</div>
 						<div class="cont-body">
 							<div class="row">
@@ -121,37 +121,24 @@
 			                           <th class="align-l">상품명<span class="required-value">*</span></th>
 			                           <td ><input class="form-control sor-1 "  name="name" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
 			                        </tr>
+			                       <tr>
+									    <th class="align-l">상품가격<span class="required-value">*</span></th>
+									    <td>
+									        <input class="form-control sor-1" name="cost" type="number" min="0" step="1" placeholder="상품가격을 입력해주세요." required="required" />
+									    </td>
+									</tr>
+									<tr>
+									    <th class="align-l">상품수량<span class="required-value">*</span></th>
+									    <td>
+									        <input class="form-control sor-1" name="count" type="number" min="0" step="1" placeholder="상품수량을 입력해주세요." required="required" />
+									    </td>
+									</tr>
 			                        <tr>
-			                           <th class="align-l">상품가격<span class="required-value">*</span></th>
-			                           <td ><input class="form-control sor-1 "  name="cost" type="text" placeholder="상품가격을 입력해주세요." required="required"/></td>
-			                        </tr>
-			                        <tr>
-			                           <th class="align-l">상품수량<span class="required-value">*</span></th>
-			                          <td ><input class="form-control sor-1 "  name="count" type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
-			                        </tr>
-			                        <tr>
-			                           <th class="align-l">파일첨부</th>
-			                          <td ><div class="filepond--root basic-filepond filepond--hopper" data-style-button-remove-item-position="left" data-style-button-process-item-position="right" data-style-load-indicator-position="right" data-style-progress-indicator-position="right" data-style-button-remove-item-align="false" style="height: 76px;">
-										<input class="filepond--browser" type="file" id="filepond--browser-rd9ou40mc" name="filepond" aria-controls="filepond--assistant-rd9ou40mc" aria-labelledby="filepond--drop-label-rd9ou40mc" accept="">
-											<div class="filepond--drop-label" style="transform: translate3d(0px, 0px, 0px); opacity: 1;">
-												<label for="filepond--browser-rd9ou40mc" id="filepond--drop-label-rd9ou40mc" aria-hidden="true">Drag &amp; Drop your files or 
-													<span class="filepond--label-action" tabindex="0">Browse</span>
-												</label>
-											</div>
-											<div class="filepond--list-scroller" style="transform: translate3d(0px, 0px, 0px);">
-												<ul class="filepond--list" role="list"></ul>
-											</div>
-											<div class="filepond--panel filepond--panel-root" data-scalable="true">
-												<div class="filepond--panel-top filepond--panel-root"></div>
-												<div class="filepond--panel-center filepond--panel-root" style="transform: translate3d(0px, 8px, 0px) scale3d(1, 0.6, 1);"></div>
-												<div class="filepond--panel-bottom filepond--panel-root" style="transform: translate3d(0px, 68px, 0px);"></div>
-											</div>
-												<span class="filepond--assistant" id="filepond--assistant-rd9ou40mc" role="status" aria-live="polite" aria-relevant="additions"></span>
-													<fieldset class="filepond--data"></fieldset>
-													<div class="filepond--drip"></div>
-											</div>
-										</td>
-			                        </tr>
+					            <th class="align-l">파일첨부</th>
+					            <td>
+					                <input class="filepond" type="file" name="filepond" />
+					            </td>
+					        </tr>
 			                        <tr>
 			                           <th class="align-l">활성여부</th>
 			                          <td ><div class="card-body">
@@ -170,7 +157,7 @@
 			                     </table>
 									<div id="btn-gap">							
 										<button type="button" class="btn btn-primary btn-popup">등록</button>
-										<button class="btn btn-outline-primary">취소</button>
+										<button class="btn btn-outline-primary" onclick="location=href='/ad/mealTicket/Write'">초기화</button>
 									</div>
 					         </form>
                   		</div>
@@ -216,61 +203,112 @@
 
 
 <script>
+$(document).ready(function () {
+	  $('input[name="cost"], input[name="count"]').on('input', function () {
+	        // 입력된 값에서 숫자 이외의 값 제거
+	        this.value = this.value.replace(/[^0-9]/g, '');
+	    });
 
-	//FilePond 초기화
-	FilePond.create(document.querySelector('input[type="file"]'), {
-	    server: {
-	        process: '/ad/mealTicket/Write', // 파일 업로드를 처리할 서버 URL
-	        revert: null, // 업로드 취소 처리를 위해 필요 (선택 사항)
-	        headers: {
-	            'X-CSRF-TOKEN': '${_csrf.token}' // CSRF 토큰 추가
+	    // keydown 이벤트로 실시간으로 입력 제한
+	    $('input[name="cost"], input[name="count"]').on('keydown', function (e) {
+	        // 숫자키, 백스페이스, Delete, Tab, 화살표 키는 허용
+	        if (
+	            (e.keyCode >= 48 && e.keyCode <= 57) || // 숫자 (상단)
+	            (e.keyCode >= 96 && e.keyCode <= 105) || // 숫자 (키패드)
+	            e.keyCode === 8 || // 백스페이스
+	            e.keyCode === 46 || // Delete
+	            e.keyCode === 9 || // Tab
+	            (e.keyCode >= 37 && e.keyCode <= 40) // 화살표 키
+	        ) {
+	            return true;
+	        } else {
+	            e.preventDefault();
 	        }
-	    }
-	});
+	    });
 	
-	$('.btn-popup').on(
-			'click',
-			function() {
-				layerPopup('메뉴를 등록하시겠습니까?', '확인', '취소', btn1Act,
-						btn2Act);
-			});
 	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+    let pond;
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
-	}
-	
-	function btn2Act() {
-		// 2번버튼 클릭시 수행할 내용
-		console.log('2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-	}
-	
-	function secondBtn1Act() {
-		// 두번째팝업 1번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 1번 버튼 동작');
-		
-		 document.querySelector('form').submit();
-		
-		removeAlert(); // 팝업닫기
-		
-	}
+    // FilePond 초기화 (자동 업로드 비활성화)
+    const $fileInput = $('input[type="file"]');
+    if ($fileInput.length) {
+        pond = FilePond.create($fileInput[0], {
+            server: {
+                process: {
+                    url: '/ad/mealTicket/Write', // 파일 업로드 처리 URL
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '${_csrf.token}' // CSRF 토큰 추가
+                    },
+                    ondata: (formData) => {
+                        // 추가 데이터 설정
+                        formData.append('name', $('input[name="name"]').val());
+                        formData.append('cost', $('input[name="cost"]').val());
+                        formData.append('count', $('input[name="count"]').val());
+                        formData.append('use_yn', $('input[name="use_yn"]:checked').val());
+                        return formData;
+                    }
+                },
+                revert: null,
+                load: null,
+                fetch: null
+            },
+            instantUpload: false // 자동 업로드를 비활성화
+        });
+        console.log('FilePond 초기화 완료:', pond);
+    } else {
+        console.error('File input을 찾을 수 없습니다.');
+    }
 
-	function secondBtn2Act() {
-		// 두번째팝업 2번버튼 클릭시 수행할 내용
-		console.log('두번째팝업 2번 버튼 동작');
-		removeAlert(); // 팝업닫기
-		
-	}
-	
-	
+    // 등록 버튼 클릭 이벤트
+    $('.btn-popup').on('click', function () {
+        layerPopup('식권을 등록하시겠습니까?', '확인', '취소', btn1Act, btn2Act);
+    });
 
+    // 팝업 확인 버튼 (등록하시겠습니까?)
+    function btn1Act() {
+        console.log('1번 버튼 동작');
+        removeAlert(); // 팝업 닫기
+
+        const name = $('input[name="name"]').val().trim();
+        const cost = $('input[name="cost"]').val().trim();
+        const count = $('input[name="count"]').val().trim();
+        const fileCount = pond.getFiles().length;
+
+        console.log('상품명:', name);
+        console.log('상품가격:', cost);
+        console.log('상품수량:', count);
+        console.log('첨부된 파일 개수:', fileCount);
+
+        // 필수 데이터 검증
+        if (!name || !cost || !count || fileCount === 0) {
+            layerPopup('모든 필수 항목을 입력해 주세요.', '확인', false, btn2Act, btn2Act);
+            return;
+        }
+
+        // 파일 업로드 및 폼 전송
+        pond.processFiles().then(() => {
+            console.log('파일 업로드 완료');
+            // 두 번째 팝업 표시
+            layerPopup('등록이 완료되었습니다.', '확인', false, redirectToList, btn2Act);
+        }).catch((error) => {
+            console.error('파일 업로드 실패:', error);
+            layerPopup('파일 업로드 중 오류가 발생했습니다.', '확인', false, btn2Act, btn2Act);
+        });
+    }
+
+    // 팝업 취소 버튼
+    function btn2Act() {
+        console.log('2번 버튼 동작');
+        removeAlert(); // 팝업 닫기
+    }
+
+    // 두 번째 팝업 확인 후 경로 이동
+    function redirectToList() {
+        console.log('경로 이동');
+        window.location.href = '/ad/meal/List'; // 이동할 경로 설정
+    }
+});
 
 </script>
 
