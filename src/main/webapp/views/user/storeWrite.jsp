@@ -232,7 +232,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('직영점을 등록하시겠습니까?','등록','취소', storeWrire, removeAlert)">등록</button>
-									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/store/list'">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ma/store/list'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->

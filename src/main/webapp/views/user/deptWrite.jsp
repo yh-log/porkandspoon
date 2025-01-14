@@ -224,7 +224,7 @@
 								</table>
 								<div class="btn-Layout">
 									<button type="button" class="btn btn-primary" onclick="layerPopup('브랜드를 등록하시겠습니까?', '등록', '취소', deptWrire, removeAlert)">등록</button>
-									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ad/dept/listView'">취소</button>
+									<button type="button" class="btn btn-outline-primary" onclick="location.href='/ma/dept/listView'">취소</button>
 								</div>
 							</form>
 						</div> <!-- cont-body -->
