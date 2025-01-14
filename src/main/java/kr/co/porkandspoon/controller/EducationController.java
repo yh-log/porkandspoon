@@ -65,10 +65,10 @@ public class EducationController {
 		result.put("success", eduService.educationWrite(params));
 		
 		// 교육 알림
-		NoticeDTO dto = new NoticeDTO();
-		dto.setContent((String) params.get("url"));
-		dto.setCode_name("ml005");
-		alarmService.saveAlarm(dto);
+//		NoticeDTO dto = new NoticeDTO();
+//		dto.setContent((String) params.get("url"));
+//		dto.setCode_name("ml005");
+//		alarmService.saveAlarm(dto);
 		
 		return result;
 	}

@@ -140,18 +140,15 @@ public class ResevationService {
 	// 회의실 예약 작성 메서드
     @Transactional
     public boolean roomReservationWrite(CalenderDTO calenderDto) {
-    	
+    	String lie = "";
         // 중복 예약 확인
-	    boolean isDuplicate = roomDuplicate(calenderDto.getNo(),calenderDto.getStart_date(),calenderDto.getEnd_date());
+	    boolean isDuplicate = roomDuplicate(calenderDto.getNo(),calenderDto.getStart_date(),calenderDto.getEnd_date(),lie);
 	    if(isDuplicate) {
 	        logger.info("중복 예약 시도 발생: Room {}, Start {}, End {}",calenderDto.getNo(), calenderDto.getStart_date(), calenderDto.getEnd_date());
 	        return false;  // 중복 예약 존재 시 예약 실패 처리
 	    }
     	
         List<String> attendees = calenderDto.getAttendees();
-        if(attendees == null || attendees.isEmpty()) {
-            return false;
-        }
 
         // 예약 정보 삽입
         resDao.roomReservationWrite(calenderDto);
@@ -182,8 +179,8 @@ public class ResevationService {
         return true;
 	}
     
-	private boolean roomDuplicate(int no, String start_date, String end_date) {
-		int count = resDao.roomDuplicate(no, start_date, end_date);
+	private boolean roomDuplicate(int no, String start_date, String end_date, String idx) {
+		int count = resDao.roomDuplicate(no, start_date, end_date,idx);
 	    return count > 0;
 	}
 
@@ -217,6 +214,13 @@ public class ResevationService {
 	
 	@Transactional
 	public boolean roomReservationUpdate(CalenderDTO calenderDto, String idx) {
+		
+		 // 중복 예약 확인
+	    boolean isDuplicate = roomDuplicate(calenderDto.getNo(),calenderDto.getStart_date(),calenderDto.getEnd_date(),idx);
+	    if(isDuplicate) {
+	        logger.info("중복 예약 시도 발생: Room {}, Start {}, End {}",calenderDto.getNo(), calenderDto.getStart_date(), calenderDto.getEnd_date());
+	        return false;  // 중복 예약 존재 시 예약 실패 처리
+	    }
 		
 		try {
 			calenderDto.setIdx(idx);

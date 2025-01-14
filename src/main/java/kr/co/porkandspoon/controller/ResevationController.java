@@ -359,7 +359,7 @@ public class ResevationController {
  	// 회의실 예약 등록 엔드포인트
     @PostMapping(value="/roomReservation")
     public Map<String, Object> roomReservation(@RequestBody CalenderDTO calenderDto, @AuthenticationPrincipal UserDetails userDetails) {
-
+    	
         boolean success = resService.roomReservationWrite(calenderDto);
         Map<String, Object> response = new HashMap<>();
         if(success) {

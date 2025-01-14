@@ -73,7 +73,7 @@ public interface ResevationDAO {
 
 	int isDuplicate(int no, String start_date, String end_date);
 
-	int roomDuplicate(int no, String start_date, String end_date);
+	int roomDuplicate(int no, String start_date, String end_date, String idx);
 
 	int total(String loginId);
 

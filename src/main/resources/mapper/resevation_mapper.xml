@@ -296,9 +296,10 @@
 	
 	<!-- 물품 중복 방지 -->
 	<select id="isDuplicate" resultType="int">
-	    SELECT COUNT(*) 
-	    FROM item_schedule 
-	    WHERE no = #{no} AND ((start_date &lt;= #{start_date} AND end_date &gt;= #{end_date}))
+	    SELECT COUNT(*) FROM item_schedule WHERE no = #{no} 
+		AND start_date &lt;= #{end_date} 
+		AND end_date &gt;= #{start_date}
+		AND idx != #{idx}
 	</select>	
 	
 	<!-- 예약 일정 상세보기 -->
@@ -358,9 +359,10 @@
 	
 	<!-- 회의실 중복방지 -->
 	<select id="roomDuplicate" resultType="int">
-	    SELECT COUNT(*) 
-	    FROM room_schedule 
-	    WHERE no = #{no} AND ((start_date &lt;= #{start_date} AND end_date &gt;= #{end_date}))
+	    SELECT COUNT(*) FROM room_schedule WHERE no = #{no} 
+		AND start_date &lt;= #{end_date} 
+		AND end_date &gt;= #{start_date}
+		AND idx != #{idx}	    
 	</select>
 		
 	<!-- 회의실 예약자 등록 -->

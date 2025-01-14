@@ -512,9 +512,14 @@
 	
 
 	function getRelativeTime(createDate) {
-	    const now = new Date(); // 현재 시간
-	    const past = new Date(createDate); // recreate_date를 Date 객체로 변환
-	    const diff = Math.floor((now - past) / 1000); // 시간 차이를 초 단위로 계산
+	    const now = new Date(); 
+	    const past = new Date(createDate); 
+
+	    // 현재 브라우저의 시간 오프셋을 고려한 시간 조정 (한국 시간 보정)
+	    const offset = past.getTimezoneOffset() * 60000; // 밀리초 단위
+	    const koreaTime = new Date(past.getTime() - offset + (9 * 3600000)); // UTC+9
+
+	    const diff = Math.floor((now - koreaTime) / 1000); 
 
 	    if (diff < 60) {
 	        return diff + "초 전";
