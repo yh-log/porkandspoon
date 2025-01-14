@@ -202,17 +202,17 @@
 										                ${file.ori_filename}
 										            </span>
 										            <br>
-										            <a href="/photo/${file.ori_filename}" class="btn btn-primary" download>
+										            <a href="/photo/${file.new_filename}" class="btn btn-primary" download="${file.ori_filename}">
 										                다운로드
 										            </a>
 										            <c:choose>
-										                <c:when test="${file.ori_filename.endsWith('.jpg') || file.ori_filename.endsWith('.png')}">
-										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.ori_filename}')">
+										                <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.new_filename}')">
 										                        미리보기
 										                    </button>
 										                </c:when>
-										                <c:when test="${file.ori_filename.endsWith('.pdf')}">
-										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.ori_filename}')">
+										                <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.new_filename}')">
 										                        미리보기
 										                    </button>
 										                </c:when>

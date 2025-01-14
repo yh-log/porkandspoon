@@ -554,4 +554,8 @@
 		SELECT text, id FROM department
 	</select>
 	
+	<delete id="setDeleteFile" parameterType="kr.co.porkandspoon.dto.FileDTO">
+		DELETE FROM file WHERE new_filename = #{new_filename}
+	</delete>
+	
 </mapper>

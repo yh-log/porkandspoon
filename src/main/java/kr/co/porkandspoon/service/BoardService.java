@@ -338,6 +338,10 @@ public class BoardService {
 		return boardDAO.userList();
 	}
 
+	public int setDeleteFile(FileDTO fdto) {
+		return boardDAO.setDeleteFile(fdto);
+	}
+
 
 
 	

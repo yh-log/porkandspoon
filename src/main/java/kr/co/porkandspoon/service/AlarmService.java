@@ -84,35 +84,26 @@ public class AlarmService {
 			noticeDTO.setSubject(ndto.getSubject());
 		}
 		
-		// 교육 시청 알림 개별 로직
-		if(noticeDTO.getCode_name() == "ml005") {
-			List<NoticeDTO> dtoList = alarmDAO.getEdu(noticeDTO);
-		    for (NoticeDTO noticedto : dtoList) {
-		    	NoticeDTO newNotice = new NoticeDTO();
-		        newNotice.setFrom_idx(noticedto.getFrom_idx());
-		        newNotice.setSubject(noticedto.getSubject());
-		        newNotice.setFrom_id(noticedto.getFrom_id());
-		        newNotice.setUsername(noticedto.getUsername());
-		        newNotice.setCode_name("ml005");
-		        newNotice.setCreate_date(noticeDTO.getCreate_date());
-		        String username = newNotice.getFrom_id();
-		        if (username != null) {
-		            username = alarmDAO.getUsername(username);
-		        } else {
-		            continue; 
-		        }
-
-		        // 알림 메시지 설정
-		        String sub = newNotice.getSubject();
-		        newNotice.setSubject("교육 시청 알림이 왔습니다.");
-		        newNotice.setContent("<b>" + sub + "</b> &nbsp; 교육 시청 알림이 왔습니다.");
-		        newNotice.setUrl("/u/educationDetail/" + noticedto.getFrom_idx());
-
-		        // 알림 발송 (개별 발송)
-		        alarmDAO.savaAlarm(newNotice);
-		    }
-		    return;
-		}
+		/*
+		 * // 교육 시청 알림 개별 로직 if(noticeDTO.getCode_name() == "ml005") { List<NoticeDTO>
+		 * dtoList = alarmDAO.getEdu(noticeDTO); for (NoticeDTO noticedto : dtoList) {
+		 * NoticeDTO newNotice = new NoticeDTO();
+		 * newNotice.setFrom_idx(noticedto.getFrom_idx());
+		 * newNotice.setSubject(noticedto.getSubject());
+		 * newNotice.setFrom_id(noticedto.getFrom_id());
+		 * newNotice.setUsername(noticedto.getUsername());
+		 * newNotice.setCode_name("ml005");
+		 * newNotice.setCreate_date(noticeDTO.getCreate_date()); String username =
+		 * newNotice.getFrom_id(); if (username != null) { username =
+		 * alarmDAO.getUsername(username); } else { continue; }
+		 * 
+		 * // 알림 메시지 설정 String sub = newNotice.getSubject();
+		 * newNotice.setSubject("교육 시청 알림이 왔습니다."); newNotice.setContent("<b>" + sub +
+		 * "</b> &nbsp; 교육 시청 알림이 왔습니다."); newNotice.setUrl("/u/educationDetail/" +
+		 * noticedto.getFrom_idx());
+		 * 
+		 * // 알림 발송 (개별 발송) alarmDAO.savaAlarm(newNotice); } return; }
+		 */
 		
 		if(noticeDTO.getCode_name().equals("ml010")) {
 			List<NoticeDTO> dto = alarmDAO.getChat(noticeDTO);

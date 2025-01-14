@@ -318,7 +318,7 @@
 										<div style="text-align: center; padding: 20px 0px;"><h3 style="font-size: 19px;">당신의 별점은?</h3></div>
 										<div class="basic-star" style="text-align: center;">
 										    <div id="basic-st" class="star-rating star-width" style="width: 160px; height: 32px; background-size: 32px;" title="0/5">
-											    <div class="star-value" style="background-size: 32px; width: 0%;"></div>
+											    <div class="star-value" style="background-size: 32px; width: 0%;" id="review-write-review"></div>
 											</div>
 										</div>
 									</div>
@@ -373,6 +373,8 @@
 <script>
 	
 	function reviewWrite(store_idx) {
+		$('#content-reivew').val('');
+		$('#review-write-review').css('width', '0');
 		console.log('매장값 :', store_idx);
 		$('#review-write').show();
 		$('#review-write').data('store-idx', store_idx); 
@@ -773,6 +775,19 @@
 	    var starWidth = parseFloat(starElement.style.width); // 'px' 제거 후 숫자만 추출
 	    var ratingValue = Math.round((starWidth / 100) * 5);
 	    var loggedInUser = '${loggedInUser}';
+	    
+	    if(!storename) {
+	    	layerPopup(
+		            '주소를 입력해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+	    }
 	    
 	    if (ratingValue <= 0) {
 	    	layerPopup(
