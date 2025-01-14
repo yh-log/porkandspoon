@@ -238,7 +238,7 @@
 						</div>
 						<div class="util-area">
 							<div class="left">
-								<input type="checkbox" class="form-check-input" id="checkbox2">
+								<input type="checkbox" class="form-check-input" id="checkAll">
 								<c:choose>
 									<c:when test="${listType eq 'recv'}">
 										<buttton class="btn btn-outline-primary btn-sm" onclick="changeToRead()">읽음</buttton>
@@ -385,7 +385,7 @@ function drawList(list) {
 			approvalDate = '-';
 		} */
 		
-		if((listType == 'recv' && view.is_read == 'N') || (listType == 'bk' && view.is_read == 'N' && view.mail_type == 'received')){
+		if((listType == 'recv' && view.is_read == 'N') || (listType == 'bk' && view.is_read == 'N' && view.mail_type == 'received') || (listType == 'del' && view.is_read == 'N' && view.mail_type == 'received')){
 			content +='<div class="mail-item no-read" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
 		}else{
 			content +='<div class="mail-item" data-idx="'+view.idx+'" data-mailtype="'+view.mail_type+'">';
@@ -398,9 +398,9 @@ function drawList(list) {
 			content +='<i id="listBookmark" class="bi bi-star-fill" data-bookmark="Y"></i>';
 		}
 		content +='<span class="name">'+view.name+'</span>';
-		if(listType == 'bk' && view.mail_type == 'received'){
+		if((listType == 'bk' || listType == 'del') && view.mail_type == 'received'){
 			mailType = '[받은메일]';
-		}else if(listType == 'bk' && view.mail_type == 'sent'){
+		}else if((listType == 'bk' || listType == 'del') && view.mail_type == 'sent'){
 			mailType = '[보낸메일]';
 		}
 		
@@ -439,6 +439,10 @@ function drawList(list) {
 	var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 	
 
+	// input 전체 선택
+	$('#checkAll').on('click',function(){
+		$('.cont-body input[type="checkbox"]').prop('checked', true); 
+	});
 
 
 </script>

@@ -247,7 +247,7 @@ tbody.fc-body >tr >td.fc-widget-content{
 	border-bottom: none;
 }
 .fc td.fc-today {
-    border-style: none;
+    border: 1px solid #ddd;
 }
 .modal-footer .btn {
 	margin-bottom: 0;
@@ -423,7 +423,7 @@ tbody.fc-body >tr >td.fc-widget-content{
 	padding: 0;
 }
 .mailList .list-area.recv {
-	overflow-y: scroll;
+	overflow-y: auto;
 	color: #656C74;
 }
 .mailList .list-area.recv th {
@@ -503,7 +503,7 @@ tbody.fc-body >tr >td.fc-widget-content{
 										class="quick-tit">사내메일</span>
 								</div>
 							</a> <a class="quick-menu sec col-3 col-lg-3"
-								href="/mail/listView/recv">
+								href="/myPageView">
 								<!--check!!여기부터  -->
 								<div class="quick-cont">
 									<img src="/resources/img/main/quick_my.png" /> <span
@@ -620,7 +620,7 @@ tbody.fc-body >tr >td.fc-widget-content{
 									<span class="tit">결재할 문서</span> 
 									<span class="num">${haveToApprove}</span>
 								</a>
-								<a class="flex between" href="/roomResevation"> 
+								<a class="flex between" href="/calender"> 
 									<span class="tit">나의 예약현황</span> 
 									<span class="num">${reservationCount}</span>
 								</a>

@@ -6,7 +6,7 @@
 	$(function(){
 		$(document).on('click','li.has-sub > a',function(){
 			console.log('click!!');
-			$(this).siblings('.submenu').toggleClass('submenu-open submenu-close');
+			$(this).siblings('.submenu').toggleClass('submenu-open').toggleClass('submenu-close');
 		});
 	});
 </script>

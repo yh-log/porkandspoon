@@ -431,20 +431,22 @@
 	
 	<select id="getDeleteList" parameterType="map" resultType="kr.co.porkandspoon.dto.MailDTO">
  		SELECT 
-		    m.idx
+ 			 m.idx
 		    ,m.title
 		    ,m.send_date
-		    ,CASE 
-		        WHEN m.sender = #{loginId} THEN m.is_bookmark  
-		        ELSE mr.is_bookmark 
-		    END AS is_bookmark
-		    ,CASE 
-		        WHEN m.sender = #{loginId} THEN 'sent'
-		        ELSE 'received'
+	    	,m.sender
+	    	,CASE 
+		        WHEN mr.username = #{loginId} THEN 'received'
+		        ELSE 'sent'
 		    END AS mail_type
 		    ,CASE 
-		        WHEN m.sender = #{loginId}
-		        THEN (
+		        WHEN mr.username = #{loginId} THEN mr.is_bookmark  
+		        ELSE m.is_bookmark 
+		    END AS is_bookmark
+		    ,CASE 
+		        WHEN mr.username = #{loginId}
+		        THEN m.sender  
+		        ELSE (
 		            SELECT 
 		            	GROUP_CONCAT(mr_inner.username 
 		            		ORDER BY mr_inner.username ASC LIMIT 1
@@ -452,27 +454,29 @@
 		            FROM mail_receive mr_inner
 		            WHERE mr_inner.idx = m.idx
 		        )  
-		        ELSE m.sender 
 		    END AS username
 		    ,(SELECT MIN(idx) 
 				FROM file 
 				WHERE pk_idx = m.idx 
 				AND code_name = 'ma001'
 			) AS fileYn
-		    ,u.name
+		    ,CASE 
+		        WHEN mr.username = #{loginId} THEN (
+					SELECT u.name from user u
+					where mr.username = u.username
+		        )
+		        ELSE (
+					SELECT u.name from user u
+					where m.sender = u.username
+		        )
+		    END AS name
 			,COUNT(*) OVER() AS total_count
-		FROM 
-		    mail m
-		LEFT JOIN 
-			mail_receive mr 
-		    ON m.idx = mr.idx 
-		    AND mr.username = #{loginId}
+		FROM mail_receive mr 
+		JOIN mail m on mr.idx = m.idx
 		JOIN user u
 			ON m.sender = u.username 
-		WHERE 
-		    (m.sender = #{loginId} OR mr.username = #{loginId}) 
-		    AND (m.use_from_date IS NOT NULL OR mr.use_from_date IS NOT NULL)
-    		AND (m.use_yn = 'Y' OR mr.use_yn = 'Y')
+		WHERE mr.username = #{loginId} OR m.sender = #{loginId}
+		AND (m.use_from_date IS NOT NULL OR mr.use_from_date IS NOT NULL)
 		<if test="search != null and !search.equals('') and option == 'subject'"> 
 		AND m.title LIKE CONCAT('%',#{search},'%')		
 		</if>

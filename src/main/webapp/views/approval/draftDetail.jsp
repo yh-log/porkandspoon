@@ -378,12 +378,13 @@
 
 			<div class="page-content draftDetail">
 				<section id="menu">
-					<h4 class="menu-title">문서함</h4>
+					<h4 class="menu-title">나의문서함</h4>
 					<ul>
-						<li class="active"><a href="#" onclick="setForm('brand','open',this)">브랜드 등록</a></li>
-						<li><a href="#" onclick="setForm('brand','close',this)">브랜드 폐점</a></li>
-						<li><a href="#" onclick="setForm('direct','open',this)">직영점 등록</a></li>
-						<li><a href="#" onclick="setForm('direct','close',this)">직영점 폐점</a></li>
+						<li <c:if test="${listType == 'my'}">class="active"</c:if>><a href="/approval/listView/my">기안문서함</a></li>
+						<li <c:if test="${listType == 'tobe'}">class="active"</c:if>><a href="/approval/listView/tobe">결재할 문서</a></li>
+						<li <c:if test="${listType == 'did'}">class="active"</c:if>><a href="/approval/listView/did">결재한 문서</a></li>
+						<li <c:if test="${listType == 'sv'}">class="active"</c:if>><a href="/approval/listView/sv">임시저장 문서</a></li>
+						<li><a href="/approval/listView/line">나의 결재라인</a></li>
 					</ul>
 				</section>
 				<section class="cont">
@@ -445,12 +446,14 @@
 										<tr>
 											<th>기안일</th>
 											<td>
-												<c:if test="${DraftInfo.status == 'sd'}">
-													<input type="text" name="today" value="${DraftInfo.create_date}" readonly/>
-												</c:if>
-												<c:if test="${DraftInfo.status == 'sv'}">
-													<input type="text" name="today" value="-" readonly/>
-												</c:if>
+												<c:choose>
+													<c:when test="${DraftInfo.status == 'sv'}">
+														<input type="text" name="today" value="-" readonly/>
+													</c:when>
+													<c:otherwise>
+														<input type="text" name="today" value="${DraftInfo.create_date}" readonly/>
+													</c:otherwise>
+												</c:choose>
 											</td>
 										</tr>
 										<tr>
@@ -588,7 +591,7 @@
 								<div class="attached-file">
 									<ul>
 										<c:if test="${logoFile != null}">
-											<li class="file-item">
+											<li class="file-item" onclick="download('${logoFile.ori_filename}', '${logoFile.new_filename}')">
 												<div>
 													<input type="hidden" name="new_filename" value="${logoFile.new_filename}"/>
 													<input type="hidden" name="pk_idx" value="${logoFile.pk_idx}"/>
@@ -606,7 +609,7 @@
 								<div class="attached-file">
 									<ul>
 										<c:forEach items="${attachedFiles}" var="file"> 
-											<li class="file-item">
+											<li class="file-item" onclick="download('${file.ori_filename}', '${file.new_filename}')">
 											<div>
 												<input type="hidden" name="new_filename" value="${file.new_filename}"/>
 												<input type="hidden" name="pk_idx" value="${file.pk_idx}"/>
@@ -833,27 +836,32 @@ var csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
 // 기안문 반려
 function returnDraft() {
-
-	$.ajax({
-	    type: 'PUT',
-	    url: '/approval/returnDraft',
-	    data: new FormData($('#returnFrom')[0]), 
-	    dataType: 'json', 
-	    contentType: false,  
-	    processData: false,
-	    beforeSend: function(xhr) {
-	        xhr.setRequestHeader(csrfHeader, csrfToken);
-	    },
-	    success: function(response) {
-	        if(response.success){
-        	 	document.getElementById('modalBox').style.display = "none";
-        	 	layerPopup('반려 처리되었습니다.', '확인', false, btn1Act, btn1Act);
-	        }
-	    },
-	    error: function(e) {
-	        console.log(e);
-	    }
-	});
+	var commentData = $('textarea[name="comment"]').val();
+	console.log("commentData",commentData);
+	if(commentData != null && commentData.trim() != ""){
+		$.ajax({
+		    type: 'PUT',
+		    url: '/approval/returnDraft',
+		    data: new FormData($('#returnFrom')[0]), 
+		    dataType: 'json', 
+		    contentType: false,  
+		    processData: false,
+		    beforeSend: function(xhr) {
+		        xhr.setRequestHeader(csrfHeader, csrfToken);
+		    },
+		    success: function(response) {
+		        if(response.success){
+	        	 	document.getElementById('modalBox').style.display = "none";
+	        	 	layerPopup('반려 처리되었습니다.', '확인', false, btn1Act, btn1Act);
+		        }
+		    },
+		    error: function(e) {
+		        console.log(e);
+		    }
+		});
+	}else{
+		layerPopup('반려 사유를 입력하세요.', '확인', false, removeAlert, removeAlert);
+	}
 	
 	
 	//document.getElementById('modalBox').style.display = "none";

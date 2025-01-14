@@ -305,12 +305,7 @@
 										<tr>
 											<th>기안일</th>
 											<td>
-												<c:if test="${DraftInfo.status == 'sd'}">
-													<input type="text" name="today" value="${DraftInfo.create_date}" readonly/>
-												</c:if>
-												<c:if test="${DraftInfo.status == 'sv'}">
-													<input type="text" name="today" value="-" readonly/>
-												</c:if>
+												<input class="today-date" type="text" name="today" value="${DraftInfo.create_date}" readonly/>
 											</td>
 										</tr>
 										<tr>
@@ -554,6 +549,7 @@
 <script src='/resources/js/approval.js'></script>
 <script src='/resources/js/charjstree.js'></script>
 <script>
+
 //첫 번째 FilePond에 설정 적용
 const logoFilePond = FilePond.create(document.querySelector('input.filepond'), {
 	allowMultiple: false,
@@ -572,12 +568,13 @@ const attachedFilesPond = FilePond.create(document.querySelector('input.filepond
 });
 
 
-// 기안일
+//기안일
 const today = new Date();   
 const year = today.getFullYear(); 
 const month = today.getMonth() + 1; 
 const date = today.getDate();  
-document.querySelector('input[name="today"]').value = year + '-' + month + '-' + date;
+console.log(year + '-' + month + '-' + date);
+document.querySelector('input.today-date').value = year + '-' + month + '-' + date;
 
 
 var target = '${DraftInfo.target_type}' == 'df001' ?  '브랜드' : '직영점';
@@ -756,17 +753,17 @@ function updateDraft(){
 	           var filename = src.split('/').pop();  // 파일명 추출
 	           imgsInEditor.push(filename);  // 추출된 파일명 배열에 추가
 	       }
-	});
+		});
 
-	// new_filename과 일치하는 항목만 필터링
-	var finalImgs = tempImg.filter(function (temp) {
-	   return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
-	});
-
-	formData.append('imgsJson', JSON.stringify(finalImgs));
-
-	fileAjax('POST', url, formData);
-	console.log("fileAjax()실행");
+		// new_filename과 일치하는 항목만 필터링
+		var finalImgs = tempImg.filter(function (temp) {
+		   return imgsInEditor.includes(temp.new_filename);  // 에디터에 있는 파일과 tempImg의 new_filename 비교
+		});
+	
+		formData.append('imgsJson', JSON.stringify(finalImgs));
+	
+		fileAjax('POST', url, formData);
+		console.log("fileAjax()실행");
 	}
 
 
