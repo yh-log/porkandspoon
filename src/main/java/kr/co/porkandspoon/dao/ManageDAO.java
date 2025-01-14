@@ -21,7 +21,7 @@ public interface ManageDAO {
 
 	int editPart(Map<String, String> params);
 	
-	int delPart(String part_idx);
+	int delPart(String part_idx, String use_yn);
 	
 	int editPartTime(Map<String, String> timeParams);
 

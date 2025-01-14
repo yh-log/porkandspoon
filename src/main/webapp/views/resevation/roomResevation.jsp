@@ -672,7 +672,7 @@
 	                    });
 	                });
 	            } else {
-	                attendeesList.insertAdjacentHTML('beforeend', '<p>참석자가 없습니다.</p>');
+	            	editList.insertAdjacentHTML('beforeend', '<p>참석자가 없습니다.</p>');
 	            }
 	            
 	        }
@@ -764,14 +764,21 @@
 	               	xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 설정
 	           	},
 	           	success: function(response) {
-	               	if(response.success){
+	               	/* if(response.success){
 	                   	// 모달 닫기
 	                   	$('#modalBox').hide();
 	                   	$('#modalBox .modal-content').html('');
 		
 	                   	// 캘린더 갱신
 	                   	loadCalender(section);
-	              	 }
+	              	 } */
+	           		if(response.success){
+		        		httpSuccess(response); // 성공 콜백
+		        		 // 모달 닫기 및 초기화
+		                initializeModal(['calendar_content', 'calendar_start_date', 'calendar_end_date']);
+		        	}else{
+		        		layerPopup("이미 예약된 날짜 입니다.", "확인", false, removeAlert, removeAlert);
+		        	}
 	           	},
 	           	error: function(e){
 	               	console.log('수정 AJAX 에러 => ', e);
@@ -799,6 +806,55 @@
 	    	httpAjax('DELETE', '/roomDelete/'+idx);
 	    	removeAlert();
 		}
+	          
+	    function setupModalEvents(modal) {
+	        var closeModal1 = modal.querySelector("#closeModal1");
+	        var cancelButton1 = modal.querySelector("#cancelModal1");
+	        var closeModal = modal.querySelector("#closeModal");
+	        var cancelButton = modal.querySelector("#cancelModal");
+	        var addButton = modal.querySelector("#addModal");
+	        
+	     // 확인 클릭 이벤트
+	        if (addButton) {
+	            addButton.addEventListener("click", function () {
+	                addBtnFn();
+	            });
+	        }
+
+	        // 닫기 버튼 클릭 이벤트
+	        if (closeModal1) {
+	            closeModal1.addEventListener("click", function () {
+	                modal.style.display = "none";
+	                location.reload();
+	            });
+	        }
+
+	        // 취소 버튼 클릭 이벤트
+	        if (cancelButton1) {
+	            cancelButton1.addEventListener("click", function () {
+	                modal.style.display = "none";
+	                location.reload();
+	            });
+	        }
+	        
+	        // 닫기 버튼 클릭 이벤트
+	        if (closeModal) {
+	            closeModal.addEventListener("click", function () {
+	                modal.style.display = "none";
+	            });
+	        }
+
+	        // 취소 버튼 클릭 이벤트
+	        if (cancelButton) {
+	            cancelButton.addEventListener("click", function () {
+	                modal.style.display = "none";
+	            });
+	        }
+	    }
+        
+        
+	    
+	 
 	    	    
 	    
 

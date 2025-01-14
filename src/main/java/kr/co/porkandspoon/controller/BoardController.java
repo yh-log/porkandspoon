@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
+import org.apache.ibatis.annotations.Delete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -559,5 +560,18 @@ public class BoardController {
 		List<BoardDTO> dto = boardService.getTeamCode();
 		return dto;
 	}
+	
+	@DeleteMapping(value="/delete/file")
+		public FileDTO setDeleteFile(@ModelAttribute FileDTO fdto) {
+			FileDTO dto = new FileDTO();
+			if(boardService.setDeleteFile(fdto) > 0) {
+				logger.info("성공");
+				dto.setStatus(200);
+				dto.setMessage("파일삭제");
+			}
+		
+			return dto;			
+		}
+	
 	
 }

@@ -223,8 +223,8 @@ public class ManageController {
 	
 	@DeleteMapping(value = "/us/part/Delete/{part_idx}")
 	public int delPart(@PathVariable String part_idx) {
-		
-		 return manageService.delPart(part_idx);
+			String use_yn = "N";
+		 return manageService.delPart(part_idx,use_yn);
 	}
 	
 	// 아르바이트 스케줄 뷰 이동

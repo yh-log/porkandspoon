@@ -187,9 +187,13 @@ Logger logger = LoggerFactory.getLogger(getClass());
 	}
 
 
-	public int delPart(String part_idx) {
+	public int delPart(String part_idx, String use_yn) {
+		LocalDate gettoday = LocalDate.now();
+		String today = gettoday.toString();
+		logger.info(today);
+		manageDAO.deletePartHistory(part_idx,today ); // 수정일 이후 데이터 삭제
 			
-			return manageDAO.delPart(part_idx);
+			return manageDAO.delPart(part_idx,use_yn);
 		}
 	
 

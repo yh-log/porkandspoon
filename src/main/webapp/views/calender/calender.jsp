@@ -618,6 +618,25 @@
 		console.log('두번째팝업 1번 버튼 동작');
 		removeAlert(); // 팝업닫기
 	}
+	
+	function setupModalEvents(modal) {
+        var closeModal = modal.querySelector("#closeModal");
+        var cancelButton = modal.querySelector("#cancelModal");
+               
+        // 닫기 버튼 클릭 이벤트
+        if (closeModal) {
+            closeModal.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+        }
+
+        // 취소 버튼 클릭 이벤트
+        if (cancelButton) {
+            cancelButton.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+        }
+    }
 
 
   	

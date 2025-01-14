@@ -489,14 +489,12 @@
 	    if (filteredAlarms.length > 0) {
 	        // 필터링된 알람이 있을 때만 렌더링
 	        filteredAlarms.forEach(function(alarm) {
-	            const relativeTime = getRelativeTime(alarm.create_date);
 
 	            const alarmHTML = 
 	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 	                '    <div class="alarm-item">' +
 	                '        <a onclick="deleteAlarm2(' + alarm.alarm_idx + ')" href="' + alarm.url + '">' +
 	                '            <span id="al_content">' + '<i class="bi bi-circle-fill" style="font-size: 8px; vertical-align: middle; color: #ff7976; margin-right: 5px;"></i>' +alarm.content + '</span>' +
-	                '            <span id="al_date">' + relativeTime + '</span>' +
 	                '        </a>' +
 	                '    </div>' +
 	                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
@@ -510,22 +508,6 @@
 	}
 	
 	
-
-	function getRelativeTime(createDate) {
-	    const now = new Date(); // 현재 시간
-	    const past = new Date(createDate); // recreate_date를 Date 객체로 변환
-	    const diff = Math.floor((now - past) / 1000); // 시간 차이를 초 단위로 계산
-
-	    if (diff < 60) {
-	        return diff + "초 전";
-	    } else if (diff < 3600) {
-	        return Math.floor(diff / 60) + "분 전";
-	    } else if (diff < 86400) {
-	        return Math.floor(diff / 3600) + "시간 전";
-	    } else {
-	        return Math.floor(diff / 86400) + "일 전";
-	    }
-	}
 
 	function deleteAlarm(data) {
 		const url = '/updateIsurl';
@@ -619,13 +601,11 @@
 		    // 안읽은 알람 렌더링
 		    if (unreadAlarms.length > 0) {
 		        unreadAlarms.forEach(function(alarm) {
-		            const relativeTime = getRelativeTime(alarm.create_date);
 		            const alarmHTML = 
 		                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 		                '    <div class="alarm-item">' +
 		                '        <a href="' + alarm.url + '" onclick="deleteAlarm2(' + alarm.alarm_idx + ')">' +
 		                '            <span id="al_content">' + '<i class="bi bi-circle-fill" style="font-size: 8px; vertical-align: middle; color: #ff7976; margin-right: 5px;"></i>' + alarm.content + '</span>' +
-		                '            <span id="al_date">' + relativeTime + '</span>' +
 		                '        </a>' +
 		                '    </div>' +
 		                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +
@@ -639,13 +619,11 @@
 		    // 읽은 알람 렌더링
 		    if (readAlarms.length > 0) {
 		        readAlarms.forEach(function(alarm) {
-		            const relativeTime = getRelativeTime(alarm.create_date);
 		            const alarmHTML = 
 		                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 		                '    <div class="alarm-item">' +
 		                '        <a href="' + alarm.url + '" onclick="deleteAlarm2(' + alarm.alarm_idx + ')">' +
 		                '            <span id="al_content">' + alarm.content + '</span>' +
-		                '            <span id="al_date">' + relativeTime + '</span>' +
 		                '        </a>' +
 		                '    </div>' +
 		                '</div>';
@@ -697,14 +675,12 @@
 	    if (filteredAlarms.length > 0) {
 	        // 필터링된 알람이 있을 때만 렌더링
 	        filteredAlarms.forEach(function(alarm) {
-	            const relativeTime = getRelativeTime(alarm.create_date);
 
 	            const alarmHTML = 
 	                '<div class="alarm-item" id="alarmBox" data-alarm-idx="' + alarm.idx + '">' +
 	                '    <div class="alarm-item">' +
 	                '        <a onclick="deleteAlarm2(' + alarm.alarm_idx + ')" href="' + alarm.url + '">' +
 	                '            <span id="al_content">' + '<i class="bi bi-circle-fill" style="font-size: 8px; vertical-align: middle; color: #ff7976; margin-right: 5px;"></i>' + alarm.subject + '  ' + alarm.content + '</span>' +
-	                '            <span id="al_date">' + relativeTime + '</span>' +
 	                '        </a>' +
 	                '    </div>' +
 	                '    <button style="background: #fff" class="alarmclose" onclick="deleteAlarm(' + alarm.alarm_idx + ')" data-alarm-idx="' + alarm.idx + '">×</button>' +

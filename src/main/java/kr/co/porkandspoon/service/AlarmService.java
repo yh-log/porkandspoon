@@ -84,6 +84,7 @@ public class AlarmService {
 			noticeDTO.setSubject(ndto.getSubject());
 		}
 		
+
 		// 교육 시청 알림 개별 로직
 		if(noticeDTO.getCode_name() == "ml005") {
 			List<NoticeDTO> dtoList = alarmDAO.getEdu(noticeDTO);
@@ -91,7 +92,7 @@ public class AlarmService {
 		    	NoticeDTO newNotice = new NoticeDTO();
 		        newNotice.setFrom_idx(noticedto.getFrom_idx());
 		        newNotice.setSubject(noticedto.getSubject());
-		        newNotice.setFrom_id(noticedto.getFrom_id());
+		        newNotice.setFrom_id(noticedto.getFrom_id());	        
 		        newNotice.setUsername(noticedto.getUsername());
 		        newNotice.setCode_name("ml005");
 		        newNotice.setCreate_date(noticeDTO.getCreate_date());
@@ -101,7 +102,7 @@ public class AlarmService {
 		        } else {
 		            continue; 
 		        }
-
+		        
 		        // 알림 메시지 설정
 		        String sub = newNotice.getSubject();
 		        newNotice.setSubject("교육 시청 알림이 왔습니다.");
@@ -113,6 +114,7 @@ public class AlarmService {
 		    }
 		    return;
 		}
+
 		
 		if(noticeDTO.getCode_name().equals("ml010")) {
 			List<NoticeDTO> dto = alarmDAO.getChat(noticeDTO);

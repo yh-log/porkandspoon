@@ -373,6 +373,27 @@ $(document).ready(function () {
     updateAddButton();
 });
 
+$(document).on('change', 'input[name="end_time[]"]', function () {
+    const endTimeInput = $(this); // 현재 변경된 end_time
+    const startTimeInput = endTimeInput.closest('#searchLayout').find('input[name="start_time[]"]'); // 같은 row의 start_time
+
+    const startTime = startTimeInput.val(); // 시작 시간 값
+    const endTime = endTimeInput.val(); // 종료 시간 값
+    console.log("startTime" + startTime);
+    console.log("endTime" + endTime);
+
+    if (startTime && endTime && endTime <= startTime) {
+        // 팝업 띄우기
+        layerPopup("종료 시간은 시작 시간보다 커야 합니다.", "확인", false, function () {
+            endTimeInput.val(''); // 종료 시간 초기화
+            removeAlert(); // 팝업 닫기
+        }, function () {
+            removeAlert(); // 팝업 닫기
+        });
+    }
+});
+	
+
 
 $('.btn-popup').on(
 		'click',

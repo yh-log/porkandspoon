@@ -54,7 +54,7 @@
 	<!-- 직원 리스트 불러오기 -->
 	<select id="getPartList5" resultType="kr.co.porkandspoon.dto.ManageDTO">
 		SELECT p.*, s.name as spotName FROM part p LEFT JOIN direct_store s ON p.id = s.id
-	    WHERE p.is_quit = 'N' AND p.id = (select id from direct_store where owner = #{owner})
+	    WHERE p.is_quit = 'N' AND p.use_yn='Y' AND p.id  = (select id from direct_store where owner = #{owner})
 	    ORDER BY p.join_date ASC LIMIT 5
 	</select>
  
@@ -100,7 +100,10 @@
    </select>
    
    <delete id="delPart" parameterType="String">
-   		DELETE FROM part WHERE part_idx = #{part_idx}
+   		UPDATE part
+		    SET 
+		        use_yn = #{use_yn}
+		     WHERE part_idx = #{part_idx}
    </delete>
    
    <select id="scheduleDetail" resultType="kr.co.porkandspoon.dto.ManageDTO">
@@ -142,6 +145,7 @@
         <if test="is_quit != 'all' and is_quit != null">
             is_quit = #{is_quit}
         </if>
+       	AND use_yn='Y'
         AND id = (select id from direct_store where owner = #{owner})
         <if test="keyword != null and !keyword.equals('') and opt.equals('name')">
             AND name LIKE CONCAT('%', #{keyword}, '%')
@@ -168,6 +172,7 @@
         <if test="is_quit != 'all' and is_quit != null">
             is_quit = #{is_quit}
         </if>
+        AND p.use_yn='Y'
         AND p.id = (SELECT id FROM direct_store WHERE owner = #{owner})
         <if test="keyword != null and !keyword.equals('')">
             AND p.name LIKE CONCAT('%', #{keyword}, '%')
@@ -194,7 +199,7 @@
 	</select>
 
 	<select id="getPartNames" resultType="kr.co.porkandspoon.dto.ManageDTO">
-		SELECT part_idx,name FROM part WHERE id = (select id from direct_store where owner = #{owner})
+		SELECT part_idx,name FROM part WHERE use_yn = 'Y' AND id = (select id from direct_store where owner = #{owner})
 	</select>
 
 

@@ -491,8 +491,8 @@
           
             document.getElementById("subject").textContent = data.subject;
             document.getElementById("content").textContent = data.content;
-            document.getElementById("start_date").textContent = new Date(data.start_date).toLocaleString();
-            document.getElementById("end_date").textContent = new Date(data.end_date).toLocaleString();
+            document.getElementById("start_date").textContent = data.start_date;
+            document.getElementById("end_date").textContent = data.end_date;
             document.getElementById("username").textContent = data.name;
             if(data.selection == 'car'){
            		document.getElementById("select").textContent = '차량';
@@ -638,6 +638,25 @@
     	httpAjax('DELETE', '/itemDelete/'+idx);
     	removeAlert();
 	}
+    
+    function setupModalEvents(modal) {
+        var closeModal = modal.querySelector("#closeModal");
+        var cancelButton = modal.querySelector("#cancelModal");
+               
+        // 닫기 버튼 클릭 이벤트
+        if (closeModal) {
+            closeModal.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+        }
+
+        // 취소 버튼 클릭 이벤트
+        if (cancelButton) {
+            cancelButton.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+        }
+    }
     
     
 

@@ -230,6 +230,10 @@
 	}
 	
 	function removeFile(fileName) {
+		console.log(fileName);
+		var params = {new_filename: fileName};
+		var url = '/delete/file';
+		httpAjax('DELETE', url, params);
 	    // 해당 파일 요소 삭제
 	    var fileElement = document.getElementById('file_' + fileName);
 	    if (fileElement) {
@@ -246,6 +250,10 @@
 	    console.log('파일 제거됨:', fileName);
 	}
 
+	function httpSuccess(response) {
+		console.log('성공');
+	}
+	
 	$('.btn-write').on('click', function () {
 	    layerPopup(
 	        '게시글을 수정하시겠습니까?',
@@ -258,6 +266,35 @@
 	
 	function reviewupdateY() {
         removeAlert(); // 팝업 닫기
+        var subject = document.querySelector('input[name="subject"]').value.trim();
+        var postContent = document.querySelector('textarea[name="postContnent"]').value.trim();
+        
+        if(!subject) {
+        	layerPopup(
+		            '제목을 입력해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+        }
+        
+        if(!postContent) {
+        	layerPopup(
+		            '내용을 입력해주세요.',
+		            '확인',
+		            null,
+		            function () {
+		                removeAlert();
+		            },
+		            function () {}
+		        );
+		        return;
+        }
+        
         url = '/board/update';
         textEaditorWrite(url);
     }
