@@ -90,12 +90,12 @@
 
 			<div class="page-content">
 				<section id="menu">
-					<h4 class="menu-title">구매/사용 기록</h4>
+					<h4 class="menu-title">나의 정보</h4>
 					<ul>
 						<li id="firstMenu"><a href="/myPageView">나의 정보</a></li>
 						<li id="secondMenu"><a href="/trip/listView">출장</a></li>
-						<li id="secondMenu"><a href="/myPageSign">서명관리</a></li>
-						<li id="secondMenu" class="active"><a href="/myPageBuy">구매/사용 기록</a></li>
+						<li id="secondMenu"><a href="/myPageSign">서명 관리</a></li>
+						<li id="secondMenu" class="active"><a href="/myPageBuy">구매기록</a></li>
 					</ul>
 				</section>
 				<section class="cont">

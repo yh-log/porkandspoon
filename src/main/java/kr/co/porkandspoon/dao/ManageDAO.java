@@ -21,6 +21,8 @@ public interface ManageDAO {
 
 	int editPart(Map<String, String> params);
 	
+	int delPart(String part_idx);
+	
 	int editPartTime(Map<String, String> timeParams);
 
 	int deletePartTime(String part_Idx);
@@ -226,4 +228,6 @@ public interface ManageDAO {
 	 * 브랜드 직영점 별 매출 통계
 	 */
 	List<ChartDTO> getChartBrandStatistics(Map<String, String> params);
+
+	
 }

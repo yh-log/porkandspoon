@@ -39,7 +39,9 @@
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style >
-	.tit-area{
+
+
+.tit-area{
 		display: flex; 
 	}
 	h5 .count{
@@ -81,6 +83,8 @@
 	.required-value {
     color: var(--bs-danger);
 }
+
+
 </style>
 </head>
 
@@ -121,8 +125,9 @@
 	                     <table>
 	                        <tr>
 	                           <th class="align-l">상품명<span class="required-value">*</span></th>
-	                           <td ><input class="form-control sor-1 "  name="name" value="${info.name}" type="text" placeholder="상품명을 입력해주세요." required="required"/></td>
-	                           <td ><input class="form-control sor-1 "  name="meal_idx" value="${info.meal_idx}" type="text" placeholder="상품명을 입력해주세요." required="required" hidden=""/></td>
+	                           <td ><input class="form-control sor-1 "  name="name" value="${info.name}" type="text" placeholder="상품명을 입력해주세요." required="required"/>
+	                           <input class="form-control sor-1 " id="meal_idx" name="meal_idx" value="${info.meal_idx}" type="text" placeholder="상품명을 입력해주세요." required="required" hidden=""/>
+	                           </td>
 	                        </tr>
 	                        <tr>
 	                           <th class="align-l">상품가격<span class="required-value">*</span></th>
@@ -132,12 +137,15 @@
 	                           <th class="align-l">상품수량<span class="required-value">*</span></th>
 	                          <td ><input class="form-control sor-1 "  name="count" value="${info.count}" type="text" placeholder="상품수량을 입력해주세요." required="required"/></td>
 	                        </tr> 
-	                       <tr>
-					            <th class="align-l">파일첨부</th>
-					            <td>
-					                <input class="filepond" type="file" name="filepond" />
-					            </td>
-					        </tr>
+							   <tr>
+						    <th class="align-l">파일첨부</th>
+						    <td>
+						        <!-- FilePond 입력 필드 -->
+						        <input class="filepond" type="file" name="filepond" data-file-url="${fileUrl}" data-file-name="${fileName}" />
+						        <input type="hidden" name="existingFile" value="${fileUrl}" />
+						    </td>
+						</tr>
+
 		                     <tr>
 							   <th class="align-l">활성여부</th>
 							   <td>
@@ -204,108 +212,125 @@
 
 <script>
 
-//FilePond 초기화
-const pond = FilePond.create(document.querySelector('input[type="file"]'), {
-    allowMultiple: false, // 단일 파일만 허용
-    allowImagePreview: true, // 이미지 미리보기 활성화
-    imagePreviewMaxHeight: 150, // 미리보기 높이
-    acceptedFileTypes: ['image/*'], // 이미지 파일만 허용
-    instantUpload: false, // 즉시 업로드 비활성화
-    server: {
-        process: null, // 실시간 처리하지 않음
-        revert: null, // 삭제 처리 비활성화
-    },
-});
+$(document).ready(function () {
+	  $('input[name="cost"], input[name="count"]').on('input', function () {
+	        // 입력된 값에서 숫자 이외의 값 제거
+	        this.value = this.value.replace(/[^0-9]/g, '');
+	    });
 
-// 서버에서 제공된 기존 파일 설정
-const fileUrl = '${fileUrl}'; // 서버에서 전달한 파일 URL
-const fileName = '${fileName}'; // 서버에서 전달한 파일 이름
+	    // keydown 이벤트로 실시간으로 입력 제한
+	    $('input[name="cost"], input[name="count"]').on('keydown', function (e) {
+	        // 숫자키, 백스페이스, Delete, Tab, 화살표 키는 허용
+	        if (
+	            (e.keyCode >= 48 && e.keyCode <= 57) || // 숫자 (상단)
+	            (e.keyCode >= 96 && e.keyCode <= 105) || // 숫자 (키패드)
+	            e.keyCode === 8 || // 백스페이스
+	            e.keyCode === 46 || // Delete
+	            e.keyCode === 9 || // Tab
+	            (e.keyCode >= 37 && e.keyCode <= 40) // 화살표 키
+	        ) {
+	            return true;
+	        } else {
+	            e.preventDefault();
+	        }
+	    });
+	    const meal_idx = $('#meal_idx').val().trim();
+	    let pond;
 
-if (fileUrl && fileName) {
-    pond.setOptions({
-        files: [
-            {
-                source: fileUrl, // 기존 이미지의 URL
-                options: {
-                    type: 'local', // 로컬 파일로 간주
-                    file: {
-                        name: fileName, // 기존 파일 이름
-                        size: 300000, // 파일 크기 (옵션)
-                        type: 'image/jpeg', // MIME 타입 (예시)
-                    },
-                },
-            },
-        ],
-    });
-}
+	    // FilePond 초기화
+	    const $fileInput = $('input[type="file"]');
+	    if ($fileInput.length) {
+	        pond = FilePond.create($fileInput[0], {
+	            server: {
+	                process: {
+	                    url: '/ad/mealTicket/Update/'+meal_idx, // 파일 업로드 처리 URL
+	                    method: 'POST',
+	                    headers: {
+	                        'X-CSRF-TOKEN': '${_csrf.token}' // CSRF 토큰 추가
+	                    },
+	                    ondata: (formData) => {
+	                        // 추가 데이터 설정
+	                        formData.append('name', $('input[name="name"]').val());
+	                        formData.append('cost', $('input[name="cost"]').val());
+	                        formData.append('count', $('input[name="count"]').val());
+	                        formData.append('use_yn', $('input[name="use_yn"]:checked').val());
+	                        formData.append('existingFile', $('input[name="existingFile"]').val()); // Add existingFile to form data
+	                        return formData;
+	                    }
+	                },
+	                revert: null,
+	                load: null,
+	                fetch: null
+	            },
+	            instantUpload: false, // 자동 업로드 비활성화
+	            files: [
+	                {
+	                    source: "${fileUrl}", // 서버에서 전달받은 기존 파일 URL
+	                    options: {
+	                        type: 'local',
+	                        file: {
+	                            name: "${fileName}", // 서버에서 전달받은 파일명
+	                            size: 300000, // 임의로 설정한 파일 크기
+	                            type: 'image/jpeg', // 파일 타입 예시
+	                        },
+	                    },
+	                },
+	            ],
+	        });
+	        console.log('FilePond 초기화 완료:', pond);
+	    } else {
+	        console.error('File input을 찾을 수 없습니다.');
+	    }
 
-// 선택된 파일을 폼 데이터에 추가
-document.querySelector('form').addEventListener('submit', (e) => {
-    e.preventDefault(); // 기본 동작 방지
+	    // 수정 버튼 클릭 이벤트
+	    $('.btn-popup').on('click', function () {
+	        layerPopup('식권을 수정하시겠습니까?', '확인', '취소', btn1Act, btn2Act);
+	    });
 
-    const form = e.target; // 현재 폼
-    const formData = new FormData(form);
+	    // 팝업 확인 버튼 (등록하시겠습니까?)
+	    function btn1Act() {
+	        console.log('1번 버튼 동작');
+	        removeAlert(); // 팝업 닫기
 
-    // FilePond에서 파일 데이터 가져오기
-    pond.getFiles().forEach((fileItem) => {
-        formData.append('filepond', fileItem.file); // 'filepond'는 서버에서 받을 이름
-    });
+	        const name = $('input[name="name"]').val().trim();
+	        const cost = $('input[name="cost"]').val().trim();
+	        const count = $('input[name="count"]').val().trim();
+	        const fileCount = pond.getFiles().length;
 
-    // AJAX 요청
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', form.action, true);
-    xhr.onload = function () {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            console.log('폼 전송 성공:', xhr.responseText);
-            alert('업로드 성공!');
-            window.location.reload(); // 성공 시 페이지 새로고침 또는 다른 처리
-        } else {
-            console.error('폼 전송 실패:', xhr.responseText);
-            alert('업로드 실패. 다시 시도해주세요.');
-        }
-    };
-    xhr.send(formData); // 폼 데이터 전송
-});
+	        console.log('상품명:', name);
+	        console.log('상품가격:', cost);
+	        console.log('상품수량:', count);
+	        console.log('첨부된 파일 개수:', fileCount);
 
-$('.btn-popup').on(
-		'click',
-		function() {
-			layerPopup('식권을 수정하시겠습니까?', '확인', '취소', btn1Act,
-					btn2Act);
-		});
+	        // 필수 데이터 검증
+	        if (!name || !cost || !count || fileCount === 0) {
+	            layerPopup('모든 필수 항목을 입력해 주세요.', '확인', false, btn2Act, btn2Act);
+	            return;
+	        }
 
-/* 알림 팝업 */
-function btn1Act() {
-	// 1번버튼 클릭시 수행할 내용
-	console.log('1번 버튼 동작');
+	        // 파일 업로드 및 폼 전송
+	        pond.processFiles().then(() => {
+	            console.log('파일 업로드 완료');
+	            // 두 번째 팝업 표시
+	            layerPopup('수정이 완료되었습니다.', '확인', false, redirectToList, btn2Act);
+	        }).catch((error) => {
+	            console.error('파일 업로드 실패:', error);
+	            layerPopup('파일 업로드 중 오류가 발생했습니다.', '확인', false, btn2Act, btn2Act);
+	        });
+	    }
 
-	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-	removeAlert(); // 기존팝업닫기
-	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-	layerPopup("수정이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
-}
+	    // 팝업 취소 버튼
+	    function btn2Act() {
+	        console.log('2번 버튼 동작');
+	        removeAlert(); // 팝업 닫기
+	    }
 
-function btn2Act() {
-	// 2번버튼 클릭시 수행할 내용
-	console.log('2번 버튼 동작');
-	removeAlert(); // 팝업닫기
-}
-
-function secondBtn1Act() {
-	// 두번째팝업 1번버튼 클릭시 수행할 내용
-	console.log('두번째팝업 1번 버튼 동작');
-	
-	 document.querySelector('form').submit();
-	
-	removeAlert(); // 팝업닫기
-	
-}
-
-function secondBtn2Act() {
-	// 두번째팝업 2번버튼 클릭시 수행할 내용
-	console.log('두번째팝업 2번 버튼 동작');
-	removeAlert(); // 팝업닫기
-	
-}
+	    // 두 번째 팝업 확인 후 경로 이동
+	    function redirectToList() {
+	        console.log('경로 이동');
+	        window.location.href = '/ad/meal/List'; // 이동할 경로 설정
+	    }
+	});
 </script>
+
 </html>
