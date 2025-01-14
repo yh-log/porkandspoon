@@ -1,9 +1,5 @@
 package kr.co.porkandspoon.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +30,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MealDTO;
-import kr.co.porkandspoon.dto.UserDTO;
 import kr.co.porkandspoon.service.MealService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -104,7 +99,8 @@ public class MealController {
 	    body.put("total_amount", cost);
 	    body.put("tax_free_amount", 0);
 
-	    String domain = "http://localhost:8080"; // 등록된 도메인
+	    String domain = "http://144.24.84.10"; // 등록된 도메인
+	    //String domain = "http://localhost:8080";
 	    body.put("approval_url", domain + "/mealTicket/paySuccess");
 	    body.put("cancel_url", domain + "/mealTicket/payCancel");
 	    body.put("fail_url", domain + "/mealTicket/payFail");
@@ -375,7 +371,7 @@ public class MealController {
 		params.put("creater", loginId); // 생성자 임의로 넣기
 		mealService.setmealMenu(params);
 		
-		return new ModelAndView("/meal/mealMenuWrite");
+		return new ModelAndView("redirect:/mealMenu");
 	}
 	
 	//식단표 중복기능

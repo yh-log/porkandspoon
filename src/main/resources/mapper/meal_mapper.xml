@@ -94,8 +94,8 @@
 </select>
 
 <insert id="setmealbuy" parameterType="map">
-	INSERT INTO meal_ticket(meal_idx,username,is_buy,count)
-    		VALUES(#{meal_idx},#{username},#{is_buy},#{count})
+	INSERT INTO meal_ticket(meal_idx,username,is_buy,count,create_date)
+    		VALUES(#{meal_idx},#{username},#{is_buy},#{count},#{create_date})
 
 </insert>
 

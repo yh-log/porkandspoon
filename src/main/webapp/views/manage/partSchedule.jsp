@@ -399,6 +399,7 @@ $(document).ready(function () {
         return colorMap[name];
     }
 
+    
     // 캘린더 설정
    var calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: ['timeGrid', 'interaction'],
@@ -532,6 +533,8 @@ $(document).ready(function () {
 
     loadEvents();
 
+    
+    
     
     
     
@@ -768,6 +771,9 @@ $('#deleteEditMenu').on('click', function () {
             );
             return;
         }
+        
+        
+        
 
         const newEventData = {
             part_idx: partIdx,
@@ -823,6 +829,8 @@ $('#deleteEditMenu').on('click', function () {
         );
         return;
     }
+    
+   
 
  
         console.log('수정된 데이터:', updatedData);
@@ -848,6 +856,47 @@ $('#deleteEditMenu').on('click', function () {
 
 });
 
+
+$(document).ready(function () {
+    // 종료 시간 검증 함수
+    function validateTime(startTimeInput, endTimeInput) {
+        const startTime = startTimeInput.val(); // 시작 시간 값
+        const endTime = endTimeInput.val(); // 종료 시간 값
+
+        if (startTime && endTime && startTime >= endTime) {
+            // 팝업 띄우기
+            layerPopup(
+                "종료 시간은 시작 시간보다 커야 합니다.", // 팝업 메시지
+                "확인", // 확인 버튼 텍스트
+                false, // 취소 버튼 없음
+                function () {
+                    endTimeInput.val(''); // 종료 시간 초기화
+                    removeAlert(); // 팝업 닫기
+                },
+                function () {
+                    removeAlert(); // 팝업 닫기
+                }
+            );
+        }
+    }
+
+    // 등록 모달 시간 검증
+    $('#registerMenuStartTime, #registerMenuEndTime').on('change', function () {
+        const startTimeInput = $('#registerMenuStartTime');
+        const endTimeInput = $('#registerMenuEndTime');
+        validateTime(startTimeInput, endTimeInput);
+    });
+
+    // 수정 모달 시간 검증
+    $('#menuStartTime, #menuEndTime').on('change', function () {
+        const startTimeInput = $('#menuStartTime');
+        const endTimeInput = $('#menuEndTime');
+        validateTime(startTimeInput, endTimeInput);
+    });
+
+    // 등록 및 수정 모달과 관련된 다른 코드는 그대로 유지
+    // ...
+});
 
 </script>
 
