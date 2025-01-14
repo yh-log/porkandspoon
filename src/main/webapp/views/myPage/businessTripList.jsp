@@ -43,6 +43,10 @@
 	    gap: 20px;
 	    margin-bottom: 10px;
 	}
+
+	a{
+		color: white;
+	}
 </style>
 
 
@@ -105,7 +109,7 @@
 									<ul class="pagination justify-content-center" id="pagination"></ul>
 								</nav>
 							</div>
-							<div class="btn-trip"><a href="/trip/write" class="btn btn-primary">등록</a></div>
+							<div class="btn-trip"><a href="/trip/write" class="btn btn-primary" style="color: white;">등록</a></div>
 						</div> <!-- cont-body -->
 					</div>
 				</section>	

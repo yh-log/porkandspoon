@@ -986,11 +986,15 @@
 				if(response.status === 200){
 					// 성공 후 리스트 재로드 필요
 					layerPopup(response.message, '확인', false, removeAlert, removeAlert);
+
 					participationChatList(`${userDTO.username}`);
 					$('#chatRoomName').show();
 					$('#customNameInput').hide();
 					$('#chatUpdateBtn').show();
 					$('#charRoomNameUpdate').hide();
+					$('#chatRoomName').text(custom_name);
+
+
 
 				}else{
 					layerPopup(response.message, '확인', false, removeAlert, removeAlert);

@@ -111,15 +111,21 @@
 	    overflow: hidden;
 	    border: 0;
 	}
-	
-	.priview{
-		width: 170px;
-		height: 270px;
+
+	#imgPreview{
+		width: 150px;
+		height: 150px;
+		display: none;
 	}
-	
+
 	#deptLogo{
-		width: 180px;
-    	height: 200px;
+		width: 150px;
+		height: 150px;
+	}
+
+	.priview{
+		width: 150px;
+		height: 150px;
 	}
 	
 	.input-readonly {
@@ -280,6 +286,9 @@
 	function clearLogo() {
         const deptLogo = document.getElementById('deptLogo');
         deptLogo.style.display = 'none';
+
+		const imgLogo = document.getElementById('imgPreview');
+		imgLogo.style.display = 'block';
     }
 
 	const userInfo = JSON.parse('${userInfo}');
