@@ -70,7 +70,7 @@
 	    top: 160px;
 	    transform: translateX(-50%);
 	    width: 600px;
-	    height: 650px;
+	    height: 680px;
 	    padding: 30px;
 	    background: #fff;
 	    border: none;
@@ -270,6 +270,7 @@
 									</div>
 									<div style="text-align: center;" class="review-star-num">
 									</div>
+									<div style="text-align: center; margin: 5px; color: gray;" class="review-category"></div>
 									<div style="height: 441px; overflow-y: auto; overflow-x: hidden; margin: 0 -10px;">
 										<table class="review-table">
 											<colgroup>
@@ -467,7 +468,7 @@
 		var content = '';
 		var reviewstar = '';
 		var review_name = '';
-		if (response.length > 0) {
+		if (response && response.length > 0) {
 	        var total = response[0].total_review_star; 
 	        var totals = (total / 5) * 100;
 	        
@@ -478,28 +479,47 @@
 	        $('.review-write-yes[onclick^="reviewWrite"]').attr('onclick', 'reviewWrite(' + response[0].store_idx + ')');
 	    }
 		
-		if(response.length > 0) {
+		if(response && response.length > 0) {
 			var store_name = response[0].store_name;
 			review_name = '<img src="https://cdn-icons-png.flaticon.com/512/5134/5134814.png" width="50" height="50" alt="" title="" class="img-small"><span style="margin: 0 20px;">' + store_name + '</span><img src="https://cdn-icons-png.flaticon.com/512/5134/5134814.png" width="50" height="50" alt="" title="" class="img-small">';
 			$('.review_name').html(review_name);
 		}
 		
+		if(response && response.length > 0) {
+			var store_category = response[0].store_category;
+			store_category = store_category;
+			$('.review-category').html(store_category);
+		}
+		
 		response.forEach(function(item){
-			const starPercentage = (item.review_star / 5) * 100;
-			content += '<tr>';
-			content += '<th>' + item.name + '</th>';
-			content += '<td class="content-review">' + item.content + '</td>';
-			if (loggedInUser === item.username) {
-			    content += '<td class="trash"><i class="bi bi-trash btn-popup bi-icon" style="color:gray; cursor: pointer;" onclick="deleteReview(' + item.review_idx + ')"></i></td>';
-			} else {
-				content += '<td class="trash">' +
-		        '<div class="star-rating" style="width: 91px; height: 17px; background-size: 18px;" data-rating="' + item.review_star + '" title="' + item.review_star + '/5">' +
-		        '<div class="star-value" style="background-size: 18px; width: ' + starPercentage + '%;"></div>' +
-		        '</div>' +
-		        '</td>';
-			}
-			content += '</tr>';
+		    const starPercentage = (item.review_star / 5) * 100;
+
+		    if (item.use_yn === 'N') {
+		        content += '<tr>';
+		        content += '<th>' + item.name + '</th>';
+		        content += '<td class="content-review" style="color: gray;">' + '삭제된 댓글입니다.' + '</td>';
+		        content += '</tr>';
+		    } else {
+		        content += '<tr>';
+		        content += '<th>' + item.name + '</th>';
+		        content += '<td class="content-review">' + item.content + '</td>';
+		        if (loggedInUser === item.username) {
+		            content += '<td class="trash"><i class="bi bi-trash btn-popup bi-icon" style="color:gray; cursor: pointer;" onclick="deleteReview(' + item.review_idx + ')"></i></td>';
+		        } else {
+		            content += '<td class="trash">' +
+		            '<div class="star-rating" style="width: 91px; height: 17px; background-size: 18px;" data-rating="' + item.review_star + '" title="' + item.review_star + '/5">' +
+		            '<div class="star-value" style="background-size: 18px; width: ' + starPercentage + '%;"></div>' +
+		            '</div>' +
+		            '</td>';
+		        }
+		        content += '</tr>';
+		    }
 		});
+
+		
+		if (!response || response.length === 0) {
+		    content += '<tr><td colspan="3" style="text-align: center; padding: 20px;">리뷰가 없습니다.</td></tr>';
+		}
 		
 		$('.review-body').append(content);
 	}
@@ -612,6 +632,16 @@
 	
 	
 	$('.btnModal').on('click', function () {
+		$('#keyword').val('');
+	    $('#store_name').val('');
+	    $('#store_address').val('');
+	    $('#store_longitude').val('');
+	    $('#store_latitude').val('');
+	    $('#content').val('');
+	    
+	    // 라디오 버튼 초기화 (첫 번째 라디오 버튼 체크)
+	    $('input[name="flexRadioDefault"]').prop('checked', false);
+	    $('input[name="flexRadioDefault"]').first().prop('checked', true);
 	    $('#modal').show();
 	});
 
@@ -789,7 +819,7 @@
 		console.log(response);
 		if (response.message === '매장등록') {
 			$('.store-write').hide();
-			$(document).trigger('reloadStoreList');
+			location.reload();
 		}
 		
 		if(response.message === '매장중복') {

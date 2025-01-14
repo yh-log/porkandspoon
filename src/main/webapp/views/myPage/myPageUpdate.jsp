@@ -497,11 +497,13 @@ function myPageUpdate(){
 			var email = $('input[name="emailInfo"]').val() + '@' + $('input[name="customEmail"]').val()
 			formData.append('email', email);
 			
+		}else{
+			var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
+			formData.append('email', email);
+
 		}
-		
-		var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
-        formData.append('email', email);
-		
+
+
         formData.append('address', $('input[name="address"]').val());
 		
         fileAjax('PUT', '/myPage/update', formData);

@@ -319,4 +319,6 @@ public interface UserDAO{
 	 * 직영점 비활성화 시 owner 업데이트
 	 */
 	int storeUseYnUpdate(DeptDTO dto);
+
+
 }

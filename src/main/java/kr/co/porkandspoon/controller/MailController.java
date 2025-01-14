@@ -43,6 +43,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.porkandspoon.dto.ApprovalDTO;
 import kr.co.porkandspoon.dto.FileDTO;
 import kr.co.porkandspoon.dto.MailDTO;
+import kr.co.porkandspoon.dto.UserDTO;
+import kr.co.porkandspoon.service.ApprovalService;
 import kr.co.porkandspoon.service.MailService;
 import kr.co.porkandspoon.util.CommonUtil;
 
@@ -52,6 +54,7 @@ public class MailController {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MailService mailService;
+	@Autowired ApprovalService approvalService;
 	@Value("${upload.path}") String paths;
 	
 	// 메일리스트 view
@@ -85,6 +88,8 @@ public class MailController {
 		//임시보관 메일 수
 		int savedMailCount = mailService.savedMailCount(loginId);
 		mav.addObject("savedMailCount", savedMailCount);
+		UserDTO userDTO = approvalService.getUserInfo(loginId);
+		mav.addObject("userDTO", userDTO);
 		return mav;
 	}
 

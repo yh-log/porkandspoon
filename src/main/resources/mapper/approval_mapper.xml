@@ -25,11 +25,11 @@
             u.username, u.name, c.content AS position_content	, u.parent, d.text
         FROM 
             user u
-        JOIN 
+        LEFT JOIN 
             department d
 	        ON  
 	            u.parent = d.id
-		JOIN
+		LEFT JOIN
 			code c
 			ON
 				u.position = c.name
@@ -265,9 +265,10 @@ content = VALUES(content); -->
 	<select id="getApprLine" parameterType="String" resultType="kr.co.porkandspoon.dto.ApprovalDTO">
 		SELECT a.*, c.content AS position, u.name AS user_name, d.text AS dept_name, f.new_filename AS sign, f.code_name FROM approval_line a 
 			JOIN user u ON a.username = u.username 
-			JOIN code c ON u.position = c.name
-			JOIN department d ON u.parent = d.id
+			LEFT JOIN code c ON u.position = c.name
+			LEFT JOIN department d ON u.parent = d.id
 			LEFT JOIN file f ON a.username = f.pk_idx
+				AND (f.code_name = 'us100' OR f.code_name IS NULL)
 			WHERE draft_idx = #{draft_idx} 
 			AND (f.code_name = 'us100' OR f.code_name IS NULL)
 			ORDER BY order_num

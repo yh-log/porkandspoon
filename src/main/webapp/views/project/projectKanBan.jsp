@@ -350,7 +350,7 @@
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: #525fb7;
   color: white;
   transition: background-color 0.3s ease;
 }
@@ -439,9 +439,9 @@
 						  <h5 class="kanban-title">칸반보드</h5>
 						  <div class="project-info">
 						    <h4>${info.name}</h4>
-						    <p>참여인원:${info.count}명</p>
-						    <p>일정: ${info.start_date} ~ ${info.end_date}</p>
-						    <div id="progress-text">진행률: ${info.percent}%</div>
+						    <p><strong>참여인원:</strong> :${info.count}명</p>
+						    <p><strong>일정:</strong>  ${info.start_date} ~ ${info.end_date}</p>
+						    <div id="progress-text"><strong>진행률:</strong> ${info.percent}%</div>
 						    <div class="progress-bar">
 						      <div class="progress" style="width: ${info.percent}%;">${info.percent}%</div>
 						    </div>

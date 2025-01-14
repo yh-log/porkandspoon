@@ -296,12 +296,12 @@ margin-bottom: 5px;
 								    ${project.name}
 								</h4>
 								<div class="texts">
-				                <p id="first">참여인원: ${project.count} 명</p>
-				                <p>일정: ${project.start_date} ~ ${project.end_date}</p>
+				                <p id="first"><strong>참여인원:</strong>  ${project.count} 명</p>
+				                <p><strong>일정:</strong>  ${project.start_date} ~ ${project.end_date}</p>
 				                <c:if test="${not empty project.update_start_date and not empty project.update_end_date}">
-								    <p>수정된 일정: ${project.update_start_date} ~ ${project.update_end_date}</p>
+								    <p><strong>수정된 일정:</strong>  ${project.update_start_date} ~ ${project.update_end_date}</p>
 								</c:if>
-				                <p>진행률</p>
+				                <p><strong>진행률</strong> </p>
 								<div id="bar">
 								    <c:choose>
 								        <c:when test="${project.percent > 0}">

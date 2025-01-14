@@ -36,6 +36,12 @@
 	<meta name="_csrf_header" content="${_csrf.headerName}">
 
 <style >
+
+#workScheduleTable td div.inline-layout {
+    display: inline-flex;
+    gap: 5px; /* 간격 조정 */
+    align-items: center; /* 세로 정렬 */
+}
 	#home,#schedule{
 		width: 200px;
 	}
@@ -204,25 +210,22 @@
 								        </c:choose>
 								    </td>
 								</tr>
-			                  <tr>
-								    <th class="align-l">근무 요일</th>
-								    <td>
-								        <table style="width: 100%; border-collapse: collapse; border: none !important;">
-								            <c:forEach items="${list}" var="report">
-								                <tr style="border: none !important;">
-								                    <td style="padding: 5px; border: none !important;">${report.work_date}</td>
-								                    <td style="padding: 5px; border: none !important;">${report.start_time} ~ ${report.end_time}</td>
-								                </tr>
-								            </c:forEach>
-								        </table>
-								    </td>
-								</tr>
+			                <tr>
+						    <th class="align-l" style="text-align: center; vertical-align: middle;">근무 요일</th>
+						    <td style="text-align: center; vertical-align: middle;">
+						        <c:forEach items="${list}" var="report">
+						            <div class="inline-layout" style="display: flex; justify-content: center; gap: 10px; align-items: center; margin-bottom: 5px;">
+						                <span>${report.work_date}</span>
+						                <span>${report.start_time} ~ ${report.end_time}</span>
+						            </div>
+						        </c:forEach>
+						    </td>
+						</tr>
                      	</table>
 		                 
 							<div id="btn-gap">							
 								<button type="button" class="btn btn-primary" onclick="location.href='/us/part/Update/${info.part_idx}'">수정</button>
-								<button class="btn btn-outline-primary" 
-							    onclick="location.href = '/us/part'">
+								<button class="btn btn-outline-primary" onclick="location.href = '/us/part'">
 							    취소
 							</button>
 							</div>

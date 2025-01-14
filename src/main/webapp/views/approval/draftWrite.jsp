@@ -368,7 +368,7 @@
 												<p>${userDTO.name}</p>
 											</td>
 											<td>
-												<input type="hidden" name="appr_user"/>
+												<input type="hidden" name="appr_user" required/>
 												<p></p>
 											</td>
 											<td>

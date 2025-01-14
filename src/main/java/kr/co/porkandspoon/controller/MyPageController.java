@@ -16,6 +16,7 @@ import kr.co.porkandspoon.util.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,11 +42,13 @@ import kr.co.porkandspoon.util.CommonUtil;
 @RestController
 public class MyPageController {
 
+	@Value("${upload.path}") private String photo;
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired MyPageService myPageService;
 	
-	private static final String UPLOAD_DIR = "C:/upload/";
+	
+	
 
 
 	/**
@@ -213,7 +216,7 @@ public class MyPageController {
 	    if (dto != null) {
 	        try {
 	            String savedFileName = dto.getNew_filename();
-	            Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
+	            Path filePath = Paths.get(photo, savedFileName); // photo 사용
 	            byte[] fileContent = Files.readAllBytes(filePath);
 	            String base64Image = Base64.getEncoder().encodeToString(fileContent);
 
@@ -235,37 +238,32 @@ public class MyPageController {
 	    @AuthenticationPrincipal UserDetails userDetails,
 	    @RequestParam("code_name") String code_name) {
 	    try {
-	        // 사용자 정보
 	        String pk_idx = userDetails.getUsername();
 
-	        // DB에서 파일 정보 조회
 	        FileDTO dto = myPageService.signExist(pk_idx, code_name);
-
 	        if (dto == null || dto.getNew_filename() == null) {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 삭제할 파일이 없는 경우
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	        }
 
-	        // 실제 파일 경로 생성 및 삭제
 	        String savedFileName = dto.getNew_filename();
-	        Path filePath = Paths.get(UPLOAD_DIR, savedFileName);
+	        Path filePath = Paths.get(photo, savedFileName); // photo 사용
 
 	        if (Files.exists(filePath)) {
-	            Files.delete(filePath); // 실제 파일 삭제
+	            Files.delete(filePath);
 	            logger.info("파일 삭제 성공: " + savedFileName);
 	        } else {
 	            logger.warn("파일이 이미 존재하지 않습니다: " + savedFileName);
 	        }
 
-	        // DB에서 파일 정보 삭제
 	        int row = myPageService.fileDelete(dto);
 	        if (row > 0) {
-	            return ResponseEntity.ok().build(); // 성공, 본문 없음
+	            return ResponseEntity.ok().build();
 	        } else {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // DB 삭제 실패
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    } catch (Exception e) {
 	        logger.error("파일 삭제 중 오류 발생", e);
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 예외 처리
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	    }
 	}
 

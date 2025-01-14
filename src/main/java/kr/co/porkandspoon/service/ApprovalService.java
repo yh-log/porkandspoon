@@ -155,55 +155,57 @@ public class ApprovalService {
 	
 	
 	private void saveFile(MultipartFile[] files, String draftIdx, boolean logoYn) {
-		
-		for(MultipartFile file : files) {
-			try {
-				
-
-				if(!file.isEmpty()) {
-					//check!!! 얘도 if문안에 넣어야하는게 아닌가?
-					String ori_filename = file.getOriginalFilename();
-					logger.info("file 비어있나? : "+file.isEmpty()); // true
-					logger.info("ori_filename : "+ ori_filename); 
-					logger.info("파일이 있는 경우만 타야하는데");
+		logger.info("files",files);
+		if(files != null) {
+			for(MultipartFile file : files) {
+				try {
 					
-					String ext = ori_filename.substring(ori_filename.lastIndexOf("."));
-					String new_filename = UUID.randomUUID()+ext;
-					
-			        int existingFile = approvalDAO.checkExistingFile(draftIdx, ori_filename);
-			        logger.info("existingFile!!!! "+ existingFile);
-				    if (existingFile == 0) {
-						// db에 저장
-						FileDTO fileDto = new FileDTO();
-						fileDto.setOri_filename(ori_filename);
-						fileDto.setNew_filename(new_filename);
-						if(logoYn) {
-							fileDto.setCode_name("bl001");
-						}else {
-							fileDto.setCode_name("df000");
-						}
-						fileDto.setPk_idx(draftIdx);
-						fileDto.setType(file.getContentType());
-						approvalDAO.fileSave(fileDto);
-						logger.info("db에 첨부파일 저장!!!! ");
-				    	
-				    	
-				    	byte[] arr = file.getBytes();
-						// check!! 경로바꾸기
-						Path path = Paths.get(paths+new_filename);
-						Files.write(path, arr);
-						logger.info("c드라이브에 첨부파일 저장!!!! ");
-
-				    }
-
-					// 파일이 이미 존재하는지 확인
-			        //Path filePath = Paths.get(paths, new_filename);
-			        //Files.exists(filePath);
-					
-					
+	
+					if(!file.isEmpty()) {
+						//check!!! 얘도 if문안에 넣어야하는게 아닌가?
+						String ori_filename = file.getOriginalFilename();
+						logger.info("file 비어있나? : "+file.isEmpty()); // true
+						logger.info("ori_filename : "+ ori_filename); 
+						logger.info("파일이 있는 경우만 타야하는데");
+						
+						String ext = ori_filename.substring(ori_filename.lastIndexOf("."));
+						String new_filename = UUID.randomUUID()+ext;
+						
+				        int existingFile = approvalDAO.checkExistingFile(draftIdx, ori_filename);
+				        logger.info("existingFile!!!! "+ existingFile);
+					    if (existingFile == 0) {
+							// db에 저장
+							FileDTO fileDto = new FileDTO();
+							fileDto.setOri_filename(ori_filename);
+							fileDto.setNew_filename(new_filename);
+							if(logoYn) {
+								fileDto.setCode_name("bl001");
+							}else {
+								fileDto.setCode_name("df000");
+							}
+							fileDto.setPk_idx(draftIdx);
+							fileDto.setType(file.getContentType());
+							approvalDAO.fileSave(fileDto);
+							logger.info("db에 첨부파일 저장!!!! ");
+					    	
+					    	
+					    	byte[] arr = file.getBytes();
+							// check!! 경로바꾸기
+							Path path = Paths.get(paths+new_filename);
+							Files.write(path, arr);
+							logger.info("c드라이브에 첨부파일 저장!!!! ");
+	
+					    }
+	
+						// 파일이 이미 존재하는지 확인
+				        //Path filePath = Paths.get(paths, new_filename);
+				        //Files.exists(filePath);
+						
+						
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 	}
