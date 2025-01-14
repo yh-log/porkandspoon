@@ -452,29 +452,34 @@
 	
 	<select id="getCheckDept" parameterType="map" resultType="int">
         SELECT 
-	    CASE 
-	        WHEN (
-	            SELECT parent 
-	            FROM user 
-	            WHERE username = #{username}
-	        ) = (
-	            SELECT department 
-	            FROM free_board 
-	            WHERE board_idx = #{board_idx}
-	        ) 
-	        OR (
-	            SELECT ds.parent 
-	            FROM user u
-	            LEFT JOIN direct_store ds ON u.parent = ds.id
-	            WHERE u.username = #{username}
-	        ) = (
-	            SELECT department 
-	            FROM free_board 
-	            WHERE board_idx = #{board_idx}
-	        ) 
-	        THEN '1'
-	        ELSE '0'
-	    END AS result
+        CASE 
+            WHEN (
+                SELECT parent 
+                FROM user 
+                WHERE username = #{username}
+            ) = (
+                SELECT department 
+                FROM free_board 
+                WHERE board_idx = #{board_idx}
+            )
+            OR (
+                SELECT ds.parent 
+                FROM user u
+                LEFT JOIN direct_store ds ON u.parent = ds.id
+                WHERE u.username = #{username}
+            ) = (
+                SELECT department 
+                FROM free_board 
+                WHERE board_idx = #{board_idx}
+            )
+            OR (
+                SELECT username
+                FROM free_board
+                WHERE board_idx = #{board_idx}
+            ) = #{username}
+            THEN '1'
+            ELSE '0'
+        END AS result
     </select>
 	
 	
@@ -513,7 +518,7 @@
 	
 	<!-- 게시글 댓글 수정하기 -->
 	<update id="setReviewUpdate" parameterType="map">
-		UPDATE board_review SET review_content = #{review_content} WHERE review_idx = #{review_idx}
+		UPDATE board_review SET review_content = #{review_content}, updater = #{username} WHERE review_idx = #{review_idx}
 	</update>
 	
 	<!-- 게시글 대댓글 작성하기 -->
