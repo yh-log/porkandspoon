@@ -275,33 +275,31 @@ public class MealController {
 
 			    return mav;
 			}
-		
 		@PostMapping(value = "/ad/mealTicket/Update/{meal_idx}")
 		public ModelAndView editmealTicket(
 		        @RequestParam(value = "filepond", required = false) MultipartFile file,
 		        @RequestParam(value = "existingFile", required = false) String existingFile,
+		        @RequestParam(value = "existingOriFileName", required = false) String existingOriFileName,
 		        @AuthenticationPrincipal UserDetails userDetails,
 		        @PathVariable String meal_idx,
 		        @RequestParam Map<String, String> params) {
-			logger.info("file : {}",file);
+
+		    logger.info("file : {}", file);
 		    String updater = userDetails.getUsername();
 		    params.put("updater", updater);
 		    FileDTO dto = null;
 
 		    try {
-		        // 새 파일이 업로드되었는지 확인
 		        if (file != null && !file.isEmpty()) {
+		            // 새 파일 업로드 처리
 		            logger.info("새 파일 업로드 처리");
-		            dto = CommonUtil.uploadSingleFile(file); // 새 파일 업로드
+		            dto = CommonUtil.uploadSingleFile(file); // 파일 업로드
 		            dto.setPk_idx(meal_idx);
 		            dto.setCode_name("MT001");
 		        } else if (existingFile != null && !existingFile.isEmpty()) {
-		            // 새 파일이 없으면 기존 파일을 사용
+		            // 기존 파일 정보 유지
 		            logger.info("기존 파일 유지 처리");
-		            dto = new FileDTO();
-		            dto.setNew_filename(existingFile);
-		            dto.setPk_idx(meal_idx);
-		            dto.setCode_name("MT001");
+		            
 		        } else {
 		            logger.warn("파일 정보가 없습니다.");
 		        }
@@ -316,8 +314,6 @@ public class MealController {
 
 		    return new ModelAndView("redirect:/ad/meal/List");
 		}
-
-
 
 	//식단표 뷰이동
 	@GetMapping(value = "/mealMenu")
