@@ -22,7 +22,7 @@
 	<!-- 캘린더 리스트 with 필터링 -->
     <select id="calenderList" parameterType="map" resultType="kr.co.porkandspoon.dto.CalenderDTO">
 		<!-- C, P, T 필터에 해당하는 schedule 쿼리 -->	
-		SELECT
+		SELECT DISTINCT
 			idx,
 			subject,
 			start_date,
@@ -35,7 +35,7 @@
        	 </foreach>
       	AND ((type = 'C') OR (type = 'P' AND username = #{loginId}) OR (type = 'T' AND id = #{dept}))  	  	    
 	      UNION ALL
-	      SELECT 
+	      SELECT DISTINCT
 	        is3.idx,
 	        subject,
 	        start_date,
@@ -48,7 +48,7 @@
 	        #{f}
 	      </foreach>   
 	      UNION ALL
-	      SELECT 
+	      SELECT DISTINCT
 	        rs.idx,
 	        subject,
 	        start_date,

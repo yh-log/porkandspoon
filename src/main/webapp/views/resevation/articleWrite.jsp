@@ -220,7 +220,7 @@
 									</div>
 									<div class="form-check" style="margin-left: 15px;">
 										<input class="form-check-input" type="radio" name="article" id="flexRadioDefault3" value="S">
-										<label class="form-check-label" for="flexRadioDefault3">${info.name}단기 대여</label>
+										<label class="form-check-label" for="flexRadioDefault3">단기 대여</label>
 									</div>
 		                  		</td>
 		                  	</tr>

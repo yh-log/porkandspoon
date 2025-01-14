@@ -186,7 +186,6 @@
             <div class="col-12 col-lg-12">
                <div class="tit-area" style="display: flex; justify-content: space-between; align-items: center;">
                   <h5>예약</h5>
-                  <div class="btn btn-primary" style="margin: 0;">예약하기</div>
                </div>
                <div class="cont-body"> 
                   <!-- 여기에 내용 작성 -->
@@ -230,7 +229,7 @@
 	    $('.category-title').click(function(){
 	        $(this).next('.item-list').slideToggle();
 	    });
-	    
+
 	    getAjax('/itemList','JSON');
 	    dataSetting('item', 'Input');
 	    
@@ -639,6 +638,8 @@
     	httpAjax('DELETE', '/itemDelete/'+idx);
     	removeAlert();
 	}
+    
+    
 
     
 

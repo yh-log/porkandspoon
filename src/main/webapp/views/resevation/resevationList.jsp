@@ -302,16 +302,16 @@
 					if(view.is_active == 'Y'){
 						content +='<div class="radio-button-group">'
 						content +='<input type="radio" id="option1'+view.no+'" name="options'+view.no+'" checked>'
-						content +='<label for="option1'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomY\')">활성화</label>'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomY\')">활성화</label>'
 						content +='<input type="radio" id="option2'+view.no+'" name="options'+view.no+'">'
-						content +='<label for="option2'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomN\')">비활성화</label>'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomN\')">비활성화</label>'
 						content +='</div>'
 					}else{
 						content +='<div class="radio-button-group">'
 						content +='<input type="radio" id="option1'+view.no+'" name="options'+view.no+'">'
-						content +='<label for="option1'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomY\')">활성화</label>'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomY\')">활성화</label>'
 						content +='<input type="radio" id="option2'+view.no+'" name="options'+view.no+'" checked>'
-						content +='<label for="option2'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomN\')">비활성화</label>'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'roomN\')">비활성화</label>'
 						content +='</div>'
 					}
 					content +='</div>';
@@ -328,17 +328,17 @@
 					content +='<p>등록자 : '+view.name+'</p>';
 					if(view.is_active == 'Y'){
 						content +='<div class="radio-button-group">'
-						content +='<input type="radio" id="option1/'+view.no+'" name="options/'+view.no+'" checked>'
-						content +='<label for="option1/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleY\')">활성화</label>'
-						content +='<input type="radio" id="option2/'+view.no+'" name="options/'+view.no+'">'
-						content +='<label for="option2/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleN\')">비활성화</label>'
+						content +='<input type="radio" id="option1-'+view.no+'" name="options/'+view.no+'" checked>'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleY\')">활성화</label>'
+						content +='<input type="radio" id="option2-'+view.no+'" name="options/'+view.no+'">'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleN\')">비활성화</label>'
 						content +='</div>'
 					}else{
 						content +='<div class="radio-button-group">'
-						content +='<input type="radio" id="option1/'+view.no+'" name="options/'+view.no+'">'
-						content +='<label for="option1/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleY\')">활성화</label>'
-						content +='<input type="radio" id="option2/'+view.no+'" name="options/'+view.no+'" checked>'
-						content +='<label for="option2/'+view.no+'" class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleN\')">비활성화</label>'
+						content +='<input type="radio" id="option1-'+view.no+'" name="options/'+view.no+'">'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleY\')">활성화</label>'
+						content +='<input type="radio" id="option2-'+view.no+'" name="options/'+view.no+'" checked>'
+						content +='<label class="btn btn-sm btn-outline-primary" onclick="useYN('+view.no+',\'articleN\')">비활성화</label>'
 						content +='</div>'
 					}
 					content +='</div>';
@@ -381,12 +381,16 @@
 		
 		if(type == 'articleY'){
 			console.log('물품 활성');
+			$('#option1-' + no).prop('checked', true);
 		}else if(type == 'articleN'){
 			console.log('물품 비활성');
+			$('#option2-' + no).prop('checked', true);
 		}else if(type == 'roomY'){
 			console.log('회의실 활성');
+			$('#option1' + no).prop('checked', true);
 		}else if(type == 'roomN'){
 			console.log('회의실 비활성');
+			$('#option2' + no).prop('checked', true);
 		}
 		
 		var params = {
