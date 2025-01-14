@@ -188,10 +188,10 @@
 										        <div style="display: flex; gap: 10px; align-items: center; border: 1px solid #d1d1d1; width: auto; margin-bottom: 5px;">
 										            <span>
 										                <c:choose>
-										                    <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
+										                    <c:when test="${file.ori_filename.endsWith('.jpg') || file.ori_filename.endsWith('.png')}">
 										                        <img src="/photo/${file.new_filename}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" alt="이미지">
 										                    </c:when>
-										                    <c:when test="${file.new_filename.endsWith('.pdf')}">
+										                    <c:when test="${file.ori_filename.endsWith('.pdf')}">
 										                        <i class="bi bi-file-earmark-pdf" style="font-size: 24px; color: red;"></i>
 										                    </c:when>
 										                    <c:otherwise>
@@ -201,17 +201,17 @@
 										                ${file.ori_filename}
 										            </span>
 										            <br>
-										            <a href="/photo/${file.new_filename}" class="btn btn-primary" download>
+										            <a href="/photo/${file.ori_filename}" class="btn btn-primary" download>
 										                다운로드
 										            </a>
 										            <c:choose>
-										                <c:when test="${file.new_filename.endsWith('.jpg') || file.new_filename.endsWith('.png')}">
-										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.new_filename}')">
+										                <c:when test="${file.ori_filename.endsWith('.jpg') || file.ori_filename.endsWith('.png')}">
+										                    <button class="btn btn-outline-primary" onclick="showImg('/photo/${file.ori_filename}')">
 										                        미리보기
 										                    </button>
 										                </c:when>
-										                <c:when test="${file.new_filename.endsWith('.pdf')}">
-										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.new_filename}')">
+										                <c:when test="${file.ori_filename.endsWith('.pdf')}">
+										                    <button class="btn btn-outline-primary" onclick="showPdf('/photo/${file.ori_filename}')">
 										                        미리보기
 										                    </button>
 										                </c:when>
@@ -290,7 +290,10 @@
 								            <td style="text-align: left;">
 											    ${parentComment.text} ${parentComment.name}
 											    <button class="btn-review" onclick="showReplyInput(${parentComment.review_idx}, ${parentComment.board_idx})">댓글달기</button>&nbsp;&nbsp;
-											    <span style="color: gray; font-size: 14px;">${parentComment.rereview_date}</span>
+											    <span style="color: gray; font-size: 14px;">
+											    	${parentComment.rereview_date}
+											    	<c:if test="${not empty parentComment.updater}">(수정됨)</c:if>
+											    </span>
 											</td>
 								            <td>
 								                <c:if test="${parentComment.username == pageContext.request.userPrincipal.name && parentComment.use_yn == 'Y'}">
@@ -338,7 +341,10 @@
 								                        </c:choose>
 								                        &nbsp;&nbsp;&nbsp;&nbsp;
 								                        ${childComment.text} ${childComment.name}&nbsp;&nbsp;
-								                        <span style="color: gray; font-size: 14px;">${childComment.rereview_date}</span>
+								                        <span  style="color: gray; font-size: 14px;">
+								                        	${childComment.rereview_date}
+								                        	<c:if test="${not empty childComment.updater}">(수정됨)</c:if>
+								                        </span>
 								                    </td>
 								                    <td>
 								                        <c:if test="${childComment.username == pageContext.request.userPrincipal.name && childComment.use_yn == 'Y'}">
@@ -523,7 +529,7 @@
         
     	// 댓글 수정
     	if(response.status === 'update') {
-    		console.log('수정 완료');
+    		location.reload();
     	}
     	
     	// 대댓글 작성
@@ -628,7 +634,7 @@
 		        );
 		        return;
 		    }
-		 const params = {review_idx: reviewId, review_content: newContent};
+		 const params = {review_idx: reviewId, review_content: newContent, username: username};
 		 const url = '/review/update';
 		 httpAjax('POST', url, params);
 	
