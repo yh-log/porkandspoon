@@ -985,8 +985,7 @@
 	<!-- 직원 퇴사 처리 (배치를 돌리기 때문에 N 설정 제거) -->
 	<update id="usrQuitDelete"
 		parameterType="kr.co.porkandspoon.dto.UserDTO">
-		UPDATE user leave_date =
-		#{transfer_date} WHERE username= #{username}
+		UPDATE user SET leave_date = #{transfer_date} WHERE username= #{username}
 	</update>
 
 	<!-- 직영점 이동 시 직영점 name 조회 -->

@@ -263,7 +263,7 @@ public class UserController {
 		logger.info("메일 발송");
 		
 		String receiverId = dto.getEmail();
-		String subject = "포크앤스푼 인증코드입니다.";
+		String subject = "[포크앤스푼] 본인 인증을 위한 인증코드 발송";
 		String authCode = dto.getAuthentication();
 		
 		Properties props = new Properties();

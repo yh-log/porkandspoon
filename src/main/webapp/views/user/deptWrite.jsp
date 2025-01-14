@@ -114,14 +114,20 @@
 	    border: 0;
 	}
 	
-	.priview{
-		width: 170px;
-		height: 270px;
+	#imgPreview{
+		width: 150px;
+		height: 150px;
+		display: none;
 	}
 	
-	#dept-logo{
+	#deptLogo{
 		width: 150px;
     	height: 150px;
+	}
+
+	.priview{
+		width: 150px;
+		height: 150px;
 	}
 
 </style>
@@ -160,7 +166,7 @@
 									<tr>
 										<td rowspan="4" class="filebox">
 											<div id="imgPreview"></div>
-											<img id="deptLogo"/>
+											<img id="deptLogo" src=""/>
 											<label for="file">+ 로고 수정</label>
 											<input type="file" id="file" name="file" onchange="clearLogo(); preview(this);"/>
 										</td>
@@ -280,9 +286,9 @@
 
 		var logo_file = '${deptInfo.logo_file}';
 		if(logo_file){
-			document.getElementById('dept-logo').src = '/photo/' + logo_file;
+			document.getElementById('deptLogo').src = '/photo/' + logo_file;
 		}else {
-            document.getElementById('dept-logo').src = '/resource/img/logo.jpg';
+            document.getElementById('deptLogo').src = '/resource/img/logo.jpg';
         }
 		
 		const useYnRadios = document.querySelectorAll('input[name="use_yn"]');
@@ -312,6 +318,9 @@
 	function clearLogo() {
         const deptLogo = document.getElementById('deptLogo');
 		deptLogo.style.display = 'none';
+
+		const imgLogo = document.getElementById('imgPreview');
+		imgLogo.style.display = 'block';
     }
 
 	/* 조직도노드  */
