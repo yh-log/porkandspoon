@@ -42,11 +42,11 @@
 		VALUES(#{authentication}, #{username})
 	</insert>
 
-	<!-- 인증코드 검증 -->
+	<!-- 인증코드 검증 (인증코드 Y인지 체크 추가) -->
 	<select id="chackAuthCode" resultType="int"
 		parameterType="kr.co.porkandspoon.dto.UserDTO">
 		SELECT COUNT(idx) FROM authority_code WHERE idx = #{idx}
-		AND authentication = #{authentication}
+		AND authentication = #{authentication} AND use_yn = 'Y'
 	</select>
 
 	<!-- 인증코드로 사용자 id 조회 -->
@@ -154,7 +154,8 @@
 		UPDATE user SET
 		name = #{name},
 		email = #{email},
-		phone = #{phone}
+		phone = #{phone},
+		birth = #{birth}
 		<if test="company_num != null and company_num != ''">,company_num = #{company_num}</if>
 		<if test="leave_date != null and leave_date != ''">,leave_date = #{leave_date}</if>
 		WHERE username = #{username}
@@ -977,14 +978,14 @@
 
 	<!-- 직원 정보 수정 (인사이동) -->
 	<update id="updateEmployeeUser" parameterType="kr.co.porkandspoon.dto.UserDTO"> 
-		UPDATE user SET position = #{new_position}, parent = #{new_department} WHERE 
+		UPDATE user SET position = #{new_position}, parent = #{new_department}, person_num = #{person_num} WHERE
 		username = #{username} 
 	</update> 
 
-	<!-- 직원 퇴사 처리 -->
+	<!-- 직원 퇴사 처리 (배치를 돌리기 때문에 N 설정 제거) -->
 	<update id="usrQuitDelete"
 		parameterType="kr.co.porkandspoon.dto.UserDTO">
-		UPDATE user SET user_yn = 'N', leave_date =
+		UPDATE user leave_date =
 		#{transfer_date} WHERE username= #{username}
 	</update>
 
@@ -1104,7 +1105,7 @@
 	<!-- author yh.kim (25. 01. 11)
 		직영점 비활성화 시 직원 업데이트 -->
 	<update id="storeUserUserUpdate" parameterType="kr.co.porkandspoon.dto.DeptDTO">
-		UPDATE user SET parent = 'NO1000' WHERE username = #{user_name}
+		UPDATE user SET parent = 'NO1000', person_num = #{person_num} WHERE username = #{user_name}
 	</update>
 
 	<!-- author yh.kim (25. 01. 11)

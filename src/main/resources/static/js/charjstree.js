@@ -99,7 +99,7 @@ function loadOrgChartData() {
         url: "/getOrgChartData", // SQL 쿼리 결과를 반환하는 API URL
         type: "GET",
         success: function(response) {
-            
+
             chartPrint(response);
         },
         error: function() {
@@ -110,7 +110,6 @@ function loadOrgChartData() {
 
 
 function chartPrint(response) {
-    console.log(response, '받아온 데이터');
 
     // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
     response.sort(function (a, b) {
@@ -120,14 +119,16 @@ function chartPrint(response) {
         return a.menuDepth - b.menuDepth; // depth 기준 정렬
     });
 
-    console.log("AJAX 응답 데이터 (정렬 후):", response);
-
     // jsTree 데이터 형식으로 변환
     const processedData = processJsTreeData(response);
 
-    console.log("jsTree 변환 데이터:", processedData);
 
-    //$('#jstree').jstree('destroy').empty();
+    // 다시 조직도 불러올 때 조직도 초기화
+    if ($('#jstree').jstree(true)) {
+        $('#jstree').jstree('destroy').empty();
+    } else {
+        $('#jstree').empty();
+    }
     // jsTree 초기화
     $('#jstree').jstree({
         'core': {
@@ -153,9 +154,9 @@ function chartPrint(response) {
             "show_only_matches": true,
             "show_only_matches_children": true
         }
-    }).on('loaded.jstree', function () {
+    }).on('loaded.jstree', function () { // 초기화가 종료된 후 실행됨
         console.log("jsTree가 성공적으로 초기화되었습니다.");
-        $("#jstree").jstree("open_all");
+        $('#jstree').jstree('open_all');
 
         // 검색 이벤트 처리
         let searchTimeout = null;

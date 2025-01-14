@@ -278,9 +278,18 @@
 	        var formData = new FormData(form);
 	        
 	        formData.append('address', $('input[name="address"]').val());
-	        
-	        var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
-	        formData.append('email', email);
+
+			var emailSelect = document.getElementById('emailAddr');
+
+			if (emailSelect.value === 'ect'){
+				var email = $('input[name="emailInfo"]').val() + '@' + $('input[name="customEmail"]').val()
+				formData.append('email', email);
+
+			}else{
+				var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
+				formData.append('email', email);
+
+			}
 	        
 	        var birthYear = document.getElementById("birthYear").value;
 	        var birthMonth = document.getElementById("birthMonth").value;
@@ -330,9 +339,18 @@
 	        
 	        formData.append('address', $('input[name="address"]').val());
 	        formData.append('username', $('input[name="username"]').val());
-	        
-	        var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
-	        formData.append('email', email);
+
+			var emailSelect = document.getElementById('emailAddr');
+
+			if (emailSelect.value === 'ect'){
+				var email = $('input[name="emailInfo"]').val() + '@' + $('input[name="customEmail"]').val()
+				formData.append('email', email);
+
+			}else{
+				var email = $('input[name="emailInfo"]').val() + document.getElementById('emailAddr').value;
+				formData.append('email', email);
+
+			}
 	        
 	        var birthYear = document.getElementById("birthYear").value;
 	        var birthMonth = document.getElementById("birthMonth").value;

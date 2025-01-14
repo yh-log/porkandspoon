@@ -220,7 +220,7 @@
 													<!-- 기타일 경우 input 창으로 전환 -->
 													<option value="ect">기타</option>
 												</select>
-												
+												<input type="text" name="customEmail" id="customEmail" class="form-control" placeholder="직접 입력" style="display: none;" />
 											</div>
 										</td>
 										<th>사내번호</th>
@@ -264,7 +264,7 @@
 										</td>
 										<th>퇴사일</th>
 										<td>
-											<input type="date" name="leave_date" class="form-control"/>
+											<input type="date" name="leave_date" class="form-control" disabled="disabled"/>
 										</td>
 									</tr>
 									<tr><th colspan="6">이력사항</th></tr>
@@ -372,8 +372,6 @@ $(document).ready(function(){
     // 부서 조회
     getAjax('/ad/dept/list', 'JSON');
     
-    // todo - 나중에 동적으로 username 받아서 넘기기 (list, write 에서)
-    
     var username = $('input[type="hidden"][name="username"]').val();
    httpAjax('POST', '/ad/user/detail/'+username, username);
     
@@ -388,6 +386,25 @@ function redirectToUpdate(){
 	var username = $('input[name="username"]').val();
 	location.href = '/ad/user/detailView/' + username;
 }
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+	var emailSelect = document.getElementById('emailAddr');
+	var customEmailInput = document.getElementById('customEmail');
+
+	emailSelect.addEventListener('change', function () {
+		if (emailSelect.value === 'ect') {
+			// 기타 옵션이 선택되었을 때 input 창 표시
+			customEmailInput.style.display = 'inline-block';
+			customEmailInput.setAttribute('data-required', 'true'); // 필수 입력 처리
+		} else {
+			// 다른 옵션 선택 시 input 창 숨김
+			customEmailInput.style.display = 'none';
+			customEmailInput.removeAttribute('data-required'); // 필수 입력 해제
+		}
+	});
+});
      
 </script>
 
