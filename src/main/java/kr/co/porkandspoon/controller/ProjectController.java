@@ -101,7 +101,8 @@ public class ProjectController {
 	    logger.info("isOpen "+isOpen);
 	    // 필터 조건에 따른 프로젝트 목록 가져오기
 	    List<ProjectDTO> list = projectService.getProject(loginId, includeCompleted, includeInProgress, isOpen, searchKeyword);
-
+	    logger.info("로그인 너 왜 안되니?"+loginId);
+	    logger.info("list :{}",list);
 	    ModelAndView mav = new ModelAndView("/project/projectList");
 	    mav.addObject("list", list);
 	    mav.addObject("loginId", loginId);
@@ -145,8 +146,10 @@ public class ProjectController {
 		String loginId = userDetails.getUsername();
 		UserDTO userDTO = projectService.getUserInfo(loginId);
 		List<UserDTO> users = projectService.getUsersInfo(loginId,project_idx);
+		String role = projectService.getProjectPeople(loginId,project_idx);
+		
 		logger.info("가지고 왔니? {}",userDTO);
-	
+		 logger.info("list 데이터: " + list); // 로그 확인
 		
 		 ModelAndView mav = new ModelAndView("/project/projectKanBan");
 		    mav.addObject("list", list != null ? list : Collections.emptyList());
@@ -154,6 +157,8 @@ public class ProjectController {
 		    mav.addObject("idx", project_idx);
 		    mav.addObject("userDTO", userDTO);
 		    mav.addObject("projectUsers", users); // 프로젝트에 속한 모든 사용자 정보 추가
+		    mav.addObject("role", role); 
+		    
 		return mav;
 	}
 	
@@ -218,16 +223,20 @@ public class ProjectController {
 	        logger.info("approvalLines: {}", approvalLines);
 
 	        projectService.deletePeople(project_idx);
-	        
+	       
 	        // 결재자 저장 로직
 	        for (String username : approvalLines) {
 	            // 서비스 메서드 호출하여 DB 저장
 	            projectService.saveApprovalLine(project_idx, username);
+	            
 	        }
-
+	        ProjectDTO dto = projectService.getProjectInfo(project_idx);
+	        int count = dto.getCount();	     
+	        logger.info("count  가지고 왔니 !!!!:{}",count);
 	        // 성공 응답 데이터
 	        response.put("status", "success");
 	        response.put("message", "등록 성공");
+	        response.put("count", count);
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        // 실패 응답 데이터

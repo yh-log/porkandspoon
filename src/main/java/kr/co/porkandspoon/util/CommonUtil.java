@@ -279,12 +279,12 @@ public class CommonUtil {
             try {
                FileUtils.copyFile(srcFile, destFile);
             } catch (IOException e) {
-            	System.out.println("복사 실패: " + srcFile.getAbsolutePath());
+               System.out.println("복사 실패: " + srcFile.getAbsolutePath());
                e.printStackTrace();
             }
             allSuccess = true;
          } else {
-        	 System.out.println("파일 없음: " + srcFile.getAbsolutePath());
+            System.out.println("파일 없음: " + srcFile.getAbsolutePath());
          }
       }
        return allSuccess;

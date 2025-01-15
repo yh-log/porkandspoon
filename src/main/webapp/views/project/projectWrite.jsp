@@ -155,7 +155,7 @@
 	#searchLayout{
 	    display: flex;
 	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
+   		justify-content:start; /* 가로 중앙 정렬 */
     	gap: 10px; /* 요소 간 간격 */
 	}
 	
@@ -279,10 +279,10 @@
                         <tr>
                            <th class="align-l">일정<span class="required-value">*</span></th>
                            <td >
-	                           <div id="searchLayout" class="col-7 col-lg-7">
+	                           <div id="searchLayout" >
 		                           	<input class="form-control sor-1 short"  id="start_date" name="start_date" type="date"  required="required"/>
 		                           	~
-		                           	<input class="form-control sor-1 short"  type="date" name="end_date"  required="required"/>
+		                           	<input class="form-control sor-1 short" id="end_date"  type="date" name="end_date"  required="required"/>
 	                           </div>
                            </td>
                         </tr>
@@ -305,7 +305,7 @@
                      	</table>
 							<div id="btn-gap">							
 								<button type="button" class="btn btn-primary btn-popup" >등록</button>
-								<button class="btn btn-outline-primary">취소</button>
+								<button class="btn btn-outline-primary" onclick="location.href = '/project/Write'">초기화</button>
 							</div>
 			         </form>
                   		</div>
@@ -347,240 +347,6 @@
 
 <script>
 
- /* 조직도노드  */
-	//초기 데이터
-	const initialData = {
-    headers: ['이름', '부서', '직급', '삭제'],
-    rows: [
-        ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '<button class="btn btn-primary">삭제</button>'],
-    ]
-	};
- 
-	var exampleData = JSON.parse(JSON.stringify(initialData));
-	console.log("이거뭐야?"+exampleData);
-	
-	// 선택된 ID를 rows에 추가하는 함수
-	var approvalLines = ['${userDTO.username}'];
-	console.log("approvalLines 배열:", approvalLines);
-	
- // 선택된 ID를 rows에 추가하는 함수
- function addSelectedIdToRows(selectedId) {
-     console.log("가져온 ID:", selectedId);
-     if(approvalLines.includes(selectedId)){
-    	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
-     	 return false;
-     }
-     approvalLines.push(selectedId);
-     console.log("approvalLines:", approvalLines);
-     $.ajax({
-         type: 'GET',
-         url: '/project/getUserInfo/'+selectedId,
-         data: {},
-         dataType: "JSON",
-         success: function(response) {
-        	 console.log("유저이름: ",response.name);
-        	 console.log("유저정보: ",response.position_content);
-        	 console.log("유저정보: ",response.dept.text);
-        	 
-        	 var userName = response.name;
-        	 var userPosition = response.position_content;
-        	 var userDept = response.dept.text;
-        	 console.log(userPosition);
-             // 새로운 row 데이터 생성
-             const newRow = [userName, userDept, userPosition, '<button class="btn btn-primary">삭제</button>'];
-
-             // 기존 rows에 추가
-             initialData.rows.push(newRow);
-             exampleData.rows.push(newRow);
-
-             // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
-             updateTableData('customTable', exampleData);
-            
-
-             // 삭제 버튼 이벤트 연결
-             bindRemoveUserEvent();
-         	
-
-         },
-         error: function(e) {
-             console.log(e);
-         }
-     });
- }
-
- function setupModalEvents(modal) {
-	    var closeModal = modal.querySelector("#closeModal");
-	    var cancelButton = modal.querySelector("#cancelModal");
-	    var addButton = modal.querySelector("#addModal");
-
-	    // 확인 클릭 이벤트
-	    if (addButton) {
-	        addButton.addEventListener("click", function () {
-	            addBtnFn(approvalLines);
-	        });
-	    }
-	    
-	    // 닫기 버튼 클릭 이벤트
-	    if (closeModal) {
-	        closeModal.addEventListener("click", function () {
-	            modal.style.display = "none";
-	            resetTableData();
-	        });
-	    }
-
-	    // 취소 버튼 클릭 이벤트
-	    if (cancelButton) {
-	        cancelButton.addEventListener("click", function () {
-	            modal.style.display = "none";
-	            resetTableData();
-	        });
-	    }
-
-	   
-	}
- 
- 
- function chartPrint(response) {
-	    console.log(response, '받아온 데이터');
-
-	    // 데이터 정렬 (menuDepth -> menuOrder 순서로 정렬)
-	    response.sort(function (a, b) {
-	        if (a.menuDepth === b.menuDepth) {
-	            return a.menuOrder - b.menuOrder; // 같은 depth라면 menuOrder로 정렬
-	        }
-	        return a.menuDepth - b.menuDepth; // depth 기준 정렬
-	    });
-
-	    console.log("AJAX 응답 데이터 (정렬 후):", response);
-
-	    // jsTree 데이터 형식으로 변환
-	    const processedData = processJsTreeData(response);
-
-	    console.log("jsTree 변환 데이터:", processedData);
-
-	    $('#jstree').jstree('destroy').empty();
-	    // jsTree 초기화
-	    $('#jstree').jstree({
-	        'core': {
-	            'data': function (node, callback) {
-	                // 루트 노드 (#) 또는 특정 노드의 children 반환
-	                if (node.id === "#") {
-	                    callback(processedData.filter(item => item.parent === "#"));
-	                } else {
-	                    callback(processedData.filter(item => item.parent === node.id));
-	                }
-	            },
-	            'themes': {
-	                'dots': true,
-	                'icons': true
-	            }
-	        },
-	        "plugins": ["types", "search"],
-	        "types": {
-	            "default": { "icon": "bi bi-house-fill" }, // 기본 폴더 아이콘
-	            "file": { "icon": "bi bi-person-fill" }    // 파일 아이콘
-	        },
-	        "search": {
-	            "show_only_matches": true,
-	            "show_only_matches_children": true
-	        }
-	    }).on('loaded.jstree', function () {
-	        console.log("jsTree가 성공적으로 초기화되었습니다.");
-	        $("#jstree").jstree("open_all");
-
-	        // 검색 이벤트 처리
-	        let searchTimeout = null;
-	        $('.input-test').on('input', function () {
-	            const search = $(this).val();
-
-	            // 이전 타임아웃 제거
-	            if (searchTimeout) {
-	                clearTimeout(searchTimeout);
-	            }
-
-	            // 입력 후 300ms 후에 검색 실행
-	            searchTimeout = setTimeout(function () {
-	                $('#jstree').jstree('search', search);
-	            }, 300);
-	        });
-
-	    }).on('changed.jstree', function (e, data) {
-	        console.log("선택된 노드:", data.selected);
-	        if (data.selected.length > 0) {
-	        	
-	            const selectedId = data.selected[0]; // 선택된 노드의 ID
-	            console.log("선택된 노드 ID:", selectedId);
-
-	            // 설정된 콜백 함수 호출
-	            if (typeof selectIdCallback === "function") {
-	                selectIdCallback(selectedId); // 콜백 함수에 선택된 ID 전달
-	            }
-	        } else {
-	            console.log("선택된 노드가 없습니다.");
-	        }
-	    }).on("load_node.jstree", function (e, data) {
-	        console.log("노드 로드 완료:", data.node);
-	    });
-	    
- }
- 
- 
-//조직도 노드 해당 사원 삭제
- $(document).on('click', '#chartModalBox #orgBody .btn', function() {
-     var idx = $(this).closest('tr').index();
-     console.log(idx);
-     if(idx != 0){
- 	    $(this).closest('tr').remove();
- 	    initialData.rows.splice(idx, 1);
- 	    exampleData.rows.splice(idx, 1);
- 	    approvalLines.splice(idx, 1);
- 	    console.log("approvalLines 수정 : ",approvalLines);
- 	   // 테이블에서 해당 행 삭제
- 	   
- 	   
-     }else{
-     	layerPopup( "본인은 삭제하실 수 없습니다.","확인",false,removeAlert,removeAlert);
-     }
- });
- 
- 
-
- 
- 
- 
-getSelectId(function (selectedId) {
-  addSelectedIdToRows(selectedId);
-});
-
- function addBtnFn(approvalLines) {
-	    console.log("addBtnFn 호출됨. Approval Lines 데이터:", approvalLines);
-
-	    // selectedUserTable 테이블 업데이트
-	    const tbody = document.querySelector("#selectedUserTable tbody");
-	    tbody.innerHTML = ""; // 기존 내용을 초기화
-
-	    approvalLines.forEach((id) => {
-	        // approvalLines의 각 ID에 대해 initialData.rows에서 일치하는 데이터를 가져옴
-	        const row = exampleData.rows.find(r => r.includes(id));
-	        if (row) {
-	            const tr = document.createElement("tr");
-	            row.forEach((cellContent, index) => {
-	                if (index !== row.length - 1) { // 삭제 버튼을 제외하고 추가
-	                    const td = document.createElement("td");
-	                    td.innerHTML = cellContent;
-	                    tr.appendChild(td);
-	                }
-	            });
-	            tbody.appendChild(tr); // 생성된 행을 테이블에 추가
-	        } else {
-	            console.error(`ID(${id})에 해당하는 데이터를 찾을 수 없습니다.`);
-	        }
-	    });
-
-	    console.log("테이블 업데이트 완료. 업데이트된 테이블 데이터:", tbody.innerHTML);
-	}
- 
- 
  
  
  
@@ -592,38 +358,31 @@ getSelectId(function (selectedId) {
 						btn2Act);
 			});
 	
-	/* 알림 팝업 */
-	function btn1Act() {
-		// 1번버튼 클릭시 수행할 내용
-		console.log('1번 버튼 동작');
+ function btn1Act() {
+	    // 1번버튼 클릭시 수행할 내용
+	    console.log('1번 버튼 동작');
+	    removeAlert(); // 팝업닫기
+	    // 각 필드의 값 가져오기
+	   var name = $('input[name="name"]').val(); // 프로젝트 명
+	    var start_date = $('#start_date').val(); // 시작 날짜
+	    var end_date = $('#end_date').val(); // 종료 날짜
+	    var is_open = $('input[name="is_open"]:checked').val(); // 공개 설정 (선택된 라디오 버튼의 값)
 
-		// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-		removeAlert(); // 기존팝업닫기
-		// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
-		
-		// 필수 항목 검사
-	    const requiredFields = document.querySelectorAll('.required-value');
-	    let allFieldsFilled = true;
+	    console.log('프로젝트 명:', name);
+	    console.log('시작 날짜:', start_date);
+	    console.log('종료 날짜:', end_date);
+	    console.log('공개 설정:', is_open);
 
-	    requiredFields.forEach(field => {
-	        const input = field.closest('tr').querySelector('input, select');
-	        if (input && !input.value.trim()) {
-	            allFieldsFilled = false;
-	        	removeAlert(); // 기존팝업닫기
-	        }
-	    });
-
-	    if (!allFieldsFilled) {
-	        // 필수 항목이 비어 있을 경우 팝업 표시
-	        layerPopup("필수 항목을 입력해주세요!", "확인", false, removeAlert, removeAlert);
-
-
-	        removeAlert(); // 기존팝업닫기
+	    // 필수 항목 체크
+	    if (!name || !start_date || !end_date || !is_open) {
+	        layerPopup("필수 항목을 모두 입력해주세요.", "확인", false, btn2Act, btn2Act);
+	        return;
 	    }
 
-	    // 모든 필수 항목이 입력된 경우 진행
-	    layerPopup("등록이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+	    // 모든 값이 올바르게 입력된 경우
+	    layerPopup("등록이 완료되었습니다.", "확인", false, secondBtn1Act, btn2Act);
 	}
+
 	
 	function btn2Act() {
 		// 2번버튼 클릭시 수행할 내용

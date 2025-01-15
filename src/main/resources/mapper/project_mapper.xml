@@ -33,7 +33,7 @@
 			ON
 				u.position = c.name
         WHERE 
-            u.username = #{userId}
+            u.username = #{loginId}
     </select>
 	
 	<insert 
@@ -215,5 +215,12 @@
 	<delete id="delProject">
 		delete from project where project_idx = #{project_idx}
 	</delete>
+
+	<select id="getProjectPeople" parameterType="String" resultType="String">
+	  SELECT username 
+                     FROM project_people 
+                     WHERE project_idx = #{project_idx} 
+                       AND username = #{loginId}
+	</select>
 
 </mapper>

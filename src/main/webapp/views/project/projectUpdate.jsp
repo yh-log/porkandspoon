@@ -37,13 +37,11 @@
 	#searchLayout{
 	    display: flex;
 	    align-items: center; /* 세로 중앙 정렬 */
-   		justify-content: end; /* 가로 중앙 정렬 */
+   		justify-content: start; /* 가로 중앙 정렬 */
     	gap: 10px; /* 요소 간 간격 */
 	}
 	
-	.selectStyle{
-		width: 230px;
-	}
+	
 
 	.tit-area{
 		display: flex; 
@@ -88,11 +86,9 @@
 		justify-content: center;
 	}
 	.short{
-		width: 200px;
+		width: 300px;
 	}
-	#start_date{
-		margin-left: 800px;
-	}
+	
 	
 </style>
 </head>
@@ -139,10 +135,10 @@
                         <tr>
                            <th class="align-l">일정<span class="required-value">*</span></th>
                            <td >
-	                           <div id="searchLayout" class="col-7 col-lg-7">
+	                           <div id="searchLayout" >
 		                           	<input class="form-control sor-1 short" name="update_start_date" id="start_date" type="date" value="${info.start_date}"  required="required"/>
 		                           	~
-		                           	<input class="form-control sor-1 short" name="update_end_date" type="date" value="${info.end_date}" required="required"/>
+		                           	<input class="form-control sor-1 short" name="update_end_date" id="end_date" type="date" value="${info.end_date}" required="required"/>
 	                           </div>
                            </td>
                         </tr>
@@ -239,32 +235,29 @@ function btn1Act() {
 	// 1번버튼 클릭시 수행할 내용
 	console.log('1번 버튼 동작');
 
-	// 팝업 연달아 필요할 경우 (secondBtn1Act:1번 버튼 클릭시 수행할 내용/ secondBtn2Act: 2번 버튼 클릭시 수행할 내용)
-	removeAlert(); // 기존팝업닫기
-	// 멘트, 버튼1, 버튼2, 버튼1 함수, 버튼2 함수
+	  removeAlert(); // 팝업닫기
+	    // 각 필드의 값 가져오기
+	    var name = $('input[name="name"]').val(); // 프로젝트 명
+	    var start_date = $('#start_date').val(); // 시작 날짜
+	    var end_date = $('#end_date').val(); // 종료 날짜
+	    var is_open = $('input[name="is_open"]:checked').val(); // 공개 설정 (선택된 라디오 버튼의 값)
+
+	    console.log('프로젝트 명:', name);
+	    console.log('시작 날짜:', start_date);
+	    console.log('종료 날짜:', end_date);
+	    console.log('공개 설정:', is_open);
+
+	    // 필수 항목 체크
+	    if (!name || !start_date || !end_date || !is_open) {
+	        layerPopup("필수 항목을 모두 입력해주세요.", "확인", false, btn2Act, btn2Act);
+	        return;
+	    }
+
+	    // 모든 값이 올바르게 입력된 경우
+	    layerPopup("수정이 완료되었습니다.", "확인", false, secondBtn1Act, btn2Act);
 	
-	// 필수 항목 검사
-    const requiredFields = document.querySelectorAll('.required-value');
-    let allFieldsFilled = true;
-
-    requiredFields.forEach(field => {
-        const input = field.closest('tr').querySelector('input, select');
-        if (input && !input.value.trim()) {
-            allFieldsFilled = false;
-        	removeAlert(); // 기존팝업닫기
-        }
-    });
-
-    if (!allFieldsFilled) {
-        // 필수 항목이 비어 있을 경우 팝업 표시
-        layerPopup("필수 항목을 입력해주세요!", "확인", false, removeAlert, removeAlert);
-
-
-        removeAlert(); // 기존팝업닫기
-    }
-
-    // 모든 필수 항목이 입력된 경우 진행
-    layerPopup("수정이 완료 되었습니다.", "확인", "취소", secondBtn1Act, secondBtn2Act);
+   
+    
 }
 
 function btn2Act() {

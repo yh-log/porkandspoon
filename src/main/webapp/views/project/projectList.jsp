@@ -57,9 +57,8 @@
 		text-align: right;
 		margin-right: 10px;
 	}
-	.card-body{
-		display: flex;	
-	}
+	
+	
 	#flexRadioDefault2{
 		margin-left: 20px;
 	}
@@ -179,6 +178,8 @@
 }
 
 .card-body {
+	margin-top: 10px;
+	margin-bottom: 10px;
     display: flex;
     align-items: flex-start;
 }
@@ -196,6 +197,7 @@
 	display: flex;
 }
 #title{
+	margin-top: 20px;
 	margin-left: -30px;
 	
 }
@@ -319,9 +321,9 @@ margin-bottom: 5px;
 				            </div>
 				            </div>
 				            <div class="update">
-				                <c:if test="${project.username == loginId}">
+				                <c:if test="${project.username != null and  project.username eq loginId}">
 				                     <!-- 쓰레기통 아이콘 -->
-				        			<i class="bi bi-trash icon-trash" title="삭제" onclick="deleteProject(${project.project_idx})"></i>
+				        			<i class="bi bi-trash icon-trash" title="삭제" onclick="deleteProject(${project.project_idx},${project.count})"></i>
 				                    <button onclick="location.href='/project/Update/${project.project_idx}'" class="btn btn-sm btn-outline-primary" style="transform: translate(10px, -180px);">
 				                        수정
 				                    </button>
@@ -413,14 +415,28 @@ $(document).ready(function () {
 
 
 
-function deleteProject(projectIdx) {
-    console.log("가지고 왔니" + projectIdx);
+function deleteProject(projectIdx, projectCount) {
+    console.log("프로젝트 ID: " + projectIdx);
+    console.log("참여 인원 수: " + projectCount);
 
     // CSRF 토큰 및 헤더 가져오기
     const csrfToken = $("meta[name='_csrf']").attr("content");
     const csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
-    // 레이어 팝업 호출
+    if (projectCount > 1) {
+        // 참여 인원이 1명 이상일 경우 팝업 메시지 표시
+        layerPopup(
+            "인원을 1명으로 변경한 후 삭제할 수 있습니다.", // 팝업 내용
+            "확인", // 확인 버튼 텍스트
+            false, // 취소 버튼 없음
+            function () {
+                removeAlert(); // 팝업 닫기
+            },btn2Act
+        );
+        return;
+    }
+
+    // 참여 인원이 1명일 경우 삭제 진행
     layerPopup(
         "정말로 이 프로젝트를 삭제하시겠습니까?", // 팝업 내용
         "삭제", // 확인 버튼 텍스트
@@ -438,7 +454,6 @@ function deleteProject(projectIdx) {
                 },
                 success: function (response) {
                     // 서버로부터 성공 응답을 받았을 때
-                    
                     location.reload(); // 페이지 새로고침
                 },
                 error: function (xhr, status, error) {
@@ -448,7 +463,7 @@ function deleteProject(projectIdx) {
                 },
             });
         },
-       btn2Act
+        btn2Act
     );
 }
 
@@ -460,21 +475,41 @@ $(document).ready(function () {
             applyFilter();
         }
     });
+    
+    let previousCheckboxState = {
+            includeInProgress: $("#checkbox1").is(":checked"),
+            includeCompleted: $("#checkbox2").is(":checked"),
+        };
 
-    // 체크박스 변경 이벤트
-    $("input[type='checkbox']").on("change", function () {
-        const includeCompleted = $("#checkbox2").is(":checked");
-        const includeInProgress = $("#checkbox1").is(":checked");
+        // 체크박스 변경 이벤트
+        $("input[type='checkbox']").on("change", function () {
+            const includeCompleted = $("#checkbox2").is(":checked");
+            const includeInProgress = $("#checkbox1").is(":checked");
 
-        if (!includeCompleted && !includeInProgress) {
-            alert("진행중 또는 완료를 하나 이상 선택해야 합니다.");
-            $("#checkbox1").prop("checked", true);
-            $("#checkbox2").prop("checked", true);
-            return;
-        }
+            // 둘 다 선택 해제되었을 경우
+            if (!includeCompleted && !includeInProgress) {
+                layerPopup(
+                    "진행중 또는 완료를 하나 이상 선택해야 합니다.",
+                    "확인",
+                    false,
+                    function () {
+                        // 이전 상태로 복원
+                        $("#checkbox1").prop("checked", previousCheckboxState.includeInProgress);
+                        $("#checkbox2").prop("checked", previousCheckboxState.includeCompleted);
+                        removeAlert(); // 팝업 닫기
+                    },
+                    btn2Act
+                );
+                return;
+            }
 
-        applyFilter();
-    });
+            // 상태가 정상적으로 변경되었으면, 이전 상태 업데이트
+            previousCheckboxState.includeInProgress = includeInProgress;
+            previousCheckboxState.includeCompleted = includeCompleted;
+
+            applyFilter();
+        });
+
 
     // 라디오 버튼 변경 이벤트
     $("input[name='is_open']").on("change", function () {
