@@ -321,4 +321,6 @@ public interface UserDAO{
 	int storeUseYnUpdate(DeptDTO dto);
 
 
+	// 기존 로고 파일 업로드
+	int defaultRogoUpload(DeptDTO dto);
 }

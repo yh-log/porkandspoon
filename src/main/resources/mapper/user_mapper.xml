@@ -270,11 +270,16 @@
 	<select id="deptGetList" parameterType="kr.co.porkandspoon.dto.PagingDTO"
 		resultType="kr.co.porkandspoon.dto.DeptDTO">
 		WITH RankedDepartments AS (
-		SELECT d.id, d.text, d.use_date, d.use_yn, u.name AS creater, u.position,
+		SELECT d.id,
+		d.text,
+		d.use_date,
+		d.use_yn,
+		u.name AS creater,
+		u.position,
 		u.company_num,
-		ROW_NUMBER() OVER ( PARTITION BY d.id ORDER BY CAST(SUBSTRING(u.position, 3) AS
-		UNSIGNED)) AS rn
-		FROM department d LEFT JOIN user u ON d.id = u.parent
+		ROW_NUMBER() OVER (PARTITION BY d.id ORDER BY CAST(SUBSTRING(u.position, 3) AS UNSIGNED)) AS rn
+		FROM department d
+		LEFT JOIN user u ON d.id = u.parent
 		WHERE d.id LIKE 'B%'
 		<if test="keyword != null and keyword.trim() != ''">
 			<choose>
@@ -286,23 +291,36 @@
 				</when>
 			</choose>
 		</if>
-		)
-		SELECT r.id, r.text, r.use_date, r.use_yn, r.creater, r.company_num AS
-		position, c.content
-		FROM RankedDepartments r LEFT JOIN code c ON r.position = c.name
-		WHERE r.rn = 1
+		),
+		FilteredDepartments AS (
+		SELECT *
+		FROM RankedDepartments
+		WHERE rn = 1
 		<if test="keyword != null and keyword.trim() != ''">
 			<choose>
 				<when test="option == 'dept'">
-					AND r.text LIKE CONCAT('%', #{keyword}, '%')
+					AND text LIKE CONCAT('%', #{keyword}, '%')
 				</when>
 				<when test="option == 'name'">
-					AND r.creater LIKE CONCAT('%', #{keyword}, '%')
+					AND creater LIKE CONCAT('%', #{keyword}, '%')
 				</when>
 			</choose>
 		</if>
-		ORDER BY r.use_date DESC
+		)
+		SELECT
+		(SELECT COUNT(*) FROM FilteredDepartments) AS totalpage, -- 총 게시물 수
+		fd.id,
+		fd.text,
+		fd.use_date,
+		fd.use_yn,
+		fd.creater,
+		fd.company_num AS position,
+		c.content
+		FROM FilteredDepartments fd
+		LEFT JOIN code c ON fd.position = c.name
+		ORDER BY fd.use_date DESC
 		LIMIT #{offset}, #{limit}
+
 	</select>
 
 	<!-- 브랜드 생성 요청 리스트 조회 -->
@@ -1113,5 +1131,11 @@
 			parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		UPDATE direct_store SET owner = '미발령' WHERE id = #{id}
 	</update>
+
+
+	<insert id="defaultRogoUpload" parameterType="kr.co.porkandspoon.dto.DeptDTO">
+		INSERT INTO file(code_name, ori_filename, new_filename, type, pk_idx)
+			VALUES ('bl001', '기존 브랜드 로고', #{hiddenFile}, '브랜드로고', #{id})
+	</insert>
 
 </mapper>
