@@ -74,6 +74,16 @@
 	.pagination {
     justify-content: center; /* 페이지네이션 중앙 정렬 */
 }
+#signatureImage {
+    display: block;
+    max-width: 100%; /* 부모 요소의 크기에 맞게 */
+    max-height: 300px; /* 최대 높이 제한 */
+    height: auto; /* 원본 비율 유지 */
+    width: auto; /* 원본 비율 유지 */
+    margin: 0 auto; /* 중앙 정렬 */
+    border: 1px solid black; /* 테두리 추가 */
+    object-fit: contain; /* 비율 유지하면서 영역에 맞춤 */
+}
 	
 </style>
 </head>
@@ -192,52 +202,65 @@ document.addEventListener("DOMContentLoaded", function () {
     // 브라우저 창 크기 변경 시 캔버스 크기 재설정
     window.addEventListener("resize", resizeCanvas);
 
-    // 초기 서명 이미지 불러오기
     fetch("/myPageSign/getImage")
-        .then(response => response.json())
-        .then(data => {
-            if (data.imageUrl) {
-                originalImageURL = data.imageUrl;
-                currentCodeName = data.codeName; // SG001(사인) 또는 SG002(직인)
-                signatureImage.src = data.imageUrl;
-                signatureImage.style.display = "block";
-                canvas.style.display = "none";
+    .then(response => response.json())
+    .then(data => {
+        if (data.imageUrl) {
+            originalImageURL = data.imageUrl;
+            currentCodeName = data.codeName; // SG001(사인) 또는 SG002(직인)
+            signatureImage.src = data.imageUrl;
 
-                // 버튼 상태 설정
-                if (currentCodeName === "SG002") {
-                    // 직인 이미지인 경우
-                    editButton.style.display = "inline-block";
-                    deleteButton.style.display = "inline-block";
-                    writeButton.style.display = "none"; // 직인 등록 버튼 숨김
-                    registerButton.style.display = "inline-block"; // 사인 등록 버튼 표시
-                    clearButton.style.display = "none";
-                    saveButton.style.display = "none";
-                } else if (currentCodeName === "SG001") {
-                    // 사인 이미지인 경우
-                    editButton.style.display = "inline-block";
-                    deleteButton.style.display = "inline-block";
-                    writeButton.style.display = "inline-block"; // 직인 등록 버튼 표시
-                    registerButton.style.display = "none"; // 사인 등록 버튼 숨김
-                    clearButton.style.display = "none";
-                    saveButton.style.display = "none";
+            // 이미지 로드 후 크기 조정
+            signatureImage.addEventListener("load", function () {
+                const containerWidth = signatureImage.parentElement.offsetWidth; // 부모 요소의 너비
+                const naturalWidth = signatureImage.naturalWidth; // 이미지 원본 너비
+                const naturalHeight = signatureImage.naturalHeight; // 이미지 원본 높이
+                const aspectRatio = naturalWidth / naturalHeight; // 비율 계산
+
+                if (containerWidth / aspectRatio <= 300) {
+                    signatureImage.style.width = `${containerWidth}px`;
+                    signatureImage.style.height = "auto";
+                } else {
+                    signatureImage.style.width = "auto";
+                    signatureImage.style.height = "300px";
                 }
-            } else {
-                // 저장된 이미지가 없는 경우
-                signatureImage.style.display = "none";
-                canvas.style.display = "block";
-                signaturePad.clear();
+            });
 
-                // 버튼 상태 설정
-                editButton.style.display = "none";
-                deleteButton.style.display = "none";
+            signatureImage.style.display = "block";
+            canvas.style.display = "none";
+
+            // 버튼 상태 설정
+            if (currentCodeName === "SG002") {
+                editButton.style.display = "inline-block";
+                deleteButton.style.display = "inline-block";
+                writeButton.style.display = "none"; 
+                registerButton.style.display = "inline-block";
+                clearButton.style.display = "none";
+                saveButton.style.display = "none";
+            } else if (currentCodeName === "SG001") {
+                editButton.style.display = "inline-block";
+                deleteButton.style.display = "inline-block";
                 writeButton.style.display = "inline-block";
                 registerButton.style.display = "none";
-                clearButton.style.display = "inline-block";
-                saveButton.style.display = "inline-block";
+                clearButton.style.display = "none";
+                saveButton.style.display = "none";
             }
-        })
-        .catch(error => console.error("서명 이미지 불러오기 오류:", error));
+        } else {
+            signatureImage.style.display = "none";
+            canvas.style.display = "block";
+            signaturePad.clear();
 
+            editButton.style.display = "none";
+            deleteButton.style.display = "none";
+            writeButton.style.display = "inline-block";
+            registerButton.style.display = "none";
+            clearButton.style.display = "inline-block";
+            saveButton.style.display = "inline-block";
+        }
+    })
+    .catch(error => console.error("서명 이미지 불러오기 오류:", error));
+    
+    
  // 직인 등록 버튼 클릭 시
     writeButton.addEventListener("click", async function () {
         if (currentCodeName === "SG001") {

@@ -70,7 +70,6 @@ public class MealService {
 
 	@Transactional
 	public int editmealTicket(Map<String, String> params, FileDTO dto) {
-	    // Null 체크 및 기본값 설정
 	    if (params == null || params.isEmpty()) {
 	        throw new IllegalArgumentException("params 값이 null이거나 비어 있습니다.");
 	    }
@@ -78,22 +77,24 @@ public class MealService {
 	    // Meal 정보 업데이트
 	    mealDAO.editmealTicket(params);
 
-	    // FileDTO가 null이면 파일 업데이트를 건너뜀
 	    if (dto == null) {
 	        logger.info("FileDTO가 null이므로 파일 업데이트를 건너뜁니다.");
 	        return 1; // 정상 처리로 간주
 	    }
 
 	    // 파일 업데이트 처리
-	    String meal_idx =(params.get("meal_idx"));
+	    String meal_idx = params.get("meal_idx");
 	    logger.info("meal_idx: {}", meal_idx);
 	    dto.setPk_idx(meal_idx);
-	   
+
 	    // 기존 파일 존재 여부 확인
-	   FileDTO filedto = mealDAO.getFile(meal_idx);
+	    FileDTO filedto = mealDAO.getFile(meal_idx);
 
 	    if (filedto != null) {
 	        // 기존 파일이 있으면 업데이트
+	        if (dto.getOri_filename() == null || dto.getNew_filename() == null) {
+	            throw new IllegalArgumentException("기존 파일 업데이트 시 ori_filename과 new_filename이 필요합니다.");
+	        }
 	        logger.info("기존 파일이 존재하므로 업데이트를 수행합니다.");
 	        int updateResult = mealDAO.editmealFile(dto);
 	        if (updateResult == 0) {
@@ -101,6 +102,9 @@ public class MealService {
 	        }
 	    } else {
 	        // 기존 파일이 없으면 새로 삽입
+	        if (dto.getOri_filename() == null || dto.getNew_filename() == null) {
+	            throw new IllegalArgumentException("새 파일 삽입 시 ori_filename과 new_filename이 필요합니다.");
+	        }
 	        logger.info("기존 파일이 없으므로 새 파일을 삽입합니다.");
 	        int insertResult = mealDAO.setmealFile(dto);
 	        if (insertResult == 0) {
@@ -110,6 +114,7 @@ public class MealService {
 
 	    return 1; // 정상 처리 완료
 	}
+
 	
 	
 

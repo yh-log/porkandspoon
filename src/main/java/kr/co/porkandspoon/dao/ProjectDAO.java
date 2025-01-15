@@ -44,6 +44,8 @@ public interface ProjectDAO {
 	List<ProjectDTO> getProjectScroll(String loginId, boolean includeCompleted, boolean includeInProgress,
 			boolean isOpen, String searchKeyword, int offset, int pageSize);
 
+	String getProjectPeople(String loginId, String project_idx);
+
 	
 
 

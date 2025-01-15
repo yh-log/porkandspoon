@@ -311,7 +311,10 @@
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
 
-
+.cancel {
+    display: inline-block !important;
+    visibility: visible !important;
+}
 
 .kanban-item p {
   font-size: 14px;
@@ -429,8 +432,10 @@
 						<li class="active"><a href="/project/List">프로젝트 리스트</a></li>
 						<li><a href="/project/Write">프로젝트 등록</a></li>
 					</ul>
-					<div class="buttons">							
-						<button class="btn btn-primary" id="schedule" onclick="loadChartModal('chartInputModal')">인원 변경하기</button>
+					<div class="buttons">
+					    <c:if test="${role != null and userDTO.username eq role}">
+					        <button class="btn btn-primary" id="schedule" onclick="loadChartModal('chartInputModal')">인원 변경하기</button>
+					    </c:if>
 					</div>
 				</section>
 				<section class="cont">
@@ -439,7 +444,8 @@
 						  <h5 class="kanban-title">칸반보드</h5>
 						  <div class="project-info">
 						    <h4>${info.name}</h4>
-						    <p><strong>참여인원:</strong> :${info.count}명</p>
+						    <span><strong>참여인원:</strong> :${info.count}명</span>
+						    
 						    <p><strong>일정:</strong>  ${info.start_date} ~ ${info.end_date}</p>
 						    <div id="progress-text"><strong>진행률:</strong> ${info.percent}%</div>
 						    <div class="progress-bar">
@@ -470,7 +476,9 @@
 		                </c:if>
 		            </c:forEach>
 				    </div>
+				     <c:if test="${role != null and userDTO.username eq role}">
 				    <button class="add-task-btn" >+</button>
+				     </c:if>
 				  </div>
 				
 				  <div class="kanban-column" id="in-progress">
@@ -560,28 +568,45 @@
 
 <script>
 
+
 /* 조직도노드  */
-//초기 데이터
-const initialData = {
-headers: ['이름', '부서', '직급', '삭제'],
-rows: [
-    // userDTO (로그인 사용자) 정보 추가
-    ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '<button class="btn btn-primary">삭제</button>'],
+ // 초기 데이터를 정의합니다.
+    var approvalLines = ['${userDTO.username}']; // 로그인 사용자 ID만 포함
+    console.log("초기 approvalLines:", approvalLines);
 
-    // 프로젝트에 속한 다른 사용자 정보 추가
+    const initialData = {
+        headers: ['이름', '부서', '직급', '삭제'],
+        rows: [
+            // 로그인 사용자 추가
+            ['${userDTO.name}', '${userDTO.dept.text}', '${userDTO.position_content}', '<button class="btn btn-primary">삭제</button>'],
+
+            // 프로젝트 사용자 추가
+            <c:forEach var="user" items="${projectUsers}">
+            <c:if test="${!empty user.name && !empty user.dept.text && !empty user.position_content}">
+            [
+                '${user.name}',
+                '${user.dept.text}',
+                '${user.position_content}',
+                '<button class="btn btn-primary">삭제</button>'
+            ],
+            </c:if>
+            </c:forEach>
+        ]
+    };
+
+ // projectUsers에서 name 추가
     <c:forEach var="user" items="${projectUsers}">
-        ['${user.name}', '${user.dept.text}', '${user.position_content}', '<button class="btn btn-primary">삭제</button>'],
+    <c:if test="${!empty user.name}">
+        approvalLines.push('${user.name}');
+    </c:if>
     </c:forEach>
-]
-};
-
 
 var exampleData = JSON.parse(JSON.stringify(initialData));
 console.log("이거뭐야?"+exampleData);
 
 // 선택된 ID를 rows에 추가하는 함수
-var approvalLines = ['${userDTO.username}'];
-console.log("approvalLines 배열:", approvalLines);
+
+console.log("approvalLines 배열 다 추가 됐니?? : ", approvalLines);
 
 // 선택된 ID를 rows에 추가하는 함수
 function addSelectedIdToRows(selectedId) {
@@ -590,8 +615,10 @@ function addSelectedIdToRows(selectedId) {
 	 layerPopup( "이미 등록된 결재자입니다.","확인",false,removeAlert,removeAlert);
  	 return false;
  }
+ 
  approvalLines.push(selectedId);
  console.log("approvalLines:", approvalLines);
+ 
  $.ajax({
      type: 'GET',
      url: '/project/getUserInfo/'+selectedId,
@@ -611,6 +638,7 @@ function addSelectedIdToRows(selectedId) {
 
          // 기존 rows에 추가
          initialData.rows.push(newRow);
+         
          exampleData.rows.push(newRow);
 
          // 테이블 업데이트 (id가 'customTable'인 테이블에 적용)
@@ -777,13 +805,7 @@ function addBtnFn(approvalLines) {
     console.log("addBtnFn 호출");
     console.log("등록할 인원 목록:", approvalLines);
 
-    // HTML에서 data-project-idx 값을 가져옴
-    const projectElement = document.querySelector('.kanban-item'); // 첫 번째 kanban-item 요소 선택
-    let projectIdx = null;
-
-    if (projectElement) {
-        projectIdx = projectElement.getAttribute('data-project-idx'); // data-project-idx 속성 값 가져오기
-    }
+    const projectIdx = "${idx}";
 
     if (!projectIdx) {
         console.error("프로젝트 ID를 가져올 수 없습니다.");
@@ -811,144 +833,180 @@ function addBtnFn(approvalLines) {
             }),
             success: function (response) {
                 console.log("저장 성공:", response);
-                alert("인원이 성공적으로 등록되었습니다!");
-
+                var Count = response.count;
+                console.log("잘세고 있냐:", Count);
+             // UI 업데이트: 변경된 참여 인원 즉시 반영
+                const userListElement = document.querySelector('.project-info span'); // 올바른 엘리먼트 선택
+                if (userListElement) {
+                    const memberCount = response.count; // 응답에서 count 가져오기
+                    userListElement.innerHTML = '<strong>참여인원:</strong> ' + memberCount + '명'; // 문자열 연결 방식으로 업데이트
+                } else {
+                    console.error("참여 인원 정보를 업데이트할 요소를 찾을 수 없습니다.");
+                }
+                layerPopup(
+                        "프로젝트 인원이 변경되었습니다",
+                        "확인",
+                        null,
+                        function () {
+                            removeAlert(); // 모달 닫기
+                            $('#chartModalBox').hide(); // 조직도 모달 닫기
+                        },
+                        btn2Act
+                    );
                 // 저장 성공 후 테이블 및 approvalLines 초기화
                 approvalLines = [];
                 updateTableData('customTable', initialData); // 테이블 초기화 함수
             },
             error: function (xhr, status, error) {
                 console.error("저장 중 오류 발생:", error);
-                alert("등록 중 오류가 발생했습니다.");
+                layerPopup(
+                        "등록 중 오류가 발생했습니다.",
+                        "확인",
+                        null,
+                        function () {
+                            removeAlert(); // 모달 닫기
+                            $('#chartModalBox').hide(); // 조직도 모달 닫기
+                        },
+                        btn2Act
+                    );
             }
         });
     } else {
-        alert("등록할 인원이 없습니다.");
+    	layerPopup(
+    	        "등록할 인원이 없습니다.",
+    	        "확인",
+    	        null,
+    	        function () {
+    	            removeAlert(); // 모달 닫기
+    	            $('#chartModalBox').hide(); // 조직도 모달 닫기
+    	        },
+    	        btn2Act
+    	    );
+    	
     }
 }
 
 
 
 
-//Add event listener for the Add Task button
+//기존 Move Task 이벤트 리스너 (Event Delegation 방식으로 변경)
+document.querySelector('.kanban-board').addEventListener('change', function (event) {
+    if (event.target.classList.contains('task-status')) {
+        moveTask(event.target); // 상태 변경 이벤트 연결
+    }
+});
+
+// Add Task 버튼 클릭 이벤트
 document.querySelector('.add-task-btn').addEventListener('click', function () {
     createTaskCard('todoList'); // ID 'todoList'를 가진 영역에 작업 카드를 추가
 });
 
-// 기존 Move Task 이벤트 리스너
-document.querySelector('.kanban-board').addEventListener('change', function (event) {
-    if (event.target.classList.contains('task-status')) {
-        moveTask(event.target);
+
+//Task 생성 함수 수정
+function createTaskCard(listId) {
+    // 작업 리스트 가져오기
+    const taskList = document.getElementById(listId);
+
+    // 새로운 작업 카드 생성
+    const taskCard = document.createElement('div');
+    taskCard.classList.add('task-card', 'kanban-item'); // 'kanban-item' 클래스 추가
+
+    // 작업 카드 내부 HTML
+    taskCard.innerHTML = `
+        <input type="text" placeholder="제목을 입력하세요" id="subject" name="subject" class="task-title">
+        <input type="text" name="project_idx" id="project_idx" hidden value="${idx}" class="task-title">
+        <textarea class="form-control art task-content" id="content" name="content" placeholder="내용을 입력하세요"></textarea>
+        <button class="save">저장</button>
+        <button class="cancel">취소</button>
+        `;
+
+        // 저장 버튼 이벤트 바인딩
+        taskCard.querySelector('.save').addEventListener('click', function () {
+            saveTask(this); // Task 저장
+        });
+
+        // 취소 버튼 이벤트 바인딩
+        taskCard.querySelector('.cancel').addEventListener('click', function () {
+            taskCard.remove(); // Task 삭제
+        });
+
+        // 작업 리스트에 추가
+        taskList.appendChild(taskCard);
     }
-});
 
-	function createTaskCard(listId) {
-	  // 작업 리스트 가져오기
-	  const taskList = document.getElementById(listId);
-	  console.log("createTaskCard called"); // 실행 확인용 로그
+// Task 저장 함수 수정
+function saveTask(button) {
+    const taskCard = $(button).closest('.task-card');
 
-	  // 새로운 작업 카드 생성
-	  const taskCard = document.createElement('div');
-	  taskCard.classList.add('task-card');
+    // jQuery로 input, textarea 값 가져오기
+    const title = taskCard.find('input[name="subject"]').val();
+    const content = taskCard.find('textarea[name="content"]').val();
+    const projectIdx = taskCard.find('input[name="project_idx"]').val();
 
-	  // 작업 카드 내부 HTML
-	  taskCard.innerHTML = `
-	    <input type="text"  placeholder="제목을 입력하세요"  id="subject" name= "subject" class="task-title">
-	    <input type="text"  name= "project_idx" id="project_idx" hidden=""  value="${idx}" class="task-title" >
-	    <textarea class="form-control art task-content" id="content" name="content"  placeholder="내용을 입력하세요" ></textarea>
-	    <button class="save">저장</button>
-	    <button class="cancel">취소</button>
-	  `;
+    console.log("title: " + title);
+    console.log("content: " + content);
+    console.log("projectIdx: " + projectIdx);
 
-	  // 이벤트 바인딩
-	  taskCard.querySelector('.save').addEventListener('click', function () {
-	    saveTask(this);
-	  });
-	  taskCard.querySelector('.cancel').addEventListener('click', function () {
-	    taskCard.remove();
-	  });
+    // CSRF 토큰 가져오기
+    const csrfToken = $('meta[name="_csrf"]').attr('content');
+    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
 
-	  // 작업 리스트에 추가
-	  taskList.appendChild(taskCard);
-	}
-	
-	
-	
-	function saveTask(button) {
-	    const taskCard = $(button).closest('.task-card');
+    if (title && content) {
+        // AJAX 요청으로 데이터 서버에 전송
+        $.ajax({
+            url: "/project/saveTask",
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                [csrfHeader]: csrfToken
+            },
+            data: JSON.stringify({
+                project_idx: projectIdx,
+                subject: title,
+                content: content,
+                is_class: "T" // 초기 상태는 "처리 전" (T)
+            }),
+            success: function (response) {
+                console.log(response);
+                const kanbanIdx = response.kanban_idx;
 
-	    // jQuery로 input, textarea 값 가져오기
-	    const title = taskCard.find('input[name="subject"]').val(); // 제목 값 가져오기
-	    const content = taskCard.find('textarea[name="content"]').val(); // 내용 값 가져오기
-	    const projectIdx = taskCard.find('input[name="project_idx"]').val(); // 프로젝트 idx 값 가져오기
+                // 기존 taskCard 내용 제거
+                taskCard.empty();
 
-	    console.log("title: " + title);
-	    console.log("content: " + content);
-	    console.log("projectIdx: " + projectIdx);
+                // 상태 선택박스 추가
+                const select = $('<select>')
+                    .addClass('form-select task-status') // 이 클래스는 Event Delegation에 활용
+                    .append('<option value="T" selected>처리 전</option>')
+                    .append('<option value="P">진행 중</option>')
+                    .append('<option value="D">완료</option>');
 
-	    // CSRF 토큰 가져오기
-	    const csrfToken = $('meta[name="_csrf"]').attr('content');
-	    const csrfHeader = $('meta[name="_csrf_header"]').attr('content');
+                // 제목, 내용, kanbanIdx 추가
+                const titleElem = $('<h4>').text(title);
+                const contentElem = $('<p>').text(content);
+                const kanbanIdxElem = $('<p>').text(kanbanIdx).hide();
 
-	    if (title && content) {
-	        // AJAX 요청으로 데이터 서버에 전송
-	        $.ajax({
-	            url: "/project/saveTask", // 서버에 데이터를 저장할 엔드포인트
-	            method: "POST",
-	            contentType: "application/json",
-	            headers: {
-	                [csrfHeader]: csrfToken // CSRF 헤더 추가
-	            },
-	            data: JSON.stringify({
-	                project_idx: projectIdx,
-	                subject: title,
-	                content: content,
-	                is_class: "T"// 초기 상태는 "처리 전" (T)
-	            }),
-	            success: function (response) {
-	                console.log(response);
-	                const kanbanIdx = response.kanban_idx;
-	                console.log("kanbanIdx: " + kanbanIdx);
+                // taskCard에 새롭게 추가
+                taskCard.addClass('kanban-item').attr('data-kanban-idx', kanbanIdx);
+                taskCard.attr('data-project-idx', projectIdx);
+                taskCard.append(select).append(titleElem).append(contentElem).append(kanbanIdxElem);
 
-	                // 기존 taskCard 내용 제거
-	                taskCard.empty();
-
-	                // 상태 선택박스 추가
-	                const select = $('<select>')
-	                    .addClass('form-select task-status')
-	                    .append('<option value="T" selected>처리 전</option>')
-	                    .append('<option value="P">진행 중</option>')
-	                    .append('<option value="D">완료</option>')
-	                    .on('change', function () {
-	                        moveTask(this);
-	                    });
-
-	                // 제목, 내용, kanbanIdx 추가
-	               const titleElem = $('<h4>').text(title);
-	                const contentElem = $('<p>').text(content);
-	                const kanbanIdxElem = $('<p>').text(kanbanIdx).hide();
-
-	                // taskCard에 새롭게 추가
-	                taskCard.append(select)
-	                    .append(titleElem)
-	                    .append(contentElem)
-	                    .append(kanbanIdxElem);
-					
-	                const percent = response.percent;
-	                updateProgressBar(percent); // 진행률 업데이트 함수 호출
-	                
-	                
-	                alert("작업이 저장되었습니다!");
-	            },
-	            error: function (xhr, status, error) {
-	                console.error("작업 저장 중 오류가 발생했습니다:", error);
-	                alert("작업 저장 중 오류가 발생했습니다.");
-	            }
-	        });
-	    } else {
-	        alert('제목과 내용을 입력하세요!');
-	    }
-	}
+                // 진행률 업데이트
+                const percent = response.percent;
+                updateProgressBar(percent);
+            },
+            error: function (xhr, status, error) {
+                console.error("작업 저장 중 오류가 발생했습니다:", error);
+                alert("작업 저장 중 오류가 발생했습니다.");
+            }
+        });
+    } else {
+       layerPopup(
+    		   "제목과 내용을 입력해주세요.",
+    		   "확인",
+    		   false,
+    		   btn2Act,btn2Act);
+    }
+}
 
 
 	function moveTask(select) {
