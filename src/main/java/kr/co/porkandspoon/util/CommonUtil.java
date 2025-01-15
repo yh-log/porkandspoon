@@ -197,7 +197,7 @@ public class CommonUtil {
          String new_filename =  UUID.randomUUID().toString() + type;
          
          try {
-            Path path = Paths.get(paths, new_filename);
+            Path path = Paths.get("C:/upload/", new_filename);
             Files.write(path, file.getBytes());
             
             results.add(new FileDTO(ori_filename, new_filename, type));
@@ -269,19 +269,19 @@ public class CommonUtil {
        boolean allSuccess = false;
        
        for (String fileName : fileNames) {
-         File srcFile = new File(pathTem + fileName);
-         File destFile = new File(paths + fileName);
+         File srcFile = new File("C:/uploadTemporary/" + fileName);
+         File destFile = new File("C:/upload/" + fileName);
          
          if(srcFile.exists()) {
             try {
                FileUtils.copyFile(srcFile, destFile);
             } catch (IOException e) {
-            	System.out.println("복사 실패: " + srcFile.getAbsolutePath());
+               System.out.println("복사 실패: " + srcFile.getAbsolutePath());
                e.printStackTrace();
             }
             allSuccess = true;
          } else {
-        	 System.out.println("파일 없음: " + srcFile.getAbsolutePath());
+            System.out.println("파일 없음: " + srcFile.getAbsolutePath());
          }
       }
        return allSuccess;
