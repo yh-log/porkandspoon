@@ -144,7 +144,7 @@
 	    if(logofile){
 	    	document.getElementById('deptLogo').src = '/photo/' + logofile;
 	    }else{
-	    	 document.getElementById('deptLogo').src = '/resource/img/google.png';
+	    	 document.getElementById('deptLogo').src = '/resource/img/logo.jpg';
 	    }
 	    
 	    var use_yn = '${deptInfo.use_yn}';

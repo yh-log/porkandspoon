@@ -598,6 +598,8 @@ public class UserController {
 	public List<DeptDTO> deptGetList(@ModelAttribute PagingDTO pagingDTO) {
 		
 		List<DeptDTO> dto = userService.deptGetList(pagingDTO);
+
+		logger.info("부서 리슽 조회 !! => " + CommonUtil.toString(pagingDTO));
 		
 		for (DeptDTO deptDTO : dto) {
 			String type = "B";

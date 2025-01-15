@@ -169,6 +169,7 @@
 											<img id="deptLogo" src=""/>
 											<label for="file">+ 로고 수정</label>
 											<input type="file" id="file" name="file" onchange="clearLogo(); preview(this);"/>
+											<input type="hidden" name="hiddenFile"/>
 										</td>
 										<th>문서 제목</th>
 										<td><span id="draft-subject">${deptInfo.subject}</span></td>
@@ -287,6 +288,7 @@
 		var logo_file = '${deptInfo.logo_file}';
 		if(logo_file){
 			document.getElementById('deptLogo').src = '/photo/' + logo_file;
+			$('input[name="hiddenFile"]').val(logo_file);
 		}else {
             document.getElementById('deptLogo').src = '/resource/img/logo.jpg';
         }

@@ -221,8 +221,8 @@
 			resultType="kr.co.porkandspoon.dto.DeptDTO" parameterType="String">
 		SELECT d.id, d.text, d.content, d.use_yn, d.use_date, f.new_filename AS logo, GROUP_CONCAT(u.name) AS user_name, GROUP_CONCAT(u.username) AS username
 		FROM department d
-				 LEFT JOIN file f ON d.id = f.pk_idx AND f.code_name = 'bl001'
 				 LEFT JOIN `user` u ON d.id = u.parent
+				 JOIN file f ON d.id = f.pk_idx AND f.code_name = 'bl001'
 		WHERE d.id = #{id}
 	</select>
 

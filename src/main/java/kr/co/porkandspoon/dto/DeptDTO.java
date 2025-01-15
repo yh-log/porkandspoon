@@ -47,6 +47,10 @@ public class DeptDTO extends ResponseDTO{
    private String start_date;
    private String end_date;
 
+   private String hiddenFile;
+
+   private int totalpage;
+
 public String getId() {
 	return id;
 }
@@ -211,5 +215,22 @@ public void setMenuDepth(String menuDepth) {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getHiddenFile() {
+		return hiddenFile;
+	}
+
+	public void setHiddenFile(String hiddenFile) {
+		this.hiddenFile = hiddenFile;
+	}
+
+
+	public int getTotalpage() {
+		return totalpage;
+	}
+
+	public void setTotalpage(int totalpage) {
+		this.totalpage = totalpage;
 	}
 }
