@@ -445,6 +445,9 @@ public class UserService {
 	        }
 	    } else {
 	        logger.warn("프로필 이미지 파일이 없습니다.");
+			// 기존 로고 파일로 브랜드 파일 업로드
+			int defaultRogoUploadRow = userDao.defaultRogoUpload(dto);
+			logger.info("기존 로고 파일 업로드 => " + defaultRogoUploadRow);
 	    }
 
 		dto.setStatus(200);

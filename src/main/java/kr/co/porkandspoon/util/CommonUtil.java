@@ -197,7 +197,9 @@ public class CommonUtil {
          String new_filename =  UUID.randomUUID().toString() + type;
          
          try {
+
             Path path = Paths.get("/usr/local/tomcat/webapps/photo/", new_filename);
+
             Files.write(path, file.getBytes());
             
             results.add(new FileDTO(ori_filename, new_filename, type));
@@ -269,9 +271,10 @@ public class CommonUtil {
        boolean allSuccess = false;
        
        for (String fileName : fileNames) {
+
          File srcFile = new File("/usr/local/tomcat/webapps/photoTem/" + fileName);
          File destFile = new File("/usr/local/tomcat/webapps/photo/" + fileName);
-         
+   
          if(srcFile.exists()) {
             try {
                FileUtils.copyFile(srcFile, destFile);
