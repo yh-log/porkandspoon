@@ -111,9 +111,6 @@ document.addEventListener('click', function(event){
         else if(event.target.id === 'loadChartModal'){
             loadChartModal('chartInputModal');
         }
-        else if(event.target.id === 'cancelModal'){
-            removeEmployee();
-        }
     }
 });
 

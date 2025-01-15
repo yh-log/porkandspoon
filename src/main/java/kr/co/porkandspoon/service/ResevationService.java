@@ -94,9 +94,9 @@ public class ResevationService {
 	
 	@Transactional
 	public boolean itemWrite(CalenderDTO calederDto) {
-		
+		String idx = "";
 		// 중복 예약 확인
-	    boolean isDuplicate = isDuplicate(calederDto.getNo(),calederDto.getStart_date(),calederDto.getEnd_date());
+	    boolean isDuplicate = isDuplicate(calederDto.getNo(),calederDto.getStart_date(),calederDto.getEnd_date(),idx);
 	    if(isDuplicate) {
 	        logger.info("중복 예약 시도 발생: Room {}, Start {}, End {}",calederDto.getNo(), calederDto.getStart_date(), calederDto.getEnd_date());
 	        return false;  // 중복 예약 존재 시 예약 실패 처리
@@ -107,8 +107,8 @@ public class ResevationService {
 		return true;
 	}
 
-	private boolean isDuplicate(int no, String start_date, String end_date) {
-		int count = resDao.isDuplicate(no, start_date, end_date);
+	private boolean isDuplicate(int no, String start_date, String end_date, String idx) {
+		int count = resDao.isDuplicate(no, start_date, end_date,idx);
 	    return count > 0;
 	}
 

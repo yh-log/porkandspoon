@@ -339,7 +339,7 @@
 	</delete>
 	
 	<select id="room" resultType="kr.co.porkandspoon.dto.CalenderDTO">
-		SELECT * FROM room
+		SELECT * FROM room WHERE is_room = 'Y' AND use_yn = 'Y'
 	</select>
 	
 	<select id="resRoomDetail" resultType="kr.co.porkandspoon.dto.CalenderDTO">

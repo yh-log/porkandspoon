@@ -622,6 +622,8 @@
 	function setupModalEvents(modal) {
         var closeModal = modal.querySelector("#closeModal");
         var cancelButton = modal.querySelector("#cancelModal");
+        var closeModal1 = modal.querySelector("#closeModal1");
+        var cancelButton1 = modal.querySelector("#cancelModal1");
                
         // 닫기 버튼 클릭 이벤트
         if (closeModal) {
@@ -633,6 +635,20 @@
         // 취소 버튼 클릭 이벤트
         if (cancelButton) {
             cancelButton.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+        }
+        
+     	// 닫기 버튼 클릭 이벤트
+        if (closeModal1) {
+            closeModal1.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+        }
+
+        // 취소 버튼 클릭 이벤트
+        if (cancelButton1) {
+            cancelButton1.addEventListener("click", function () {
                 modal.style.display = "none";
             });
         }

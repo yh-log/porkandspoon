@@ -252,6 +252,12 @@ tbody.fc-body >tr >td.fc-widget-content{
 .modal-footer .btn {
 	margin-bottom: 0;
 }
+#amendSchedule{
+		display: none;
+}
+#deleteSchedule{
+	display: none;
+}
 
 
 /* 메일*/
@@ -475,6 +481,7 @@ tbody.fc-body >tr >td.fc-widget-content{
 .mailList .bi-star-fill{
 	color: var(--bs-warning);
 }
+
 </style>
 
 </head>
@@ -800,10 +807,6 @@ tbody.fc-body >tr >td.fc-widget-content{
 		    content += '<td>' + item.count + '</td>';
 		    // 작성일
 		    content += '<td>' + item.recreate_date + '</td>';
-		    if (myId === item.username) {
-		    	content += '<td><i class="bi bi-pencil-square btn-popup-update bi-icon" onclick="updateboard(' + item.board_idx + ')"></i></td>';
-			    content += '<td><i class="bi bi-trash btn-popup bi-icon" onclick="deleteboard(' + item.board_idx + ')"></i></td>';
-			}
 		    content += '</tr>';
 		});
 		$('#boardList').append(content);
