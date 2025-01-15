@@ -441,7 +441,11 @@ function drawList(list) {
 
 	// input 전체 선택
 	$('#checkAll').on('click',function(){
-		$('.cont-body input[type="checkbox"]').prop('checked', true); 
+		if($(this).is(':checked')){
+			$('.cont-body input[type="checkbox"]').prop('checked', true); 
+		}else{
+			$('.cont-body input[type="checkbox"]').prop('checked', false); 
+		}
 	});
 
 

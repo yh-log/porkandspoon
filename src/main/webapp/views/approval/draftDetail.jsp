@@ -391,10 +391,10 @@
 
 					<div class="col-12 col-lg-12">
 						<div class="tit-area">
-							<h5>기안 상세페이지</h5>
+							<h5>기안 상세페이지1</h5>
 						</div>
 						<div class="buttons">
-							<button class="btn btn-outline-primary" onclick="window.history.back()">돌아가기</button>
+							<button class="btn btn-outline-primary" onclick="backPrev()">돌아가기</button>
 							<!-- 수정/상신: 기안자이면서, 임시저장인 경우 -->
 							<c:if test="${isDraftSender and DraftInfo.status == 'sv'}">
 								<button class="btn btn-primary" onclick="location.href='/approval/update/${DraftInfo.draft_idx}/false'">수정</button>
@@ -536,7 +536,7 @@
 										<tr class="date">
 											<td>
 												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[0].approval_date} </c:if>
-												<c:if test="${ApprLine[0].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal')">반려</p></c:if>			
+												<c:if test="${ApprLine[0].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal',this)">반려</p></c:if>			
 											</td>
 											<td>
 												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[1].approval_date} </c:if>
@@ -544,11 +544,11 @@
 											</td>
 											<td>
 												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[2].approval_date} </c:if>
-												<c:if test="${ApprLine[2].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal')">반려</p></c:if>			
+												<c:if test="${ApprLine[2].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal',this)">반려</p></c:if>			
 											</td>
 											<td>
 												<c:if test="${DraftInfo.status !='sv'}"> ${ApprLine[3].approval_date} </c:if>
-												<c:if test="${ApprLine[3].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal')">반려</p></c:if>			
+												<c:if test="${ApprLine[3].status == 'ap003'}"><p class="return"  onclick="loadModal('draft','CkRefusal',this)">반려</p></c:if>			
 											</td>
 										</tr>
 										
@@ -677,7 +677,10 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
 
-
+//페이지가 처음 로드될 때 직전 URL을 저장(돌아가기에서 사용)
+if (!sessionStorage.getItem('previousUrl')) {
+    sessionStorage.setItem('previousUrl', document.referrer || '/');
+}
 
 //.appr_line .status-area
 console.log('dd','${ApprLine}');
@@ -991,6 +994,20 @@ function btn1Act() {
 // 팝업 취소 버튼 공통
 function btnCloseAct(){
 	removeAlert(); 
+}
+
+
+//돌아가기
+function backPrev() {
+    var previousUrl = sessionStorage.getItem('previousUrl');
+    console.log('previousUrl:!!!!',previousUrl);
+    if (previousUrl) {
+        // 직전 URL로 리디렉션
+        window.location.href = previousUrl;
+    } else {
+        // 직전 URL이 없을경우
+        window.location.href = '/approval/listView/my';
+    }
 }
 
 
