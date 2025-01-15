@@ -15,28 +15,28 @@
 
 <sec:authentication var="loggedInUser" property="principal.username" />
 <script>
-	function checkNewAlarms() {
-	    var loggedInUser = '${loggedInUser}';
+	<%--function checkNewAlarms() {--%>
+	<%--    var loggedInUser = '${loggedInUser}';--%>
 	
-	    if (!loggedInUser) {
-	        console.warn('로그인 정보가 없습니다.');
-	        return;
-	    }
+	<%--    if (!loggedInUser) {--%>
+	<%--        console.warn('로그인 정보가 없습니다.');--%>
+	<%--        return;--%>
+	<%--    }--%>
 	
-	   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {
-	        method: 'GET',
-	        headers: { 'Content-Type': 'application/json' }
-	    })
-	    .then(response => response.json())
-	    .then(alarms => {
-	        if (alarms.length > 0) {
-	            alarms.forEach(alarm => {
-	                displayAlarmMessage(alarm);
-	            });
-	        }
-	    })
-	    .catch(error => console.error('알림 조회 실패:', error));
-	}
+	<%--   fetch('/getAlarm/' + encodeURIComponent(loggedInUser), {--%>
+	<%--        method: 'GET',--%>
+	<%--        headers: { 'Content-Type': 'application/json' }--%>
+	<%--    })--%>
+	<%--    .then(response => response.json())--%>
+	<%--    .then(alarms => {--%>
+	<%--        if (alarms.length > 0) {--%>
+	<%--            alarms.forEach(alarm => {--%>
+	<%--                displayAlarmMessage(alarm);--%>
+	<%--            });--%>
+	<%--        }--%>
+	<%--    })--%>
+	<%--    .catch(error => console.error('알림 조회 실패:', error));--%>
+	<%--}--%>
 	
 	function displayAlarmMessage(alarm) {
 		var alarmMessage = document.getElementById('alarmMessage');
