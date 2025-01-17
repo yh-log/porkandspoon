@@ -5,7 +5,7 @@
 
 <mapper namespace="kr.co.porkandspoon.dao.MyPageDAO">
 
-   <!-- 마이페이지 정보 조회 -->
+   <!-- 마이페이지 정보 조회 (직영점 명도 가져오도록 수정 필요)-->
    <select id="myPageDetail" parameterType="String" resultType="kr.co.porkandspoon.dto.UserDTO">
       SELECT u.username, u.person_num, u.name, u.email, u.birth, u.phone, u.company_num, u.address, u.gender, u.join_date, u.leave_date, u.position, u.parent, u.title, c.content AS position_content, d.`text` AS dept_name, f.new_filename AS profile
          FROM user u LEFT JOIN code c ON u.position = c.name

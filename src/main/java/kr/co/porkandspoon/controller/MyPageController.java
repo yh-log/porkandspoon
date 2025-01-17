@@ -151,7 +151,7 @@ public class MyPageController {
 	@ResponseBody
 	public ResponseEntity<String> saveSignature(
 	        @RequestParam("file") MultipartFile file,
-	        @RequestParam(value = "code_name", defaultValue = "SG001") String codeName, // code_name 파라미터 추가
+	        @RequestParam(value = "code_name", defaultValue = "zz") String codeName, // code_name 파라미터 추가
 	        @AuthenticationPrincipal UserDetails userDetails) {
 	    try {
 	        // 사용자 정보 가져오기

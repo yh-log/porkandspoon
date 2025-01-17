@@ -75,6 +75,11 @@
 		float: right;
 	}
 
+	#dept-logo{
+		width: 150px;
+		height: 150px;
+	}
+
 
 </style>
 
@@ -121,7 +126,7 @@
 									</tr>
 									<tr>
 										<th>직영점주</th>
-										<td>${storeInfo.owner}
+										<td>${storeInfo.user_name}
 										</td>
 										<th>시행일자</th>
 										<td>${storeInfo.use_date}

@@ -329,10 +329,30 @@ function getSuccess(response){
                     const subjectElement = row.querySelector('span[id$="subject-value"]');
                     if (subjectElement) subjectElement.textContent = item.subject;
                 }
-                if (item.content) {
-                    const contentElement = row.querySelector('span[id$="content-value"]');
-                    if (contentElement) contentElement.textContent = item.content;
-                }
+
+				if (item.content) {
+					const contentElement = row.querySelector('span[id$="content-value"]');
+					if (contentElement) {
+						// content 값에 따라 표시될 텍스트 설정
+						switch (item.content) {
+							case 'GR':
+								contentElement.textContent = '졸업';
+								break;
+							case 'EN':
+								contentElement.textContent = '재학';
+								break;
+							case 'LV':
+								contentElement.textContent = '휴학';
+								break;
+							case 'DR':
+								contentElement.textContent = '중퇴';
+								break;
+							default:
+								contentElement.textContent = item.content; // 예외 처리
+						}
+					}
+				}
+
             } else {
                 console.warn(`타입 ${item.type}에 해당하는 행을 찾을 수 없습니다.`);
             }

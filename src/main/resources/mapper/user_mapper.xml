@@ -178,12 +178,13 @@
 		u.person_num,
 		u.username,
 		u.title,
-		d.text AS dept_name,
+		COALESCE(d.text, ds.name) AS dept_name, -- 부서명이 없으면 직영점 이름 가져오기
 		c.content AS position_content,
 		CEIL(
 		(SELECT COUNT(*)
 		FROM user u
 		LEFT JOIN department d ON u.parent = d.id
+		LEFT JOIN direct_store ds ON u.parent = ds.id -- 직영점 추가
 		LEFT JOIN code c ON u.position = c.name
 		WHERE 1 = 1
 		<if test="userYn != null and userYn != ''">
@@ -210,6 +211,8 @@
 		user u
 		LEFT JOIN
 		department d ON u.parent = d.id
+		LEFT JOIN
+		direct_store ds ON u.parent = ds.id -- 직영점 추가
 		LEFT JOIN
 		code c ON u.position = c.name
 		WHERE
@@ -249,7 +252,7 @@
 		parameterType="kr.co.porkandspoon.dto.DeptDTO">
 		INSERT INTO department(id, text, type, use_yn, use_date,
 		content, parent)
-		VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content}, 'SA0001')
+		VALUES(#{id}, #{text}, 'default', #{use_yn}, #{use_date}, #{content}, 'BS0001')
 	</insert>
 
 	<!-- 기존 부서 이미지 삭제 -->
@@ -893,6 +896,7 @@
 		u.name,
 		u.birth,
 		u.join_date,
+		u.person_num,
 		(SELECT COUNT(*)
 		FROM user u
 		WHERE u.parent = 'NO1000'

@@ -441,7 +441,7 @@
           AND  STR_TO_DATE(CONCAT(sd.year, '-', sd.month, '-', sd.day), '%Y-%m-%d') < CURDATE()
           AND sd.year = #{year}
         GROUP BY sd.week
-        ]]>
+        ]]>z
     </select>
 
     <!-- author yh.kim, (25.01.10)

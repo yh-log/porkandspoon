@@ -6,7 +6,7 @@ public class ChartDTO extends ResponseDTO{
     private int week;
     private int monthSum;
     private int month;
-    private int brandSum;
+    private long brandSum;
     private String brand;
 
     public int getWeekSum() {
@@ -41,11 +41,11 @@ public class ChartDTO extends ResponseDTO{
         this.month = month;
     }
 
-    public int getBrandSum() {
+    public long getBrandSum() {
         return brandSum;
     }
 
-    public void setBrandSum(int brandSum) {
+    public void setBrandSum(long brandSum) {
         this.brandSum = brandSum;
     }
 

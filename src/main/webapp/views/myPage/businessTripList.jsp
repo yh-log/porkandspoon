@@ -44,9 +44,6 @@
 	    margin-bottom: 10px;
 	}
 
-	a{
-		color: white;
-	}
 </style>
 
 
